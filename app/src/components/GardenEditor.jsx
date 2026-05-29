@@ -10,6 +10,7 @@ import { PLANT_CATALOG }   from '../hooks/usePlantCatalog'
 import { addPlant }        from '../utils/plantUtils'
 import { insertPointNearestSegment } from '../hooks/useSelection'
 import { saveGarden, loadGarden, createNewGarden, readGardens } from '../hooks/useSaveLoad'
+import { addRectStruct } from '../utils/drawUtils'
 import LogoBar        from './LogoBar'
 import BottomBar      from './BottomBar'
 import PlantTray      from './PlantTray'
@@ -243,22 +244,33 @@ export default function GardenEditor() {
   const handleDisconnect = () => {
     const sel = state.selectedStruct
     if (!sel || !(sel.shape instanceof Konva.Group)) return
+    // Collect member rects before destroying
     const members = sel.shape.getChildren().filter(c => c instanceof Konva.Rect).map(r => ({
-      x: r.x()+sel.shape.x(), y: r.y()+sel.shape.y(),
+      x: r.x() + sel.shape.x(), y: r.y() + sel.shape.y(),
       w: r.width(), h: r.height(),
-      colour: r.fill().replace('CC',''),
+      colour: r.fill().replace('CC', ''),
       type: state.structDataRef.current[sel.id]?.type,
     }))
-    sel.shape.destroy(); delete state.structDataRef.current[sel.id]
+    sel.shape.destroy()
+    delete state.structDataRef.current[sel.id]
+    clearSelection()
+    // Re-create each as a standalone rect with full dragend/merge wiring
+    const { structLayer } = layersRef.current
     members.forEach(m => {
-      const id = 'struct_' + state.structIdCtr.current++
-      state.structDataRef.current[id] = { type: m.type, colour: m.colour, label: m.type }
-      const rect = new Konva.Rect({ id, x:m.x, y:m.y, width:m.w, height:m.h,
-        fill: m.colour+'CC', stroke:'#3A2A10', strokeWidth:2, draggable:true, strokeScaleEnabled:false })
-      rect.on('click tap', () => state.setSelectedStruct({ id, shape:rect, ...state.structDataRef.current[id] }))
-      layersRef.current.structLayer?.add(rect)
+      addRectStruct({
+        type: m.type, x: m.x, y: m.y, w: m.w, h: m.h, colour: m.colour,
+        structIdCtr: state.structIdCtr, structDataRef: state.structDataRef,
+        groupIdCtr: state.groupIdCtr,
+        snapCell: null, showGrid: false,
+        structLayer,
+        onSelect: (id, shape) => {
+          state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
+          state.setSelectedPlant(null)
+        },
+        onModeChange: null,
+      })
     })
-    layersRef.current.structLayer?.batchDraw(); clearSelection()
+    structLayer?.batchDraw()
   }
 
   const handleRemoveLastPt = () => {

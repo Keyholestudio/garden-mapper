@@ -216,9 +216,97 @@ export function closeFreeShape({
 }
 
 // ── Add a rect structure (bed-square, building, pool-sq, hedge-sq, deck) ──
+// ── tryMergeRects — direct port of v8 tryMergeRects + getGroupMembers ────────────────
+// Called on dragend of any rect-type struct. Merges into a Konva.Group when
+// dragged adjacent to another same-type rect or existing group.
+const MAX_GROUP = 4
+const MERGE_TYPES = ['bed-square', 'building', 'deck', 'pool-sq', 'hedge-sq']
+
+function getGroupMembers(group, structDataRef) {
+  return group.getChildren().filter(c => c instanceof Konva.Rect).map(r => ({
+    x: r.x() + group.x(), y: r.y() + group.y(),
+    w: r.width(), h: r.height(),
+    colour: r.fill().replace('CC', ''),
+    type: structDataRef.current[group.id()]?.type,
+    label: structDataRef.current[group.id()]?.label,
+  }))
+}
+
+export function tryMergeRects(id, rect, { structDataRef, structIdCtr, groupIdCtr, structLayer, snapCell, showGrid, onSelect }) {
+  const d = structDataRef.current[id]
+  if (!d || !MERGE_TYPES.includes(d.type)) return
+  const SNAP = showGrid && snapCell ? snapCell : 12
+  const ax = rect.x(), ay = rect.y(), aw = rect.width(), ah = rect.height()
+
+  // ── Pass 1: add to existing group ──
+  for (const [oid, od] of Object.entries(structDataRef.current)) {
+    if (oid === id || !od.isGroup || od.type !== d.type) continue
+    const grp = structLayer.findOne('#' + oid)
+    if (!grp || !(grp instanceof Konva.Group)) continue
+    const members = grp.getChildren().filter(c => c instanceof Konva.Rect)
+    if (members.length >= MAX_GROUP) continue
+    let adjacent = false
+    for (const m of members) {
+      const mx = m.x() + grp.x(), my = m.y() + grp.y(), mw = m.width(), mh = m.height()
+      const xOv = ax < mx + mw + SNAP && ax + aw + SNAP > mx
+      const yOv = ay < my + mh + SNAP && ay + ah + SNAP > my
+      const edge = Math.abs(ax - (mx + mw)) < SNAP || Math.abs(ax + aw - mx) < SNAP ||
+                   Math.abs(ay - (my + mh)) < SNAP || Math.abs(ay + ah - my) < SNAP
+      if (xOv && yOv && edge) { adjacent = true; break }
+    }
+    if (!adjacent) continue
+    rect.destroy(); delete structDataRef.current[id]
+    const newR = new Konva.Rect({
+      x: ax - grp.x(), y: ay - grp.y(), width: aw, height: ah,
+      fill: d.colour + 'CC', stroke: '#3A2A10', strokeWidth: 2,
+      cornerRadius: d.type === 'building' ? 3 : 0, strokeScaleEnabled: false,
+    })
+    grp.add(newR)
+    structLayer.batchDraw()
+    return
+  }
+
+  // ── Pass 2: merge two lone rects into a new group ──
+  for (const [oid, od] of Object.entries(structDataRef.current)) {
+    if (oid === id || od.type !== d.type || od.isGroup) continue
+    const other = structLayer.findOne('#' + oid)
+    if (!other || !(other instanceof Konva.Rect)) continue
+    const bx = other.x(), by = other.y(), bw = other.width(), bh = other.height()
+    const xOv = ax < bx + bw + SNAP && ax + aw + SNAP > bx
+    const yOv = ay < by + bh + SNAP && ay + ah + SNAP > by
+    const edge = Math.abs(ax - (bx + bw)) < SNAP || Math.abs(ax + aw - bx) < SNAP ||
+                 Math.abs(ay - (by + bh)) < SNAP || Math.abs(ay + ah - by) < SNAP
+    if (!xOv || !yOv || !edge) continue
+
+    rect.destroy(); delete structDataRef.current[id]
+    other.destroy(); delete structDataRef.current[oid]
+
+    const gid = 'group_' + groupIdCtr.current++
+    structDataRef.current[gid] = { type: d.type, colour: d.colour, label: d.label, isGroup: true }
+    const group = new Konva.Group({ id: gid, x: 0, y: 0, draggable: true })
+    const rA = new Konva.Rect({ x: ax, y: ay, width: aw, height: ah,
+      fill: d.colour + 'CC', stroke: '#3A2A10', strokeWidth: 2,
+      cornerRadius: d.type === 'building' ? 3 : 0, strokeScaleEnabled: false })
+    const rB = new Konva.Rect({ x: bx, y: by, width: bw, height: bh,
+      fill: od.colour + 'CC', stroke: '#3A2A10', strokeWidth: 2,
+      cornerRadius: od.type === 'building' ? 3 : 0, strokeScaleEnabled: false })
+    group.add(rA, rB)
+    group.on('dragmove', () => {
+      if (showGrid && snapCell) {
+        group.x(Math.round(group.x() / snapCell) * snapCell)
+        group.y(Math.round(group.y() / snapCell) * snapCell)
+      }
+    })
+    group.on('click tap', e => { if (onSelect) onSelect(gid, group, e) })
+    structLayer.add(group)
+    structLayer.batchDraw()
+    return
+  }
+}
+
 export function addRectStruct({
   type, x, y, w, h, colour,
-  structIdCtr, structDataRef, snapCell, showGrid,
+  structIdCtr, structDataRef, groupIdCtr, snapCell, showGrid,
   structLayer, onSelect, onModeChange,
 }) {
   if (!colour) {
@@ -248,6 +336,9 @@ export function addRectStruct({
       rect.x(Math.round(rect.x() / snapCell) * snapCell)
       rect.y(Math.round(rect.y() / snapCell) * snapCell)
     }
+  })
+  rect.on('dragend', () => {
+    tryMergeRects(id, rect, { structDataRef, structIdCtr, groupIdCtr, structLayer, snapCell, showGrid, onSelect })
   })
 
   structLayer.add(rect)

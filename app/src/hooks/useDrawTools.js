@@ -284,6 +284,7 @@ export function useDrawTools({
       addRectStruct({
         type, x, y, w, h,
         structIdCtr: s.structIdCtr, structDataRef: s.structDataRef,
+        groupIdCtr: s.groupIdCtr,
         snapCell: snapCellRef.current, showGrid: s.showGrid,
         structLayer, onSelect: onStructSelect, onModeChange,
       })
