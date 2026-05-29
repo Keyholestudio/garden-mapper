@@ -123,11 +123,14 @@ export default function GardenEditor() {
       if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
         const sel = state.selectedPlant
         if (!sel) return
-        const img = sel.group.findOne('Image')?.image()
-        // Store source position so paste lands to the right of the original
+        const d = state.plantDataRef.current[sel.id]
+        const img = loadedImages[d?.key] || sel.group.findOne('Image')?.image()
         state.setClipboard({
           kind: 'plant',
-          entry: { ...state.plantDataRef.current[sel.id], _img: img },
+          entry: { ...d, _img: img,
+            scaleX: sel.group.scaleX(),
+            scaleY: sel.group.scaleY(),
+          },
           srcX: sel.group.x(),
           srcY: sel.group.y(),
         })
@@ -155,10 +158,14 @@ export default function GardenEditor() {
             state.setSelectedStruct(null)
           },
         })
-        // Move pasted plant to top of layer
+        // Apply stored scale + move to top
         if (newId) {
           const group = plantLayer.findOne('#' + newId)
-          group?.moveToTop()
+          if (group) {
+            if (cb.entry.scaleX) group.scaleX(cb.entry.scaleX)
+            if (cb.entry.scaleY) group.scaleY(cb.entry.scaleY)
+            group.moveToTop()
+          }
           plantLayer.batchDraw()
         }
       }
@@ -486,9 +493,16 @@ export default function GardenEditor() {
           onTransparentPlant={handleTransparentPlant}
           onCopyPlant={() => {
             const sel = state.selectedPlant; if (!sel) return
+            const d = state.plantDataRef.current[sel.id]
+            // Use loadedImages[key] — more reliable than findOne('Image') on the group
+            const img = loadedImages[d?.key] || sel.group.findOne('Image')?.image()
             state.setClipboard({
               kind: 'plant',
-              entry: { ...state.plantDataRef.current[sel.id], _img: sel.group.findOne('Image')?.image() },
+              entry: { ...d, _img: img,
+                // Preserve current visual scale so paste matches copied size
+                scaleX: sel.group.scaleX(),
+                scaleY: sel.group.scaleY(),
+              },
               srcX: sel.group.x(),
               srcY: sel.group.y(),
             })
