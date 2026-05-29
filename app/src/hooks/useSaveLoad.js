@@ -4,6 +4,7 @@
 
 import Konva from 'konva'
 import { SIZE_MAP } from './useGardenState'
+import { makePlantGroup } from '../utils/plantUtils'
 
 const LS_KEY     = 'gardenData'
 const MAX_GARDENS = 2
@@ -246,26 +247,11 @@ export function loadGarden({
 
     const size = SIZE_MAP[entry.size] || 64
 
-    // makePlantGroup equivalent (mirrors v8)
-    const group = new Konva.Group({
-      id: entry.id,
-      x: entry.x + dX, y: entry.y + dY,
-      draggable: true,
-      scaleX: entry.scaleX || 1,
-      scaleY: entry.scaleY || 1,
-    })
-    const imgNode = new Konva.Image({
-      image: img, width: size, height: size,
-      offsetX: size / 2, offsetY: size / 2,
-      listening: false,
-    })
-    group.hitFunc((ctx, shape) => {
-      ctx.beginPath()
-      ctx.rect(-size / 2, -size / 2, size, size)
-      ctx.closePath()
-      ctx.fillStrokeShape(shape)
-    })
-    group.add(imgNode)
+    // Use the same makePlantGroup factory as addPlant (v8: makePlantGroup)
+    // x/y are world coords; makePlantGroup expects top-left corner
+    const group = makePlantGroup(entry.id, img, size, entry.x + dX, entry.y + dY)
+    if (entry.scaleX) group.scaleX(entry.scaleX)
+    if (entry.scaleY) group.scaleY(entry.scaleY)
     group.on('click tap', () => onSelectPlant(entry.id, group))
     plantLayer?.add(group)
   })
