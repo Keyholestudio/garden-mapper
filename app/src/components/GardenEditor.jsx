@@ -630,6 +630,19 @@ export default function GardenEditor() {
           onLayerMove={handleLayerMove}
           onTransparentStruct={handleTransparentStruct}
           onDisconnect={handleDisconnect}
+          onSeasonsChange={() => {
+            const { plantLayer } = layersRef.current
+            if (!plantLayer) return
+            const SEASON_NAMES = ['spring','summer','fall','winter']
+            const sN = SEASON_NAMES[state.currentSeason]
+            plantLayer.find('Group').forEach(g => {
+              const d = state.plantDataRef.current[g.id()]
+              if (!d) return
+              if (d.transparent) { g.opacity(0.35); return }
+              g.opacity(d.seasons?.includes(sN) ? 1 : 0.1)
+            })
+            plantLayer.batchDraw()
+          }}
         />
       </div>
 

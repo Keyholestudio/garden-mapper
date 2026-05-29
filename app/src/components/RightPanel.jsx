@@ -36,6 +36,7 @@ export default function RightPanel({
   onDimRectApply, onDimCircleApply,
   onRemoveLastPt, onLayerMove,
   onTransparentStruct, onDisconnect,
+  onSeasonsChange,
 }) {
   const pxPerUnit = UNIT_PX * (gardenUnit === 'm' ? 3.281 : 1)
 
@@ -97,6 +98,7 @@ export default function RightPanel({
                   onChange={e => {
                     if (e.target.checked) d.seasons = [...(d.seasons||[]), s]
                     else d.seasons = (d.seasons||[]).filter(x => x !== s)
+                    onSeasonsChange?.()  // re-run visibility immediately
                   }}
                 /> {s.charAt(0).toUpperCase()+s.slice(1)}
               </label>
