@@ -34,7 +34,9 @@ export function useGardenState() {
   const [gardenUnit, setGardenUnit]   = useState('ft')
   const [gardenW, setGardenW]         = useState(60)
   const [gardenH, setGardenH]         = useState(40)
-  const [isSetup, setIsSetup]         = useState(false) // false = show setup overlay
+  // Skip setup overlay on startup if a saved garden already exists in localStorage
+  const hasSavedGarden = (() => { try { const d = JSON.parse(localStorage.getItem('gardenData') || '[]'); return Array.isArray(d) && d.some(g => g && typeof g === 'object') } catch { return false } })()
+  const [isSetup, setIsSetup]         = useState(hasSavedGarden) // true = skip overlay for returning users
 
   // Canvas / view
   const [showGrid, setShowGrid]       = useState(false)
