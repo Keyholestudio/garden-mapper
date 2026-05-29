@@ -65,14 +65,27 @@ _Generated: 2026-05-29_
 
 | Feature | V8 function | Priority | Notes |
 |---|---|---|---|
-| **Season visibility per plant** | `updatePlantVisibility` | 🔴 High | Plants should show/hide based on season slider + their season checkboxes. Currently checkboxes exist but do nothing. |
-| **Struct label rename** | `pnl-struct-label` input | 🟡 Med | Right panel has no text field to rename a selected struct (e.g. "Shed", "Garage"). |
-| **Scale display — dynamic with zoom** | `updateScaleDisplay` | 🟡 Med | Currently hardcoded "1 cell = 3 in". V8 recalculates as zoom changes. |
-| **Season slider labels** | `positionSeasonLabels` | 🟡 Med | Labels (Spring/Summer/Fall/Winter) should appear under each slider stop, absolutely positioned. |
-| **PDF export** | (browser print / canvas export) | 🟡 Med | V8 had planned PDF export (watermarked). Not implemented anywhere. |
-| **Undo wired to keyboard** | `Ctrl+Z` keydown | 🟡 Med | `pushUndo`/`undo` exist in state but Ctrl+Z keydown handler is not wired up. |
 | **Last-used garden index persisted** | `currentGardenIndex` in LS | 🟢 Low | Refresh always loads garden[0]. Should store last-used index. |
-| **Struct label persisted on save/load** | `structData[id].label` | 🟢 Low | Labels exist in structDataRef but custom names not surfaced in UI. |
+| **PDF export** | (browser print / canvas export) | 🔵 Deferred | Long-term to-do. Not a priority for current phase. |
+
+## ✅ Recently Completed (2026-05-29 afternoon)
+
+| Feature | Done |
+|---|---|
+| Season visibility — real-time on slider + checkbox | ✅ |
+| Ctrl+Z undo wired | ✅ |
+| Scale display — dynamic with zoom | ✅ |
+| Season slider labels — precisely positioned under stops | ✅ |
+| Struct label rename field | ✅ |
+| Clear button — custom modal (was blocked by window.confirm) | ✅ |
+| Object merge (tryMergeRects) | ✅ |
+| Disconnect merged group | ✅ |
+| Copy button — immediate paste (touch-friendly) | ✅ |
+| Repeat paste steps correctly | ✅ |
+| Background tap to deselect | ✅ |
+| Promo banner | ✅ |
+| Logo bar — matches v8 exactly | ✅ |
+| Right panel — floating card style | ✅ |
 
 ---
 
