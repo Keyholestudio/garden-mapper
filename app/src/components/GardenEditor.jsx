@@ -246,7 +246,7 @@ export default function GardenEditor() {
     const stage = stageRef.current
     const propBounds = state.propBoundsRef.current
     if (!stage || !propBounds) return
-    const W = stage.width(), H = stage.height(), pad = 80
+    const W = stage.width(), H = stage.height(), pad = 20
     const scale = Math.min((W-pad*2)/propBounds.w, (H-pad*2)/propBounds.h, 2)
     stage.scale({ x: scale, y: scale })
     stage.x(W/2 - (propBounds.x + propBounds.w/2) * scale)

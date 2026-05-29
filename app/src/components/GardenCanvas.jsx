@@ -149,8 +149,8 @@ export default function GardenCanvas({
       }
     })
 
-    // Initial zoom-to-fit + draw
-    zoomToFit(stage, propBoundsRef.current)
+    // Initial zoom-to-fit + draw (20px padding matches v8)
+    zoomToFit(stage, propBoundsRef.current, 20)
     drawGrid(stage, gridLayer, showGrid, gardenUnit, currentSeason)
 
     // Resize observer
