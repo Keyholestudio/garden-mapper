@@ -1,0 +1,221 @@
+/* GardenSwitcher.css */
+
+.switcher-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.switcher-panel {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+  width: 340px;
+  max-width: 92vw;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.switcher-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 10px;
+  border-bottom: 1.5px solid #e8f5e9;
+  background: #f1f8e9;
+}
+
+.switcher-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #2E7D32;
+}
+
+.switcher-close {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #888;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.switcher-close:hover { background: #f5f5f5; }
+
+.switcher-list {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 60px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.switcher-empty {
+  font-size: 12px;
+  color: #999;
+  text-align: center;
+  padding: 12px 0;
+}
+
+.switcher-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border: 1.5px solid #ddd;
+  border-radius: 9px;
+  background: #fafafa;
+}
+.switcher-row.current {
+  border-color: #81C784;
+  background: #f1f8f0;
+}
+
+.switcher-name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: #2A3D1A;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.switcher-badge {
+  font-size: 10px;
+  background: #C8E6C9;
+  color: #2E7D32;
+  border-radius: 5px;
+  padding: 1px 5px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.switcher-dims {
+  font-size: 11px;
+  color: #888;
+  flex-shrink: 0;
+}
+
+.btn-load {
+  background: #558B2F;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 5px 11px;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.btn-load:hover { background: #33691E; }
+
+.btn-delete {
+  background: #fde8e8;
+  color: #c62828;
+  border: 1.5px solid #ef9a9a;
+  border-radius: 7px;
+  padding: 5px 8px;
+  font-size: 13px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.btn-delete:hover { background: #ffcdd2; }
+
+.switcher-limit {
+  font-size: 11px;
+  color: #e53935;
+  text-align: center;
+  padding: 4px 12px 0;
+  font-weight: 600;
+}
+
+.switcher-footer {
+  padding: 12px 16px 14px;
+  border-top: 1.5px solid #f0f0f0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-new {
+  background: #E8F5E9;
+  color: #2E7D32;
+  border: 1.5px solid #A5D6A7;
+  border-radius: 8px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.btn-new:hover:not(:disabled) { background: #C8E6C9; }
+.btn-new:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* Delete confirm modal */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 9100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirm-box {
+  background: #fff;
+  border-radius: 12px;
+  padding: 22px 24px 18px;
+  width: 280px;
+  max-width: 90vw;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.2);
+}
+
+.confirm-box p {
+  font-size: 14px;
+  color: #333;
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn-cancel {
+  background: #f5f5f5;
+  border: 1.5px solid #ddd;
+  border-radius: 7px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #555;
+}
+.btn-cancel:hover { background: #eee; }
+
+.btn-confirm-delete {
+  background: #c62828;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.btn-confirm-delete:hover { background: #b71c1c; }

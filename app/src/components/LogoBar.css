@@ -21,7 +21,7 @@
 }
 .logo-img    { height: 44px; object-fit: contain; }
 
-.logo-left   { flex: 1; } /* spacer */
+.logo-left   { flex: 1; display: flex; align-items: center; gap: 6px; }
 .logo-right  { display: flex; align-items: center; gap: 8px; flex-shrink: 0; margin-left: auto; }
 
 .season-badge {
@@ -37,3 +37,39 @@
 .garden-info   { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
 .garden-name   { font-size: 12px; font-weight: 700; color: #2a3d1a; }
 .garden-dims   { font-size: 11px; color: #888; }
+
+/* Save / switcher buttons */
+.btn-save-garden {
+  background: #558B2F;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn-save-garden:hover { background: #33691E; }
+.btn-save-garden.flash {
+  animation: savePop 0.4s ease;
+}
+@keyframes savePop {
+  0%   { transform: scale(1); background: #558B2F; }
+  40%  { transform: scale(1.12); background: #2E7D32; }
+  100% { transform: scale(1); background: #558B2F; }
+}
+
+.btn-switcher {
+  background: #E8F5E9;
+  color: #2E7D32;
+  border: 1.5px solid #A5D6A7;
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-switcher:hover { background: #C8E6C9; }

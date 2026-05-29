@@ -1,13 +1,31 @@
-// LogoBar.jsx — Top bar: logo image + garden name/dims + season badge
+// LogoBar.jsx — Top bar: logo image + garden name/dims + season badge + save/switcher buttons
 import './LogoBar.css'
 
 const SEASON_NAMES  = ['🌸 Spring', '☀️ Summer', '🍂 Fall', '❄️ Winter']
 const SEASON_BADGE_CLASS = ['spring', 'summer', 'fall', 'winter']
 
-export default function LogoBar({ gardenName, gardenW, gardenH, gardenUnit, currentSeason }) {
+export default function LogoBar({
+  gardenName, gardenW, gardenH, gardenUnit, currentSeason,
+  onSave, onOpenSwitcher, saveFlash,
+}) {
   return (
     <div className="logo-bar">
-      <div className="logo-left" />
+      <div className="logo-left">
+        <button
+          className={`btn-save-garden${saveFlash ? ' flash' : ''}`}
+          onClick={onSave}
+          title="Save garden"
+        >
+          💾 Save
+        </button>
+        <button
+          className="btn-switcher"
+          onClick={onOpenSwitcher}
+          title="Switch gardens"
+        >
+          🌿 Gardens
+        </button>
+      </div>
       <div className="logo-center">
         <img src="/stickers/Logo.png" alt="Garden Mapper" className="logo-img" />
       </div>

@@ -1,7 +1,7 @@
 // GardenEditor.jsx — Top-level layout shell
-// Phase 4 fixes: BottomBar layout, logo, pan/draw conflict fixed, snap, fountain, plumbing, copy/paste
+// Phase 5: save/load localStorage, garden switcher
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import Konva from 'konva'
 import { useGardenState }  from '../hooks/useGardenState'
 import { useDrawTools }    from '../hooks/useDrawTools'
@@ -9,12 +9,14 @@ import { useSelection }    from '../hooks/useSelection'
 import { PLANT_CATALOG }   from '../hooks/usePlantCatalog'
 import { addPlant }        from '../utils/plantUtils'
 import { insertPointNearestSegment } from '../hooks/useSelection'
-import LogoBar      from './LogoBar'
-import BottomBar    from './BottomBar'
-import PlantTray    from './PlantTray'
-import GardenCanvas from './GardenCanvas'
-import RightPanel   from './RightPanel'
-import SetupOverlay from './SetupOverlay'
+import { saveGarden, loadGarden, createNewGarden } from '../hooks/useSaveLoad'
+import LogoBar        from './LogoBar'
+import BottomBar      from './BottomBar'
+import PlantTray      from './PlantTray'
+import GardenCanvas  from './GardenCanvas'
+import RightPanel    from './RightPanel'
+import SetupOverlay  from './SetupOverlay'
+import GardenSwitcher from './GardenSwitcher'
 import './GardenEditor.css'
 
 export default function GardenEditor() {
@@ -22,7 +24,13 @@ export default function GardenEditor() {
   const stageRef    = useRef(null)
   const layersRef   = useRef({})
   const showGridRef = useRef(state.showGrid) // always-current ref for snap in dragmove closures
+  const snapCellRef = useRef(null)           // updated by GardenCanvas via onSnapCellChange
   const [stageReady, setStageReady] = useState(false)
+
+  // Phase 5: save/load state
+  const [currentGardenIndex, setCurrentGardenIndex] = useState(0)
+  const [switcherOpen, setSwitcherOpen] = useState(false)
+  const [saveFlash, setSaveFlash] = useState(false)
 
   // ── Image loading ──
   const [loadedImages, setLoadedImages] = useState({})
@@ -258,6 +266,71 @@ export default function GardenEditor() {
     stage.batchDraw()
   }
 
+  // ── Phase 5: Save ──
+  const handleSave = useCallback(() => {
+    if (!stageRef.current) return
+    saveGarden({
+      stage: stageRef.current,
+      layers: layersRef.current,
+      state,
+      currentGardenIndex,
+    })
+    setSaveFlash(true)
+    setTimeout(() => setSaveFlash(false), 500)
+  }, [state, currentGardenIndex])
+
+  // ── Phase 5: Load ──
+  const handleLoad = useCallback((idx) => {
+    if (!stageRef.current) return
+    loadGarden({
+      idx,
+      stage: stageRef.current,
+      layers: layersRef.current,
+      state,
+      loadedImages,
+      showGridRef,
+      snapCellRef,
+      onSelectPlant: (id, group) => {
+        state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
+        state.setSelectedStruct(null)
+      },
+      onSelectStruct: (id, shape) => {
+        state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
+        state.setSelectedPlant(null)
+      },
+      onClearSelection: clearSelection,
+      onSetGardenName: state.setGardenName,
+      onSetGardenW: state.setGardenW,
+      onSetGardenH: state.setGardenH,
+      onSetGardenUnit: state.setGardenUnit,
+      onSetIsSetup: state.setIsSetup,
+      onZoomToFit: handleResetView,
+      structIdCtr: state.structIdCtr,
+      plantIdCtr: state.plantIdCtr,
+    })
+    setCurrentGardenIndex(idx)
+  }, [state, loadedImages, showGridRef, snapCellRef])
+
+  // ── Phase 5: New garden ──
+  const handleNewGarden = useCallback(() => {
+    if (!stageRef.current) return
+    const result = createNewGarden({
+      currentGardenIndex,
+      stage: stageRef.current,
+      layers: layersRef.current,
+      state,
+    })
+    if (result.limitReached) return
+    // Show setup overlay for the new garden
+    state.setGardenName('New Garden')
+    state.setGardenW(60)
+    state.setGardenH(40)
+    state.setGardenUnit('ft')
+    state.setIsSetup(false)
+    setCurrentGardenIndex(result.newIndex)
+    setSwitcherOpen(false)
+  }, [state, currentGardenIndex])
+
   return (
     <div className="editor-layout">
       {!state.isSetup && (
@@ -274,6 +347,17 @@ export default function GardenEditor() {
         gardenName={state.gardenName} gardenW={state.gardenW}
         gardenH={state.gardenH}       gardenUnit={state.gardenUnit}
         currentSeason={state.currentSeason}
+        onSave={handleSave}
+        onOpenSwitcher={() => setSwitcherOpen(true)}
+        saveFlash={saveFlash}
+      />
+
+      <GardenSwitcher
+        open={switcherOpen}
+        currentIndex={currentGardenIndex}
+        onLoad={handleLoad}
+        onNew={handleNewGarden}
+        onClose={() => setSwitcherOpen(false)}
       />
 
       <div className="editor-body">
