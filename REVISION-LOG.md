@@ -201,3 +201,4 @@ _This file tracks all changes made to each prototype version. Use it to backdate
 - [x] New garden doesn't immediately load — canvas is now cleared before showing setup overlay; onStart reinits boundary with new dimensions
 - [x] New garden name not persisted — createNewGarden saves current first, new entry pushed to LS
 
+
