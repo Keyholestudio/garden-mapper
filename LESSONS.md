@@ -32,6 +32,21 @@
 
 ---
 
+## L010 — Git commit discipline for Garden Mapper
+**Date:** 2026-05-29
+**What:** Git initialized in `projects/garden-planner/` as of today. Every confirmed working change must be committed immediately — not batched at end of session.
+**Why:** Yesterday's 4-hour debug session was caused by no version trail. We now have git but it only protects us if we actually use it.
+**The rule:**
+1. After ANY confirmed working change to index-v8.html (or future versions): `git add -A && git commit -m "description"`
+2. Before creating a new version file (v9, v10...): commit the current state first, then copy
+3. I commit — Rob doesn't need to think about it. It's my job to run the commit after each confirmed change.
+4. At session end: always run `git status` to make sure nothing is uncommitted
+**Revert:** `git checkout <hash> -- prototype/index-v8.html` (get hash from `git log --oneline`)
+**Health check:** Bi-monthly cron job verifies repo is not broken and not bloated (see cron: "Garden Mapper Git Health Check")
+**Standing rule:** No session ends with uncommitted confirmed changes. Ever.
+
+---
+
 ## L001 — gog CLI cannot write to specific Google Doc tabs
 **Date:** 2026-05-20
 **What happened:** `gog docs write` and `gog docs insert` don't support `--tab` flag. Only `gog docs cat` has `--tab`.

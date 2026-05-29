@@ -8,7 +8,7 @@ _This file tracks all changes made to each prototype version. Use it to backdate
 **Base:** Copied from index-v7.html (2026-05-28, 126KB — confirmed clean baseline)
 
 ### Changes
-- [ ] #1  Remove console.log debug line in closeFreeShape
+- [x] #1  Remove console.log debug line in closeFreeShape (line 1068, leftover from v7 Enter-key debug)
 - [ ] (add items as we go)
 
 ---
