@@ -19,8 +19,9 @@ import './GardenEditor.css'
 
 export default function GardenEditor() {
   const state = useGardenState()
-  const stageRef  = useRef(null)
-  const layersRef = useRef({})
+  const stageRef    = useRef(null)
+  const layersRef   = useRef({})
+  const showGridRef = useRef(state.showGrid) // always-current ref for snap in dragmove closures
   const [stageReady, setStageReady] = useState(false)
 
   // ── Image loading ──
@@ -34,6 +35,9 @@ export default function GardenEditor() {
       img.src = p.src
     }))).then(() => setLoadedImages({ ...result }))
   }, [])
+
+  // Keep showGridRef current
+  useEffect(() => { showGridRef.current = state.showGrid }, [state.showGrid])
 
   // ── Clear selection ──
   const clearSelection = () => {
@@ -87,7 +91,7 @@ export default function GardenEditor() {
       entry, x: worldPos.x, y: worldPos.y,
       stage: stageRef.current, plantLayer,
       plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr,
-      showGrid: state.showGrid, snapCell: state.showGrid ? 16 : 0,
+      showGridRef,
       onSelect: (id, group) => {
         state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
         state.setSelectedStruct(null)
@@ -123,7 +127,7 @@ export default function GardenEditor() {
           y: (state.propBoundsRef.current?.y || 100) + 80,
           stage: stageRef.current, plantLayer,
           plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr,
-          showGrid: state.showGrid, snapCell: state.showGrid ? 16 : 0,
+          showGridRef,
           onSelect: (id, group) => {
             state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
             state.setSelectedStruct(null)

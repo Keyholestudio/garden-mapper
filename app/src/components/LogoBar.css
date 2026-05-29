@@ -1,4 +1,5 @@
 .logo-bar {
+  position: relative;
   display: flex;
   align-items: center;
   height: 56px;
@@ -7,13 +8,21 @@
   flex-shrink: 0;
   z-index: 10;
   padding: 0 10px;
-  gap: 8px;
 }
 
-.logo-left   { flex-shrink: 0; min-width: 80px; }
-.logo-center { flex: 1; display: flex; align-items: center; justify-content: center; }
-.logo-img    { height: 44px; object-fit: contain; max-width: 100%; }
-.logo-right  { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+/* Logo absolutely centered — immune to content on either side */
+.logo-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+.logo-img    { height: 44px; object-fit: contain; }
+
+.logo-left   { flex: 1; } /* spacer */
+.logo-right  { display: flex; align-items: center; gap: 8px; flex-shrink: 0; margin-left: auto; }
 
 .season-badge {
   font-size: 11px; font-weight: 700;

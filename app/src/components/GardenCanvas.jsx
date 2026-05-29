@@ -27,9 +27,12 @@ export default function GardenCanvas({
   onStageReady,    // callback(stage, layers) — parent gets refs after init
   onCanvasClick,   // callback({x,y}) — world coords of click on empty canvas
 }) {
-  const containerRef = useRef(null)
-  const stageRef     = useRef(null)
-  const layersRef    = useRef({})   // {gridLayer, structLayer, plantLayer, uiLayer}
+  const containerRef  = useRef(null)
+  const stageRef      = useRef(null)
+  const layersRef     = useRef({})
+  const showGridRef   = useRef(showGrid)
+  const seasonRef     = useRef(currentSeason)
+  const gardenUnitRef = useRef(gardenUnit)
 
   // ── Init Konva stage ──────────────────────────────────
   useEffect(() => {
@@ -109,7 +112,7 @@ export default function GardenCanvas({
       stage.x(stage.x() + pos.x - panStart.x)
       stage.y(stage.y() + pos.y - panStart.y)
       panStart = pos
-      drawGrid(stage, layersRef.current.gridLayer, showGrid, gardenUnit, currentSeason)
+      drawGrid(stage, layersRef.current.gridLayer, showGridRef.current, gardenUnitRef.current, seasonRef.current)
       stage.batchDraw()
     })
     stage.on('mouseup touchend', () => {
@@ -136,7 +139,7 @@ export default function GardenCanvas({
       stage.scale({ x: clamped, y: clamped })
       stage.x(pointer.x - mousePointTo.x * clamped)
       stage.y(pointer.y - mousePointTo.y * clamped)
-      drawGrid(stage, layersRef.current.gridLayer, showGrid, gardenUnit, currentSeason)
+      drawGrid(stage, layersRef.current.gridLayer, showGridRef.current, gardenUnitRef.current, seasonRef.current)
       stage.batchDraw()
     })
 
@@ -158,7 +161,7 @@ export default function GardenCanvas({
       if (!stageRef.current) return
       stage.width(wrap.clientWidth)
       stage.height(wrap.clientHeight)
-      drawGrid(stage, layersRef.current.gridLayer, showGrid, gardenUnit, currentSeason)
+      drawGrid(stage, layersRef.current.gridLayer, showGridRef.current, gardenUnitRef.current, seasonRef.current)
       stage.batchDraw()
     })
     ro.observe(wrap)
@@ -172,6 +175,11 @@ export default function GardenCanvas({
       stageRef.current = null
     }
   }, []) // run once on mount
+
+  // ── Keep refs current so pan/zoom handlers always use latest values ──
+  useEffect(() => { showGridRef.current = showGrid }, [showGrid])
+  useEffect(() => { seasonRef.current = currentSeason }, [currentSeason])
+  useEffect(() => { gardenUnitRef.current = gardenUnit }, [gardenUnit])
 
   // ── Redraw grid when season or showGrid changes ──
   useEffect(() => {
