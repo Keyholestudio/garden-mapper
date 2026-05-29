@@ -1,6 +1,7 @@
 /* LogoBar.css — mirrors v8 #logo-bar exactly */
 
 .logo-bar {
+  position: relative;        /* anchor for absolute logo-center */
   display: flex;
   align-items: center;
   height: 56px;
@@ -9,16 +10,15 @@
   flex-shrink: 0;
   z-index: 10;
   padding: 0 10px;
-  gap: 8px;
 }
 
-/* LEFT — scale display + season badge */
+/* LEFT — scale display + season badge, grows to fill left side */
 .logo-left {
+  flex: 1;
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 8px;
-  flex-shrink: 0;
   min-width: 0;
 }
 
@@ -29,29 +29,28 @@
   white-space: nowrap;
 }
 
-/* CENTER — logo, flex:1 so it truly centers */
+/* CENTER — absolutely pinned to true page center, immune to sidebar widths */
 .logo-center {
-  flex: 1;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-width: 0;
+  pointer-events: none;
 }
 .logo-img {
   height: 44px;
   object-fit: contain;
-  max-width: 100%;
 }
 
-/* RIGHT — garden info + buttons */
+/* RIGHT — grows to fill right side, content pushed to end */
 .logo-right {
+  flex: 1;
   display: flex;
   align-items: center;
   gap: 6px;
   justify-content: flex-end;
-  flex-shrink: 0;
   min-width: 0;
-  max-width: 45%;
 }
 
 .garden-info {
