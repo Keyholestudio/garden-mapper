@@ -32,6 +32,23 @@
 
 ---
 
+## L011 — Reflect before patching. Read before acting. Reference the legend.
+**Date:** 2026-05-29
+**What:** Spent hours in a patch loop on Phase 5 save/load — layering fixes on top of fixes without fully reading the code first. Introduced new bugs (bad debug code, wrong hook placement, duplicated logic incorrectly) while trying to fix existing ones.
+**Root causes:**
+1. Patched from memory instead of reading the actual file before editing
+2. Didn't read ARCHITECTURE.md / the legend before touching unfamiliar code paths
+3. Didn't verify each fix compiled and worked before moving to the next
+**The rules:**
+1. **Read the relevant file(s) in full before making any edit** — especially hooks, utils, and anything with Konva
+2. **Reference ARCHITECTURE.md** at the start of any Garden Mapper coding session and before touching save/load, plant groups, or layer management
+3. **One fix at a time** — verify it compiles and behaves correctly before moving to the next issue
+4. **If stuck after 2 attempts, stop and explain** what you know and don't know before trying again
+5. **Update REVISION-LOG.md and ARCHITECTURE.md at session close** — if the code changed, the docs change too
+**Standing rule:** No edits without reading first. No session ends with stale docs.
+
+---
+
 ## L010 — Git commit discipline for Garden Mapper
 **Date:** 2026-05-29
 **What:** Git initialized in `projects/garden-planner/` as of today. Every confirmed working change must be committed immediately — not batched at end of session.
