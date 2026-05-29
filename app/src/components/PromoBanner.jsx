@@ -13,29 +13,27 @@ const PROMOS = [
 ]
 
 export default function PromoBanner() {
-  const [idx, setIdx]       = useState(0)
-  const [visible, setVisible] = useState(true) // controls opacity fade
-  const timerRef = useRef(null)
+  const [idx, setIdx]         = useState(0)
+  const [visible, setVisible] = useState(true)
+  const idxRef = useRef(0)  // always-current idx for the interval closure
 
   const showPromo = (nextIdx) => {
+    const n = (nextIdx + PROMOS.length) % PROMOS.length
     setVisible(false)
     setTimeout(() => {
-      setIdx((nextIdx + PROMOS.length) % PROMOS.length)
+      idxRef.current = n
+      setIdx(n)
       setVisible(true)
     }, 300)
   }
 
-  // Auto-advance every 60s (matches v8 setInterval 60000)
+  // Auto-advance every 60s — uses ref so closure always has current idx
   useEffect(() => {
-    timerRef.current = setInterval(() => {
-      setIdx(prev => {
-        const next = (prev + 1) % PROMOS.length
-        setVisible(false)
-        setTimeout(() => setVisible(true), 300)
-        return next
-      })
+    const timer = setInterval(() => {
+      showPromo(idxRef.current + 1)
     }, 60000)
-    return () => clearInterval(timerRef.current)
+    return () => clearInterval(timer)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
