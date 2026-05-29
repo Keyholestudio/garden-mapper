@@ -93,7 +93,7 @@ export default function GardenEditor() {
   }
   const handleCanvasClick = (worldPos) => {
     const entry = pendingPlantRef.current
-    if (!entry) return
+    if (!entry) { clearSelection(); return }
     pendingPlantRef.current = null
     const { plantLayer } = layersRef.current
     if (!plantLayer || !stageRef.current) return
