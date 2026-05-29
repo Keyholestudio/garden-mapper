@@ -4,17 +4,36 @@ _This file tracks all changes made to each prototype version. Use it to backdate
 
 ---
 
-## index-v8.html — In Progress (2026-05-29)
-**Base:** Copied from index-v7.html (2026-05-28, 126KB — confirmed clean baseline)
+## React Scaffold — `projects/garden-planner/app/` (2026-05-29)
+**Base:** Vite + React + Konva. Runs on http://localhost:5175 (or next available port).
+**Reference:** `prototype/index-v8.html` — always open for comparison.
+**Git:** initialized in `projects/garden-planner/`, commit after every confirmed change.
 
-### Changes
-- [x] #1  Remove console.log debug line in closeFreeShape (line 1068, leftover from v7 Enter-key debug)
-- [x] #2  Phase 1: useGardenState hook, Konva canvas init, grid, pan, zoom-to-fit, setup overlay
-- [x] #3  Phase 2: plant catalog (36 plants), image loading, tray with search + recents, click-to-place
-- [x] #4  Phase 3: draw tools — freeform beds/fences/paths/building/water, rect drag, circle drag, Enter to close, Escape to cancel, draw hint bar, Toolbar component
-- [ ] #5  Phase 4: select + edit (transformer, right panel properties, delete, copy/paste)
-- [ ] #6  Phase 5: save/load (localStorage, garden switcher)
-- [ ] #7  Phase 6: season themes, logo bar polish, promo banner
+### Phases
+- [x] Phase 1: useGardenState hook, Konva canvas init, grid, pan, zoom-to-fit, setup overlay
+- [x] Phase 2: plant catalog (36 plants), image loading, tray with search + recents, click-to-place
+- [x] Phase 3: draw tools — freeform beds/fences/paths/building/water, rect drag, circle drag, Enter to close, Escape to cancel, draw hint bar
+- [x] Phase 4: select + edit — transformer, right panel (colour, dims, delete, copy, layer order, transparency, disconnect), edit mode handles, Ctrl+C/V
+- [x] Phase 4 bug fixes — layout, zoom, draw conflicts, fountain snap, plumbing, copy/paste, setup overlay
+- [x] Phase 5: save/load localStorage + garden switcher modal
+
+### Phase 5 bug fixes (all resolved 2026-05-29)
+- [x] Stale useCallback closures on handleLoad/handleSave → switched to plain functions
+- [x] null entries in gardenData array → readGardens() filters nulls; save uses safe index bounds
+- [x] GardenSwitcher crash on null entry → null guard on .map()
+- [x] group.hitFunc() not a method → replaced with makePlantGroup() factory from plantUtils.js
+- [x] Setup overlay flicker on refresh → isSetup initializes to true when saved garden exists in localStorage
+- [x] Auto-load on startup → useEffect loads garden[0] after stage+images ready; skips setup for returning users
+- [x] New garden doesn't clear canvas → canvas cleared before setup overlay shown
+- [x] clearSelection/handleResetView used before definition in useEffect → moved useEffect below all handler definitions
+
+### Outstanding
+- [ ] Phase 5 remainder: persist last-used garden index in localStorage (refresh always loads garden[0] currently)
+- [ ] Phase 5 remainder: draw tools need full testing (square beds, building, deck, hedge — curved/path/electrical confirmed only)
+- [ ] Phase 6: season themes (colour palette swap per season beyond canvas bg — already partial)
+- [ ] Phase 6: promo banner (rotating slogans, v8 style)
+- [ ] Phase 6: logo bar polish (match v8 final layout exactly)
+- [ ] Code legend / architecture doc (see ARCHITECTURE.md — to be created)
 
 ---
 
