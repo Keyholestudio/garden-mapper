@@ -1,57 +1,17 @@
-.logo-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #1a3a2a;
-  color: white;
-  padding: 0 1rem;
-  height: 52px;
-  flex-shrink: 0;
-  gap: 1rem;
+/* Global reset + base styles */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', 'DM Sans', system-ui, sans-serif;
+  background: #fff;
+  height: 100vh;
+  overflow: hidden;
+  user-select: none;
 }
 
-.logo-text { font-weight: 700; font-size: 1.1rem; }
-.logo-center { display: flex; flex-direction: column; align-items: center; gap: 2px; }
-.season-label { font-size: 0.75rem; opacity: 0.8; }
-.garden-name { font-size: 0.9rem; opacity: 0.9; }
-
-.plant-tray {
-  width: 220px;
-  background: white;
-  border-right: 1px solid #e0e0e0;
+#app {
+  height: 100vh;
+  width: 100vw;
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
-}
-
-.tray-search { padding: 0.5rem; border-bottom: 1px solid #eee; }
-.tray-search input { width: 100%; padding: 0.4rem 0.6rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.85rem; }
-.tray-content { flex: 1; overflow-y: auto; }
-
-.canvas-container {
-  flex: 1;
-  padding: 12px;
-  display: flex;
-  align-items: stretch;
-  background: #f0f4f0;
-  overflow: hidden;
-}
-
-.right-panel {
-  width: 240px;
-  background: white;
-  border-left: 1px solid #e0e0e0;
-  flex-shrink: 0;
-  overflow-y: auto;
-}
-
-.panel-content, .panel-empty {
-  padding: 1rem;
-}
-
-.panel-empty p {
-  color: #aaa;
-  font-size: 0.85rem;
-  text-align: center;
-  margin-top: 2rem;
 }

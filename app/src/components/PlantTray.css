@@ -1,0 +1,40 @@
+.plant-tray {
+  width: 154px;
+  background: #fff;
+  border: 1.5px solid #11502A;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  padding: 7px 5px 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin: 10px 8px 10px 0;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+}
+
+.tray-search {
+  width: 100%;
+  padding: 5px 7px;
+  border: 1.5px solid #a5d6a7;
+  border-radius: 8px;
+  background: #f9fbe7;
+  font-size: 11px;
+  font-family: inherit;
+  outline: none;
+  margin-bottom: 6px;
+}
+.tray-search:focus { border-color: #558B2F; }
+
+.tray-scroll {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.tray-placeholder {
+  font-size: 10px;
+  color: #bbb;
+  text-align: center;
+  padding: 12px 4px;
+  font-style: italic;
+}

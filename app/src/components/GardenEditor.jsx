@@ -1,30 +1,72 @@
 // GardenEditor.jsx — Top-level layout shell
-// Mirrors the v8 prototype layout: LogoBar + Tray (left) + Canvas (center) + RightPanel
-// Components are stubbed — ready to be filled in from prototype logic
+// Wires useGardenState hook to all child components
 
-import { useState } from 'react'
+import { useRef } from 'react'
+import { useGardenState } from '../hooks/useGardenState'
 import LogoBar from './LogoBar'
 import PlantTray from './PlantTray'
 import GardenCanvas from './GardenCanvas'
 import RightPanel from './RightPanel'
+import SetupOverlay from './SetupOverlay'
 import './GardenEditor.css'
 
 export default function GardenEditor() {
-  const [selectedTool, setSelectedTool] = useState(null)
-  const [selectedObject, setSelectedObject] = useState(null)
-  const [season, setSeason] = useState(0) // 0=Spring, 1=Summer, 2=Fall, 3=Winter
+  const state = useGardenState()
+  const stageRef  = useRef(null)
+  const layersRef = useRef({})
+
+  const handleStageReady = (stage, layers) => {
+    stageRef.current  = stage
+    layersRef.current = layers
+  }
 
   return (
     <div className="editor-layout">
-      <LogoBar season={season} onSeasonChange={setSeason} />
-      <div className="editor-body">
-        <PlantTray selectedTool={selectedTool} onToolSelect={setSelectedTool} />
-        <GardenCanvas
-          selectedTool={selectedTool}
-          season={season}
-          onObjectSelect={setSelectedObject}
+      {!state.isSetup && (
+        <SetupOverlay
+          gardenName={state.gardenName}
+          gardenW={state.gardenW}
+          gardenH={state.gardenH}
+          gardenUnit={state.gardenUnit}
+          onSetGardenName={state.setGardenName}
+          onSetGardenW={state.setGardenW}
+          onSetGardenH={state.setGardenH}
+          onSetGardenUnit={state.setGardenUnit}
+          onStart={() => state.setIsSetup(true)}
         />
-        <RightPanel selectedObject={selectedObject} />
+      )}
+
+      <LogoBar
+        gardenName={state.gardenName}
+        gardenW={state.gardenW}
+        gardenH={state.gardenH}
+        gardenUnit={state.gardenUnit}
+        currentSeason={state.currentSeason}
+        onSeasonChange={state.setCurrentSeason}
+        showGrid={state.showGrid}
+        onToggleGrid={() => state.setShowGrid(v => !v)}
+      />
+
+      <div className="editor-body">
+        <PlantTray
+          currentMode={state.currentMode}
+          onModeChange={state.setCurrentMode}
+        />
+        <GardenCanvas
+          gardenName={state.gardenName}
+          gardenW={state.gardenW}
+          gardenH={state.gardenH}
+          gardenUnit={state.gardenUnit}
+          currentSeason={state.currentSeason}
+          showGrid={state.showGrid}
+          propBoundsRef={state.propBoundsRef}
+          onStageReady={handleStageReady}
+        />
+        <RightPanel
+          selectedPlant={state.selectedPlant}
+          selectedStruct={state.selectedStruct}
+          multiSelection={state.multiSelection}
+        />
       </div>
     </div>
   )

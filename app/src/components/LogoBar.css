@@ -1,0 +1,61 @@
+.logo-bar {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  background: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  flex-shrink: 0;
+  z-index: 10;
+  padding: 0 10px;
+  gap: 8px;
+}
+
+.logo-left  { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.logo-center { flex: 1; display: flex; align-items: center; justify-content: center; }
+.logo-text  { font-size: 1.15rem; font-weight: 800; color: #11502A; }
+.logo-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+.logo-btn {
+  background: #f1f8e9;
+  border: 1.5px solid #a5d6a7;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #2a3d1a;
+  font-family: inherit;
+}
+.logo-btn.active {
+  background: #11502A;
+  color: #fff;
+  border-color: #11502A;
+}
+
+.season-slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.season-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 20px;
+  color: #fff;
+  white-space: nowrap;
+}
+.season-spring { background: #558B2F; }
+.season-summer { background: #33691E; }
+.season-fall   { background: #E65100; }
+.season-winter { background: #546E7A; }
+
+.garden-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.garden-name { font-size: 12px; font-weight: 700; color: #2a3d1a; }
+.garden-dims { font-size: 11px; color: #888; }
