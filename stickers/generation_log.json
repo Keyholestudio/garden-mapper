@@ -1,0 +1,70 @@
+{
+  "flux-schnell": {
+    "ok": 0,
+    "fail": 11,
+    "errors": [
+      "herb-small_thyme",
+      "flower-daisy_marigold",
+      "shrub-lavender_lavender",
+      "flower-spike_foxglove",
+      "tree-fruit_apple",
+      "shrub-flowering_saskatoon",
+      "shrub-flowering_blueberry",
+      "vegetable-root_carrot",
+      "tree-conifer_pine",
+      "flower-cluster_phlox",
+      "ground-cover_hostas"
+    ]
+  },
+  "nano-banana": {
+    "ok": 0,
+    "fail": 11,
+    "errors": [
+      "herb-small_thyme",
+      "flower-daisy_marigold",
+      "shrub-lavender_lavender",
+      "flower-spike_foxglove",
+      "tree-fruit_apple",
+      "shrub-flowering_saskatoon",
+      "shrub-flowering_blueberry",
+      "vegetable-root_carrot",
+      "tree-conifer_pine",
+      "flower-cluster_phlox",
+      "ground-cover_hostas"
+    ]
+  },
+  "nano-banana-2": {
+    "ok": 0,
+    "fail": 11,
+    "errors": [
+      "herb-small_thyme",
+      "flower-daisy_marigold",
+      "shrub-lavender_lavender",
+      "flower-spike_foxglove",
+      "tree-fruit_apple",
+      "shrub-flowering_saskatoon",
+      "shrub-flowering_blueberry",
+      "vegetable-root_carrot",
+      "tree-conifer_pine",
+      "flower-cluster_phlox",
+      "ground-cover_hostas"
+    ]
+  },
+  "imagen4-fast": {
+    "ok": 0,
+    "fail": 11,
+    "errors": [
+      "herb-small_thyme",
+      "flower-daisy_marigold",
+      "shrub-lavender_lavender",
+      "flower-spike_foxglove",
+      "tree-fruit_apple",
+      "shrub-flowering_saskatoon",
+      "shrub-flowering_blueberry",
+      "vegetable-root_carrot",
+      "tree-conifer_pine",
+      "flower-cluster_phlox",
+      "ground-cover_hostas"
+    ]
+  }
+}

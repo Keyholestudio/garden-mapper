@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Garden Map — v3</title>
+  <script src="https://unpkg.com/konva@9/konva.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Nunito', 'DM Sans', system-ui, sans-serif;
+      background: #1a1a1a;
+      display: flex; flex-direction: column;
+      height: 100dvh; overflow: hidden; user-select: none;
+    }
+
+    /* ── Season themes ── */
+    :root {
+      --bg: #C8E6C9; --ui-bg: #F1F8E9; --ui-border: #A5D6A7;
+      --text: #2A3D1A; --accent: #558B2F; --accent-light: #AED581;
+      --slider-track: #A5D6A7; --tray-hover: #DCEDC8;
+      --btn-bg: #E8F5E9; --input-bg: #F9FBE7;
+      --grid-color: rgba(56,142,60,0.25);
+    }
+    body.summer {
+      --bg: #8BC34A; --ui-bg: #F9FBE7; --ui-border: #C5E1A5;
+      --text: #1B5E20; --accent: #33691E; --accent-light: #AED581;
+      --slider-track: #C5E1A5; --tray-hover: #DCEDC8;
+      --btn-bg: #F1F8E9; --input-bg: #FAFDF3;
+      --grid-color: rgba(80,160,30,0.25);
+    }
+    body.fall {
+      --bg: #FFCC80; --ui-bg: #FFF8F0; --ui-border: #FFAB40;
+      --text: #4E2A00; --accent: #E65100; --accent-light: #FFCC80;
+      --slider-track: #FFAB40; --tray-hover: #FFE0B2;
+      --btn-bg: #FFF3E0; --input-bg: #FFFDE7;
+      --grid-color: rgba(180,100,20,0.2);
+    }
+    body.winter {
+      --bg: #E3F2FD; --ui-bg: #F5F5F5; --ui-border: #B0BEC5;
+      --text: #263238; --accent: #546E7A; --accent-light: #B0BEC5;
+      --slider-track: #B0BEC5; --tray-hover: #ECEFF1;
+      --btn-bg: #ECEFF1; --input-bg: #FAFAFA;
+      --grid-color: rgba(70,110,130,0.18);
+    }
+
+    /* ── Top bar ── */
+    #topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 14px; background: var(--ui-bg); border-bottom: 2px solid var(--ui-border);
+      color: var(--text); transition: background 0.4s, border-color 0.4s, color 0.4s;
+      z-index: 10; flex-shrink: 0; gap: 10px;
+    }
+    #topbar h1 { font-size: 14px; font-weight: 800; white-space: nowrap; }
+    #garden-info { font-size: 11px; opacity: 0.65; }
+    .season-badge {
+      font-size: 11px; font-weight: 700; padding: 3px 10px;
+      border-radius: 20px; background: var(--accent); color: #fff;
+      transition: background 0.4s; white-space: nowrap;
+    }
+    #scale-display {
+      font-size: 10px; font-weight: 600; opacity: 0.75;
+      background: var(--btn-bg); border: 1px solid var(--ui-border);
+      border-radius: 6px; padding: 3px 8px; white-space: nowrap;
+    }
+
+    /* ── Main layout ── */
+    #main { display: flex; flex: 1; overflow: hidden; }
+
+    /* ── Plant tray ── */
+    #tray {
+      width: 118px; background: var(--ui-bg); border-right: 2px solid var(--ui-border);
+      display: flex; flex-direction: column; align-items: stretch;
+      padding: 7px 5px; gap: 0; overflow-y: auto;
+      transition: background 0.4s, border-color 0.4s;
+      flex-shrink: 0; z-index: 5;
+    }
+    #plant-search {
+      width: 100%; padding: 5px 7px;
+      border: 1.5px solid var(--ui-border); border-radius: 8px;
+      background: var(--input-bg); color: var(--text);
+      font-size: 11px; font-family: inherit; outline: none; margin-bottom: 6px;
+    }
+    #plant-search:focus { border-color: var(--accent); }
+    .tray-section-label {
+      font-size: 9px; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--text); opacity: 0.5; margin: 3px 2px 2px;
+    }
+    .tray-item {
+      display: flex; align-items: center; gap: 6px;
+      cursor: grab; padding: 4px 5px; border-radius: 7px;
+      transition: background 0.12s;
+    }
+    .tray-item:hover { background: var(--tray-hover); }
+    .tray-item img { width: 34px; height: 34px; pointer-events: none; flex-shrink: 0;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3)); }
+    .tray-item span { font-size: 10px; font-weight: 600; color: var(--text); line-height: 1.2; }
+    .tray-divider { width: 100%; height: 1px; background: var(--ui-border); margin: 4px 0; }
+    #no-results { font-size: 10px; opacity: 0.5; text-align: center; padding: 8px 4px; display: none; }
+
+    /* ── Canvas ── */
+    #canvas-wrap {
+      flex: 1; position: relative; overflow: hidden;
+      background: var(--bg); transition: background 0.5s;
+    }
+    #canvas-wrap.drag-over { outline: 3px dashed var(--accent); outline-offset: -3px; }
+    #drop-ghost {
+      position: absolute; pointer-events: none;
+      display: none; opacity: 0.65; z-index: 100;
+      transform: translate(-50%,-50%);
+    }
+    /* Cursor per mode */
+    #canvas-wrap.mode-select   { cursor: default; }
+    #canvas-wrap.mode-pan      { cursor: grab; }
+    #canvas-wrap.mode-panning  { cursor: grabbing; }
+    #canvas-wrap.mode-bed,
+    #canvas-wrap.mode-building,
+    #canvas-wrap.mode-path     { cursor: crosshair; }
+    #canvas-wrap.mode-freebed,
+    #canvas-wrap.mode-freepath,
+    #canvas-wrap.mode-freehedge{ cursor: crosshair; }
+
+    /* freeform hint */
+    #freeform-hint {
+      position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.65); color: #fff; font-size: 11px; font-weight: 600;
+      padding: 4px 12px; border-radius: 20px; pointer-events: none;
+      display: none; white-space: nowrap; z-index: 50;
+    }
+
+    /* ── Info panel ── */
+    #info-panel {
+      width: 188px; background: var(--ui-bg); border-left: 2px solid var(--ui-border);
+      padding: 10px 9px; color: var(--text);
+      transition: background 0.4s, border-color 0.4s, color 0.4s;
+      display: flex; flex-direction: column; gap: 7px;
+      flex-shrink: 0; overflow-y: auto;
+    }
+    .panel-title { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.5; }
+    .plant-name  { font-size: 14px; font-weight: 800; }
+    .plant-family{ font-size: 11px; opacity: 0.65; }
+    #info-panel textarea {
+      width: 100%; height: 65px; resize: vertical;
+      background: var(--input-bg); border: 1px solid var(--ui-border);
+      border-radius: 7px; padding: 5px 6px; font-size: 11px;
+      color: var(--text); font-family: inherit;
+    }
+    .season-checks { display: flex; flex-direction: column; gap: 3px; }
+    .season-checks label { display: flex; align-items: center; gap: 5px; font-size: 11px; cursor: pointer; }
+    .btn-danger { background: #c62828; color: #fff; border: none; border-radius: 7px; padding: 5px; font-size: 10px; font-weight: 700; cursor: pointer; }
+    .btn-danger:hover { background: #b71c1c; }
+    .btn-action { background: var(--btn-bg); color: var(--text); border: 1.5px solid var(--ui-border); border-radius: 7px; padding: 5px; font-size: 10px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+    .btn-action:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .btn-action.toggled { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .empty-hint { font-size: 11px; opacity: 0.45; text-align: center; margin-top: 12px; line-height: 1.5; }
+    .colour-row { display: flex; gap: 5px; flex-wrap: wrap; }
+    .colour-swatch { width: 20px; height: 20px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
+    .colour-swatch.selected { border-color: var(--text); }
+    #struct-label-input {
+      width: 100%; padding: 4px 6px; border: 1px solid var(--ui-border); border-radius: 6px;
+      background: var(--input-bg); color: var(--text); font-size: 11px; font-family: inherit;
+    }
+
+    /* ── Bottom ── */
+    #bottom {
+      background: var(--ui-bg); border-top: 2px solid var(--ui-border);
+      padding: 7px 14px 9px;
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      transition: background 0.4s, border-color 0.4s; flex-shrink: 0; z-index: 10;
+    }
+    #toolbar { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; justify-content: center; }
+    .tool-btn {
+      background: var(--btn-bg); border: 1.5px solid var(--ui-border);
+      border-radius: 7px; padding: 4px 10px;
+      font-size: 10px; font-weight: 700; color: var(--text);
+      cursor: pointer; transition: background 0.12s, color 0.12s; white-space: nowrap;
+    }
+    .tool-btn:hover  { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .tool-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .tool-sep { width: 1px; height: 20px; background: var(--ui-border); margin: 0 1px; }
+    #season-slider {
+      -webkit-appearance: none; appearance: none;
+      width: min(420px, 52vw); height: 6px; border-radius: 4px;
+      background: var(--slider-track); outline: none; cursor: pointer; transition: background 0.4s;
+    }
+    #season-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+      background: var(--accent); border: 3px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.3); cursor: pointer;
+    }
+    #season-labels {
+      display: flex; justify-content: space-between; width: min(420px, 52vw);
+      font-size: 10px; color: var(--text); opacity: 0.7; font-weight: 700;
+    }
+    .slider-row { display: flex; align-items: center; gap: 10px; }
+    .slider-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text); opacity: 0.6; }
+
+    /* ── Setup modal ── */
+    #setup-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,0.55);
+      display: flex; align-items: center; justify-content: center;
+    }
+    #setup-modal {
+      background: #fff; border-radius: 14px; padding: 24px 28px; width: 340px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    #setup-modal h2 { font-size: 18px; font-weight: 800; color: #2A3D1A; }
+    #setup-modal p  { font-size: 12px; color: #555; line-height: 1.5; }
+    .field-row { display: flex; flex-direction: column; gap: 4px; }
+    .field-row label { font-size: 11px; font-weight: 700; color: #333; }
+    .field-row input { padding: 7px 9px; border: 1.5px solid #ccc; border-radius: 7px; font-size: 13px; font-family: inherit; outline: none; }
+    .field-row input:focus { border-color: #558B2F; }
+    .unit-row { display: flex; gap: 7px; }
+    .unit-btn { flex: 1; padding: 6px; border: 1.5px solid #ccc; border-radius: 7px; background: #f5f5f5; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.12s; }
+    .unit-btn.active { background: #558B2F; color: #fff; border-color: #558B2F; }
+    .dims-row { display: flex; gap: 7px; align-items: center; }
+    .dims-row input { flex: 1; }
+    .dims-row span { font-size: 13px; color: #555; }
+    #btn-start { background: #558B2F; color: #fff; border: none; border-radius: 9px; padding: 11px; font-size: 14px; font-weight: 800; cursor: pointer; }
+    #btn-start:hover { background: #33691E; }
+  </style>
+</head>
+<body class="spring">
+
+<!-- Setup modal -->
+<div id="setup-overlay">
+  <div id="setup-modal">
+    <h2>🌿 Your Garden Map</h2>
+    <p>Enter your property dimensions to calibrate the grid.</p>
+    <div class="field-row">
+      <label>Garden Name</label>
+      <input id="setup-name" type="text" placeholder="e.g. Home Garden" value="My Garden"/>
+    </div>
+    <div class="field-row">
+      <label>Units</label>
+      <div class="unit-row">
+        <button class="unit-btn active" id="unit-ft" onclick="setUnit('ft')">Feet (ft)</button>
+        <button class="unit-btn" id="unit-m" onclick="setUnit('m')">Metres (m)</button>
+      </div>
+    </div>
+    <div class="field-row">
+      <label>Property Size <span id="unit-label-dim" style="opacity:0.6;font-weight:400">(width × depth in ft)</span></label>
+      <div class="dims-row">
+        <input id="setup-w" type="number" value="60" min="5" max="500"/>
+        <span>×</span>
+        <input id="setup-h" type="number" value="40" min="5" max="500"/>
+      </div>
+    </div>
+    <button id="btn-start" onclick="startGarden()">Create Garden →</button>
+  </div>
+</div>
+
+<!-- Top bar -->
+<div id="topbar">
+  <div style="display:flex;align-items:center;gap:10px">
+    <h1>🌿 Your Garden Map</h1>
+    <div id="garden-info">—</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div id="scale-display">1 cell = 3 in</div>
+    <div class="season-badge" id="season-badge">🌸 Spring</div>
+  </div>
+</div>
+
+<!-- Main -->
+<div id="main">
+  <div id="tray">
+    <input id="plant-search" type="search" placeholder="🔍 Search…" autocomplete="off"/>
+    <div id="tray-recents" style="display:none">
+      <div class="tray-section-label">Recent</div>
+      <div id="recents-list"></div>
+      <div class="tray-divider"></div>
+    </div>
+    <div class="tray-section-label">Plants</div>
+    <div id="plant-list"></div>
+    <div id="no-results">No matches.<br/>Try a different name.</div>
+  </div>
+
+  <div id="canvas-wrap" class="mode-select">
+    <img id="drop-ghost" src="" alt=""/>
+    <div id="konva-container"></div>
+    <div id="freeform-hint"></div>
+  </div>
+
+  <div id="info-panel">
+    <div class="panel-title">Selected</div>
+    <div id="info-empty" class="empty-hint">Click any plant or structure to see details.<br/><br/>Tip: Pan by dragging empty canvas. Scroll to zoom.</div>
+
+    <!-- Plant info -->
+    <div id="plant-info" style="display:none;flex-direction:column;gap:7px;">
+      <div class="plant-name"   id="info-name"></div>
+      <div class="plant-family" id="info-family"></div>
+      <button class="btn-action" id="btn-transparency">👁 Make Transparent</button>
+      <button class="btn-action" id="btn-copy-plant">⧉ Copy (Ctrl+C)</button>
+      <div>
+        <div style="font-size:9px;opacity:0.5;margin-bottom:2px;">VISIBLE IN SEASONS</div>
+        <div class="season-checks">
+          <label><input type="checkbox" data-season="spring" checked/> 🌸 Spring</label>
+          <label><input type="checkbox" data-season="summer" checked/> ☀️ Summer</label>
+          <label><input type="checkbox" data-season="fall"   checked/> 🍂 Fall</label>
+          <label><input type="checkbox" data-season="winter"/>         ❄️ Winter</label>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:9px;opacity:0.5;margin-bottom:2px;">NOTES</div>
+        <textarea id="info-notes" placeholder="Add notes…"></textarea>
+      </div>
+      <button class="btn-danger" id="btn-delete-plant">🗑 Remove</button>
+    </div>
+
+    <!-- Structure info -->
+    <div id="struct-info" style="display:none;flex-direction:column;gap:7px;">
+      <div class="plant-name" id="struct-name"></div>
+      <div style="font-size:9px;opacity:0.5;margin-bottom:0;">FILL COLOUR</div>
+      <div class="colour-row" id="struct-colours"></div>
+      <div style="font-size:9px;opacity:0.5;margin-top:4px;margin-bottom:2px;">LABEL</div>
+      <input id="struct-label-input" type="text" placeholder="Label…"/>
+      <button class="btn-danger" id="btn-delete-struct">🗑 Remove</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom -->
+<div id="bottom">
+  <div id="toolbar">
+    <button class="tool-btn active" id="btn-select"    onclick="setMode('select')">✋ Select</button>
+    <div class="tool-sep"></div>
+    <button class="tool-btn" id="btn-bed"       onclick="setMode('bed')">🟫 Bed</button>
+    <button class="tool-btn" id="btn-freebed"   onclick="setMode('freebed')">✏️ Free Bed</button>
+    <button class="tool-btn" id="btn-freehedge" onclick="setMode('freehedge')">🌿 Hedge</button>
+    <button class="tool-btn" id="btn-freepath"  onclick="setMode('freepath')">〰 Path</button>
+    <button class="tool-btn" id="btn-building"  onclick="setMode('building')">🏠 Building</button>
+    <div class="tool-sep"></div>
+    <button class="tool-btn" id="btn-grid"      onclick="toggleGrid()">⊞ Grid</button>
+    <button class="tool-btn"                    onclick="resetView()">⊙ Reset</button>
+    <button class="tool-btn"                    onclick="clearAll()" style="color:#c62828">🗑 Clear</button>
+  </div>
+  <div class="slider-row">
+    <span class="slider-label">Season</span>
+    <input type="range" id="season-slider" min="0" max="3" step="1" value="0"/>
+  </div>
+  <div id="season-labels">
+    <span>🌸 Spring</span><span>☀️ Summer</span><span>🍂 Fall</span><span>❄️ Winter</span>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════
+const SEASONS      = ['spring','summer','fall','winter'];
+const SEASON_NAMES = ['🌸 Spring','☀️ Summer','🍂 Fall','❄️ Winter'];
+let currentSeason  = 0;
+let selectedPlant  = null;  // {id, group}
+let selectedStruct = null;  // {id, shape}
+let currentMode    = 'select';
+let showGrid       = false;
+let plantIdCounter = 0;
+let structIdCounter= 0;
+let clipboard      = null;  // copied plant entry
+
+// Garden setup
+let gardenName = 'My Garden';
+let gardenUnit = 'ft';
+let gardenW    = 60;
+let gardenH    = 40;
+const PX_PER_FT  = 10; // 1 ft = 10px at 1:1
+const CELL_IN    = 3;  // real inches per cell
+const CELL_PX    = 8;  // pixels per cell at 1:1 (3 in = 8px → 1ft ≈ 32px)
+// Note: 1 ft = 12 in = 4 cells × 8px = 32px → PX_PER_FT should really be 32/3.28=... 
+// Simpler: just define 1 garden unit as N pixels for display
+const UNIT_PX    = 32; // px per foot at 1:1 zoom
+
+// Freeform drawing
+let freeMode   = null;  // 'freebed'|'freehedge'|'freepath'
+let freePts    = [];
+let freeDots   = [];
+let freePreview= null;
+
+// Plant catalog
+const PLANT_CATALOG = [
+  { key:'tree',       label:'Deciduous Tree', family:'Tree',            src:'../stickers/tree.svg' },
+  { key:'tree',       label:'Apple Tree',     family:'Fruit Tree',      src:'../stickers/tree.svg' },
+  { key:'tree',       label:'Maple Tree',     family:'Tree',            src:'../stickers/tree.svg' },
+  { key:'tree',       label:'Cedar',          family:'Evergreen',       src:'../stickers/tree.svg' },
+  { key:'rose-bush',  label:'Rose Bush',      family:'Shrub / Rose',    src:'../stickers/rose-bush.svg' },
+  { key:'rose-bush',  label:'Hydrangea',      family:'Shrub',           src:'../stickers/rose-bush.svg' },
+  { key:'rose-bush',  label:'Peony',          family:'Perennial',       src:'../stickers/rose-bush.svg' },
+  { key:'lilac-bush', label:'Lilac Bush',     family:'Shrub / Lilac',   src:'../stickers/lilac-bush.svg' },
+  { key:'lilac-bush', label:'Lavender',       family:'Herb / Perennial',src:'../stickers/lilac-bush.svg' },
+  { key:'lilac-bush', label:'Hostas',         family:'Perennial',       src:'../stickers/lilac-bush.svg' },
+];
+
+const plantData  = {};  // id → {label, family, notes, seasons, transparent}
+const structData = {};  // id → {type, colour, label}
+let recents = [];
+
+const BED_COLOURS      = ['#8B6340','#6D4C1F','#C8A96A','#9E9E9E','#BDBDBD','#78909C'];
+const BUILDING_COLOURS = ['#90A4AE','#BCAAA4','#78909C','#A1887F'];
+const PATH_COLOURS     = ['#D7CCC8','#BCAAA4','#9E9E9E','#5D4037'];
+const HEDGE_COLOURS    = ['#388E3C','#2E7D32','#1B5E20','#558B2F'];
+
+// ══════════════════════════════════════════════════
+// SETUP MODAL
+// ══════════════════════════════════════════════════
+function setUnit(u) {
+  gardenUnit = u;
+  ['ft','m'].forEach(x => document.getElementById('unit-'+x).classList.toggle('active', x===u));
+  document.getElementById('unit-label-dim').textContent = `(width × depth in ${u})`;
+}
+
+function startGarden() {
+  gardenName = document.getElementById('setup-name').value.trim() || 'My Garden';
+  gardenW    = parseFloat(document.getElementById('setup-w').value) || 60;
+  gardenH    = parseFloat(document.getElementById('setup-h').value) || 40;
+  document.getElementById('setup-overlay').style.display = 'none';
+  document.getElementById('garden-info').textContent = `${gardenName} · ${gardenW}×${gardenH} ${gardenUnit}`;
+  initKonva();
+}
+
+// ══════════════════════════════════════════════════
+// KONVA INIT
+// ══════════════════════════════════════════════════
+let stage, gridLayer, structLayer, plantLayer, uiLayer, tr;
+let isPanning = false, panStart = null;
+
+function initKonva() {
+  const wrap = document.getElementById('canvas-wrap');
+  const W = wrap.clientWidth, H = wrap.clientHeight;
+
+  stage = new Konva.Stage({ container: 'konva-container', width: W, height: H });
+  gridLayer  = new Konva.Layer();
+  structLayer= new Konva.Layer();
+  plantLayer = new Konva.Layer();
+  uiLayer    = new Konva.Layer();
+  stage.add(gridLayer, structLayer, plantLayer, uiLayer);
+
+  tr = new Konva.Transformer({
+    rotateEnabled: false,
+    borderStroke: '#558B2F', borderStrokeWidth: 2,
+    anchorFill: '#fff', anchorStroke: '#558B2F', anchorSize: 10,
+    keepRatio: true,
+  });
+  uiLayer.add(tr);
+
+  // Property boundary
+  const pw = gardenW * UNIT_PX * (gardenUnit==='m' ? 3.281 : 1);
+  const ph = gardenH * UNIT_PX * (gardenUnit==='m' ? 3.281 : 1);
+  const ox = Math.max(16, (W - pw) / 2);
+  const oy = Math.max(16, (H - ph) / 2);
+  propBounds = {x: ox, y: oy, w: pw, h: ph};
+
+  structLayer.add(new Konva.Rect({
+    x: ox, y: oy, width: pw, height: ph,
+    stroke: '#558B2F', strokeWidth: 2, dash: [10,5],
+    fill: 'transparent', listening: false,
+    strokeScaleEnabled: false,
+  }));
+  structLayer.add(new Konva.Text({
+    x: ox+6, y: oy+5, text: `${gardenName}  ${gardenW}×${gardenH} ${gardenUnit}`,
+    fontSize: 11, fontStyle: 'bold', fill: '#558B2F', opacity: 0.65, listening: false,
+  }));
+  structLayer.batchDraw();
+
+  // ── Panning (click+drag on empty stage) ──
+  stage.on('mousedown touchstart', (e) => {
+    if (currentMode !== 'select') return;
+    if (e.target !== stage) return;
+    isPanning = true;
+    panStart = stage.getPointerPosition();
+    document.getElementById('canvas-wrap').classList.add('mode-panning');
+  });
+  stage.on('mousemove touchmove', (e) => {
+    if (!isPanning || !panStart) return;
+    const pos = stage.getPointerPosition();
+    stage.x(stage.x() + pos.x - panStart.x);
+    stage.y(stage.y() + pos.y - panStart.y);
+    panStart = pos;
+    stage.batchDraw();
+  });
+  stage.on('mouseup touchend', () => {
+    if (isPanning) {
+      isPanning = false; panStart = null;
+      document.getElementById('canvas-wrap').classList.remove('mode-panning');
+    }
+  });
+
+  // ── Click deselect / freeform point ──
+  // In freeform mode ALL clicks add a point (events bubble up from nodes to stage)
+  stage.on('click tap', (e) => {
+    if (isFreeMode()) {
+      handleFreeClick();
+      return;
+    }
+    if (e.target !== stage) return;
+    deselectAll();
+  });
+
+  // ── Scroll zoom ──
+  stage.on('wheel', (e) => {
+    e.evt.preventDefault();
+    if (currentMode !== 'select') return;
+    const old = stage.scaleX();
+    const ptr = stage.getPointerPosition();
+    const to  = { x:(ptr.x - stage.x())/old, y:(ptr.y - stage.y())/old };
+    const dir = e.evt.deltaY > 0 ? -1 : 1;
+    const next= Math.min(Math.max(old*(dir>0?1.1:0.9), 0.2), 6);
+    stage.scale({x:next,y:next});
+    stage.position({ x:ptr.x - to.x*next, y:ptr.y - to.y*next });
+    stage.batchDraw();
+    updateScaleDisplay();
+    if (showGrid) drawGrid();
+  });
+
+  // ── Rect drawing (Bed / Building) ──
+  let drawStart = null, previewRect = null;
+  stage.on('mousedown touchstart', (e) => {
+    if (currentMode !== 'bed' && currentMode !== 'building') return;
+    const pos = stage.getRelativePointerPosition();
+    drawStart = pos;
+    const cr = currentMode === 'bed' ? 0 : 4;
+    previewRect = new Konva.Rect({
+      x:pos.x, y:pos.y, width:0, height:0,
+      fill: getDefaultColour(currentMode) + 'AA',
+      stroke:'#3A2A10', strokeWidth:2, cornerRadius:cr,
+      listening:false, strokeScaleEnabled:false,
+    });
+    structLayer.add(previewRect);
+  });
+  stage.on('mousemove touchmove', (e) => {
+    if (!drawStart || !previewRect) return;
+    const pos = stage.getRelativePointerPosition();
+    previewRect.x(Math.min(drawStart.x, pos.x));
+    previewRect.y(Math.min(drawStart.y, pos.y));
+    previewRect.width(Math.abs(pos.x - drawStart.x));
+    previewRect.height(Math.abs(pos.y - drawStart.y));
+    structLayer.batchDraw();
+  });
+  stage.on('mouseup touchend', (e) => {
+    if (!drawStart || !previewRect) { drawStart=null; return; }
+    const pos = stage.getRelativePointerPosition();
+    const x=Math.min(drawStart.x,pos.x), y=Math.min(drawStart.y,pos.y);
+    const w=Math.abs(pos.x-drawStart.x), h=Math.abs(pos.y-drawStart.y);
+    previewRect.destroy(); previewRect=null; drawStart=null;
+    if (w<8||h<8) { structLayer.batchDraw(); return; }
+    addRectStruct(currentMode, x, y, w, h, getDefaultColour(currentMode));
+    structLayer.batchDraw();
+  });
+
+  // ── Freeform click handler ──
+  stage.on('click', (e) => {
+    if (!isFreeMode()) return;
+    if (e.target !== stage) return; // already handled above for stage click
+    // handled by handleFreeClick called from stage click
+  });
+
+  // ── Freeform mousemove preview ──
+  stage.on('mousemove', (e) => {
+    if (!isFreeMode() || freePts.length === 0) return;
+    const pos = stage.getRelativePointerPosition();
+    const pts = [...freePts.flatMap(p=>[p.x,p.y]), pos.x, pos.y];
+    if (!freePreview) {
+      freePreview = new Konva.Line({
+        points: pts, tension: 0.4,
+        stroke: currentMode==='freepath'?'#D7CCC8':'#558B2F',
+        strokeWidth: currentMode==='freepath' ? 18/stage.scaleX() : 1.5/stage.scaleX(),
+        dash: currentMode==='freepath' ? [] : [5,3],
+        strokeScaleEnabled: false,
+        listening: false, closed: false,
+        opacity: currentMode==='freepath' ? 0.6 : 1,
+      });
+      uiLayer.add(freePreview);
+    } else {
+      if (currentMode==='freepath') freePreview.strokeWidth(18/stage.scaleX());
+      freePreview.points(pts);
+    }
+    uiLayer.batchDraw();
+  });
+
+  // ── Freeform double-click to close ──
+  stage.on('dblclick dbltap', () => {
+    if (isFreeMode() && freePts.length >= 2) closeFreeShape();
+  });
+
+  drawGrid();
+  updateScaleDisplay();
+  loadImages();
+}
+
+// ══════════════════════════════════════════════════
+// FREEFORM DRAWING
+// ══════════════════════════════════════════════════
+function isFreeMode() {
+  return currentMode==='freebed'||currentMode==='freehedge'||currentMode==='freepath';
+}
+
+// Store property boundary for edge-snapping
+let propBounds = null; // {x, y, w, h}
+
+function handleFreeClick() {
+  if (!isFreeMode()) return;
+  let pos = stage.getRelativePointerPosition();
+
+  // Snap to property boundary edge if within threshold
+  if (propBounds) {
+    const SNAP = 18 / stage.scaleX();
+    const {x:px, y:py, w:pw, h:ph} = propBounds;
+    // Distances to each edge
+    const dLeft  = Math.abs(pos.x - px);
+    const dRight = Math.abs(pos.x - (px+pw));
+    const dTop   = Math.abs(pos.y - py);
+    const dBot   = Math.abs(pos.y - (py+ph));
+    const minD   = Math.min(dLeft, dRight, dTop, dBot);
+    if (minD < SNAP) {
+      // Snap to nearest edge
+      if      (minD===dLeft)  pos = {x: px,     y: pos.y};
+      else if (minD===dRight) pos = {x: px+pw,  y: pos.y};
+      else if (minD===dTop)   pos = {x: pos.x,  y: py};
+      else                    pos = {x: pos.x,  y: py+ph};
+      // Also check corners
+      const corners = [{x:px,y:py},{x:px+pw,y:py},{x:px,y:py+ph},{x:px+pw,y:py+ph}];
+      for (const c of corners) {
+        if (Math.hypot(pos.x-c.x, pos.y-c.y) < SNAP) { pos = c; break; }
+      }
+      // Add the snapped point and close
+      freePts.push(pos);
+      if (freePts.length >= 2 && currentMode !== 'freepath') {
+        closeFreeShape(); return;
+      }
+    }
+  }
+
+  // Close if near first point
+  if (freePts.length >= 3 && currentMode !== 'freepath') {
+    const first = freePts[0];
+    const threshold = 20 / stage.scaleX();
+    if (Math.hypot(pos.x-first.x, pos.y-first.y) < threshold) {
+      closeFreeShape(); return;
+    }
+  }
+
+  freePts.push({x:pos.x, y:pos.y});
+
+  // Draw control point dot
+  const dot = new Konva.Circle({
+    x:pos.x, y:pos.y, radius: 5/stage.scaleX(),
+    fill: currentMode==='freepath'?'#795548':'#558B2F',
+    stroke:'#fff', strokeWidth: 1.5/stage.scaleX(),
+    listening:false,
+  });
+  uiLayer.add(dot);
+  freeDots.push(dot);
+  uiLayer.batchDraw();
+
+  updateFreeHint();
+}
+
+function closeFreeShape() {
+  if (freePts.length < 2) { cancelFreeShape(); return; }
+  const flat = freePts.flatMap(p=>[p.x,p.y]);
+  const isPath = currentMode === 'freepath';
+  const colour = isPath ? '#D7CCC8'
+               : currentMode==='freehedge' ? '#388E3C' : '#8B6340';
+
+  const id = 'struct_' + (structIdCounter++);
+  const type = currentMode==='freehedge'?'hedge': isPath?'freepath':'freebed';
+  structData[id] = { type, colour, label: type==='hedge'?'Hedge': isPath?'Path':'Garden Bed' };
+
+  const shape = new Konva.Line({
+    id, points: flat, tension: 0.5,
+    closed: !isPath,
+    fill: isPath ? 'transparent' : colour + 'CC',
+    stroke: isPath ? colour : '#3A2A10',
+    strokeWidth: isPath ? 18 : 2,
+    strokeScaleEnabled: false,
+    lineCap: 'round', lineJoin: 'round',
+    draggable: true,
+    hitStrokeWidth: isPath ? 20 : undefined,
+  });
+
+  shape.on('click tap', () => { if (!isFreeMode()) selectStructShape(id, shape); });
+  structLayer.add(shape);
+  structLayer.batchDraw();
+
+  selectStructShape(id, shape);
+  cancelFreeShape();
+  setMode('select');
+}
+
+function cancelFreeShape() {
+  freePts = [];
+  freeDots.forEach(d => d.destroy());
+  freeDots = [];
+  if (freePreview) { freePreview.destroy(); freePreview = null; }
+  freeMode = null;
+  document.getElementById('freeform-hint').style.display = 'none';
+  if (uiLayer) uiLayer.batchDraw();
+}
+
+function updateFreeHint() {
+  const hint = document.getElementById('freeform-hint');
+  const n = freePts.length;
+  const isPath = currentMode === 'freepath';
+  if (isPath) {
+    hint.textContent = n < 2 ? 'Click to place points · Double-click to finish'
+                              : `${n} points · Double-click to finish`;
+  } else {
+    hint.textContent = n < 3 ? `Click to place points · Need ${3-n} more to close`
+                              : `${n} points · Click near start or double-click to close`;
+  }
+  hint.style.display = 'block';
+}
+
+// ══════════════════════════════════════════════════
+// STRUCTURES (RECT)
+// ══════════════════════════════════════════════════
+function getDefaultColour(mode) {
+  return { bed:'#8B6340', building:'#90A4AE', path:'#D7CCC8', hedge:'#388E3C' }[mode] || '#8B6340';
+}
+
+function addRectStruct(type, x, y, w, h, colour) {
+  const id = 'struct_' + (structIdCounter++);
+  structData[id] = { type, colour, label: {bed:'Garden Bed',building:'Building',path:'Path',hedge:'Hedge'}[type]||type };
+
+  const rect = new Konva.Rect({
+    id, x, y, width:w, height:h,
+    fill: colour + 'CC', stroke:'#3A2A10', strokeWidth:2,
+    cornerRadius: type==='building' ? 3 : 0,
+    draggable:true, strokeScaleEnabled:false,
+  });
+
+  // Normalize scale on transform end so stroke stays clean
+  rect.on('transformend', () => {
+    rect.width(rect.width() * rect.scaleX());
+    rect.height(rect.height() * rect.scaleY());
+    rect.scaleX(1); rect.scaleY(1);
+    structLayer.batchDraw();
+  });
+
+  rect.on('click tap', () => { if (!isFreeMode()) selectStructShape(id, rect); });
+  structLayer.add(rect);
+  structLayer.batchDraw();
+  selectStructShape(id, rect);
+  setMode('select');
+}
+
+function selectStructShape(id, shape) {
+  deselectAll();
+  selectedStruct = {id, shape};
+  const data = structData[id];
+
+  // Only use transformer for rect shapes
+  if (shape instanceof Konva.Rect) {
+    tr.keepRatio(false);
+    tr.nodes([shape]);
+  } else {
+    tr.nodes([]); // freeform shapes: no transform handle
+  }
+  uiLayer.batchDraw();
+
+  document.getElementById('info-empty').style.display = 'none';
+  document.getElementById('plant-info').style.display = 'none';
+  const sp = document.getElementById('struct-info');
+  sp.style.display = 'flex';
+
+  const typeNames = {bed:'Garden Bed', freebed:'Garden Bed', building:'Building', freepath:'Path', path:'Path', hedge:'Hedge', freehedge:'Hedge'};
+  document.getElementById('struct-name').textContent = typeNames[data.type] || data.type;
+
+  const colours = data.type==='hedge'||data.type==='freehedge' ? HEDGE_COLOURS
+                : data.type==='building' ? BUILDING_COLOURS
+                : data.type.includes('path') ? PATH_COLOURS
+                : BED_COLOURS;
+  const cr = document.getElementById('struct-colours');
+  cr.innerHTML = '';
+  colours.forEach(c => {
+    const s = document.createElement('div');
+    s.className = 'colour-swatch' + (c===data.colour?' selected':'');
+    s.style.background = c; s.title = c;
+    s.onclick = () => {
+      data.colour = c;
+      if (shape instanceof Konva.Rect) shape.fill(c+'CC');
+      else { shape.fill(c+'CC'); shape.stroke(data.type.includes('path')?c:'#3A2A10'); }
+      structLayer.batchDraw();
+      cr.querySelectorAll('.colour-swatch').forEach(x=>x.classList.remove('selected'));
+      s.classList.add('selected');
+    };
+    cr.appendChild(s);
+  });
+
+  const li = document.getElementById('struct-label-input');
+  li.value = data.label;
+  li.oninput = () => { data.label = li.value; };
+}
+
+document.getElementById('btn-delete-struct').onclick = () => {
+  if (!selectedStruct) return;
+  selectedStruct.shape.destroy();
+  delete structData[selectedStruct.id];
+  deselectAll(); structLayer.batchDraw();
+};
+
+// ══════════════════════════════════════════════════
+// PLANTS
+// ══════════════════════════════════════════════════
+const loadedImages = {};
+
+function loadImages() {
+  const srcs = {};
+  PLANT_CATALOG.forEach(p => { srcs[p.key] = p.src; });
+  Promise.all(Object.entries(srcs).map(([k,v]) => new Promise(res => {
+    const img = new Image();
+    img.onload = () => { loadedImages[k]=img; res(); };
+    img.onerror = () => res();
+    img.src = v;
+  }))).then(() => { buildTray(PLANT_CATALOG); applySeason(0); });
+}
+
+function addPlant(entry, x, y) {
+  const id = 'plant_' + (plantIdCounter++);
+  plantData[id] = { label:entry.label, family:entry.family, notes:'', seasons:[...SEASONS], transparent:false };
+
+  const img = loadedImages[entry.key];
+  if (!img) return;
+  const SIZE = 64;
+  const group = new Konva.Group({ id, x:x-SIZE/2, y:y-SIZE/2, draggable:true, width:SIZE, height:SIZE });
+  group.add(new Konva.Image({ image:img, x:0, y:0, width:SIZE, height:SIZE }));
+  plantLayer.add(group);
+  group.on('click tap', () => selectPlant(id, group));
+  updatePlantVisibility();
+  plantLayer.batchDraw();
+  selectPlant(id, group);
+  addToRecents(entry);
+}
+
+function selectPlant(id, group) {
+  if (isFreeMode()) return;  // freeform mode: ignore plant clicks
+  deselectAll();
+  selectedPlant = {id, group};
+  tr.keepRatio(true);
+  tr.nodes([group]);
+  uiLayer.batchDraw();
+
+  const data = plantData[id];
+  document.getElementById('info-empty').style.display = 'none';
+  document.getElementById('struct-info').style.display = 'none';
+  const pp = document.getElementById('plant-info');
+  pp.style.display = 'flex';
+  document.getElementById('info-name').textContent = data.label;
+  document.getElementById('info-family').textContent = data.family;
+  document.getElementById('info-notes').value = data.notes;
+
+  // Transparency button state
+  const btn = document.getElementById('btn-transparency');
+  btn.textContent = data.transparent ? '👁 Restore Opacity' : '👁 Make Transparent';
+  btn.classList.toggle('toggled', data.transparent);
+
+  document.querySelectorAll('#plant-info input[data-season]').forEach(cb => {
+    cb.checked = data.seasons.includes(cb.dataset.season);
+  });
+}
+
+// Transparency toggle
+document.getElementById('btn-transparency').onclick = () => {
+  if (!selectedPlant) return;
+  const data = plantData[selectedPlant.id];
+  data.transparent = !data.transparent;
+  const group = selectedPlant.group;
+  if (data.transparent) {
+    group.opacity(0.35);
+    group.moveToBottom();  // behind other plants, still above structure layer
+  } else {
+    const sName = SEASONS[currentSeason];
+    group.opacity(data.seasons.includes(sName) ? 1 : 0.1);
+    group.moveToTop();
+  }
+  plantLayer.batchDraw();
+  // Refresh button
+  const btn = document.getElementById('btn-transparency');
+  btn.textContent = data.transparent ? '👁 Restore Opacity' : '👁 Make Transparent';
+  btn.classList.toggle('toggled', data.transparent);
+};
+
+// Copy plant
+document.getElementById('btn-copy-plant').onclick = copyPlant;
+function copyPlant() {
+  if (!selectedPlant) return;
+  const data = plantData[selectedPlant.id];
+  clipboard = PLANT_CATALOG.find(p => p.label === data.label) || { key: Object.keys(loadedImages)[0], label: data.label, family: data.family, src: '' };
+  showToast('Copied — Ctrl+V to paste');
+}
+
+function pastePlant() {
+  if (!clipboard || !stage) return;
+  const cx = (stage.width()/2 - stage.x()) / stage.scaleX() + 30;
+  const cy = (stage.height()/2 - stage.y()) / stage.scaleY() + 30;
+  addPlant(clipboard, cx, cy);
+}
+
+// Season checkboxes
+document.querySelectorAll('#plant-info input[data-season]').forEach(cb => {
+  cb.addEventListener('change', () => {
+    if (!selectedPlant) return;
+    const data = plantData[selectedPlant.id];
+    if (cb.checked) { if (!data.seasons.includes(cb.dataset.season)) data.seasons.push(cb.dataset.season); }
+    else data.seasons = data.seasons.filter(s=>s!==cb.dataset.season);
+    updatePlantVisibility();
+  });
+});
+document.getElementById('info-notes').addEventListener('input', e => {
+  if (selectedPlant) plantData[selectedPlant.id].notes = e.target.value;
+});
+document.getElementById('btn-delete-plant').onclick = () => {
+  if (!selectedPlant) return;
+  selectedPlant.group.destroy();
+  delete plantData[selectedPlant.id];
+  deselectAll(); plantLayer.batchDraw();
+};
+
+// ══════════════════════════════════════════════════
+// PLANT TRAY
+// ══════════════════════════════════════════════════
+function buildTray(catalog) {
+  const list = document.getElementById('plant-list');
+  list.innerHTML = '';
+  document.getElementById('no-results').style.display = catalog.length===0 ? 'block' : 'none';
+  catalog.forEach(entry => list.appendChild(makeTrayItem(entry)));
+}
+
+function makeTrayItem(entry) {
+  const el = document.createElement('div');
+  el.className = 'tray-item';
+  el.draggable = true;
+  el.innerHTML = `<img src="${entry.src}" alt="${entry.label}"/><span>${entry.label}</span>`;
+
+  el.addEventListener('dragstart', e => {
+    draggingItem = entry;
+    const blank = document.createElement('img');
+    blank.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+    e.dataTransfer.setDragImage(blank,0,0);
+    ghost.src = entry.src; ghost.style.width = ghost.style.height = '60px';
+  });
+  el.addEventListener('dragend', () => { ghost.style.display='none'; draggingItem=null; wrapEl.classList.remove('drag-over'); });
+
+  let tdi=null, tge=null;
+  el.addEventListener('touchstart', e => {
+    tdi = entry;
+    tge = document.createElement('img');
+    tge.src = entry.src;
+    tge.style.cssText='position:fixed;width:60px;height:60px;pointer-events:none;z-index:9999;opacity:0.75;transform:translate(-50%,-50%)';
+    document.body.appendChild(tge);
+  }, {passive:true});
+  el.addEventListener('touchmove', e => {
+    if (!tge) return;
+    tge.style.left=e.touches[0].clientX+'px'; tge.style.top=e.touches[0].clientY+'px';
+  }, {passive:true});
+  el.addEventListener('touchend', e => {
+    if (!tdi||!tge) return;
+    document.body.removeChild(tge); tge=null;
+    const t=e.changedTouches[0], r=wrapEl.getBoundingClientRect();
+    if (t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom&&stage) {
+      const sp = { x:(t.clientX-r.left-stage.x())/stage.scaleX(), y:(t.clientY-r.top-stage.y())/stage.scaleY() };
+      addPlant(tdi, sp.x, sp.y);
+    }
+    tdi=null;
+  }, {passive:true});
+  return el;
+}
+
+function addToRecents(entry) {
+  recents = recents.filter(r=>r.label!==entry.label);
+  recents.unshift(entry);
+  if (recents.length>5) recents=recents.slice(0,5);
+  const wrap=document.getElementById('tray-recents'), list=document.getElementById('recents-list');
+  wrap.style.display = recents.length?'block':'none';
+  list.innerHTML='';
+  recents.forEach(e => list.appendChild(makeTrayItem(e)));
+}
+
+document.getElementById('plant-search').addEventListener('input', e => {
+  const q=e.target.value.trim().toLowerCase();
+  buildTray(q ? PLANT_CATALOG.filter(p=>p.label.toLowerCase().includes(q)||p.family.toLowerCase().includes(q)) : PLANT_CATALOG);
+});
+
+// ══════════════════════════════════════════════════
+// DRAG DROP (mouse)
+// ══════════════════════════════════════════════════
+let draggingItem=null;
+const ghost=document.getElementById('drop-ghost'), wrapEl=document.getElementById('canvas-wrap');
+
+wrapEl.addEventListener('dragenter', e=>{e.preventDefault(); wrapEl.classList.add('drag-over');});
+wrapEl.addEventListener('dragover', e=>{
+  e.preventDefault(); e.dataTransfer.dropEffect='copy';
+  const r=wrapEl.getBoundingClientRect();
+  ghost.style.display='block'; ghost.style.left=(e.clientX-r.left)+'px'; ghost.style.top=(e.clientY-r.top)+'px';
+});
+wrapEl.addEventListener('dragleave', ()=>{wrapEl.classList.remove('drag-over'); ghost.style.display='none';});
+wrapEl.addEventListener('drop', e=>{
+  e.preventDefault(); wrapEl.classList.remove('drag-over'); ghost.style.display='none';
+  if (!draggingItem||!stage) return;
+  const r=wrapEl.getBoundingClientRect();
+  const sp={x:(e.clientX-r.left-stage.x())/stage.scaleX(), y:(e.clientY-r.top-stage.y())/stage.scaleY()};
+  addPlant(draggingItem, sp.x, sp.y); draggingItem=null;
+});
+
+// ══════════════════════════════════════════════════
+// SELECTION
+// ══════════════════════════════════════════════════
+function deselectAll() {
+  selectedPlant=null; selectedStruct=null;
+  if (tr) { tr.nodes([]); uiLayer?.batchDraw(); }
+  document.getElementById('info-empty').style.display='';
+  document.getElementById('plant-info').style.display='none';
+  document.getElementById('struct-info').style.display='none';
+}
+
+// ══════════════════════════════════════════════════
+// SEASONS
+// ══════════════════════════════════════════════════
+function applySeason(idx) {
+  currentSeason=idx;
+  ['spring','summer','fall','winter'].forEach(c=>document.body.classList.remove(c));
+  document.body.classList.add(['spring','summer','fall','winter'][idx]);
+  document.getElementById('season-badge').textContent=SEASON_NAMES[idx];
+  document.getElementById('season-slider').value=idx;
+  updatePlantVisibility();
+  if (showGrid) drawGrid();
+}
+function updatePlantVisibility() {
+  if (!plantLayer) return;
+  const sName=SEASONS[currentSeason];
+  plantLayer.find('Group').forEach(g => {
+    const data=plantData[g.id()];
+    if (!data) return;
+    if (data.transparent) { g.opacity(0.35); return; }
+    g.opacity(data.seasons.includes(sName)?1:0.1);
+  });
+  plantLayer.batchDraw();
+}
+document.getElementById('season-slider').addEventListener('input',e=>applySeason(+e.target.value));
+
+// ══════════════════════════════════════════════════
+// GRID (adaptive)
+// ══════════════════════════════════════════════════
+function drawGrid() {
+  if (!stage||!gridLayer) return;
+  gridLayer.destroyChildren();
+  if (!showGrid) { gridLayer.batchDraw(); return; }
+
+  const col = getComputedStyle(document.body).getPropertyValue('--grid-color').trim();
+  const scale = stage.scaleX();
+  // Find cell multiplier so visual spacing >= 16px
+  let mult = 1;
+  while (CELL_PX * scale * mult < 16) mult *= 2;
+
+  const visualCell = CELL_PX * mult; // world-space units between lines
+  const stageX = stage.x(), stageY = stage.y();
+  const W = stage.width(), H = stage.height();
+
+  // World-space extents visible
+  const x0 = (-stageX/scale), y0=(-stageY/scale);
+  const x1 = x0 + W/scale,    y1= y0 + H/scale;
+
+  const startX = Math.floor(x0/visualCell)*visualCell;
+  const startY = Math.floor(y0/visualCell)*visualCell;
+
+  for (let x=startX; x<x1+visualCell; x+=visualCell) {
+    gridLayer.add(new Konva.Line({points:[x,y0-visualCell,x,y1+visualCell], stroke:col, strokeWidth:0.5/scale, listening:false}));
+  }
+  for (let y=startY; y<y1+visualCell; y+=visualCell) {
+    gridLayer.add(new Konva.Line({points:[x0-visualCell,y,x1+visualCell,y], stroke:col, strokeWidth:0.5/scale, listening:false}));
+  }
+  gridLayer.batchDraw();
+  updateScaleDisplay(mult);
+}
+
+function updateScaleDisplay(mult) {
+  if (!stage) return;
+  const scale = stage.scaleX();
+  mult = mult || 1;
+  while (CELL_PX * scale * mult < 16) mult *= 2;
+  const realIn = CELL_IN * mult;
+  let label;
+  if (gardenUnit==='ft') {
+    label = realIn >= 12 ? `1 cell = ${Math.round(realIn/12*10)/10} ft` : `1 cell = ${realIn} in`;
+  } else {
+    label = realIn >= 39.37 ? `1 cell = ${Math.round(realIn/39.37*10)/10} m` : `1 cell = ${Math.round(realIn*2.54)} cm`;
+  }
+  document.getElementById('scale-display').textContent = label;
+}
+
+// ══════════════════════════════════════════════════
+// TOOLBAR
+// ══════════════════════════════════════════════════
+function setMode(mode) {
+  // Clicking the same freeform button again closes the shape
+  if (isFreeMode() && mode === currentMode && freePts.length >= 2) { closeFreeShape(); return; }
+  if (isFreeMode() && mode !== currentMode) cancelFreeShape();
+  currentMode = mode;
+  ['select','bed','freebed','freehedge','freepath','building'].forEach(m => {
+    const btn=document.getElementById('btn-'+m);
+    if (btn) btn.classList.toggle('active', m===mode);
+  });
+  const wrap=document.getElementById('canvas-wrap');
+  ['mode-select','mode-bed','mode-building','mode-freebed','mode-freehedge','mode-freepath'].forEach(c=>wrap.classList.remove(c));
+  wrap.classList.add('mode-'+mode);
+  if (isFreeMode()) {
+    freeMode = mode;
+    updateFreeHint();
+  } else {
+    document.getElementById('freeform-hint').style.display='none';
+  }
+  if (mode !== 'select') deselectAll();
+}
+
+function toggleGrid() {
+  showGrid = !showGrid;
+  document.getElementById('btn-grid').classList.toggle('active', showGrid);
+  drawGrid();
+}
+function resetView() {
+  if (!stage) return;
+  stage.scale({x:1,y:1}); stage.position({x:0,y:0}); stage.batchDraw();
+  updateScaleDisplay();
+  if (showGrid) drawGrid();
+}
+function clearAll() {
+  if (!confirm('Remove all plants and structures?')) return;
+  if (plantLayer) { plantLayer.destroyChildren(); Object.keys(plantData).forEach(k=>delete plantData[k]); plantLayer.batchDraw(); }
+  // Keep property boundary — rebuild
+  if (structLayer) {
+    structLayer.destroyChildren();
+    Object.keys(structData).forEach(k=>delete structData[k]);
+    // Re-draw boundary
+    const pw=gardenW*UNIT_PX*(gardenUnit==='m'?3.281:1), ph=gardenH*UNIT_PX*(gardenUnit==='m'?3.281:1);
+    const ox=Math.max(16,(stage.width()-pw)/2), oy=Math.max(16,(stage.height()-ph)/2);
+    structLayer.add(new Konva.Rect({x:ox,y:oy,width:pw,height:ph,stroke:'#558B2F',strokeWidth:2,dash:[10,5],fill:'transparent',listening:false,strokeScaleEnabled:false}));
+    structLayer.add(new Konva.Text({x:ox+6,y:oy+5,text:`${gardenName}  ${gardenW}×${gardenH} ${gardenUnit}`,fontSize:11,fontStyle:'bold',fill:'#558B2F',opacity:0.65,listening:false}));
+    structLayer.batchDraw();
+  }
+  deselectAll();
+}
+
+// ══════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════
+function showToast(msg) {
+  const hint=document.getElementById('freeform-hint');
+  hint.textContent=msg; hint.style.display='block';
+  setTimeout(()=>{ if(!isFreeMode()) hint.style.display='none'; }, 1800);
+}
+
+// ══════════════════════════════════════════════════
+// KEYBOARD
+// ══════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  const tag=document.activeElement.tagName;
+  if (tag==='INPUT'||tag==='TEXTAREA') return;
+
+  if ((e.ctrlKey||e.metaKey) && e.key==='c') { e.preventDefault(); copyPlant(); }
+  if ((e.ctrlKey||e.metaKey) && e.key==='v') { e.preventDefault(); pastePlant(); }
+  if (e.key==='Enter') { if (isFreeMode() && freePts.length >= 2) closeFreeShape(); }
+
+  if (e.key==='Delete'||e.key==='Backspace') {
+    if (selectedPlant) {
+      selectedPlant.group.destroy(); delete plantData[selectedPlant.id];
+      deselectAll(); plantLayer?.batchDraw();
+    } else if (selectedStruct) {
+      selectedStruct.shape.destroy(); delete structData[selectedStruct.id];
+      deselectAll(); structLayer?.batchDraw();
+    }
+  }
+  if (e.key==='Escape') { cancelFreeShape(); deselectAll(); setMode('select'); }
+  if (['1','2','3','4'].includes(e.key) && !e.ctrlKey) applySeason(+e.key-1);
+  if (e.key==='g') toggleGrid();
+});
+
+// ══════════════════════════════════════════════════
+// RESIZE
+// ══════════════════════════════════════════════════
+window.addEventListener('resize', () => {
+  if (!stage) return;
+  stage.width(wrapEl.clientWidth); stage.height(wrapEl.clientHeight);
+  if (showGrid) drawGrid();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Garden Map — Prototype v2</title>
+  <script src="https://unpkg.com/konva@9/konva.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', 'DM Sans', system-ui, sans-serif;
+      background: #1a1a1a;
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* ── Season themes ──────────────────────────── */
+    :root {
+      --bg:           #C8E6C9;
+      --ui-bg:        #F1F8E9;
+      --ui-border:    #A5D6A7;
+      --text:         #2A3D1A;
+      --accent:       #558B2F;
+      --accent-light: #AED581;
+      --slider-track: #A5D6A7;
+      --tray-hover:   #DCEDC8;
+      --btn-bg:       #E8F5E9;
+      --input-bg:     #F9FBE7;
+      --grid-color:   rgba(56, 142, 60, 0.2);
+      --bed-default:  #8B6340;
+    }
+    body.summer {
+      --bg:           #8BC34A;
+      --ui-bg:        #F9FBE7;
+      --ui-border:    #C5E1A5;
+      --text:         #1B5E20;
+      --accent:       #33691E;
+      --accent-light: #AED581;
+      --slider-track: #C5E1A5;
+      --tray-hover:   #DCEDC8;
+      --btn-bg:       #F1F8E9;
+      --input-bg:     #FAFDF3;
+      --grid-color:   rgba(80, 160, 30, 0.2);
+      --bed-default:  #6D4C1F;
+    }
+    body.fall {
+      --bg:           #FFCC80;
+      --ui-bg:        #FFF8F0;
+      --ui-border:    #FFAB40;
+      --text:         #4E2A00;
+      --accent:       #E65100;
+      --accent-light: #FFCC80;
+      --slider-track: #FFAB40;
+      --tray-hover:   #FFE0B2;
+      --btn-bg:       #FFF3E0;
+      --input-bg:     #FFFDE7;
+      --grid-color:   rgba(180, 100, 20, 0.18);
+      --bed-default:  #795548;
+    }
+    body.winter {
+      --bg:           #E3F2FD;
+      --ui-bg:        #F5F5F5;
+      --ui-border:    #B0BEC5;
+      --text:         #263238;
+      --accent:       #546E7A;
+      --accent-light: #B0BEC5;
+      --slider-track: #B0BEC5;
+      --tray-hover:   #ECEFF1;
+      --btn-bg:       #ECEFF1;
+      --input-bg:     #FAFAFA;
+      --grid-color:   rgba(70, 110, 130, 0.15);
+      --bed-default:  #78909C;
+    }
+
+    /* ── Top bar ────────────────────────────────── */
+    #topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      background: var(--ui-bg);
+      border-bottom: 2px solid var(--ui-border);
+      color: var(--text);
+      transition: background 0.4s, border-color 0.4s, color 0.4s;
+      z-index: 10;
+      flex-shrink: 0;
+      gap: 12px;
+    }
+    #topbar h1 { font-size: 15px; font-weight: 800; white-space: nowrap; }
+    #garden-info { font-size: 11px; opacity: 0.65; }
+    .season-badge {
+      font-size: 12px; font-weight: 700; padding: 3px 11px;
+      border-radius: 20px; background: var(--accent); color: #fff;
+      transition: background 0.4s; white-space: nowrap;
+    }
+    #scale-bar {
+      font-size: 10px; opacity: 0.7;
+      background: var(--btn-bg);
+      border: 1px solid var(--ui-border);
+      border-radius: 6px;
+      padding: 3px 8px;
+      white-space: nowrap;
+    }
+
+    /* ── Main layout ────────────────────────────── */
+    #main { display: flex; flex: 1; overflow: hidden; }
+
+    /* ── Plant tray ──────────────────────────────── */
+    #tray {
+      width: 120px;
+      background: var(--ui-bg);
+      border-right: 2px solid var(--ui-border);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      padding: 8px 6px;
+      gap: 0;
+      overflow-y: auto;
+      transition: background 0.4s, border-color 0.4s;
+      flex-shrink: 0;
+      z-index: 5;
+    }
+
+    /* Search */
+    #plant-search {
+      width: 100%;
+      padding: 5px 8px;
+      border: 1.5px solid var(--ui-border);
+      border-radius: 8px;
+      background: var(--input-bg);
+      color: var(--text);
+      font-size: 12px;
+      font-family: inherit;
+      outline: none;
+      margin-bottom: 8px;
+    }
+    #plant-search:focus { border-color: var(--accent); }
+    #plant-search::placeholder { opacity: 0.5; }
+
+    .tray-section-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text);
+      opacity: 0.5;
+      margin: 4px 2px 3px;
+    }
+
+    .tray-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      cursor: grab;
+      padding: 5px 6px;
+      border-radius: 8px;
+      transition: background 0.15s;
+    }
+    .tray-item:hover { background: var(--tray-hover); }
+    .tray-item:active { cursor: grabbing; }
+    .tray-item img {
+      width: 36px; height: 36px;
+      pointer-events: none;
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3));
+      flex-shrink: 0;
+    }
+    .tray-item span {
+      font-size: 11px; font-weight: 600;
+      color: var(--text); line-height: 1.2;
+    }
+    .tray-divider {
+      width: 100%; height: 1px;
+      background: var(--ui-border);
+      margin: 5px 0;
+    }
+
+    #no-results {
+      font-size: 11px; opacity: 0.5;
+      text-align: center; padding: 8px 4px;
+      display: none;
+    }
+
+    /* ── Canvas area ─────────────────────────────── */
+    #canvas-wrap {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg);
+      transition: background 0.5s;
+    }
+    #canvas-wrap.drag-over { outline: 3px dashed var(--accent); outline-offset: -3px; }
+    #drop-ghost {
+      position: absolute; pointer-events: none;
+      display: none; opacity: 0.65; z-index: 100;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Cursor modes */
+    #canvas-wrap.mode-select  { cursor: default; }
+    #canvas-wrap.mode-bed     { cursor: crosshair; }
+    #canvas-wrap.mode-building{ cursor: crosshair; }
+    #canvas-wrap.mode-path    { cursor: crosshair; }
+
+    /* ── Info panel (right) ─────────────────────── */
+    #info-panel {
+      width: 190px;
+      background: var(--ui-bg);
+      border-left: 2px solid var(--ui-border);
+      padding: 12px 10px;
+      color: var(--text);
+      transition: background 0.4s, border-color 0.4s, color 0.4s;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+    #info-panel .panel-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.55; }
+    .plant-name  { font-size: 15px; font-weight: 800; }
+    .plant-family{ font-size: 11px; opacity: 0.65; }
+    #info-panel textarea {
+      width: 100%; height: 70px; resize: vertical;
+      background: var(--input-bg); border: 1px solid var(--ui-border);
+      border-radius: 8px; padding: 5px 7px; font-size: 11px;
+      color: var(--text); font-family: inherit;
+    }
+    .season-checks { display: flex; flex-direction: column; gap: 4px; }
+    .season-checks label { display: flex; align-items: center; gap: 5px; font-size: 11px; cursor: pointer; }
+    .btn-delete {
+      background: #c62828; color: #fff; border: none;
+      border-radius: 8px; padding: 6px; font-size: 11px;
+      font-weight: 700; cursor: pointer; text-align: center;
+    }
+    .btn-delete:hover { background: #b71c1c; }
+    .empty-hint { font-size: 11px; opacity: 0.45; text-align: center; margin-top: 16px; line-height: 1.5; }
+
+    /* Structure info */
+    #struct-info { display: none; flex-direction: column; gap: 8px; }
+    .struct-name { font-size: 15px; font-weight: 800; }
+    .colour-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    .colour-swatch {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid transparent; cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .colour-swatch.selected { border-color: var(--text); }
+    .btn-delete-struct {
+      background: #c62828; color: #fff; border: none;
+      border-radius: 8px; padding: 6px; font-size: 11px;
+      font-weight: 700; cursor: pointer;
+    }
+
+    /* ── Bottom controls ────────────────────────── */
+    #bottom {
+      background: var(--ui-bg);
+      border-top: 2px solid var(--ui-border);
+      padding: 8px 16px 10px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 6px;
+      transition: background 0.4s, border-color 0.4s;
+      flex-shrink: 0; z-index: 10;
+    }
+    #toolbar {
+      display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+      justify-content: center;
+    }
+    .tool-btn {
+      background: var(--btn-bg);
+      border: 1.5px solid var(--ui-border);
+      border-radius: 8px; padding: 5px 11px;
+      font-size: 11px; font-weight: 700;
+      color: var(--text); cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+    .tool-btn:hover  { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .tool-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .tool-sep { width: 1px; height: 22px; background: var(--ui-border); margin: 0 2px; }
+
+    #season-slider {
+      -webkit-appearance: none; appearance: none;
+      width: min(440px, 55vw); height: 7px;
+      border-radius: 4px; background: var(--slider-track);
+      outline: none; cursor: pointer; transition: background 0.4s;
+    }
+    #season-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--accent); border: 3px solid #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3); cursor: pointer;
+    }
+    #season-labels {
+      display: flex; justify-content: space-between;
+      width: min(440px, 55vw);
+      font-size: 10px; color: var(--text); opacity: 0.7; font-weight: 700;
+    }
+    .slider-row { display: flex; align-items: center; gap: 12px; }
+    .slider-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text); opacity: 0.65; }
+
+    /* ── Setup modal ─────────────────────────────── */
+    #setup-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      background: rgba(0,0,0,0.55);
+      display: flex; align-items: center; justify-content: center;
+    }
+    #setup-modal {
+      background: #fff; border-radius: 16px;
+      padding: 28px 32px; width: 360px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    #setup-modal h2 { font-size: 20px; font-weight: 800; color: #2A3D1A; }
+    #setup-modal p  { font-size: 13px; color: #555; line-height: 1.5; }
+    .field-row { display: flex; flex-direction: column; gap: 5px; }
+    .field-row label { font-size: 12px; font-weight: 700; color: #333; }
+    .field-row input {
+      padding: 8px 10px; border: 1.5px solid #ccc; border-radius: 8px;
+      font-size: 14px; font-family: inherit; outline: none;
+    }
+    .field-row input:focus { border-color: #558B2F; }
+    .unit-row { display: flex; gap: 8px; }
+    .unit-btn {
+      flex: 1; padding: 7px; border: 1.5px solid #ccc; border-radius: 8px;
+      background: #f5f5f5; font-size: 13px; font-weight: 700; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .unit-btn.active { background: #558B2F; color: #fff; border-color: #558B2F; }
+    .dims-row { display: flex; gap: 8px; align-items: center; }
+    .dims-row input { flex: 1; }
+    .dims-row span { font-size: 14px; color: #555; }
+    #btn-start-garden {
+      background: #558B2F; color: #fff; border: none;
+      border-radius: 10px; padding: 12px; font-size: 15px;
+      font-weight: 800; cursor: pointer; transition: background 0.15s;
+    }
+    #btn-start-garden:hover { background: #33691E; }
+
+    /* Bed colour picker in modal */
+    .bed-colours { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 2px; }
+    .bed-colour-opt {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 2px solid transparent; cursor: pointer;
+    }
+    .bed-colour-opt.sel { border-color: #333; }
+  </style>
+</head>
+<body class="spring">
+
+<!-- Setup modal -->
+<div id="setup-overlay">
+  <div id="setup-modal">
+    <h2>🌿 Your Garden Map</h2>
+    <p>Set up your property so the grid matches your real garden scale.</p>
+    <div class="field-row">
+      <label>Garden Name</label>
+      <input id="setup-name" type="text" placeholder="e.g. Home Garden, Cottage" value="My Garden"/>
+    </div>
+    <div class="field-row">
+      <label>Units</label>
+      <div class="unit-row">
+        <button class="unit-btn active" id="unit-ft" onclick="setUnit('ft')">Feet (ft)</button>
+        <button class="unit-btn" id="unit-m" onclick="setUnit('m')">Metres (m)</button>
+      </div>
+    </div>
+    <div class="field-row">
+      <label>Property Size <span id="unit-label-dim" style="opacity:0.6">(width × height in ft)</span></label>
+      <div class="dims-row">
+        <input id="setup-w" type="number" value="60" min="5" max="500"/>
+        <span>×</span>
+        <input id="setup-h" type="number" value="40" min="5" max="500"/>
+      </div>
+    </div>
+    <button id="btn-start-garden" onclick="startGarden()">Create Garden →</button>
+  </div>
+</div>
+
+<!-- Top bar -->
+<div id="topbar">
+  <div style="display:flex;align-items:center;gap:10px">
+    <h1>🌿 Your Garden Map</h1>
+    <div id="garden-info">Loading…</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div id="scale-bar">⊷ — ft</div>
+    <div class="season-badge" id="season-badge">🌸 Spring</div>
+  </div>
+</div>
+
+<!-- Main -->
+<div id="main">
+
+  <!-- Plant tray -->
+  <div id="tray">
+    <input id="plant-search" type="search" placeholder="🔍 Search plants…" autocomplete="off"/>
+
+    <div id="tray-recents" style="display:none">
+      <div class="tray-section-label">Recently Used</div>
+      <div id="recents-list"></div>
+      <div class="tray-divider"></div>
+    </div>
+
+    <div class="tray-section-label">All Plants</div>
+    <div id="plant-list"></div>
+    <div id="no-results">No plants found.<br/>Try a different name.</div>
+  </div>
+
+  <!-- Canvas -->
+  <div id="canvas-wrap" class="mode-select">
+    <img id="drop-ghost" src="" alt=""/>
+    <div id="konva-container"></div>
+  </div>
+
+  <!-- Info panel -->
+  <div id="info-panel">
+    <div class="panel-title">Selected</div>
+
+    <div id="info-empty" class="empty-hint">Click a plant or structure on the canvas to see details.</div>
+
+    <!-- Plant info -->
+    <div id="plant-info" style="display:none;flex-direction:column;gap:8px;">
+      <div class="plant-name" id="info-name"></div>
+      <div class="plant-family" id="info-family"></div>
+      <div>
+        <div style="font-size:10px;opacity:0.55;margin-bottom:3px;">VISIBLE IN SEASONS</div>
+        <div class="season-checks">
+          <label><input type="checkbox" data-season="spring" checked/> 🌸 Spring</label>
+          <label><input type="checkbox" data-season="summer" checked/> ☀️ Summer</label>
+          <label><input type="checkbox" data-season="fall"   checked/> 🍂 Fall</label>
+          <label><input type="checkbox" data-season="winter"/>         ❄️ Winter</label>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:10px;opacity:0.55;margin-bottom:3px;">NOTES</div>
+        <textarea id="info-notes" placeholder="Add notes…"></textarea>
+      </div>
+      <button class="btn-delete" id="btn-delete-plant">🗑 Remove</button>
+    </div>
+
+    <!-- Structure info -->
+    <div id="struct-info">
+      <div class="struct-name" id="struct-name"></div>
+      <div style="font-size:10px;opacity:0.55;margin-bottom:2px;">FILL COLOUR</div>
+      <div class="colour-row" id="struct-colours"></div>
+      <div style="font-size:10px;opacity:0.55;margin-top:6px;margin-bottom:2px;">LABEL</div>
+      <input id="struct-label-input" type="text" placeholder="e.g. Front Bed"
+        style="width:100%;padding:5px 7px;border:1px solid var(--ui-border);border-radius:7px;
+               background:var(--input-bg);color:var(--text);font-size:12px;font-family:inherit"/>
+      <button class="btn-delete-struct" id="btn-delete-struct" style="margin-top:6px;width:100%">🗑 Remove</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Bottom -->
+<div id="bottom">
+  <div id="toolbar">
+    <button class="tool-btn active" id="btn-select"   onclick="setMode('select')">✋ Select</button>
+    <div class="tool-sep"></div>
+    <button class="tool-btn" id="btn-bed"      onclick="setMode('bed')">🟫 Draw Bed</button>
+    <button class="tool-btn" id="btn-building" onclick="setMode('building')">🏠 Building</button>
+    <button class="tool-btn" id="btn-path"     onclick="setMode('path')">〰 Path</button>
+    <div class="tool-sep"></div>
+    <button class="tool-btn" id="btn-grid"     onclick="toggleGrid()">⊞ Grid</button>
+    <button class="tool-btn"                   onclick="resetView()">⊙ Reset View</button>
+    <button class="tool-btn"                   onclick="clearAll()" style="color:#c62828">🗑 Clear All</button>
+  </div>
+  <div class="slider-row">
+    <span class="slider-label">Season</span>
+    <input type="range" id="season-slider" min="0" max="3" step="1" value="0"/>
+  </div>
+  <div id="season-labels">
+    <span>🌸 Spring</span><span>☀️ Summer</span><span>🍂 Fall</span><span>❄️ Winter</span>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════
+const SEASONS      = ['spring','summer','fall','winter'];
+const SEASON_NAMES = ['🌸 Spring','☀️ Summer','🍂 Fall','❄️ Winter'];
+let currentSeason  = 0;
+let selectedPlant  = null; // {id, group}
+let selectedStruct = null; // {id, shape, label}
+let currentMode    = 'select';
+let showGrid       = false;
+let plantIdCounter = 0;
+let structIdCounter= 0;
+
+// Garden setup
+let gardenName = 'My Garden';
+let gardenUnit = 'ft';
+let gardenW    = 60;  // in chosen unit
+let gardenH    = 40;
+const PIXELS_PER_FOOT = 10; // 1 ft = 10px at 1:1 scale, cell = 3in = 2.5px → we use 8px/cell for readability
+const CELL_REAL = 3; // inches per cell
+const CELL_PX   = 8; // pixels per cell at 1:1
+
+// plant catalog
+const PLANT_CATALOG = [
+  { key:'tree',       label:'Deciduous Tree', family:'Tree',           src:'../stickers/tree.svg' },
+  { key:'rose-bush',  label:'Rose Bush',      family:'Shrub / Rose',   src:'../stickers/rose-bush.svg' },
+  { key:'lilac-bush', label:'Lilac Bush',     family:'Shrub / Lilac',  src:'../stickers/lilac-bush.svg' },
+  { key:'tree',       label:'Apple Tree',     family:'Fruit Tree',     src:'../stickers/tree.svg' },
+  { key:'tree',       label:'Maple Tree',     family:'Tree',           src:'../stickers/tree.svg' },
+  { key:'rose-bush',  label:'Hydrangea',      family:'Shrub',          src:'../stickers/rose-bush.svg' },
+  { key:'lilac-bush', label:'Lavender',       family:'Herb / Perennial',src:'../stickers/lilac-bush.svg' },
+  { key:'rose-bush',  label:'Peony',          family:'Perennial',      src:'../stickers/rose-bush.svg' },
+  { key:'lilac-bush', label:'Hostas',         family:'Perennial',      src:'../stickers/lilac-bush.svg' },
+  { key:'tree',       label:'Cedar',          family:'Evergreen Tree', src:'../stickers/tree.svg' },
+];
+
+// per-plant data store
+const plantData  = {};  // id → {label, family, notes, seasons}
+const structData = {};  // id → {type, colour, label}
+
+// recently used
+let recents = []; // array of plant catalog keys (by index)
+
+// Structure colours
+const BED_COLOURS = [
+  { hex:'#8B6340', name:'Brown soil' },
+  { hex:'#9E9E9E', name:'Gravel' },
+  { hex:'#C8A96A', name:'Mulch' },
+  { hex:'#6D4C1F', name:'Dark soil' },
+  { hex:'#BDBDBD', name:'Stone' },
+  { hex:'#78909C', name:'Slate' },
+];
+const BUILDING_COLOURS = [
+  { hex:'#90A4AE', name:'Grey' },
+  { hex:'#BCAAA4', name:'Tan' },
+  { hex:'#78909C', name:'Slate' },
+  { hex:'#A1887F', name:'Brick' },
+];
+const PATH_COLOURS = [
+  { hex:'#D7CCC8', name:'Light stone' },
+  { hex:'#BCAAA4', name:'Tan' },
+  { hex:'#9E9E9E', name:'Gravel' },
+  { hex:'#5D4037', name:'Wood chip' },
+];
+
+// ════════════════════════════════════════════════════════
+//  SETUP MODAL
+// ════════════════════════════════════════════════════════
+function setUnit(u) {
+  gardenUnit = u;
+  document.getElementById('unit-ft').classList.toggle('active', u==='ft');
+  document.getElementById('unit-m').classList.toggle('active',  u==='m');
+  document.getElementById('unit-label-dim').textContent = `(width × height in ${u})`;
+}
+
+function startGarden() {
+  gardenName = document.getElementById('setup-name').value.trim() || 'My Garden';
+  gardenW    = parseFloat(document.getElementById('setup-w').value) || 60;
+  gardenH    = parseFloat(document.getElementById('setup-h').value) || 40;
+  document.getElementById('setup-overlay').style.display = 'none';
+  document.getElementById('garden-info').textContent =
+    `${gardenName} · ${gardenW}×${gardenH} ${gardenUnit}`;
+  initKonva();
+}
+
+// ════════════════════════════════════════════════════════
+//  KONVA INIT
+// ════════════════════════════════════════════════════════
+let stage, gridLayer, structLayer, plantLayer, uiLayer, tr;
+let propBoundary; // the property rectangle
+let drawingRect = null; // in-progress bed/building/path draw
+
+function initKonva() {
+  const wrap = document.getElementById('canvas-wrap');
+  const W = wrap.clientWidth;
+  const H = wrap.clientHeight;
+
+  stage = new Konva.Stage({ container:'konva-container', width:W, height:H });
+
+  gridLayer   = new Konva.Layer();
+  structLayer = new Konva.Layer();
+  plantLayer  = new Konva.Layer();
+  uiLayer     = new Konva.Layer();
+  stage.add(gridLayer, structLayer, plantLayer, uiLayer);
+
+  tr = new Konva.Transformer({
+    rotateEnabled: false,
+    borderStroke: '#558B2F', borderStrokeWidth: 2,
+    anchorFill: '#fff', anchorStroke: '#558B2F', anchorSize: 10,
+    keepRatio: true,
+  });
+  uiLayer.add(tr);
+
+  // Draw property boundary
+  const propW = gardenW * (gardenUnit==='ft' ? PIXELS_PER_FOOT : PIXELS_PER_FOOT * 3.28);
+  const propH = gardenH * (gardenUnit==='ft' ? PIXELS_PER_FOOT : PIXELS_PER_FOOT * 3.28);
+  const offX = Math.max(20, (W - propW) / 2);
+  const offY = Math.max(20, (H - propH) / 2);
+
+  propBoundary = new Konva.Rect({
+    x: offX, y: offY, width: propW, height: propH,
+    stroke: '#558B2F', strokeWidth: 2.5, dash: [10,5],
+    fill: 'rgba(0,0,0,0)', listening: false,
+  });
+  structLayer.add(propBoundary);
+
+  // Label
+  structLayer.add(new Konva.Text({
+    x: offX + 6, y: offY + 4,
+    text: `${gardenName}`,
+    fontSize: 11, fontStyle: 'bold',
+    fill: '#558B2F', opacity: 0.7, listening: false,
+  }));
+  structLayer.add(new Konva.Text({
+    x: offX + 6, y: offY + 18,
+    text: `${gardenW} × ${gardenH} ${gardenUnit}`,
+    fontSize: 9, fill: '#558B2F', opacity: 0.5, listening: false,
+  }));
+
+  structLayer.batchDraw();
+  drawGrid();
+  updateScaleBar();
+
+  // Stage click for deselect
+  stage.on('click tap', (e) => {
+    if (e.target === stage) { deselectAll(); }
+  });
+
+  // Scroll zoom
+  stage.on('wheel', (e) => {
+    if (currentMode !== 'select') return;
+    e.evt.preventDefault();
+    const old = stage.scaleX();
+    const ptr = stage.getPointerPosition();
+    const to = { x:(ptr.x - stage.x())/old, y:(ptr.y - stage.y())/old };
+    const dir = e.evt.deltaY > 0 ? -1 : 1;
+    const next = Math.min(Math.max(old * (dir>0?1.1:0.9), 0.2), 6);
+    stage.scale({x:next,y:next});
+    stage.position({ x:ptr.x - to.x*next, y:ptr.y - to.y*next });
+    stage.batchDraw();
+    updateScaleBar();
+  });
+
+  // Drawing interaction
+  let drawStart = null;
+  let previewShape = null;
+
+  stage.on('mousedown touchstart', (e) => {
+    if (currentMode === 'select') return;
+    e.evt.preventDefault();
+    const pos = stage.getRelativePointerPosition();
+    drawStart = pos;
+
+    const colour = getCurrentColour();
+    if (currentMode === 'bed' || currentMode === 'building' || currentMode === 'path') {
+      previewShape = new Konva.Rect({
+        x: pos.x, y: pos.y, width: 0, height: 0,
+        fill: colour + 'BB',
+        stroke: '#3A2A10', strokeWidth: 1.5,
+        cornerRadius: currentMode === 'bed' ? 8 : (currentMode === 'building' ? 4 : 2),
+        listening: false,
+      });
+      structLayer.add(previewShape);
+    }
+  });
+
+  stage.on('mousemove touchmove', (e) => {
+    if (!drawStart || !previewShape) return;
+    const pos = stage.getRelativePointerPosition();
+    const x = Math.min(drawStart.x, pos.x);
+    const y = Math.min(drawStart.y, pos.y);
+    const w = Math.abs(pos.x - drawStart.x);
+    const h = Math.abs(pos.y - drawStart.y);
+    previewShape.x(x); previewShape.y(y);
+    previewShape.width(w); previewShape.height(h);
+    structLayer.batchDraw();
+  });
+
+  stage.on('mouseup touchend', (e) => {
+    if (!drawStart || !previewShape) { drawStart=null; return; }
+    const pos = stage.getRelativePointerPosition();
+    const x = Math.min(drawStart.x, pos.x);
+    const y = Math.min(drawStart.y, pos.y);
+    const w = Math.abs(pos.x - drawStart.x);
+    const h = Math.abs(pos.y - drawStart.y);
+    previewShape.destroy();
+    previewShape = null;
+    drawStart = null;
+
+    if (w < 5 || h < 5) { structLayer.batchDraw(); return; } // too small, ignore
+
+    addStructure(currentMode, x, y, w, h, getCurrentColour());
+    structLayer.batchDraw();
+  });
+
+  loadImages();
+}
+
+// ════════════════════════════════════════════════════════
+//  GRID
+// ════════════════════════════════════════════════════════
+function drawGrid() {
+  if (!stage) return;
+  gridLayer.destroyChildren();
+  if (!showGrid) { gridLayer.batchDraw(); return; }
+  const col = getComputedStyle(document.body).getPropertyValue('--grid-color').trim();
+  const W = stage.width(), H = stage.height();
+  for (let x=0; x<W*6; x+=CELL_PX)
+    gridLayer.add(new Konva.Line({ points:[-W*3+x, -H*3, -W*3+x, H*4], stroke:col, strokeWidth:0.5, listening:false }));
+  for (let y=0; y<H*6; y+=CELL_PX)
+    gridLayer.add(new Konva.Line({ points:[-W*3, -H*3+y, W*4, -H*3+y], stroke:col, strokeWidth:0.5, listening:false }));
+  gridLayer.batchDraw();
+}
+
+// ════════════════════════════════════════════════════════
+//  SCALE BAR
+// ════════════════════════════════════════════════════════
+function updateScaleBar() {
+  if (!stage) return;
+  const scale = stage.scaleX();
+  const pxPerFt = PIXELS_PER_FOOT * scale;
+  const barFt = Math.round(20 / pxPerFt) * 5 || 5;
+  const barPx = Math.round(barFt * pxPerFt);
+  const label = gardenUnit === 'ft' ? `⊷ ${barFt} ft` : `⊷ ${Math.round(barFt*0.3048)}m`;
+  document.getElementById('scale-bar').textContent = label;
+}
+
+// ════════════════════════════════════════════════════════
+//  STRUCTURES
+// ════════════════════════════════════════════════════════
+const modeColours = { bed:'#8B6340', building:'#90A4AE', path:'#D7CCC8' };
+
+function getCurrentColour() {
+  return modeColours[currentMode] || '#8B6340';
+}
+
+function addStructure(type, x, y, w, h, colour) {
+  const id = 'struct_' + (structIdCounter++);
+  const cr = type==='bed' ? 10 : (type==='building' ? 4 : 3);
+
+  structData[id] = { type, colour, label: type==='bed'?'Garden Bed': type==='building'?'Building':'Path' };
+
+  const rect = new Konva.Rect({
+    id, x, y, width:w, height:h,
+    fill: colour + 'CC',
+    stroke:'#3A2A10', strokeWidth:1.5,
+    cornerRadius: cr,
+    draggable: true,
+  });
+
+  const lbl = new Konva.Text({
+    x: x + 4, y: y + 4,
+    text: structData[id].label,
+    fontSize: 10, fill:'#3A2A10', opacity:0.75, listening:false,
+    fontStyle:'bold',
+  });
+
+  rect.on('click tap', () => selectStruct(id, rect, lbl));
+  rect.on('dragmove', () => { lbl.x(rect.x()+4); lbl.y(rect.y()+4); structLayer.batchDraw(); });
+
+  structLayer.add(rect);
+  structLayer.add(lbl);
+  structLayer.batchDraw();
+
+  selectStruct(id, rect, lbl);
+  setMode('select');
+}
+
+function selectStruct(id, rect, lbl) {
+  deselectAll();
+  selectedStruct = { id, rect, lbl };
+  const data = structData[id];
+
+  tr.nodes([rect]);
+  tr.keepRatio(false);
+  uiLayer.batchDraw();
+
+  // Show struct panel
+  document.getElementById('info-empty').style.display = 'none';
+  document.getElementById('plant-info').style.display = 'none';
+  const sp = document.getElementById('struct-info');
+  sp.style.display = 'flex';
+
+  const typeNames = { bed:'Garden Bed', building:'Building', path:'Path' };
+  document.getElementById('struct-name').textContent = typeNames[data.type] || data.type;
+
+  // Colour swatches
+  const colours = data.type==='bed' ? BED_COLOURS : data.type==='building' ? BUILDING_COLOURS : PATH_COLOURS;
+  const cr = document.getElementById('struct-colours');
+  cr.innerHTML = '';
+  colours.forEach(c => {
+    const s = document.createElement('div');
+    s.className = 'colour-swatch' + (c.hex===data.colour?' selected':'');
+    s.style.background = c.hex;
+    s.title = c.name;
+    s.onclick = () => {
+      data.colour = c.hex;
+      rect.fill(c.hex + 'CC');
+      structLayer.batchDraw();
+      cr.querySelectorAll('.colour-swatch').forEach(x=>x.classList.remove('selected'));
+      s.classList.add('selected');
+    };
+    cr.appendChild(s);
+  });
+
+  // Label input
+  const li = document.getElementById('struct-label-input');
+  li.value = data.label;
+  li.oninput = () => { data.label = li.value; lbl.text(li.value); structLayer.batchDraw(); };
+}
+
+document.getElementById('btn-delete-struct').onclick = () => {
+  if (!selectedStruct) return;
+  selectedStruct.rect.destroy();
+  selectedStruct.lbl.destroy();
+  delete structData[selectedStruct.id];
+  deselectAll();
+  structLayer.batchDraw();
+};
+
+// ════════════════════════════════════════════════════════
+//  PLANTS
+// ════════════════════════════════════════════════════════
+const loadedImages = {};
+
+function loadImages() {
+  const srcs = {};
+  PLANT_CATALOG.forEach(p => { if (!srcs[p.key]) srcs[p.key] = p.src; });
+  Promise.all(Object.entries(srcs).map(([k,v]) => new Promise(res => {
+    const img = new Image();
+    img.onload = () => { loadedImages[k]=img; res(); };
+    img.onerror = () => res();
+    img.src = v;
+  }))).then(() => {
+    buildTray(PLANT_CATALOG);
+    applySeason(0);
+  });
+}
+
+function addPlant(catalogEntry, x, y) {
+  const id = 'plant_' + (plantIdCounter++);
+  plantData[id] = { label:catalogEntry.label, family:catalogEntry.family, notes:'', seasons:[...SEASONS] };
+
+  const img = loadedImages[catalogEntry.key];
+  if (!img) return;
+
+  const SIZE = 64;
+  const group = new Konva.Group({ id, x:x-SIZE/2, y:y-SIZE/2, draggable:true, width:SIZE, height:SIZE });
+  group.add(new Konva.Image({ image:img, x:0, y:0, width:SIZE, height:SIZE }));
+  plantLayer.add(group);
+
+  const sName = SEASONS[currentSeason];
+  if (!plantData[id].seasons.includes(sName)) group.opacity(0.1);
+
+  group.on('click tap', () => selectPlant(id, group));
+  plantLayer.batchDraw();
+  selectPlant(id, group);
+
+  // Update recents
+  addToRecents(catalogEntry);
+}
+
+function addToRecents(entry) {
+  recents = recents.filter(r => r.label !== entry.label);
+  recents.unshift(entry);
+  if (recents.length > 5) recents = recents.slice(0,5);
+  updateRecentsUI();
+}
+
+function selectPlant(id, group) {
+  deselectAll();
+  selectedPlant = {id, group};
+  tr.nodes([group]);
+  tr.keepRatio(true);
+  uiLayer.batchDraw();
+
+  const data = plantData[id];
+  document.getElementById('info-empty').style.display = 'none';
+  document.getElementById('struct-info').style.display = 'none';
+  const pp = document.getElementById('plant-info');
+  pp.style.display = 'flex';
+  document.getElementById('info-name').textContent = data.label;
+  document.getElementById('info-family').textContent = data.family;
+  document.getElementById('info-notes').value = data.notes;
+  document.querySelectorAll('#plant-info input[data-season]').forEach(cb => {
+    cb.checked = data.seasons.includes(cb.dataset.season);
+  });
+}
+
+document.querySelectorAll('#plant-info input[data-season]').forEach(cb => {
+  cb.addEventListener('change', () => {
+    if (!selectedPlant) return;
+    const data = plantData[selectedPlant.id];
+    if (cb.checked) { if (!data.seasons.includes(cb.dataset.season)) data.seasons.push(cb.dataset.season); }
+    else data.seasons = data.seasons.filter(s=>s!==cb.dataset.season);
+    updatePlantVisibility();
+  });
+});
+
+document.getElementById('info-notes').addEventListener('input', e => {
+  if (selectedPlant) plantData[selectedPlant.id].notes = e.target.value;
+});
+
+document.getElementById('btn-delete-plant').onclick = () => {
+  if (!selectedPlant) return;
+  selectedPlant.group.destroy();
+  delete plantData[selectedPlant.id];
+  deselectAll();
+  plantLayer.batchDraw();
+};
+
+// ════════════════════════════════════════════════════════
+//  TRAY — search + recents
+// ════════════════════════════════════════════════════════
+function buildTray(catalog) {
+  const list = document.getElementById('plant-list');
+  list.innerHTML = '';
+  const noRes = document.getElementById('no-results');
+  noRes.style.display = catalog.length === 0 ? 'block' : 'none';
+  catalog.forEach(entry => {
+    const el = makeTrayItem(entry);
+    list.appendChild(el);
+  });
+}
+
+function makeTrayItem(entry) {
+  const el = document.createElement('div');
+  el.className = 'tray-item';
+  el.draggable = true;
+  el.dataset.key   = entry.key;
+  el.dataset.label = entry.label;
+  el.dataset.family= entry.family;
+  el.dataset.src   = entry.src;
+  el.innerHTML = `<img src="${entry.src}" alt="${entry.label}"/><span>${entry.label}</span>`;
+
+  // Mouse drag
+  el.addEventListener('dragstart', e => {
+    draggingItem = entry;
+    const blank = document.createElement('img');
+    blank.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+    e.dataTransfer.setDragImage(blank, 0, 0);
+    e.dataTransfer.effectAllowed = 'copy';
+    ghost.src = entry.src;
+    ghost.style.width = ghost.style.height = '64px';
+  });
+  el.addEventListener('dragend', () => {
+    ghost.style.display = 'none';
+    draggingItem = null;
+    document.getElementById('canvas-wrap').classList.remove('drag-over');
+  });
+
+  // Touch drag
+  el.addEventListener('touchstart', e => {
+    touchDragItem = entry;
+    touchGhostEl = document.createElement('img');
+    touchGhostEl.src = entry.src;
+    touchGhostEl.style.cssText = 'position:fixed;width:64px;height:64px;pointer-events:none;z-index:9999;opacity:0.75;transform:translate(-50%,-50%)';
+    document.body.appendChild(touchGhostEl);
+  }, {passive:true});
+  el.addEventListener('touchmove', e => {
+    if (!touchGhostEl) return;
+    const t = e.touches[0];
+    touchGhostEl.style.left = t.clientX + 'px';
+    touchGhostEl.style.top  = t.clientY + 'px';
+  }, {passive:true});
+  el.addEventListener('touchend', e => {
+    if (!touchDragItem || !touchGhostEl) return;
+    const t = e.changedTouches[0];
+    document.body.removeChild(touchGhostEl); touchGhostEl=null;
+    const wrap = document.getElementById('canvas-wrap');
+    const rect = wrap.getBoundingClientRect();
+    if (t.clientX>=rect.left && t.clientX<=rect.right && t.clientY>=rect.top && t.clientY<=rect.bottom) {
+      const pos = { x: t.clientX - rect.left, y: t.clientY - rect.top };
+      const stagePos = { x:(pos.x - stage.x())/stage.scaleX(), y:(pos.y - stage.y())/stage.scaleY() };
+      addPlant(touchDragItem, stagePos.x, stagePos.y);
+    }
+    touchDragItem = null;
+  }, {passive:true});
+
+  return el;
+}
+
+function updateRecentsUI() {
+  const wrap = document.getElementById('tray-recents');
+  const list = document.getElementById('recents-list');
+  if (recents.length === 0) { wrap.style.display='none'; return; }
+  wrap.style.display = 'block';
+  list.innerHTML = '';
+  recents.forEach(entry => list.appendChild(makeTrayItem(entry)));
+}
+
+// Search
+document.getElementById('plant-search').addEventListener('input', e => {
+  const q = e.target.value.trim().toLowerCase();
+  if (!q) { buildTray(PLANT_CATALOG); return; }
+  const matches = PLANT_CATALOG.filter(p =>
+    p.label.toLowerCase().includes(q) || p.family.toLowerCase().includes(q)
+  );
+  buildTray(matches);
+});
+
+// ════════════════════════════════════════════════════════
+//  DRAG DROP FROM TRAY (mouse)
+// ════════════════════════════════════════════════════════
+let draggingItem = null, touchDragItem = null, touchGhostEl = null;
+const ghost = document.getElementById('drop-ghost');
+const wrapEl = document.getElementById('canvas-wrap');
+
+wrapEl.addEventListener('dragenter', e => { e.preventDefault(); wrapEl.classList.add('drag-over'); });
+wrapEl.addEventListener('dragover',  e => {
+  e.preventDefault(); e.dataTransfer.dropEffect='copy';
+  const r = wrapEl.getBoundingClientRect();
+  ghost.style.display = 'block';
+  ghost.style.left = (e.clientX - r.left) + 'px';
+  ghost.style.top  = (e.clientY - r.top)  + 'px';
+});
+wrapEl.addEventListener('dragleave', () => { wrapEl.classList.remove('drag-over'); ghost.style.display='none'; });
+wrapEl.addEventListener('drop', e => {
+  e.preventDefault(); wrapEl.classList.remove('drag-over'); ghost.style.display='none';
+  if (!draggingItem || !stage) return;
+  const r = wrapEl.getBoundingClientRect();
+  const screenPos = { x: e.clientX - r.left, y: e.clientY - r.top };
+  const stagePos  = { x:(screenPos.x - stage.x())/stage.scaleX(), y:(screenPos.y - stage.y())/stage.scaleY() };
+  addPlant(draggingItem, stagePos.x, stagePos.y);
+  draggingItem = null;
+});
+
+// ════════════════════════════════════════════════════════
+//  SELECTION / DESELECT
+// ════════════════════════════════════════════════════════
+function deselectAll() {
+  selectedPlant = null; selectedStruct = null;
+  tr.nodes([]); uiLayer.batchDraw();
+  document.getElementById('info-empty').style.display = '';
+  document.getElementById('plant-info').style.display = 'none';
+  document.getElementById('struct-info').style.display = 'none';
+}
+
+// ════════════════════════════════════════════════════════
+//  SEASON
+// ════════════════════════════════════════════════════════
+function applySeason(idx) {
+  currentSeason = idx;
+  const cls = ['spring','summer','fall','winter'];
+  cls.forEach(c => document.body.classList.remove(c));
+  document.body.classList.add(cls[idx]);
+  document.getElementById('season-badge').textContent = SEASON_NAMES[idx];
+  document.getElementById('season-slider').value = idx;
+  updatePlantVisibility();
+  drawGrid();
+}
+
+function updatePlantVisibility() {
+  if (!plantLayer) return;
+  const sName = SEASONS[currentSeason];
+  plantLayer.find('Group').forEach(g => {
+    const data = plantData[g.id()];
+    g.opacity(data && data.seasons.includes(sName) ? 1 : 0.1);
+  });
+  plantLayer.batchDraw();
+}
+
+document.getElementById('season-slider').addEventListener('input', e => applySeason(parseInt(e.target.value)));
+
+// ════════════════════════════════════════════════════════
+//  TOOLBAR
+// ════════════════════════════════════════════════════════
+function setMode(mode) {
+  currentMode = mode;
+  ['select','bed','building','path'].forEach(m => {
+    const btn = document.getElementById('btn-'+m);
+    if (btn) btn.classList.toggle('active', m===mode);
+  });
+  const modeClasses = ['mode-select','mode-bed','mode-building','mode-path'];
+  modeClasses.forEach(c => wrapEl.classList.remove(c));
+  wrapEl.classList.add('mode-'+mode);
+  if (mode !== 'select') deselectAll();
+}
+
+function toggleGrid() {
+  showGrid = !showGrid;
+  document.getElementById('btn-grid').classList.toggle('active', showGrid);
+  drawGrid();
+}
+
+function resetView() {
+  if (!stage) return;
+  stage.scale({x:1,y:1}); stage.position({x:0,y:0}); stage.batchDraw();
+  updateScaleBar();
+}
+
+function clearAll() {
+  if (!confirm('Remove everything from the canvas?')) return;
+  if (plantLayer) { plantLayer.destroyChildren(); Object.keys(plantData).forEach(k=>delete plantData[k]); plantLayer.batchDraw(); }
+  if (structLayer) {
+    // Keep property boundary
+    const keep = [];
+    structLayer.find('Rect').forEach(r => { if (r===propBoundary) keep.push(r); else r.destroy(); });
+    structLayer.find('Text').forEach(t => t.destroy());
+    Object.keys(structData).forEach(k=>delete structData[k]);
+    // Re-add boundary
+    if (propBoundary) structLayer.add(propBoundary);
+    structLayer.batchDraw();
+  }
+  deselectAll();
+}
+
+// ════════════════════════════════════════════════════════
+//  KEYBOARD
+// ════════════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+  if (e.key==='Delete'||e.key==='Backspace') {
+    if (selectedPlant) {
+      selectedPlant.group.destroy();
+      delete plantData[selectedPlant.id];
+      deselectAll(); plantLayer.batchDraw();
+    } else if (selectedStruct) {
+      selectedStruct.rect.destroy();
+      selectedStruct.lbl.destroy();
+      delete structData[selectedStruct.id];
+      deselectAll(); structLayer.batchDraw();
+    }
+  }
+  if (e.key==='Escape') { deselectAll(); setMode('select'); }
+  if (['1','2','3','4'].includes(e.key)) applySeason(+e.key-1);
+  if (e.key==='g') toggleGrid();
+});
+
+// ════════════════════════════════════════════════════════
+//  RESIZE
+// ════════════════════════════════════════════════════════
+window.addEventListener('resize', () => {
+  if (!stage) return;
+  stage.width(wrapEl.clientWidth);
+  stage.height(wrapEl.clientHeight);
+  drawGrid();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# Empty experimental sticker folders (no content)
+stickers/flux-schnell/
+stickers/gemini-flash/
+stickers/huggingface-flux/
+stickers/huggingface-sd35/
+stickers/imagen4/
+stickers/imagen4-fast/
+stickers/nano-banana/
+stickers/nano-banana-pro/
+
+# Generator state (runtime, not source)
+stickers/generator_state.json
+
+# OS junk
+.DS_Store
+Thumbs.db

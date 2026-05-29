@@ -1,0 +1,2436 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Garden Mapper — v6</title>
+  <script src="https://unpkg.com/konva@9/konva.min.js"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Nunito','DM Sans',system-ui,sans-serif;background:#ffffff;
+         display:flex;flex-direction:column;height:100dvh;overflow:hidden;user-select:none;}
+
+    /* ── Season themes ── */
+    :root{--bg:#C8E6C9;--ui-bg:#F1F8E9;--ui-border:#A5D6A7;--text:#2A3D1A;
+          --accent:#558B2F;--slider-track:#A5D6A7;--tray-hover:#DCEDC8;
+          --btn-bg:#E8F5E9;--input-bg:#F9FBE7;--grid-color:rgba(56,142,60,0.25);}
+    body.summer{--bg:#8BC34A;--ui-bg:#F9FBE7;--ui-border:#C5E1A5;--text:#1B5E20;
+                --accent:#33691E;--slider-track:#C5E1A5;--tray-hover:#DCEDC8;
+                --btn-bg:#F1F8E9;--input-bg:#FAFDF3;--grid-color:rgba(80,160,30,0.25);}
+    body.fall{--bg:#FFCC80;--ui-bg:#FFF8F0;--ui-border:#FFAB40;--text:#4E2A00;
+              --accent:#E65100;--slider-track:#FFAB40;--tray-hover:#FFE0B2;
+              --btn-bg:#FFF3E0;--input-bg:#FFFDE7;--grid-color:rgba(180,100,20,0.2);}
+    body.winter{--bg:#E3F2FD;--ui-bg:#F5F5F5;--ui-border:#B0BEC5;--text:#263238;
+                --accent:#546E7A;--slider-track:#B0BEC5;--tray-hover:#ECEFF1;
+                --btn-bg:#ECEFF1;--input-bg:#FAFAFA;--grid-color:rgba(70,110,130,0.18);}
+
+    /* ── Promo banner ── */
+    #promo-banner{display:flex;align-items:center;justify-content:space-between;
+                  background:#11502A;height:42px;flex-shrink:0;z-index:20;}
+    #promo-banner button{background:transparent;border:none;color:#fff;
+                         font-size:18px;cursor:pointer;padding:0 12px;height:100%;}
+    #promo-text{flex:1;text-align:center;color:#fff;font-size:13px;font-weight:600;
+                transition:opacity 0.3s;padding:0 8px;}
+
+    /* ── Logo bar ── */
+    #logo-bar{display:flex;align-items:center;height:56px;background:#ffffff;
+              border-bottom:1px solid #e0e0e0;flex-shrink:0;z-index:10;padding:0 10px;gap:8px;}
+    #logo-left{display:flex;flex-direction:row;align-items:center;gap:8px;flex-shrink:0;min-width:0;}
+    #logo-center{flex:1;display:flex;align-items:center;justify-content:center;min-width:0;}
+    #logo-center img{height:44px;object-fit:contain;max-width:100%;}
+    #logo-right{display:flex;align-items:center;gap:6px;justify-content:flex-end;flex-shrink:0;min-width:0;max-width:45%;}
+    #logo-garden-info{display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;}
+    #logo-garden-name{font-size:11px;font-weight:700;color:#2A3D1A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;}
+    #logo-garden-dims{font-size:10px;color:#666;white-space:nowrap;flex-shrink:0;}
+    .logo-btn{background:#11502A;color:#fff;border:none;border-radius:6px;
+              padding:4px 8px;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;}
+    .logo-btn:hover{background:#0a3d1e;}
+    #logo-yt-btn{background:none;border:none;cursor:pointer;color:#11502A;
+                 display:flex;align-items:center;padding:2px;}
+    #logo-yt-btn:hover{opacity:.7;}
+    #logo-profile-btn{background:#11502A;border:none;border-radius:50%;width:28px;height:28px;
+                      min-width:28px;min-height:28px;aspect-ratio:1/1;flex-shrink:0;
+                      font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+    .season-badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;
+                  background:var(--accent);color:#fff;white-space:nowrap;transition:background .4s;display:inline-block;}
+    #scale-display{font-size:10px;font-weight:600;opacity:.75;background:var(--btn-bg);
+                   border:1px solid var(--ui-border);border-radius:6px;padding:2px 7px;white-space:nowrap;display:inline-block;}
+
+    /* ── Main layout ── */
+    #main{display:flex;flex:1;overflow:hidden;align-items:stretch;}
+
+    /* ── Plant tray — floating card ── */
+    #tray{width:154px;background:#ffffff;border:1.5px solid #11502A;border-radius:14px;
+          display:flex;flex-direction:column;align-items:stretch;padding:7px 5px 4px 5px;
+          overflow:hidden;flex-shrink:0;margin:10px 8px;
+          box-shadow:0 2px 12px rgba(0,0,0,0.10);}
+    #tray-scroll{flex:1;overflow-y:scroll;overflow-x:hidden;min-height:0;
+          scrollbar-gutter:stable;padding-bottom:6px;}
+    /* Styled scrollbar — inset with top/bottom margin so it doesn't touch rounded corners */
+    #tray-scroll::-webkit-scrollbar{width:10px;}
+    #tray-scroll::-webkit-scrollbar-track{background:transparent;margin:10px 0;border-radius:4px;}
+    #tray-scroll::-webkit-scrollbar-thumb{background:rgba(17,80,42,0.35);border-radius:4px;
+          border:2px solid #ffffff;}
+    #tray-scroll::-webkit-scrollbar-thumb:hover{background:rgba(17,80,42,0.6);}
+    #tray-scroll::-webkit-scrollbar-button{display:none;}
+    #plant-search{width:100%;padding:5px 7px;border:1.5px solid var(--ui-border);border-radius:8px;
+                  background:var(--input-bg);color:var(--text);font-size:11px;font-family:inherit;
+                  outline:none;margin-bottom:6px;}
+    #plant-search:focus{border-color:var(--accent);}
+    .tray-section-label{font-size:9px;text-transform:uppercase;letter-spacing:1px;
+                        color:var(--text);opacity:.5;margin:3px 2px 2px;}
+    .tray-item{display:flex;align-items:center;gap:6px;cursor:grab;padding:4px 5px;
+               border-radius:7px;transition:background .12s;}
+    .tray-item:hover{background:var(--tray-hover);}
+    .tray-item img{width:34px;height:34px;pointer-events:none;flex-shrink:0;
+                   filter:drop-shadow(0 1px 3px rgba(0,0,0,.3));}
+    .tray-item span{font-size:10px;font-weight:600;color:var(--text);line-height:1.2;}
+    .tray-divider{width:100%;height:1px;background:var(--ui-border);margin:4px 0;}
+    #no-results{font-size:10px;opacity:.5;text-align:center;padding:8px 4px;display:none;}
+
+    /* ── Canvas ── */
+    #canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);transition:background .5s;
+                 border-radius:14px;margin:10px 0;}
+    #canvas-wrap.drag-over{outline:3px dashed var(--accent);outline-offset:-3px;}
+    #drop-ghost{position:absolute;pointer-events:none;display:none;opacity:.65;z-index:100;transform:translate(-50%,-50%);}
+    #canvas-wrap.mode-select{cursor:default;}
+    #canvas-wrap.mode-panning{cursor:grabbing;}
+    #canvas-wrap.mode-beds,#canvas-wrap.mode-fences,
+    #canvas-wrap.mode-paths,#canvas-wrap.mode-building,
+    #canvas-wrap.mode-water{cursor:crosshair;}
+    #hint-bar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
+              background:rgba(0,0,0,.65);color:#fff;font-size:11px;font-weight:600;
+              padding:4px 14px;border-radius:20px;pointer-events:none;
+              display:none;white-space:nowrap;z-index:50;}
+
+    /* ── Right panel — floating card ── */
+    #info-panel{width:200px;background:#ffffff;border:1.5px solid #11502A;border-radius:14px;
+                padding:10px 10px;color:var(--text);display:flex;flex-direction:column;gap:8px;
+                flex-shrink:0;overflow-y:auto;margin:10px 8px;
+                box-shadow:0 2px 12px rgba(0,0,0,0.10);transition:color .4s;}
+    .panel-title{font-size:9px;text-transform:uppercase;letter-spacing:1px;opacity:.5;}
+    .panel-h2{font-size:13px;font-weight:800;}
+    .panel-sub{font-size:11px;opacity:.65;}
+    .panel-sep{width:100%;height:1px;background:var(--ui-border);margin:3px 0;}
+
+    /* Back row */
+    #pnl-back-row{display:none;align-items:center;gap:6px;margin-bottom:4px;
+                  padding-bottom:6px;border-bottom:1px solid rgba(17,80,42,0.13);}
+    #btn-back-panel{background:none;border:none;color:#11502A;font-weight:700;
+                    font-size:11px;cursor:pointer;padding:0;}
+    #btn-back-panel:hover{opacity:.7;}
+
+    /* sub-tool radio buttons */
+    .subtool-group{display:flex;flex-direction:column;gap:5px;margin-top:2px;}
+    .subtool-opt{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:8px;
+                 border:1.5px solid var(--ui-border);cursor:pointer;background:var(--btn-bg);
+                 transition:background .12s,border-color .12s;font-size:11px;font-weight:600;}
+    .subtool-opt:hover{background:var(--tray-hover);}
+    .subtool-opt.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .subtool-icon{font-size:16px;}
+
+    .btn-panel{background:var(--btn-bg);color:var(--text);border:1.5px solid var(--ui-border);
+               border-radius:7px;padding:6px 8px;font-size:11px;font-weight:700;cursor:pointer;
+               transition:background .12s,color .12s;width:100%;}
+    .btn-panel:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .btn-panel.toggled{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .btn-panel.danger{background:#fde8e8;color:#c62828;border-color:#ef9a9a;}
+    .btn-panel.danger:hover{background:#c62828;color:#fff;border-color:#c62828;}
+
+    .season-checks{display:flex;flex-direction:column;gap:3px;}
+    .season-checks label{display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;}
+
+    #info-panel textarea{width:100%;height:60px;resize:vertical;background:var(--input-bg);
+                         border:1px solid var(--ui-border);border-radius:7px;padding:5px 6px;
+                         font-size:11px;color:var(--text);font-family:inherit;}
+    .colour-row{display:flex;gap:5px;flex-wrap:wrap;}
+    .colour-swatch{width:20px;height:20px;border-radius:50%;border:2px solid transparent;cursor:pointer;}
+    .colour-swatch.selected{border-color:var(--text);}
+    .text-input{width:100%;padding:4px 6px;border:1px solid var(--ui-border);border-radius:6px;
+                background:var(--input-bg);color:var(--text);font-size:11px;font-family:inherit;}
+
+    /* path width slider */
+    .slider-wrap{display:flex;align-items:center;gap:6px;}
+    .slider-wrap input[type=range]{flex:1;-webkit-appearance:none;height:5px;border-radius:3px;
+                                    background:var(--slider-track);outline:none;cursor:pointer;}
+    .slider-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;
+      border-radius:50%;background:var(--accent);border:2px solid #fff;cursor:pointer;}
+    .slider-wrap span{font-size:10px;font-weight:700;opacity:.7;white-space:nowrap;}
+
+    .empty-hint{font-size:11px;opacity:.45;text-align:center;margin-top:14px;line-height:1.6;}
+
+    /* ── Bottom — floating card wrapper ── */
+    #bottom-wrap{background:transparent;display:flex;justify-content:center;padding-bottom:10px;flex-shrink:0;}
+    #bottom{background:#ffffff;border:1.5px solid #11502A;border-radius:14px;
+            padding:7px 14px 26px;display:flex;flex-direction:column;align-items:center;gap:5px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.10);}
+    #toolbar{display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:center;}
+    .tool-btn{background:var(--btn-bg);border:1.5px solid var(--ui-border);border-radius:7px;
+              padding:4px 11px;font-size:10px;font-weight:700;color:var(--text);cursor:pointer;
+              transition:background .12s,color .12s;white-space:nowrap;}
+    .tool-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .tool-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .tool-sep{width:1px;height:20px;background:var(--ui-border);margin:0 1px;}
+    #season-slider{-webkit-appearance:none;appearance:none;width:min(420px,52vw);height:6px;
+                   border-radius:4px;background:var(--slider-track);outline:none;cursor:pointer;transition:background .4s;}
+    #season-slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+      background:var(--accent);border:3px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.3);cursor:pointer;}
+    .slider-wrap-col{display:flex;flex-direction:column;align-items:flex-start;gap:2px;}
+    #season-slider-wrap{position:relative;width:min(420px,52vw);}
+    #season-labels{position:absolute;top:14px;left:0;right:0;pointer-events:none;}
+    #season-labels span{position:absolute;transform:translateX(-50%);font-size:10px;font-weight:700;
+                        color:var(--text);opacity:.7;white-space:nowrap;}
+    .slider-row{display:flex;align-items:center;gap:10px;}
+    .slider-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text);opacity:.6;}
+
+    /* ── Setup modal ── */
+    #setup-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.55);
+                   display:flex;align-items:center;justify-content:center;}
+    #setup-modal{background:#fff;border-radius:14px;padding:24px 28px;width:340px;
+                 box-shadow:0 8px 40px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:14px;}
+    #setup-modal h2{font-size:18px;font-weight:800;color:#2A3D1A;}
+    #setup-modal p{font-size:12px;color:#555;line-height:1.5;}
+    .field-row{display:flex;flex-direction:column;gap:4px;}
+    .field-row label{font-size:11px;font-weight:700;color:#333;}
+    .field-row input{padding:7px 9px;border:1.5px solid #ccc;border-radius:7px;font-size:13px;font-family:inherit;outline:none;}
+    .field-row input:focus{border-color:#558B2F;}
+    .unit-row{display:flex;gap:7px;}
+    .unit-btn{flex:1;padding:6px;border:1.5px solid #ccc;border-radius:7px;background:#f5f5f5;
+              font-size:12px;font-weight:700;cursor:pointer;transition:all .12s;}
+    .unit-btn.active{background:#558B2F;color:#fff;border-color:#558B2F;}
+    .dims-row{display:flex;gap:7px;align-items:center;}
+    .dims-row input{flex:1;}
+    .dims-row span{font-size:13px;color:#555;}
+    #btn-start{background:#558B2F;color:#fff;border:none;border-radius:9px;padding:11px;
+               font-size:14px;font-weight:800;cursor:pointer;}
+    #btn-start:hover{background:#33691E;}
+  </style>
+</head>
+<body class="spring">
+
+<!-- Garden Switcher Modal -->
+<div id="switch-overlay" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);align-items:center;justify-content:center;">
+  <div id="switch-modal" style="background:#fff;border-radius:14px;padding:24px 28px;width:360px;box-shadow:0 8px 40px rgba(0,0,0,.25);">
+    <h2 style="font-size:18px;font-weight:800;color:#2A3D1A;margin-bottom:14px">🌿 My Gardens</h2>
+    <div id="garden-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;"></div>
+    <div style="display:flex;gap:8px">
+      <button id="btn-new-garden" onclick="newGarden()" style="flex:1;background:#558B2F;color:#fff;border:none;border-radius:9px;padding:10px;font-size:13px;font-weight:800;cursor:pointer">＋ New Garden</button>
+      <button onclick="hideSwitcher()" style="flex:1;background:#f5f5f5;color:#333;border:1.5px solid #ccc;border-radius:9px;padding:10px;font-size:13px;font-weight:800;cursor:pointer">Cancel</button>
+    </div>
+    <div id="garden-limit-msg" style="display:none;font-size:11px;color:#c62828;margin-top:8px">2 garden limit reached. Delete a garden to add another.</div>
+  </div>
+</div>
+
+<!-- Setup modal -->
+<div id="setup-overlay">
+  <div id="setup-modal">
+    <h2>🌿 Your Garden Map</h2>
+    <p>Enter your property dimensions to calibrate the grid.</p>
+    <div class="field-row"><label>Garden Name</label>
+      <input id="setup-name" type="text" value="My Garden"/></div>
+    <div class="field-row"><label>Units</label>
+      <div class="unit-row">
+        <button class="unit-btn active" id="unit-ft" onclick="setUnit('ft')">Feet</button>
+        <button class="unit-btn" id="unit-m" onclick="setUnit('m')">Metres</button>
+      </div></div>
+    <div class="field-row">
+      <label>Size <span id="unit-label-dim" style="opacity:.6;font-weight:400">(width × depth in ft)</span></label>
+      <div class="dims-row">
+        <input id="setup-w" type="number" value="60" min="5" max="500"/>
+        <span>×</span>
+        <input id="setup-h" type="number" value="40" min="5" max="500"/>
+      </div></div>
+    <button id="btn-start" onclick="startGarden()">Create Garden →</button>
+  </div>
+</div>
+
+<!-- Promo banner -->
+<div id="promo-banner">
+  <button onclick="promoPrev()">&#60;</button>
+  <div id="promo-text">Never forget where your garden plants are again</div>
+  <button onclick="promoNext()">&#62;</button>
+</div>
+
+<!-- Logo bar -->
+<div id="logo-bar">
+  <div id="logo-left">
+    <div id="scale-display">1 cell = 3 in</div>
+    <div class="season-badge" id="season-badge">🌸 Spring</div>
+  </div>
+  <div id="logo-center">
+    <img src="../stickers/Logo.png" alt="Garden Mapper" onerror="this.style.display='none'"/>
+  </div>
+  <div id="logo-right">
+    <div id="logo-garden-info">
+      <span id="logo-garden-name">My Garden</span>
+      <span id="logo-garden-dims">60×40 ft</span>
+    </div>
+    <button class="logo-btn" onclick="saveGarden()">💾 Save</button>
+    <button class="logo-btn" onclick="showGardenSwitcher()">🔄 Gardens</button>
+    <a id="logo-yt-btn" href="#" target="_blank" title="YouTube">
+      <svg width="22" height="16" viewBox="0 0 22 16" fill="none">
+        <rect width="22" height="16" rx="4" fill="#11502A"/>
+        <polygon points="9,4 9,12 16,8" fill="white"/>
+      </svg>
+    </a>
+    <button id="logo-profile-btn" title="Profile">👤</button>
+  </div>
+</div>
+
+<!-- Main -->
+<div id="main">
+  <!-- Tray -->
+  <div id="tray">
+    <input id="plant-search" type="search" placeholder="🔍 Search…" autocomplete="off"/>
+    <div id="tray-scroll">
+      <div id="tray-recents" style="display:none">
+        <div class="tray-section-label">Recent</div>
+        <div id="recents-list"></div>
+        <div class="tray-divider"></div>
+      </div>
+      <div class="tray-section-label">Plants</div>
+      <div id="plant-list"></div>
+      <div id="no-results">No matches.</div>
+    </div>
+  </div>
+
+  <!-- Canvas -->
+  <div id="canvas-wrap" class="mode-select">
+    <img id="drop-ghost" src="" alt=""/>
+    <div id="konva-container"></div>
+    <div id="hint-bar"></div>
+  </div>
+
+  <!-- Right panel -->
+  <div id="info-panel">
+    <!-- Back row -->
+    <div id="pnl-back-row">
+      <button id="btn-back-panel">← Back</button>
+    </div>
+
+    <div class="panel-title">Panel</div>
+
+    <!-- Empty -->
+    <div id="pnl-empty" class="empty-hint">
+      Click a plant or structure.<br/><br/>
+      Drag empty canvas to pan.<br/>Scroll to zoom.<br/><br/>
+      Keys: 1–4 = seasons<br/>Ctrl+C/V = copy/paste<br/>Ctrl+Z = undo<br/>Del = remove<br/>Enter = close shape<br/>Esc = cancel<br/><br/>
+      <b>Ctrl/Shift+click</b> to multi-select
+    </div>
+    <!-- Multi-select panel -->
+    <div id="pnl-multi" style="display:none;flex-direction:column;gap:7px;">
+      <div class="panel-h2">Multiple Selected</div>
+      <div class="panel-sub" id="pnl-multi-count"></div>
+      <div class="panel-sep"></div>
+      <button class="btn-panel danger" id="btn-delete-multi">🗑 Delete All Selected</button>
+    </div>
+
+    <!-- Beds sub-tools -->
+    <div id="pnl-beds" style="display:none">
+      <div class="panel-h2">🌿 Bed Type</div>
+      <div class="panel-sep"></div>
+      <div class="subtool-group">
+        <div class="subtool-opt active" id="sub-curved" onclick="setSubTool('curved')">
+          <span class="subtool-icon">〜</span><div><div>Curved</div><div style="font-size:9px;opacity:.6;font-weight:400">Click points · Enter to close</div></div>
+        </div>
+        <div class="subtool-opt" id="sub-straight" onclick="setSubTool('straight')">
+          <span class="subtool-icon">⬡</span><div><div>Straight</div><div style="font-size:9px;opacity:.6;font-weight:400">Click points · angular edges</div></div>
+        </div>
+        <div class="subtool-opt" id="sub-square" onclick="setSubTool('square')">
+          <span class="subtool-icon">⬜</span><div><div>Square</div><div style="font-size:9px;opacity:.6;font-weight:400">Click + drag rectangle</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fences sub-tools -->
+    <div id="pnl-fences" style="display:none">
+      <div class="panel-h2"><svg width="20" height="16" viewBox="0 0 20 16" fill="none" style="vertical-align:middle;margin-right:4px"><polygon points="1,5 3,2 5,5" fill="#8B5E3C"/><rect x="1" y="5" width="4" height="11" rx="0.5" fill="#8B5E3C"/><polygon points="6,5 8,2 10,5" fill="#8B5E3C"/><rect x="6" y="5" width="4" height="11" rx="0.5" fill="#8B5E3C"/><polygon points="11,5 13,2 15,5" fill="#8B5E3C"/><rect x="11" y="5" width="4" height="11" rx="0.5" fill="#8B5E3C"/><polygon points="16,5 18,2 20,5" fill="#8B5E3C"/><rect x="16" y="5" width="4" height="11" rx="0.5" fill="#8B5E3C"/><rect x="0" y="6" width="20" height="2" rx="0.5" fill="#6B4423"/><rect x="0" y="11" width="20" height="2" rx="0.5" fill="#6B4423"/></svg> Fence / Hedge</div>
+      <div class="panel-sep"></div>
+      <div class="panel-title" style="margin-bottom:2px">HEDGE TYPE</div>
+      <div class="subtool-group">
+        <div class="subtool-opt active" id="subf-curved" onclick="setSubToolFence('curved')">
+          <span class="subtool-icon">〜</span><div><div>Curved Hedge</div><div style="font-size:9px;opacity:.6;font-weight:400">Click points · Enter to close</div></div>
+        </div>
+        <div class="subtool-opt" id="subf-straight" onclick="setSubToolFence('straight')">
+          <span class="subtool-icon">⬡</span><div><div>Straight Hedge</div><div style="font-size:9px;opacity:.6;font-weight:400">Click points · angular edges</div></div>
+        </div>
+        <div class="subtool-opt" id="subf-square" onclick="setSubToolFence('square')">
+          <span class="subtool-icon">■</span><div><div>Square Hedge</div><div style="font-size:9px;opacity:.6;font-weight:400">Click+drag · joins up to 4</div></div>
+        </div>
+      </div>
+      <div class="panel-title" style="margin-top:6px">FENCE TYPE</div>
+      <div class="subtool-group">
+        <div class="subtool-opt" id="subfence-fence" onclick="setFenceType('fence')">
+          <span class="subtool-icon">🪵</span>
+          <div><div>Straight Fence</div><div style="font-size:9px;opacity:.6;font-weight:400">Click points · straight line</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paths sub-tools -->
+    <div id="pnl-paths" style="display:none">
+      <div class="panel-h2">〰 Path</div>
+      <div class="panel-sep"></div>
+      <div class="subtool-group">
+        <div class="subtool-opt active" id="subp-freeform" onclick="setSubToolPath('freeform')">
+          <span class="subtool-icon">〜</span><div><div>Freeform</div><div style="font-size:9px;opacity:.6;font-weight:400">Click points · Enter to finish</div></div>
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <div class="panel-title" style="margin-bottom:4px">DEFAULT WIDTH</div>
+        <div class="slider-wrap">
+          <input type="range" id="path-width-default" min="6" max="60" value="18"/>
+          <span id="path-width-label">18 px</span>
+        </div>
+      </div>
+      <div class="panel-sep" style="margin-top:6px"></div>
+      <div class="panel-title" style="margin-bottom:4px">GATE</div>
+      <div class="subtool-group">
+        <div class="subtool-opt" id="subp-gate" onclick="setSubToolPath('gate')">
+          <span class="subtool-icon">🚪</span>
+          <div><div>Gate</div><div style="font-size:9px;opacity:.6;font-weight:400">Click 2 points · auto-places</div></div>
+        </div>
+      </div>
+      <div id="pnl-gate-types" style="display:none;margin-top:6px">
+        <div class="panel-title" style="margin-bottom:4px">GATE TYPE</div>
+        <div class="subtool-group">
+          <div class="subtool-opt active" id="gatetype-wood" onclick="setGateType('wood')">
+            <span class="subtool-icon">🪵</span>
+            <div><div>Wood Gate</div><div style="font-size:9px;opacity:.6;font-weight:400">Warm brown · natural timber</div></div>
+          </div>
+          <div class="subtool-opt" id="gatetype-metal" onclick="setGateType('metal')">
+            <span class="subtool-icon">⚙️</span>
+            <div><div>Metal Gate</div><div style="font-size:9px;opacity:.6;font-weight:400">Wrought iron · ornate</div></div>
+          </div>
+          <div class="subtool-opt" id="gatetype-stone" onclick="setGateType('stone')">
+            <span class="subtool-icon">🪨</span>
+            <div><div>Stone Gate</div><div style="font-size:9px;opacity:.6;font-weight:400">Flagstone · cobblestone</div></div>
+          </div>
+          <div class="subtool-opt" id="gatetype-plastic" onclick="setGateType('plastic')">
+            <span class="subtool-icon">🔲</span>
+            <div><div>Plastic / Vinyl Gate</div><div style="font-size:9px;opacity:.6;font-weight:400">White vinyl · clean lines</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Water sub-tools -->
+    <div id="pnl-water" style="display:none">
+      <div class="panel-h2">💧 Water Type</div>
+      <div class="panel-sep"></div>
+      <div class="subtool-group">
+        <div class="subtool-opt active" id="subw-pond" onclick="setWaterTool('pond')">
+          <span class="subtool-icon">🌊</span><div><div>Pond</div><div style="font-size:9px;opacity:.6;font-weight:400">Click points · Enter to close</div></div>
+        </div>
+        <div class="subtool-opt" id="subw-fountain" onclick="setWaterTool('fountain')">
+          <span class="subtool-icon">⛲</span><div><div>Fountain</div><div style="font-size:9px;opacity:.6;font-weight:400">Click to place</div></div>
+        </div>
+        <div class="subtool-opt" id="subw-pool-sq" onclick="setWaterTool('pool-sq')">
+          <span class="subtool-icon">🏊</span><div><div>Pool – Square</div><div style="font-size:9px;opacity:.6;font-weight:400">Click + drag</div></div>
+        </div>
+        <div class="subtool-opt" id="subw-pool-circle" onclick="setWaterTool('pool-circle')">
+          <span class="subtool-icon">⭕</span><div><div>Pool – Circle</div><div style="font-size:9px;opacity:.6;font-weight:400">Click + drag</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Building sub-tools -->
+    <div id="pnl-building" style="display:none">
+      <div class="panel-h2">🏠 Building Type</div>
+      <div class="panel-sep"></div>
+      <div class="subtool-group">
+        <div class="subtool-opt active" id="subb-building" onclick="setBuildingTool('building')">
+          <span class="subtool-icon">🏠</span><div><div>Building</div><div style="font-size:9px;opacity:.6;font-weight:400">Click + drag rectangle</div></div>
+        </div>
+        <div class="subtool-opt" id="subb-deck-toggle" onclick="toggleDeckTypes()">
+          <span class="subtool-icon">🌳</span><div><div>Deck Type</div><div style="font-size:9px;opacity:.6;font-weight:400">Tap to expand</div></div>
+        </div>
+      </div>
+      <div id="pnl-deck-types" style="display:none;margin-top:6px">
+        <div class="panel-title" style="margin-bottom:4px">DECK STYLE</div>
+        <div class="subtool-group">
+          <div class="subtool-opt" id="subb-deck-curved" onclick="setBuildingTool('deck-curved')">
+            <span class="subtool-icon">〜</span><div><div>Curved Deck</div><div style="font-size:9px;opacity:.6;font-weight:400">Click points · Enter to close</div></div>
+          </div>
+          <div class="subtool-opt" id="subb-deck-straight" onclick="setBuildingTool('deck-straight')">
+            <span class="subtool-icon">⬡</span><div><div>Straight Deck</div><div style="font-size:9px;opacity:.6;font-weight:400">Click points · angular edges</div></div>
+          </div>
+          <div class="subtool-opt" id="subb-deck-square" onclick="setBuildingTool('deck-square')">
+            <span class="subtool-icon">⬜</span><div><div>Square Deck</div><div style="font-size:9px;opacity:.6;font-weight:400">Click + drag rectangle</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Underground -->
+      <div class="panel-sep" style="margin-top:8px"></div>
+      <div class="subtool-opt" id="subb-underground-toggle" onclick="toggleUnderground()">
+        <span class="subtool-icon">⚡</span><div><div>Underground</div><div style="font-size:9px;opacity:.6;font-weight:400">Electrical · Plumbing</div></div>
+      </div>
+      <div id="pnl-underground" style="display:none;margin-top:6px">
+        <div class="panel-title" style="margin-bottom:4px">TYPE</div>
+        <div class="subtool-group">
+          <div class="subtool-opt active" id="subu-electrical" onclick="setUndergroundType('electrical')">
+            <span class="subtool-icon" style="color:#222">⚡</span><div><div>Electrical</div><div style="font-size:9px;opacity:.6;font-weight:400">Freeform line · black/red/yellow</div></div>
+          </div>
+          <div class="subtool-opt" id="subu-plumbing" onclick="setUndergroundType('plumbing')">
+            <span class="subtool-icon" style="color:#1976D2">💧</span><div><div>Plumbing</div><div style="font-size:9px;opacity:.6;font-weight:400">Freeform line · grey/blue/brown</div></div>
+          </div>
+        </div>
+        <div class="panel-title" style="margin-top:6px;margin-bottom:4px">COLOUR</div>
+        <div id="underground-colours" class="colour-row"></div>
+        <div style="margin-top:6px">
+          <div class="panel-title" style="margin-bottom:4px">LINE WIDTH</div>
+          <div class="slider-wrap">
+            <input type="range" id="underground-width" min="2" max="20" value="4"/>
+            <span id="underground-width-label">4 px</span>
+          </div>
+        </div>
+        <div class="panel-title" style="margin-top:6px;margin-bottom:4px">OPACITY</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button class="btn-panel" id="btn-underground-opacity" onclick="toggleUndergroundOpacity()">Transparent</button>
+        </div>
+        <div class="panel-sep" style="margin-top:6px"></div>
+        <button class="btn-panel" id="btn-draw-underground" onclick="activateUndergroundDraw()" style="background:#11502A;color:#fff;border-color:#11502A">&#9998; Draw Line</button>
+      </div>
+    </div>
+
+    <!-- Plant selected -->
+    <div id="pnl-plant" style="display:none;flex-direction:column;gap:7px;">
+      <div class="panel-h2" id="pnl-plant-name"></div>
+      <div class="panel-sub" id="pnl-plant-family"></div>
+      <button class="btn-panel" id="btn-transparency">👁 Make Transparent</button>
+      <button class="btn-panel" id="btn-copy-plant">⧉ Copy (Ctrl+C)</button>
+      <div style="display:flex;gap:4px">
+        <button class="btn-panel" id="btn-plant-forward" style="flex:1" title="Move forward">▲ Forward</button>
+        <button class="btn-panel" id="btn-plant-back" style="flex:1" title="Move backward">▼ Back</button>
+      </div>
+      <div class="panel-sep"></div>
+      <div class="panel-title">VISIBLE IN SEASONS</div>
+      <div class="season-checks">
+        <label><input type="checkbox" data-season="spring" checked/> 🌸 Spring</label>
+        <label><input type="checkbox" data-season="summer" checked/> ☀️ Summer</label>
+        <label><input type="checkbox" data-season="fall"   checked/> 🍂 Fall</label>
+        <label><input type="checkbox" data-season="winter"/>         ❄️ Winter</label>
+      </div>
+      <div class="panel-sep"></div>
+      <div class="panel-title">NOTES</div>
+      <textarea id="pnl-notes" placeholder="Add notes…"></textarea>
+      <button class="btn-panel danger" id="btn-delete-plant">🗑 Remove Plant</button>
+    </div>
+
+    <!-- Structure selected (non-edit) -->
+    <div id="pnl-struct" style="display:none;flex-direction:column;gap:7px;">
+      <div class="panel-h2" id="pnl-struct-name"></div>
+      <div class="panel-title">FILL COLOUR</div>
+      <div class="colour-row" id="pnl-struct-colours"></div>
+      <div class="panel-title" style="margin-top:4px">LABEL</div>
+      <input class="text-input" id="pnl-struct-label" type="text" placeholder="Label…"/>
+      <div id="pnl-path-width-wrap" style="display:none">
+        <div class="panel-title" style="margin-bottom:4px">PATH WIDTH</div>
+        <div class="slider-wrap">
+          <input type="range" id="pnl-path-width" min="6" max="60" value="18"/>
+          <span id="pnl-path-width-label">18 px</span>
+        </div>
+      </div>
+      <!-- Dimension entry for square objects -->
+      <div id="pnl-dim-rect" style="display:none">
+        <div class="panel-sep"></div>
+        <div class="panel-title">DIMENSIONS ({{unit}})</div>
+        <div style="display:flex;gap:6px;align-items:center;margin-top:4px">
+          <div style="flex:1">
+            <div style="font-size:9px;opacity:.6;margin-bottom:2px">LENGTH</div>
+            <input id="dim-rect-w" type="number" min="0.1" step="0.1" style="width:100%;padding:4px 6px;border:1.5px solid var(--ui-border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--input-bg);color:var(--text)"/>
+          </div>
+          <div style="font-size:11px;opacity:.5;margin-top:12px">×</div>
+          <div style="flex:1">
+            <div style="font-size:9px;opacity:.6;margin-bottom:2px">WIDTH</div>
+            <input id="dim-rect-h" type="number" min="0.1" step="0.1" style="width:100%;padding:4px 6px;border:1.5px solid var(--ui-border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--input-bg);color:var(--text)"/>
+          </div>
+        </div>
+        <button class="btn-panel" id="btn-dim-rect-apply" style="margin-top:6px">Apply Dimensions</button>
+      </div>
+      <!-- Dimension entry for circle objects -->
+      <div id="pnl-dim-circle" style="display:none">
+        <div class="panel-sep"></div>
+        <div class="panel-title">DIAMETER ({{unit}})</div>
+        <input id="dim-circle-d" type="number" min="0.1" step="0.1" style="width:100%;padding:4px 6px;border:1.5px solid var(--ui-border);border-radius:6px;font-size:12px;font-family:inherit;background:var(--input-bg);color:var(--text);margin-top:4px"/>
+        <button class="btn-panel" id="btn-dim-circle-apply" style="margin-top:6px">Apply Diameter</button>
+      </div>
+      <div class="panel-sep"></div>
+      <button class="btn-panel" id="btn-edit-struct">✏️ Edit Points (dblclick)</button>
+      <button class="btn-panel" id="btn-disconnect" style="display:none">🔗 Disconnect Objects</button>
+      <div style="display:flex;gap:4px;margin-top:2px">
+        <button class="btn-panel" id="btn-struct-forward" style="flex:1" title="Move forward">▲ Forward</button>
+        <button class="btn-panel" id="btn-struct-back" style="flex:1" title="Move backward">▼ Back</button>
+      </div>
+      <button class="btn-panel" id="btn-struct-transparency">👁 Make Transparent</button>
+      <button class="btn-panel danger" id="btn-delete-struct">🗑 Remove</button>
+    </div>
+
+    <!-- Edit mode -->
+    <div id="pnl-edit" style="display:none;flex-direction:column;gap:7px;">
+      <div class="panel-h2">✏️ Editing</div>
+      <div class="panel-sub" id="pnl-edit-name"></div>
+      <div class="panel-sep"></div>
+      <div class="empty-hint" style="font-size:10px;margin-top:0;text-align:left;opacity:.65;">
+        Drag handles to move points.<br/>Click canvas to insert a point near a segment.
+      </div>
+      <div id="pnl-edit-rect-hint" style="display:none;font-size:10px;opacity:.65;text-align:left;">Drag corner handles to reshape.</div>
+      <button class="btn-panel toggled" id="btn-add-pt" style="display:none">＋ Add Point (click near segment)</button>
+      <button class="btn-panel" id="btn-del-last-pt" style="display:none">－ Remove Last Point</button>
+      <div class="panel-sep"></div>
+      <button class="btn-panel" id="btn-done-edit">✓ Done Editing</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bottom (wrapped for float card) -->
+<div id="bottom-wrap">
+  <div id="bottom">
+    <div id="toolbar">
+      <button class="tool-btn active" id="btn-select"   onclick="setMode('select')">✋ Select</button>
+      <div class="tool-sep"></div>
+      <button class="tool-btn" id="btn-beds"     onclick="setMode('beds')">🌿 Beds</button>
+      <button class="tool-btn" id="btn-fences"   onclick="setMode('fences')"><svg width="16" height="13" viewBox="0 0 20 16" fill="none" style="vertical-align:middle;margin-right:3px"><polygon points="1,5 3,2 5,5" fill="#8B5E3C"/><rect x="1" y="5" width="4" height="11" rx="0.5" fill="#8B5E3C"/><polygon points="6,5 8,2 10,5" fill="#8B5E3C"/><rect x="6" y="5" width="4" height="11" rx="0.5" fill="#8B5E3C"/><polygon points="11,5 13,2 15,5" fill="#8B5E3C"/><rect x="11" y="5" width="4" height="11" rx="0.5" fill="#8B5E3C"/><polygon points="16,5 18,2 20,5" fill="#8B5E3C"/><rect x="16" y="5" width="4" height="11" rx="0.5" fill="#8B5E3C"/><rect x="0" y="6" width="20" height="2" rx="0.5" fill="#6B4423"/><rect x="0" y="11" width="20" height="2" rx="0.5" fill="#6B4423"/></svg> Fences</button>
+      <button class="tool-btn" id="btn-paths"    onclick="setMode('paths')">〰 Paths</button>
+      <button class="tool-btn" id="btn-building" onclick="setMode('building')">🏠 Building</button>
+      <button class="tool-btn" id="btn-water"    onclick="setMode('water')">💧 Water</button>
+      <div class="tool-sep"></div>
+      <button class="tool-btn" id="btn-grid"     onclick="toggleGrid()">⊞ Grid</button>
+      <button class="tool-btn"                   onclick="resetView()">⊙ Reset</button>
+      <button class="tool-btn"                   onclick="clearAll()" style="color:#c62828">🗑 Clear</button>
+    </div>
+    <div class="slider-row">
+      <span class="slider-label">Season</span>
+      <div class="slider-wrap-col">
+        <div id="season-slider-wrap">
+          <input type="range" id="season-slider" min="0" max="3" step="1" value="0" style="width:100%;display:block;"/>
+          <div id="season-labels">
+            <span id="slbl-0">🌸 Spring</span>
+            <span id="slbl-1">☀️ Summer</span>
+            <span id="slbl-2">🍂 Fall</span>
+            <span id="slbl-3">❄️ Winter</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// PROMO BANNER
+// ══════════════════════════════════════════════════════════
+const PROMOS=[
+  'Never forget where your garden plants are again',
+  'Create your dream garden in your backyard',
+  'Tulips done for the year? Change the season and replace them with something new!',
+  'Download your Garden Mapper to PDF and have an offline copy.',
+  'Plan ahead — see your garden in every season before you plant a single seed.'
+];
+let promoIdx=0;
+function showPromo(idx,dir){
+  const el=document.getElementById('promo-text');
+  el.style.opacity='0';
+  setTimeout(()=>{
+    promoIdx=(idx+PROMOS.length)%PROMOS.length;
+    el.textContent=PROMOS[promoIdx];
+    el.style.opacity='1';
+  },300);
+}
+function promoNext(){showPromo(promoIdx+1,1);}
+function promoPrev(){showPromo(promoIdx-1,-1);}
+setInterval(()=>showPromo(promoIdx+1,1),60000);
+
+// ══════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════
+const SEASONS=['spring','summer','fall','winter'];
+const SEASON_NAMES=['🌸 Spring','☀️ Summer','🍂 Fall','❄️ Winter'];
+let currentSeason=0, currentMode='select';
+let bedSubTool='curved', fenceSubTool='curved', fenceType='hedge', pathSubTool='freeform';
+let undergroundType='electrical', undergroundColour='#111111', undergroundWidth=4, undergroundOpaque=false;
+const ELEC_COLOURS=['#111111','#E53935','#FDD835'];
+const PLUMB_COLOURS=['#757575','#1976D2','#6D4C41'];
+let buildingSubTool='building', waterSubTool='pond', gateType='wood';
+let defaultPathWidth=18;
+let showGrid=false;
+let snapCell=8;
+let plantIdCtr=0, structIdCtr=0, groupIdCtr=0;
+let multiSelection=[]; // [{kind:'plant'|'struct', id, shape}]
+let clipboard=null;
+let selectedPlant=null, selectedStruct=null;
+let editingShapeId=null, editHandles=[], addingPt=false;
+let gardenName='My Garden', gardenUnit='ft', gardenW=60, gardenH=40;
+let propBounds=null;
+let currentGardenIndex=0;
+let waterDrawStart=null, poolCirclePreview=null;
+const UNIT_PX=32;
+const CELL_IN=3, CELL_PX=8;
+let freePts=[], freeDots=[], freePreview=null;
+const plantData={}, structData={};
+let recents=[];
+
+// ── Undo stack ──
+const undoStack=[];
+function pushUndo(fn){undoStack.push(fn);if(undoStack.length>20)undoStack.shift();}
+function undo(){const fn=undoStack.pop();if(fn)fn();}
+
+const SIZE_MAP={XS:24,S:40,M:64,L:96};
+
+const PLANT_CATALOG=[
+  // ── Generated stickers (transparent PNG) ──
+  {key:'flower-cluster_allium',label:'Allium',family:'Ornamental Bulb',src:'../stickers/flower-cluster_allium_M_CA-US-FR-GB-AU.png',size:'M'},
+  {key:'flower-cluster_hydrangea',label:'Hydrangea',family:'Shrub',src:'../stickers/flower-cluster_hydrangea_L_CA-US-FR-GB-AU.png',size:'L'},
+  {key:'flower-daisy_black-eyed-susan',label:'Black-eyed Susan',family:'Perennial',src:'../stickers/flower-daisy_black-eyed-susan_M_CA-US.png',size:'M'},
+  {key:'flower-daisy_cosmos',label:'Cosmos',family:'Annual Flower',src:'../stickers/flower-daisy_cosmos_M_CA-US-FR-GB-AU.png',size:'M'},
+  {key:'flower-daisy_echinacea',label:'Echinacea',family:'Perennial',src:'../stickers/flower-daisy_echinacea_M_CA-US-FR-GB.png',size:'M'},
+  // ── Placeholder stickers (SVG fallbacks) ──
+  {key:'tree',label:'Apple Tree',family:'Fruit Tree',src:'../stickers/tree.svg',size:'L'},
+  {key:'tree',label:'Maple Tree',family:'Tree',src:'../stickers/tree.svg',size:'L'},
+  {key:'rose-bush',label:'Rose Bush',family:'Shrub / Rose',src:'../stickers/rose-bush.svg',size:'M'},
+  {key:'lilac-bush',label:'Lavender',family:'Herb / Perennial',src:'../stickers/lilac-bush.svg',size:'M'},
+  {key:'lilac-bush',label:'Mint',family:'Herb',src:'../stickers/lilac-bush.svg',size:'XS'},
+];
+
+const BED_COLOURS=['#8B6340','#6D4C1F','#C8A96A','#9E9E9E','#BDBDBD','#78909C'];
+const BUILDING_COLOURS=['#90A4AE','#BCAAA4','#78909C','#A1887F'];
+const FENCE_COLOURS=['#795548','#6D4C41','#4E342E','#BCAAA4','#90A4AE'];
+const HEDGE_COLOURS=['#388E3C','#2E7D32','#1B5E20','#558B2F'];
+const PATH_COLOURS=['#D7CCC8','#BCAAA4','#9E9E9E','#5D4037'];
+const WATER_COLOURS=['#64B5F6','#42A5F5','#1E88E5','#90CAF9','#B3E5FC'];
+const GATE_STYLES={
+  wood:   {stroke:'#8B4513',strokeWidth:8,dash:[],label:'Wood Gate'},
+  metal:  {stroke:'#37474F',strokeWidth:5,dash:[6,4],label:'Metal Gate'},
+  stone:  {stroke:'#8D6E63',strokeWidth:10,dash:[10,5],label:'Stone Gate'},
+  plastic:{stroke:'#CFD8DC',strokeWidth:7,dash:[],label:'Plastic Gate'}
+};
+const DECKING_COLOURS=['#C8A96A','#A0785A','#8B6340','#D4A96A','#6D4C41'];
+
+// ══════════════════════════════════════════════════════════
+// SETUP
+// ══════════════════════════════════════════════════════════
+function setUnit(u){
+  gardenUnit=u;
+  ['ft','m'].forEach(x=>document.getElementById('unit-'+x).classList.toggle('active',x===u));
+  document.getElementById('unit-label-dim').textContent=`(width × depth in ${u})`;
+}
+function startGarden(){
+  gardenName=document.getElementById('setup-name').value.trim()||'My Garden';
+  gardenW=parseFloat(document.getElementById('setup-w').value)||60;
+  gardenH=parseFloat(document.getElementById('setup-h').value)||40;
+  document.getElementById('setup-overlay').style.display='none';
+  document.getElementById('logo-garden-name').textContent=gardenName;
+  document.getElementById('logo-garden-dims').textContent=`${gardenW}×${gardenH} ${gardenUnit}`;
+  initKonva();
+}
+
+document.getElementById('path-width-default').addEventListener('input',e=>{
+  defaultPathWidth=+e.target.value;
+  document.getElementById('path-width-label').textContent=e.target.value+' px';
+});
+
+// Back button
+document.getElementById('btn-back-panel').onclick=()=>{
+  if(editingShapeId){exitEditMode();return;}
+  if(selectedStruct){deselectAll();return;}
+  if(selectedPlant){deselectAll();return;}
+  setMode('select');
+};
+
+// ══════════════════════════════════════════════════════════
+// KONVA
+// ══════════════════════════════════════════════════════════
+let stage,gridLayer,structLayer,plantLayer,uiLayer,tr;
+let isPanning=false,panStart=null;
+let drawStart=null,previewRect=null;
+
+function initKonva(){
+  const wrap=document.getElementById('canvas-wrap');
+  const W=wrap.clientWidth,H=wrap.clientHeight;
+  stage=new Konva.Stage({container:'konva-container',width:W,height:H});
+  gridLayer=new Konva.Layer(); structLayer=new Konva.Layer();
+  plantLayer=new Konva.Layer(); uiLayer=new Konva.Layer();
+  stage.add(gridLayer,structLayer,plantLayer,uiLayer);
+  tr=new Konva.Transformer({rotateEnabled:false,borderStroke:'#558B2F',borderStrokeWidth:2,
+    anchorFill:'#fff',anchorStroke:'#558B2F',anchorSize:10,keepRatio:true});
+  uiLayer.add(tr);
+
+  const pw=gardenW*UNIT_PX*(gardenUnit==='m'?3.281:1);
+  const ph=gardenH*UNIT_PX*(gardenUnit==='m'?3.281:1);
+  const ox=Math.max(16,(W-pw)/2), oy=Math.max(16,(H-ph)/2);
+  propBounds={x:ox,y:oy,w:pw,h:ph};
+  structLayer.add(new Konva.Rect({x:ox,y:oy,width:pw,height:ph,stroke:'#558B2F',
+    strokeWidth:2,dash:[10,5],fill:'transparent',listening:false,strokeScaleEnabled:false}));
+  structLayer.add(new Konva.Text({x:ox+6,y:oy+5,
+    text:`${gardenName}  ${gardenW}×${gardenH} ${gardenUnit}`,
+    fontSize:11,fontStyle:'bold',fill:'#558B2F',opacity:.65,listening:false}));
+  structLayer.batchDraw();
+
+  stage.on('mousedown touchstart',e=>{
+    if(currentMode==='select'&&e.target===stage&&!editingShapeId){
+      isPanning=true; panStart=stage.getPointerPosition();
+      document.getElementById('canvas-wrap').classList.add('mode-panning');
+    }
+  });
+  stage.on('mousemove touchmove',()=>{
+    if(!isPanning||!panStart)return;
+    const pos=stage.getPointerPosition();
+    stage.x(stage.x()+pos.x-panStart.x); stage.y(stage.y()+pos.y-panStart.y);
+    panStart=pos; stage.batchDraw();
+  });
+  stage.on('mouseup touchend',()=>{
+    if(isPanning){isPanning=false;panStart=null;
+      document.getElementById('canvas-wrap').classList.remove('mode-panning');}
+  });
+
+  stage.on('click tap',e=>{
+    if(editingShapeId&&addingPt){handleAddPoint(stage.getRelativePointerPosition());return;}
+    if(isFreeMode()){handleFreeClick();return;}
+    if(currentMode==='water'&&waterSubTool==='fountain'){
+      placeFountain(stage.getRelativePointerPosition());return;
+    }
+    if(e.target===stage){if(currentMode==='select')deselectAll();}
+  });
+
+  stage.on('mousemove',()=>{
+    if(!isFreeMode()||freePts.length===0)return;
+    const pos=stage.getRelativePointerPosition();
+    const pts=[...freePts.flatMap(p=>[p.x,p.y]),pos.x,pos.y];
+    const isPath=(currentMode==='paths');
+    const previewTension=(currentMode==='beds'&&bedSubTool==='straight')||
+                         (currentMode==='fences'&&fenceSubTool==='straight')||
+                         (currentMode==='fences'&&fenceType==='fence')||
+                         (currentMode==='building'&&buildingSubTool==='deck-straight')?0:0.4;
+    const isFences=(currentMode==='fences');
+    const isWater=(currentMode==='water');
+    const isBldg=(currentMode==='building');
+    const strokeC=isFences?'#4CAF50':isPath?'#D7CCC8':isWater?'#1976D2':isBldg?DECKING_COLOURS[0]:'#558B2F';
+    if(!freePreview){
+      freePreview=new Konva.Line({points:pts,tension:previewTension,
+        stroke:strokeC,
+        strokeWidth:isPath?defaultPathWidth/stage.scaleX():1.5/stage.scaleX(),
+        dash:isPath?[]:[4,3],strokeScaleEnabled:false,listening:false,closed:false,opacity:isPath?0.55:1});
+      uiLayer.add(freePreview);
+    } else {
+      if(isPath)freePreview.strokeWidth(defaultPathWidth/stage.scaleX());
+      freePreview.points(pts); freePreview.tension(previewTension);
+    }
+    uiLayer.batchDraw();
+  });
+
+  stage.on('dblclick dbltap',e=>{
+    if(isFreeMode()&&freePts.length>=2){closeFreeShape();return;}
+    if(e.target!==stage&&!isFreeMode()&&!editingShapeId){
+      const id=e.target.id()||e.target.parent?.id();
+      if(id&&structData[id])enterEditMode(id);
+    }
+  });
+
+  stage.on('mousedown touchstart',e=>{
+    // Blur any focused input so Enter key reaches the keydown handler
+    if(document.activeElement&&document.activeElement!==document.body)document.activeElement.blur();
+    const isRectMode=(currentMode==='building'&&(buildingSubTool==='building'||buildingSubTool==='deck-square'))
+                    ||(currentMode==='beds'&&bedSubTool==='square')
+                    ||(currentMode==='water'&&waterSubTool==='pool-sq')
+                    ||(currentMode==='fences'&&fenceSubTool==='square');
+    const isCircleMode=(currentMode==='water'&&waterSubTool==='pool-circle');
+    if(isRectMode){
+      const pos=stage.getRelativePointerPosition(); drawStart=pos;
+      let fillC,cornerR=0;
+      if(currentMode==='building'&&buildingSubTool==='building'){fillC='#90A4AE';cornerR=3;}
+      else if(currentMode==='building'&&buildingSubTool==='deck-square'){fillC=DECKING_COLOURS[0];}
+      else if(currentMode==='water'&&waterSubTool==='pool-sq'){fillC='#64B5F6';}
+      else if(currentMode==='fences'&&fenceSubTool==='square'){fillC=HEDGE_COLOURS[0];}
+      else{fillC='#8B6340';}
+      previewRect=new Konva.Rect({x:pos.x,y:pos.y,width:0,height:0,
+        fill:fillC+'AA',stroke:'#3A2A10',strokeWidth:2,cornerRadius:cornerR,
+        listening:false,strokeScaleEnabled:false});
+      structLayer.add(previewRect);
+    } else if(isCircleMode){
+      waterDrawStart=stage.getRelativePointerPosition();
+      poolCirclePreview=new Konva.Circle({x:waterDrawStart.x,y:waterDrawStart.y,
+        radius:1,fill:'#64B5F6AA',stroke:'#1976D2',strokeWidth:2,
+        listening:false,strokeScaleEnabled:false});
+      structLayer.add(poolCirclePreview);
+    }
+  });
+  stage.on('mousemove touchmove',()=>{
+    if(drawStart&&previewRect){
+      const pos=stage.getRelativePointerPosition();
+      previewRect.x(Math.min(drawStart.x,pos.x)); previewRect.y(Math.min(drawStart.y,pos.y));
+      previewRect.width(Math.abs(pos.x-drawStart.x)); previewRect.height(Math.abs(pos.y-drawStart.y));
+      structLayer.batchDraw();
+    }
+    if(waterDrawStart&&poolCirclePreview){
+      const pos=stage.getRelativePointerPosition();
+      const r=Math.hypot(pos.x-waterDrawStart.x,pos.y-waterDrawStart.y);
+      poolCirclePreview.radius(Math.max(r,1)); structLayer.batchDraw();
+    }
+  });
+  stage.on('mouseup touchend',()=>{
+    if(waterDrawStart&&poolCirclePreview){
+      const pos=stage.getRelativePointerPosition();
+      const r=Math.hypot(pos.x-waterDrawStart.x,pos.y-waterDrawStart.y);
+      poolCirclePreview.destroy(); poolCirclePreview=null;
+      const cx=waterDrawStart.x,cy=waterDrawStart.y; waterDrawStart=null;
+      if(r>=5){
+        const id='struct_'+(structIdCtr++);
+        structData[id]={type:'pool-circle',colour:'#64B5F6',label:'Pool'};
+        const circle=new Konva.Circle({id,x:cx,y:cy,radius:r,
+          fill:'#64B5F6CC',stroke:'#1976D2',strokeWidth:2,draggable:true});
+        circle.on('dragmove',()=>{if(showGrid&&snapCell){circle.x(Math.round(circle.x()/snapCell)*snapCell);circle.y(Math.round(circle.y()/snapCell)*snapCell);}});
+        circle.on('click tap',e=>{if(!isFreeMode()&&!editingShapeId)selectStruct(id,circle,e)});
+        circle.on('dblclick dbltap',()=>{if(!isFreeMode())enterEditMode(id);});
+        structLayer.add(circle); structLayer.batchDraw();
+        selectStruct(id,circle); setMode('select');
+      }
+      return;
+    }
+    if(!drawStart||!previewRect){drawStart=null;return;}
+    const pos=stage.getRelativePointerPosition();
+    const x=Math.min(drawStart.x,pos.x),y=Math.min(drawStart.y,pos.y);
+    const w=Math.abs(pos.x-drawStart.x),h=Math.abs(pos.y-drawStart.y);
+    previewRect.destroy(); previewRect=null; drawStart=null;
+    if(w<8||h<8){structLayer.batchDraw();return;}
+    let type;
+    if(currentMode==='building'&&buildingSubTool==='deck-square') type='deck';
+    else if(currentMode==='building') type='building';
+    else if(currentMode==='water'&&waterSubTool==='pool-sq') type='pool-sq';
+    else if(currentMode==='fences'&&fenceSubTool==='square') type='hedge-sq';
+    else type='bed-square';
+    addRectStruct(type,x,y,w,h);
+    structLayer.batchDraw();
+  });
+
+  stage.on('wheel',e=>{
+    if(isFreeMode()||editingShapeId)return;
+    e.evt.preventDefault();
+    const old=stage.scaleX(),ptr=stage.getPointerPosition();
+    const to={x:(ptr.x-stage.x())/old,y:(ptr.y-stage.y())/old};
+    const dir=e.evt.deltaY>0?-1:1;
+    const fitScaleX=stage.width()/(propBounds.w+100);
+    const fitScaleY=stage.height()/(propBounds.h+100);
+    const minScale=Math.min(fitScaleX,fitScaleY);
+    const next=Math.min(Math.max(old*(dir>0?1.1:0.9),minScale),6);
+    stage.scale({x:next,y:next}); stage.position({x:ptr.x-to.x*next,y:ptr.y-to.y*next});
+    stage.batchDraw(); updateScaleDisplay();
+    if(showGrid)drawGrid();
+  });
+
+  drawGrid(); updateScaleDisplay(); loadImages();
+  zoomToFit();
+  positionSeasonLabels();
+}
+
+function zoomToFit(){
+  if(!stage||!propBounds)return;
+  const pad=20;
+  const sw=stage.width(), sh=stage.height();
+  const scaleX=(sw-pad*2)/propBounds.w;
+  const scaleY=(sh-pad*2)/propBounds.h;
+  const scale=Math.min(scaleX,scaleY,6);
+  const cx=propBounds.x+propBounds.w/2;
+  const cy=propBounds.y+propBounds.h/2;
+  stage.scale({x:scale,y:scale});
+  stage.position({
+    x:sw/2-cx*scale,
+    y:sh/2-cy*scale
+  });
+  stage.batchDraw();
+  updateScaleDisplay();
+  if(showGrid)drawGrid();
+}
+
+// ══════════════════════════════════════════════════════════
+// FREEFORM DRAWING
+// ══════════════════════════════════════════════════════════
+function isFreeMode(){
+  if(currentMode==='beds'&&bedSubTool!=='square')return true;
+  if(currentMode==='fences'&&fenceSubTool!=='square')return true;
+  if(currentMode==='paths')return true;
+  if(currentMode==='water'&&waterSubTool==='pond')return true;
+  if(currentMode==='building'&&(buildingSubTool==='deck-curved'||buildingSubTool==='deck-straight'||buildingSubTool==='underground'))return true;
+  return false;
+}
+
+function getBoundaryEdge(pt,b){
+  if(!b)return null;
+  const T=28/stage.scaleX();
+  if(Math.abs(pt.y-b.y)<T)return 0;
+  if(Math.abs(pt.x-(b.x+b.w))<T)return 1;
+  if(Math.abs(pt.y-(b.y+b.h))<T)return 2;
+  if(Math.abs(pt.x-b.x)<T)return 3;
+  return null;
+}
+
+function getBoundaryClosure(ptLast,ptFirst,b){
+  const edgeL=getBoundaryEdge(ptLast,b);
+  const edgeF=getBoundaryEdge(ptFirst,b);
+  if(edgeL===null||edgeF===null)return[];
+  if(edgeL===edgeF)return[];
+  const corners=[{x:b.x,y:b.y},{x:b.x+b.w,y:b.y},{x:b.x+b.w,y:b.y+b.h},{x:b.x,y:b.y+b.h}];
+  const cwDist=(edgeF-edgeL+4)%4;
+  const ccwDist=(4-cwDist)%4;
+  const result=[];
+  if(cwDist<=ccwDist){
+    let e=edgeL;
+    for(let i=0;i<cwDist;i++){result.push(corners[(e+1)%4]);e=(e+1)%4;}
+  } else {
+    let e=edgeL;
+    for(let i=0;i<ccwDist;i++){result.push(corners[e]);e=(e+3)%4;}
+  }
+  return result;
+}
+
+function handleFreeClick(){
+  if(!isFreeMode())return;
+  let pos=stage.getRelativePointerPosition();
+  const T=22/stage.scaleX();
+  if(propBounds){
+    const b=propBounds;
+    const edges=[{edge:0,snap:{y:b.y}},{edge:1,snap:{x:b.x+b.w}},{edge:2,snap:{y:b.y+b.h}},{edge:3,snap:{x:b.x}}];
+    for(const {edge,snap} of edges){
+      const dist=edge===0||edge===2?Math.abs(pos.y-snap.y):Math.abs(pos.x-snap.x);
+      if(dist<T){
+        if(edge===0||edge===2) pos={x:pos.x,y:snap.y,onBoundary:true};
+        else pos={x:snap.x,y:pos.y,onBoundary:true};
+        pos.onBoundary=true; break;
+      }
+    }
+    const corners=[{x:b.x,y:b.y},{x:b.x+b.w,y:b.y},{x:b.x+b.w,y:b.y+b.h},{x:b.x,y:b.y+b.h}];
+    for(const c of corners){
+      if(Math.hypot(pos.x-c.x,pos.y-c.y)<T*1.5){pos={x:c.x,y:c.y,onBoundary:true};break;}
+    }
+    pos.x=Math.max(propBounds.x,Math.min(propBounds.x+propBounds.w,pos.x));
+    pos.y=Math.max(propBounds.y,Math.min(propBounds.y+propBounds.h,pos.y));
+  }
+  if(freePts.length>=3&&currentMode!=='paths'){
+    const first=freePts[0];
+    if(Math.hypot(pos.x-first.x,pos.y-first.y)<T*1.2){closeFreeShape();return;}
+  }
+  freePts.push(pos);
+  const dotFill=currentMode==='paths'?'#795548':currentMode==='fences'?'#2E7D32':currentMode==='water'?'#1976D2':'#558B2F';
+  const dot=new Konva.Circle({x:pos.x,y:pos.y,radius:5/stage.scaleX(),
+    fill:dotFill,stroke:'#fff',strokeWidth:1.5/stage.scaleX(),listening:false});
+  uiLayer.add(dot); freeDots.push(dot); uiLayer.batchDraw();
+  if(currentMode==='paths'&&pathSubTool==='gate'&&freePts.length>=2){placeGate();return;}
+  updateHint();
+}
+
+function placeGate(){
+  if(freePts.length<2){cancelFreeShape();return;}
+  const p1=freePts[0],p2=freePts[1];
+  const gs=GATE_STYLES[gateType]||GATE_STYLES.wood;
+  const id='struct_'+(structIdCtr++);
+  structData[id]={type:'gate',gateType,colour:gs.stroke,label:gs.label,pathWidth:gs.strokeWidth,tension:0};
+  const shape=new Konva.Line({id,points:[p1.x,p1.y,p2.x,p2.y],tension:0,closed:false,
+    stroke:gs.stroke,strokeWidth:gs.strokeWidth,dash:gs.dash,
+    strokeScaleEnabled:false,lineCap:'round',draggable:true,hitStrokeWidth:gs.strokeWidth+10});
+  shape.on('dragmove',()=>{if(showGrid&&snapCell){shape.x(Math.round(shape.x()/snapCell)*snapCell);shape.y(Math.round(shape.y()/snapCell)*snapCell);}});
+  shape.on('click tap',e=>{if(!isFreeMode()&&!editingShapeId)selectStruct(id,shape,e)});
+  shape.on('dblclick dbltap',()=>{if(!isFreeMode())enterEditMode(id);});
+  structLayer.add(shape); structLayer.batchDraw();
+  cancelFreeShape(); selectStruct(id,shape); setMode('select');
+}
+
+// Builds an SVG path with smooth curves for drawn points and straight lines for boundary
+function buildHybridSvgPath(userPts, boundaryCorners, tension){
+  if(userPts.length<2) return '';
+  const t=tension||0.45;
+  // Generate cubic bezier control points for the user-drawn section (Catmull-Rom → cubic)
+  function cp(p0,p1,p2,p3){
+    const d=t/6;
+    return {
+      cp1:{x:p1.x+(p2.x-p0.x)*d, y:p1.y+(p2.y-p0.y)*d},
+      cp2:{x:p2.x-(p3.x-p1.x)*d, y:p2.y-(p3.y-p1.y)*d}
+    };
+  }
+  const pts=userPts;
+  let d=`M ${pts[0].x} ${pts[0].y}`;
+  for(let i=0;i<pts.length-1;i++){
+    const p0=pts[Math.max(0,i-1)];
+    const p1=pts[i];
+    const p2=pts[i+1];
+    const p3=pts[Math.min(pts.length-1,i+2)];
+    const {cp1,cp2}=cp(p0,p1,p2,p3);
+    d+=` C ${cp1.x} ${cp1.y} ${cp2.x} ${cp2.y} ${p2.x} ${p2.y}`;
+  }
+  // Straight lines for boundary corners back to start
+  for(const c of boundaryCorners){
+    d+=` L ${c.x} ${c.y}`;
+  }
+  d+=' Z';
+  return d;
+}
+
+function closeFreeShape(){
+  console.log('closeFreeShape: mode='+currentMode+' buildingSubTool='+buildingSubTool+' freePts='+freePts.length);
+  if(freePts.length<2){cancelFreeShape();return;}
+  const isPath=(currentMode==='paths');
+  const isFences=(currentMode==='fences');
+  const isFenceOpen=(isFences&&fenceType==='fence');
+  const isWaterPond=(currentMode==='water'&&waterSubTool==='pond');
+  const isDeckFree=(currentMode==='building'&&(buildingSubTool==='deck-curved'||buildingSubTool==='deck-straight'));
+  const isUnderground=(currentMode==='building'&&buildingSubTool==='underground');
+  let tension=0.45;
+  if(isPath) tension=0.4;
+  if(currentMode==='beds'&&bedSubTool==='straight') tension=0;
+  if(isFences&&fenceSubTool==='straight') tension=0;
+  if(isFenceOpen) tension=0;
+  if(isDeckFree&&buildingSubTool==='deck-straight') tension=0;
+  if(isDeckFree&&buildingSubTool==='deck-curved') tension=0.45;
+  if(isUnderground) tension=0.4;
+  const closedShape=!isPath&&!isFenceOpen&&!isUnderground;
+  let type,colour,label,sWidth,strokeC,fillC;
+  if(isPath){type='path';colour=PATH_COLOURS[0];label='Path';sWidth=defaultPathWidth;strokeC=colour;fillC='transparent';}
+  else if(isUnderground){type='underground-'+undergroundType;colour=undergroundColour;label=undergroundType==='electrical'?'Electrical':'Plumbing';sWidth=undergroundWidth;strokeC=undergroundColour;fillC='transparent';}
+  else if(isFenceOpen){type='fence';colour=FENCE_COLOURS[0];label='Fence';sWidth=8;strokeC=FENCE_COLOURS[0];fillC='transparent';}
+  else if(isFences){type='hedge';colour=HEDGE_COLOURS[0];label='Hedge';sWidth=2;strokeC='#3A2A10';fillC=colour+'CC';}
+  else if(isWaterPond){type='pond';colour=WATER_COLOURS[0];label='Pond';sWidth=2;strokeC='#1976D2';fillC=colour+'CC';}
+  else if(isDeckFree){type='deck';colour=DECKING_COLOURS[0];label='Deck';sWidth=2;strokeC='#3A2A10';fillC=colour+'CC';}
+  else{type='bed';colour=BED_COLOURS[0];label='Garden Bed';sWidth=2;strokeC='#3A2A10';fillC=colour+'CC';}
+  const id='struct_'+(structIdCtr++);
+
+  // Check if this is a boundary-closed curved shape — needs hybrid SVG path
+  let useSvgPath=false;
+  let boundaryCornersForPath=[];
+  if(closedShape&&tension>0&&freePts.length>=3&&propBounds){
+    const first=freePts[0],last=freePts[freePts.length-1];
+    if(first.onBoundary&&last.onBoundary){
+      boundaryCornersForPath=getBoundaryClosure(last,first,propBounds);
+      if(boundaryCornersForPath.length>=0) useSvgPath=true;
+    }
+  }
+
+  const opacity=(isUnderground&&!undergroundOpaque)?0.45:1;
+  let shape;
+  if(useSvgPath){
+    const d=buildHybridSvgPath(freePts,boundaryCornersForPath,tension);
+    structData[id]={type,colour,label,pathWidth:defaultPathWidth,tension,svgPath:d,opacity};
+    shape=new Konva.Path({id,data:d,
+      fill:fillC,stroke:strokeC,strokeWidth:sWidth,
+      strokeScaleEnabled:false,lineCap:'round',lineJoin:'round',draggable:true});
+  } else {
+    const allPts=[...freePts];
+    const flat=allPts.flatMap(p=>[p.x,p.y]);
+    structData[id]={type,colour,label,pathWidth:isUnderground?undergroundWidth:defaultPathWidth,tension,opacity};
+    shape=new Konva.Line({id,points:flat,tension,closed:closedShape,
+      fill:fillC,stroke:strokeC,strokeWidth:sWidth,
+      strokeScaleEnabled:false,lineCap:'round',lineJoin:'round',draggable:true,
+      hitStrokeWidth:isPath||isUnderground?sWidth+10:undefined});
+  }
+  shape.on('dragmove',()=>{if(showGrid&&snapCell){shape.x(Math.round(shape.x()/snapCell)*snapCell);shape.y(Math.round(shape.y()/snapCell)*snapCell);}});
+  shape.on('click tap',e=>{if(!isFreeMode()&&!editingShapeId)selectStruct(id,shape,e)});
+  shape.on('dblclick dbltap',()=>{if(!isFreeMode())enterEditMode(id);});
+  if(opacity<1)shape.opacity(opacity);
+  structLayer.add(shape); structLayer.batchDraw();
+  cancelFreeShape(); selectStruct(id,shape); setMode('select');
+}
+
+function cancelFreeShape(){
+  freePts=[];
+  freeDots.forEach(d=>d.destroy()); freeDots=[];
+  if(freePreview){freePreview.destroy();freePreview=null;}
+  document.getElementById('hint-bar').style.display='none';
+  if(uiLayer)uiLayer.batchDraw();
+}
+
+function updateHint(){
+  const h=document.getElementById('hint-bar');
+  const n=freePts.length;
+  const isPath=(currentMode==='paths');
+  const isUnderground=(currentMode==='building'&&buildingSubTool==='underground');
+  if(currentMode==='paths'&&pathSubTool==='gate'){
+    h.textContent=n===0?'Click first gate post':'Click second gate post to place gate';
+  } else if(isPath||isUnderground){
+    h.textContent=`${n} point${n!==1?'s':''} · Enter or double-click to finish`;
+  } else {
+    h.textContent=n<3?`${n} point${n!==1?'s':''} · Need ${3-n} more`
+                     :`${n} points · Enter, double-click, or click near start to close`;
+  }
+  h.style.display='block';
+}
+
+// ══════════════════════════════════════════════════════════
+// STRUCTURES
+// ══════════════════════════════════════════════════════════
+function addRectStructReturn(type,x,y,w,h,colour){
+  const id='struct_'+(structIdCtr++);
+  if(!colour){
+    if(type==='building')colour=BUILDING_COLOURS[0];
+    else if(type==='deck')colour=DECKING_COLOURS[0];
+    else if(type==='pool-sq')colour=WATER_COLOURS[0];
+    else if(type==='hedge-sq')colour=HEDGE_COLOURS[0];
+    else colour=BED_COLOURS[0];
+  }
+  const labelMap={building:'Building',deck:'Deck','pool-sq':'Pool','hedge-sq':'Hedge'};
+  structData[id]={type,colour,label:labelMap[type]||'Garden Bed'};
+  const cornerR=(type==='building')?3:0;
+  const rect=new Konva.Rect({id,x,y,width:w,height:h,fill:colour+'CC',
+    stroke:'#3A2A10',strokeWidth:2,cornerRadius:cornerR,
+    draggable:true,strokeScaleEnabled:false});
+  rect.on('transformend',()=>{
+    rect.width(rect.width()*rect.scaleX()); rect.height(rect.height()*rect.scaleY());
+    rect.scaleX(1); rect.scaleY(1); structLayer.batchDraw();
+  });
+  rect.on('click tap',e=>{if(!isFreeMode()&&!editingShapeId)selectStruct(id,rect,e)});
+  rect.on('dblclick dbltap',()=>{if(!isFreeMode())enterEditMode(id);});
+  rect.on('dragmove',()=>{if(showGrid&&snapCell){rect.x(Math.round(rect.x()/snapCell)*snapCell);rect.y(Math.round(rect.y()/snapCell)*snapCell);}});
+  rect.on('dragend',()=>tryMergeRects(id,rect));
+  structLayer.add(rect);
+  return id;
+}
+
+function addRectStruct(type,x,y,w,h,colour){
+  const id=addRectStructReturn(type,x,y,w,h,colour);
+  structLayer.batchDraw();
+  const shape=structLayer.findOne('#'+id);
+  selectStruct(id,shape); setMode('select');
+}
+
+// CHANGE 7: Group-based merge (preserves original sizes, up to 4 members)
+const MAX_GROUP=4;
+function getGroupMembers(group){
+  // Returns array of {x,y,w,h,colour,type,label} for each rect in group
+  return group.getChildren().filter(c=>c instanceof Konva.Rect).map(r=>({
+    x:r.x()+group.x(),y:r.y()+group.y(),w:r.width(),h:r.height(),
+    colour:r.fill().replace('CC',''),type:structData[group.id()]?.type,
+    label:structData[group.id()]?.label
+  }));
+}
+
+function tryMergeRects(id,rect){
+  const d=structData[id];
+  if(!d||(d.type!=='bed-square'&&d.type!=='building'&&d.type!=='deck'&&d.type!=='pool-sq'&&d.type!=='hedge-sq'))return;
+  const SNAP=showGrid&&snapCell?snapCell:12;
+  const ax=rect.x(),ay=rect.y(),aw=rect.width(),ah=rect.height();
+
+  // Check proximity to existing group first (add to group if <MAX_GROUP)
+  for(const [oid,od] of Object.entries(structData)){
+    if(oid===id||!od.isGroup||od.type!==d.type)continue;
+    const grp=structLayer.findOne('#'+oid);
+    if(!grp||!(grp instanceof Konva.Group))continue;
+    const members=grp.getChildren().filter(c=>c instanceof Konva.Rect);
+    if(members.length>=MAX_GROUP)continue;
+    // Check if rect is adjacent to any member
+    let adjacent=false;
+    for(const m of members){
+      const mx=m.x()+grp.x(),my=m.y()+grp.y(),mw=m.width(),mh=m.height();
+      const xOv=ax<mx+mw+SNAP&&ax+aw+SNAP>mx;
+      const yOv=ay<my+mh+SNAP&&ay+ah+SNAP>my;
+      const edge=Math.abs(ax-(mx+mw))<SNAP||Math.abs(ax+aw-mx)<SNAP||
+                 Math.abs(ay-(my+mh))<SNAP||Math.abs(ay+ah-my)<SNAP;
+      if(xOv&&yOv&&edge){adjacent=true;break;}
+    }
+    if(!adjacent)continue;
+    // Save state for undo
+    const savedMembers=getGroupMembers(grp);
+    const savedNew={x:ax,y:ay,w:aw,h:ah,colour:d.colour,type:d.type,label:d.label};
+    // Add new rect to existing group
+    rect.destroy(); delete structData[id];
+    const newR=new Konva.Rect({x:ax-grp.x(),y:ay-grp.y(),width:aw,height:ah,
+      fill:d.colour+'CC',stroke:'#3A2A10',strokeWidth:2,
+      cornerRadius:d.type==='building'?3:0,strokeScaleEnabled:false});
+    grp.add(newR);
+    pushUndo(()=>{
+      newR.destroy();
+      const remaining=grp.getChildren().filter(c=>c instanceof Konva.Rect);
+      if(remaining.length===0){grp.destroy();delete structData[oid];}
+      else addRectStructReturn(savedNew.type,savedNew.x,savedNew.y,savedNew.w,savedNew.h,savedNew.colour);
+      structLayer.batchDraw();
+    });
+    deselectAll(); structLayer.batchDraw(); return;
+  }
+
+  // Check proximity to a lone rect (create new 2-member group)
+  for(const [oid,od] of Object.entries(structData)){
+    if(oid===id||od.type!==d.type||od.isGroup)continue;
+    const other=structLayer.findOne('#'+oid);
+    if(!other||!(other instanceof Konva.Rect))continue;
+    const bx=other.x(),by=other.y(),bw=other.width(),bh=other.height();
+    const xOverlap=ax<bx+bw+SNAP&&ax+aw+SNAP>bx;
+    const yOverlap=ay<by+bh+SNAP&&ay+ah+SNAP>by;
+    if(!xOverlap||!yOverlap)continue;
+    const edgeClose=Math.abs(ax-(bx+bw))<SNAP||Math.abs(ax+aw-bx)<SNAP||
+                    Math.abs(ay-(by+bh))<SNAP||Math.abs(ay+ah-by)<SNAP;
+    if(!edgeClose)continue;
+
+    const savedA={x:ax,y:ay,w:aw,h:ah,colour:d.colour,type:d.type,label:d.label};
+    const savedB={x:bx,y:by,w:bw,h:bh,colour:od.colour,type:od.type,label:od.label};
+    rect.destroy(); delete structData[id];
+    other.destroy(); delete structData[oid];
+
+    const gid='group_'+(groupIdCtr++);
+    structData[gid]={type:d.type,colour:d.colour,label:d.label,isGroup:true};
+    const group=new Konva.Group({id:gid,x:0,y:0,draggable:true});
+    const rA=new Konva.Rect({x:ax,y:ay,width:aw,height:ah,fill:d.colour+'CC',
+      stroke:'#3A2A10',strokeWidth:2,cornerRadius:d.type==='building'?3:0,strokeScaleEnabled:false});
+    const rB=new Konva.Rect({x:bx,y:by,width:bw,height:bh,fill:od.colour+'CC',
+      stroke:'#3A2A10',strokeWidth:2,cornerRadius:od.type==='building'?3:0,strokeScaleEnabled:false});
+    group.add(rA,rB);
+    group.on('dragmove',()=>{
+      if(showGrid&&snapCell){group.x(Math.round(group.x()/snapCell)*snapCell);group.y(Math.round(group.y()/snapCell)*snapCell);}
+    });
+    group.on('click tap',e=>{if(!isFreeMode()&&!editingShapeId)selectStruct(gid,group,e)});
+    structLayer.add(group);
+    pushUndo(()=>{
+      group.destroy(); delete structData[gid];
+      addRectStructReturn(savedA.type,savedA.x,savedA.y,savedA.w,savedA.h,savedA.colour);
+      addRectStructReturn(savedB.type,savedB.x,savedB.y,savedB.w,savedB.h,savedB.colour);
+      structLayer.batchDraw();
+    });
+    deselectAll(); structLayer.batchDraw(); return;
+  }
+}
+
+function disconnectGroup(id,group){
+  const members=getGroupMembers(group);
+  group.destroy(); delete structData[id];
+  members.forEach(m=>addRectStructReturn(m.type,m.x,m.y,m.w,m.h,m.colour));
+  deselectAll(); structLayer.batchDraw();
+}
+
+function placeFountain(pos){
+  const id='struct_'+(structIdCtr++);
+  // Snap placement to grid
+  const sx=showGrid&&snapCell?Math.round(pos.x/snapCell)*snapCell:pos.x;
+  const sy=showGrid&&snapCell?Math.round(pos.y/snapCell)*snapCell:pos.y;
+  structData[id]={type:'water-fountain',colour:'#64B5F6',label:'Fountain'};
+  const circle=new Konva.Circle({id,x:sx,y:sy,radius:30,
+    fill:'#64B5F6',stroke:'#1976D2',strokeWidth:2,draggable:true});
+  circle.on('dragmove',()=>{if(showGrid&&snapCell){circle.x(Math.round(circle.x()/snapCell)*snapCell);circle.y(Math.round(circle.y()/snapCell)*snapCell);}});
+  circle.on('click tap',e=>{if(!isFreeMode()&&!editingShapeId)selectStruct(id,circle,e)});
+  circle.on('dblclick dbltap',()=>{if(!isFreeMode())enterEditMode(id);});
+  structLayer.add(circle); structLayer.batchDraw();
+  selectStruct(id,circle);
+}
+
+function selectStruct(id,shape,evt){
+  if(editingShapeId)exitEditMode();
+  const ne=evt?.evt||evt;
+  const multi=ne&&(ne.ctrlKey||ne.metaKey||ne.shiftKey);
+  if(multi){
+    addToMultiSelection('struct',id,shape);
+    return;
+  }
+  deselectAll();
+  selectedStruct={id,shape};
+  if(shape instanceof Konva.Rect){tr.keepRatio(false);tr.nodes([shape]);}
+  else tr.nodes([]);
+  uiLayer.batchDraw(); renderPanel();
+}
+
+document.getElementById('btn-delete-struct').onclick=()=>{
+  if(!selectedStruct)return;
+  selectedStruct.shape.destroy(); delete structData[selectedStruct.id];
+  deselectAll(); structLayer.batchDraw();
+};
+document.getElementById('btn-dim-rect-apply').onclick=()=>{
+  if(!selectedStruct)return;
+  const s=selectedStruct.shape;
+  if(!(s instanceof Konva.Rect))return;
+  const pxPerUnit=UNIT_PX*(gardenUnit==='m'?3.281:1);
+  const newW=parseFloat(document.getElementById('dim-rect-w').value);
+  const newH=parseFloat(document.getElementById('dim-rect-h').value);
+  if(!newW||!newH||newW<=0||newH<=0)return;
+  s.width(newW*pxPerUnit);
+  s.height(newH*pxPerUnit);
+  s.scaleX(1); s.scaleY(1);
+  structLayer.batchDraw();
+  renderPanel();
+};
+
+document.getElementById('btn-dim-circle-apply').onclick=()=>{
+  if(!selectedStruct)return;
+  const s=selectedStruct.shape;
+  if(!(s instanceof Konva.Circle))return;
+  const pxPerUnit=UNIT_PX*(gardenUnit==='m'?3.281:1);
+  const newD=parseFloat(document.getElementById('dim-circle-d').value);
+  if(!newD||newD<=0)return;
+  s.radius((newD/2)*pxPerUnit);
+  structLayer.batchDraw();
+  renderPanel();
+};
+
+document.getElementById('btn-disconnect').onclick=()=>{
+  if(!selectedStruct)return;
+  const {id,shape}=selectedStruct;
+  if(!(shape instanceof Konva.Group))return;
+  disconnectGroup(id,shape);
+};
+
+document.getElementById('btn-edit-struct').onclick=()=>{
+  if(!selectedStruct)return;
+  enterEditMode(selectedStruct.id);
+};
+
+// ══════════════════════════════════════════════════════════
+// EDIT MODE
+// ══════════════════════════════════════════════════════════
+function enterEditMode(id){
+  const shape=structLayer.findOne('#'+id);
+  if(!shape)return;
+  deselectAll(); editingShapeId=id; tr.nodes([]);
+  buildEditHandles(id,shape); renderPanel();
+}
+
+function buildEditHandles(id,shape){
+  editHandles.forEach(h=>h.destroy()); editHandles=[];
+  const pts=getShapePoints(shape);
+  pts.forEach((_,i)=>{const h=makeHandle(id,shape,i);uiLayer.add(h);editHandles.push(h);});
+  shape.off('dragmove.edithandles');
+  shape.on('dragmove.edithandles',()=>{
+    const pts2=getShapePoints(shape);
+    editHandles.forEach((h,i)=>{if(pts2[i]){h.x(pts2[i].x);h.y(pts2[i].y);}});
+    uiLayer.batchDraw();
+  });
+  uiLayer.batchDraw();
+}
+
+function makeHandle(id,shape,ptIdx){
+  const pts=getShapePoints(shape);
+  const p=pts[ptIdx];
+  const h=new Konva.Circle({x:p.x,y:p.y,radius:7/stage.scaleX(),
+    fill:'#558B2F',stroke:'#fff',strokeWidth:2/stage.scaleX(),draggable:true});
+  h.on('dragmove',()=>{
+    const cur=getShapePoints(shape);
+    cur[ptIdx]={x:h.x(),y:h.y()};
+    setShapePoints(shape,cur); structLayer.batchDraw();
+  });
+  return h;
+}
+
+function getShapePoints(shape){
+  if(shape instanceof Konva.Rect){
+    const x=shape.x(),y=shape.y(),w=shape.width(),h=shape.height();
+    return [{x,y},{x:x+w,y},{x:x+w,y:y+h},{x,y:y+h}];
+  }
+  if(shape instanceof Konva.Circle) return [{x:shape.x(),y:shape.y()}];
+  const flat=shape.points();
+  const pts=[];
+  for(let i=0;i<flat.length;i+=2) pts.push({x:flat[i],y:flat[i+1]});
+  return pts;
+}
+
+function setShapePoints(shape,pts){
+  if(shape instanceof Konva.Rect){
+    const xs=pts.map(p=>p.x),ys=pts.map(p=>p.y);
+    const nx=Math.min(...xs),ny=Math.min(...ys);
+    shape.x(nx); shape.y(ny);
+    shape.width(Math.max(...xs)-nx); shape.height(Math.max(...ys)-ny);
+    return;
+  }
+  if(shape instanceof Konva.Line) shape.points(pts.flatMap(p=>[p.x,p.y]));
+  if(shape instanceof Konva.Circle&&pts[0]){shape.x(pts[0].x);shape.y(pts[0].y);}
+}
+
+function exitEditMode(){
+  const sh=structLayer.findOne('#'+editingShapeId);
+  if(sh)sh.off('dragmove.edithandles');
+  editHandles.forEach(h=>h.destroy()); editHandles=[];
+  editingShapeId=null; addingPt=false;
+  if(uiLayer)uiLayer.batchDraw();
+  renderPanel();
+}
+
+document.getElementById('btn-done-edit').onclick=()=>exitEditMode();
+
+document.getElementById('btn-add-pt').onclick=()=>{
+  addingPt=!addingPt;
+  document.getElementById('btn-add-pt').classList.toggle('toggled',addingPt);
+  showHint(addingPt?'Click near a line segment to insert a point':'');
+};
+
+document.getElementById('btn-del-last-pt').onclick=()=>{
+  if(!editingShapeId)return;
+  const shape=structLayer.findOne('#'+editingShapeId);
+  if(!shape||!(shape instanceof Konva.Line))return;
+  const pts=shape.points();
+  if(pts.length<=6)return;
+  shape.points(pts.slice(0,-2)); structLayer.batchDraw();
+  buildEditHandles(editingShapeId,shape);
+};
+
+function pointToSegmentDist(p,a,b){
+  const dx=b.x-a.x,dy=b.y-a.y,len2=dx*dx+dy*dy;
+  if(len2===0)return Math.hypot(p.x-a.x,p.y-a.y);
+  const t=Math.max(0,Math.min(1,((p.x-a.x)*dx+(p.y-a.y)*dy)/len2));
+  return Math.hypot(p.x-(a.x+t*dx),p.y-(a.y+t*dy));
+}
+
+function insertPointNearestSegment(shape,pos){
+  const flat=shape.points();
+  const n=flat.length/2;
+  let bestIdx=0,bestDist=Infinity;
+  for(let i=0;i<n-1;i++){
+    const d=pointToSegmentDist(pos,{x:flat[i*2],y:flat[i*2+1]},{x:flat[(i+1)*2],y:flat[(i+1)*2+1]});
+    if(d<bestDist){bestDist=d;bestIdx=i;}
+  }
+  if(shape.closed()){
+    const d=pointToSegmentDist(pos,{x:flat[(n-1)*2],y:flat[(n-1)*2+1]},{x:flat[0],y:flat[1]});
+    if(d<bestDist)bestIdx=n-1;
+  }
+  const newFlat=[...flat.slice(0,(bestIdx+1)*2),pos.x,pos.y,...flat.slice((bestIdx+1)*2)];
+  shape.points(newFlat);
+}
+
+function handleAddPoint(pos){
+  if(!editingShapeId)return;
+  const shape=structLayer.findOne('#'+editingShapeId);
+  if(!shape||!(shape instanceof Konva.Line))return;
+  insertPointNearestSegment(shape,pos);
+  structLayer.batchDraw(); buildEditHandles(editingShapeId,shape);
+  addingPt=false;
+  document.getElementById('btn-add-pt').classList.remove('toggled');
+  document.getElementById('hint-bar').style.display='none';
+}
+
+// ══════════════════════════════════════════════════════════
+// PLANTS
+// ══════════════════════════════════════════════════════════
+const loadedImages={};
+function loadImages(){
+  const srcs={};
+  PLANT_CATALOG.forEach(p=>{srcs[p.key]=p.src;});
+  Promise.all(Object.entries(srcs).map(([k,v])=>new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{loadedImages[k]=img;res();}; img.onerror=()=>res(); img.src=v;
+  }))).then(()=>{buildTray(PLANT_CATALOG);applySeason(0);});
+}
+
+function makePlantGroup(id, img, SIZE, gx, gy){
+  const group=new Konva.Group({id,x:gx,y:gy,draggable:true,width:SIZE,height:SIZE});
+  // Use a transparent rect as the hit target — covers full SIZE regardless of PNG transparency
+  const hitRect=new Konva.Rect({x:0,y:0,width:SIZE,height:SIZE,fill:'rgba(0,0,0,0.001)',listening:true});
+  group.add(new Konva.Image({image:img,x:0,y:0,width:SIZE,height:SIZE,listening:false}));
+  group.add(hitRect);
+  return group;
+}
+
+function addPlant(entry,x,y){
+  const id='plant_'+(plantIdCtr++);
+  const SIZE=SIZE_MAP[entry.size]||64;
+  plantData[id]={label:entry.label,family:entry.family,notes:'',seasons:[...SEASONS],
+                 transparent:false,size:entry.size,key:entry.key};
+  const img=loadedImages[entry.key]; if(!img)return;
+  const group=makePlantGroup(id,img,SIZE,x-SIZE/2,y-SIZE/2);
+  group.on('dragmove',()=>{if(showGrid&&snapCell){group.x(Math.round(group.x()/snapCell)*snapCell);group.y(Math.round(group.y()/snapCell)*snapCell);}});
+  group.on('click tap',e=>{if(!isFreeMode()&&!editingShapeId)selectPlant(id,group,e)});
+  plantLayer.add(group);
+  updatePlantVisibility(); plantLayer.batchDraw();
+  selectPlant(id,group); addToRecents(entry);
+}
+
+function selectPlant(id,group,evt){
+  if(isFreeMode()||editingShapeId)return;
+  const ne=evt?.evt||evt;
+  const multi=ne&&(ne.ctrlKey||ne.metaKey||ne.shiftKey);
+  if(multi){
+    addToMultiSelection('plant',id,group);
+    return;
+  }
+  if(editingShapeId)exitEditMode();
+  deselectAll();
+  selectedPlant={id,group};
+  tr.keepRatio(true); tr.nodes([group]); uiLayer.batchDraw();
+  renderPanel();
+}
+
+document.getElementById('btn-transparency').onclick=()=>{
+  if(!selectedPlant)return;
+  const data=plantData[selectedPlant.id];
+  data.transparent=!data.transparent;
+  const g=selectedPlant.group;
+  if(data.transparent){g.opacity(.35);g.moveToBottom();}
+  else{const sN=SEASONS[currentSeason];g.opacity(data.seasons.includes(sN)?1:.1);g.moveToTop();}
+  plantLayer.batchDraw();
+  document.getElementById('btn-transparency').textContent=data.transparent?'👁 Restore Opacity':'👁 Make Transparent';
+  document.getElementById('btn-transparency').classList.toggle('toggled',data.transparent);
+};
+
+// Layer order buttons — plants
+document.getElementById('btn-plant-forward').onclick=()=>{
+  if(!selectedPlant)return;
+  selectedPlant.group.moveUp();
+  plantLayer.batchDraw();
+};
+document.getElementById('btn-plant-back').onclick=()=>{
+  if(!selectedPlant)return;
+  selectedPlant.group.moveDown();
+  plantLayer.batchDraw();
+};
+
+// Layer order buttons — structs
+document.getElementById('btn-struct-forward').onclick=()=>{
+  if(!selectedStruct)return;
+  selectedStruct.shape.moveUp();
+  structLayer.batchDraw();
+};
+document.getElementById('btn-struct-back').onclick=()=>{
+  if(!selectedStruct)return;
+  selectedStruct.shape.moveDown();
+  structLayer.batchDraw();
+};
+
+// Transparency toggle — structs
+document.getElementById('btn-struct-transparency').onclick=()=>{
+  if(!selectedStruct)return;
+  const d=structData[selectedStruct.id];
+  const shape=selectedStruct.shape;
+  d.transparent=!d.transparent;
+  if(d.transparent){
+    shape.opacity(0.35);
+    shape.moveToBottom();
+    // Keep property boundary rect at very bottom
+    structLayer.getChildren().filter(c=>!c.id()).forEach(c=>c.moveToBottom());
+  } else {
+    shape.opacity(1);
+    shape.moveToTop();
+  }
+  structLayer.batchDraw();
+  const btn=document.getElementById('btn-struct-transparency');
+  btn.textContent=d.transparent?'👁 Restore Opacity':'👁 Make Transparent';
+  btn.classList.toggle('toggled',d.transparent);
+};
+
+document.getElementById('btn-copy-plant').onclick=copyPlant;
+function copyPlant(){
+  if(!selectedPlant)return;
+  const d=plantData[selectedPlant.id];
+  clipboard=PLANT_CATALOG.find(p=>p.label===d.label)||{key:d.key||Object.keys(loadedImages)[0],label:d.label,family:d.family,src:'',size:d.size||'M'};
+  showHint('Copied — Ctrl+V to paste',1800);
+}
+function pastePlant(){
+  if(!clipboard||!stage)return;
+  const cx=(stage.width()/2-stage.x())/stage.scaleX()+40;
+  const cy=(stage.height()/2-stage.y())/stage.scaleY()+40;
+  addPlant(clipboard,cx,cy);
+}
+
+document.querySelectorAll('#pnl-plant input[data-season]').forEach(cb=>{
+  cb.addEventListener('change',()=>{
+    if(!selectedPlant)return;
+    const d=plantData[selectedPlant.id];
+    if(cb.checked){if(!d.seasons.includes(cb.dataset.season))d.seasons.push(cb.dataset.season);}
+    else d.seasons=d.seasons.filter(s=>s!==cb.dataset.season);
+    updatePlantVisibility();
+  });
+});
+document.getElementById('pnl-notes').addEventListener('input',e=>{
+  if(selectedPlant)plantData[selectedPlant.id].notes=e.target.value;
+});
+document.getElementById('btn-delete-plant').onclick=()=>{
+  if(!selectedPlant)return;
+  selectedPlant.group.destroy(); delete plantData[selectedPlant.id];
+  deselectAll(); plantLayer.batchDraw();
+};
+
+// ══════════════════════════════════════════════════════════
+// RIGHT PANEL RENDER
+// ══════════════════════════════════════════════════════════
+const PANELS=['pnl-empty','pnl-multi','pnl-beds','pnl-fences','pnl-paths','pnl-water','pnl-building',
+              'pnl-plant','pnl-struct','pnl-edit'];
+const BACK_PANELS=['pnl-beds','pnl-fences','pnl-paths','pnl-water','pnl-building','pnl-struct','pnl-edit','pnl-plant','pnl-multi'];
+
+function renderPanel(){
+  PANELS.forEach(p=>{const el=document.getElementById(p);if(el)el.style.display='none';});
+  let showBack=false;
+
+  if(editingShapeId){
+    const s=structData[editingShapeId];
+    const shape=structLayer&&structLayer.findOne('#'+editingShapeId);
+    const isRect=shape instanceof Konva.Rect;
+    document.getElementById('pnl-edit-name').textContent=s?s.label:'Shape';
+    document.getElementById('btn-add-pt').style.display=isRect?'none':'block';
+    document.getElementById('btn-del-last-pt').style.display=isRect?'none':'block';
+    document.getElementById('pnl-edit-rect-hint').style.display=isRect?'block':'none';
+    show('pnl-edit'); showBack=true;
+  } else if(selectedPlant){
+    const d=plantData[selectedPlant.id];
+    document.getElementById('pnl-plant-name').textContent=d.label;
+    document.getElementById('pnl-plant-family').textContent=d.family;
+    document.getElementById('pnl-notes').value=d.notes;
+    document.querySelectorAll('#pnl-plant input[data-season]').forEach(cb=>cb.checked=d.seasons.includes(cb.dataset.season));
+    document.getElementById('btn-transparency').textContent=d.transparent?'👁 Restore Opacity':'👁 Make Transparent';
+    document.getElementById('btn-transparency').classList.toggle('toggled',d.transparent);
+    show('pnl-plant'); showBack=true;
+  } else if(multiSelection.length>0){
+    document.getElementById('pnl-multi-count').textContent=`${multiSelection.length} objects selected`;
+    show('pnl-multi'); showBack=true;
+  } else if(selectedStruct){
+    const d=structData[selectedStruct.id];
+    const typeNames={bed:'Garden Bed','bed-square':'Garden Bed',building:'Building',
+                     path:'Path',hedge:'Hedge','hedge-sq':'Hedge',fence:'Fence',gate:'Gate',
+                     pond:'Pond','water-fountain':'Fountain','pool-sq':'Pool',
+                     'pool-circle':'Pool',deck:'Deck',
+                     'underground-electrical':'Electrical','underground-plumbing':'Plumbing'};
+    document.getElementById('pnl-struct-name').textContent=typeNames[d.type]||d.type;
+    document.getElementById('pnl-struct-label').value=d.label;
+    const allC={bed:BED_COLOURS,'bed-square':BED_COLOURS,building:BUILDING_COLOURS,
+                path:PATH_COLOURS,hedge:HEDGE_COLOURS,'hedge-sq':HEDGE_COLOURS,fence:FENCE_COLOURS,gate:FENCE_COLOURS,
+                pond:WATER_COLOURS,'water-fountain':WATER_COLOURS,'pool-sq':WATER_COLOURS,
+                'pool-circle':WATER_COLOURS,deck:DECKING_COLOURS,
+                'underground-electrical':ELEC_COLOURS,'underground-plumbing':PLUMB_COLOURS};
+    const colours=allC[d.type]||BED_COLOURS;
+    const cr=document.getElementById('pnl-struct-colours');
+    cr.innerHTML='';
+    colours.forEach(c=>{
+      const sw=document.createElement('div');
+      sw.className='colour-swatch'+(c===d.colour?' selected':'');
+      sw.style.background=c; sw.title=c;
+      sw.onclick=()=>{
+        d.colour=c;
+        const shape=selectedStruct.shape;
+        if(shape instanceof Konva.Rect){shape.fill(c+'CC');}
+        else if(shape instanceof Konva.Circle){shape.fill(c+'CC');shape.stroke(c);}
+        else{
+          const noFill=['path','fence','gate','underground-electrical','underground-plumbing'].includes(d.type);
+          shape.fill(noFill?'transparent':c+'CC');
+          if(d.type==='path'||d.type==='underground-electrical'||d.type==='underground-plumbing')shape.stroke(c);
+          else if(d.type==='fence'||d.type==='gate')shape.stroke(c);
+        }
+        structLayer.batchDraw();
+        cr.querySelectorAll('.colour-swatch').forEach(x=>x.classList.remove('selected'));
+        sw.classList.add('selected');
+      };
+      cr.appendChild(sw);
+    });
+    const isPth=d.type==='path';
+    const isUG=d.type==='underground-electrical'||d.type==='underground-plumbing';
+    document.getElementById('pnl-path-width-wrap').style.display=(isPth||isUG)?'block':'none';
+    if(isUG){
+      const sl=document.getElementById('pnl-path-width');
+      const lbl=document.getElementById('pnl-path-width-label');
+      sl.value=d.pathWidth||4; lbl.textContent=(d.pathWidth||4)+' px';
+      sl.oninput=()=>{d.pathWidth=+sl.value;lbl.textContent=sl.value+' px';selectedStruct.shape.strokeWidth(+sl.value);structLayer.batchDraw();};
+    }
+    if(isPth){
+      const sl=document.getElementById('pnl-path-width');
+      const lbl=document.getElementById('pnl-path-width-label');
+      sl.value=d.pathWidth||18; lbl.textContent=(d.pathWidth||18)+' px';
+      sl.oninput=()=>{d.pathWidth=+sl.value;lbl.textContent=sl.value+' px';selectedStruct.shape.strokeWidth(+sl.value);structLayer.batchDraw();};
+    }
+    const isCircle=selectedStruct.shape instanceof Konva.Circle;
+    const isGroup=selectedStruct.shape instanceof Konva.Group;
+    const isRect=selectedStruct.shape instanceof Konva.Rect;
+    const rectTypes=['bed-square','building','deck','pool-sq','hedge-sq'];
+    const showDimRect=isRect&&rectTypes.includes(d.type);
+    const showDimCircle=isCircle&&(d.type==='water-fountain'||d.type==='pool-circle');
+    document.getElementById('btn-edit-struct').style.display=(isCircle||isGroup)?'none':'block';
+    document.getElementById('btn-disconnect').style.display=isGroup?'block':'none';
+    const structTransBtn=document.getElementById('btn-struct-transparency');
+    structTransBtn.textContent=d.transparent?'👁 Restore Opacity':'👁 Make Transparent';
+    structTransBtn.classList.toggle('toggled',!!d.transparent);
+    // Dimension panels
+    const dimRectEl=document.getElementById('pnl-dim-rect');
+    const dimCircleEl=document.getElementById('pnl-dim-circle');
+    dimRectEl.style.display=showDimRect?'block':'none';
+    dimCircleEl.style.display=showDimCircle?'block':'none';
+    if(showDimRect){
+      const s=selectedStruct.shape;
+      const pxPerUnit=UNIT_PX*(gardenUnit==='m'?3.281:1);
+      document.getElementById('dim-rect-w').value=+(s.width()/pxPerUnit).toFixed(2);
+      document.getElementById('dim-rect-h').value=+(s.height()/pxPerUnit).toFixed(2);
+      dimRectEl.querySelectorAll('.panel-title').forEach(el=>el.textContent=`DIMENSIONS (${gardenUnit})`);
+    }
+    if(showDimCircle){
+      const s=selectedStruct.shape;
+      const pxPerUnit=UNIT_PX*(gardenUnit==='m'?3.281:1);
+      document.getElementById('dim-circle-d').value=+((s.radius()*2)/pxPerUnit).toFixed(2);
+      dimCircleEl.querySelectorAll('.panel-title').forEach(el=>el.textContent=`DIAMETER (${gardenUnit})`);
+    }
+    show('pnl-struct'); showBack=true;
+  } else if(currentMode==='beds'){show('pnl-beds');showBack=true;}
+  else if(currentMode==='fences'){show('pnl-fences');showBack=true;}
+  else if(currentMode==='paths'){show('pnl-paths');showBack=true;}
+  else if(currentMode==='water'){show('pnl-water');showBack=true;}
+  else if(currentMode==='building'){show('pnl-building');showBack=true;}
+  else{show('pnl-empty');}
+
+  const backRow=document.getElementById('pnl-back-row');
+  if(backRow)backRow.style.display=showBack?'flex':'none';
+}
+
+function show(id){
+  const el=document.getElementById(id);
+  if(el){
+    if(['pnl-plant','pnl-struct','pnl-edit'].includes(id))el.style.display='flex';
+    else el.style.display='block';
+  }
+}
+
+document.getElementById('pnl-struct-label').addEventListener('input',e=>{
+  if(selectedStruct)structData[selectedStruct.id].label=e.target.value;
+});
+
+// ══════════════════════════════════════════════════════════
+// TRAY
+// ══════════════════════════════════════════════════════════
+function buildTray(catalog){
+  const list=document.getElementById('plant-list');
+  list.innerHTML='';
+  document.getElementById('no-results').style.display=catalog.length?'none':'block';
+  catalog.forEach(e=>list.appendChild(makeTrayItem(e)));
+}
+function makeTrayItem(entry){
+  const el=document.createElement('div');
+  el.className='tray-item'; el.draggable=true;
+  el.innerHTML=`<img src="${entry.src}" alt="${entry.label}"/><span>${entry.label}</span>`;
+  let dItem=null,tItem=null,tGhost=null;
+  el.addEventListener('dragstart',e=>{
+    dItem=entry;
+    const b=document.createElement('img');
+    b.src='data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+    e.dataTransfer.setDragImage(b,0,0); e.dataTransfer.effectAllowed='copy';
+    ghost.src=entry.src; ghost.style.width=ghost.style.height='60px';
+    el.addEventListener('dragend',()=>{ghost.style.display='none';dItem=null;wrapEl.classList.remove('drag-over');},{once:true});
+  });
+  el.addEventListener('touchstart',()=>{
+    tItem=entry; tGhost=document.createElement('img');
+    tGhost.src=entry.src; tGhost.style.cssText='position:fixed;width:60px;height:60px;pointer-events:none;z-index:9999;opacity:.75;transform:translate(-50%,-50%)';
+    document.body.appendChild(tGhost);
+  },{passive:true});
+  el.addEventListener('touchmove',e=>{if(tGhost){tGhost.style.left=e.touches[0].clientX+'px';tGhost.style.top=e.touches[0].clientY+'px';}},{passive:true});
+  el.addEventListener('touchend',e=>{
+    if(!tItem||!tGhost)return;
+    document.body.removeChild(tGhost); tGhost=null;
+    const t=e.changedTouches[0],r=wrapEl.getBoundingClientRect();
+    if(t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom&&stage){
+      let sp={x:(t.clientX-r.left-stage.x())/stage.scaleX(),y:(t.clientY-r.top-stage.y())/stage.scaleY()};
+      if(showGrid&&snapCell){sp.x=Math.round(sp.x/snapCell)*snapCell;sp.y=Math.round(sp.y/snapCell)*snapCell;}
+      addPlant(tItem,sp.x,sp.y);
+    }
+    tItem=null;
+  },{passive:true});
+  el._getEntry=()=>entry;
+  return el;
+}
+function addToRecents(entry){
+  recents=recents.filter(r=>r.label!==entry.label);
+  recents.unshift(entry); if(recents.length>5)recents=recents.slice(0,5);
+  const w=document.getElementById('tray-recents'),l=document.getElementById('recents-list');
+  w.style.display=recents.length?'block':'none';
+  l.innerHTML=''; recents.forEach(e=>l.appendChild(makeTrayItem(e)));
+}
+document.getElementById('plant-search').addEventListener('input',e=>{
+  const q=e.target.value.trim().toLowerCase();
+  buildTray(q?PLANT_CATALOG.filter(p=>p.label.toLowerCase().includes(q)||p.family.toLowerCase().includes(q)):PLANT_CATALOG);
+});
+
+// ── Drag drop ──
+let draggingItem=null;
+const ghost=document.getElementById('drop-ghost'),wrapEl=document.getElementById('canvas-wrap');
+wrapEl.addEventListener('dragenter',e=>{e.preventDefault();wrapEl.classList.add('drag-over');});
+wrapEl.addEventListener('dragover',e=>{
+  e.preventDefault();e.dataTransfer.dropEffect='copy';
+  const r=wrapEl.getBoundingClientRect();
+  ghost.style.display='block';ghost.style.left=(e.clientX-r.left)+'px';ghost.style.top=(e.clientY-r.top)+'px';
+});
+wrapEl.addEventListener('dragleave',()=>{wrapEl.classList.remove('drag-over');ghost.style.display='none';});
+document.addEventListener('dragstart',e=>{
+  const item=e.target.closest('.tray-item');
+  if(item&&item._getEntry)draggingItem=item._getEntry();
+});
+document.addEventListener('dragend',()=>{draggingItem=null;});
+wrapEl.addEventListener('drop',e=>{
+  e.preventDefault();wrapEl.classList.remove('drag-over');ghost.style.display='none';
+  if(!draggingItem||!stage)return;
+  const r=wrapEl.getBoundingClientRect();
+  let sp={x:(e.clientX-r.left-stage.x())/stage.scaleX(),y:(e.clientY-r.top-stage.y())/stage.scaleY()};
+  if(showGrid&&snapCell){sp.x=Math.round(sp.x/snapCell)*snapCell;sp.y=Math.round(sp.y/snapCell)*snapCell;}
+  addPlant(draggingItem,sp.x,sp.y); draggingItem=null;
+});
+
+// ══════════════════════════════════════════════════════════
+// SELECTION / SEASONS / GRID
+// ══════════════════════════════════════════════════════════
+let multiHighlights=[]; // Konva rects drawn on uiLayer for multi-select outlines
+
+function clearMultiHighlights(){
+  multiHighlights.forEach(h=>h.destroy());
+  multiHighlights=[];
+  uiLayer&&uiLayer.batchDraw();
+}
+
+function drawMultiHighlight(shape){
+  if(!uiLayer||!stage)return;
+  // getClientRect with no args returns pixel coords relative to the canvas container
+  // Convert back to stage (world) coordinates
+  const box=shape.getClientRect();
+  const sc=stage.scaleX();
+  const ox=stage.x(), oy=stage.y();
+  const pad=6;
+  const wx=(box.x - ox)/sc - pad/sc;
+  const wy=(box.y - oy)/sc - pad/sc;
+  const ww=box.width/sc + (pad*2)/sc;
+  const wh=box.height/sc + (pad*2)/sc;
+  const h=new Konva.Rect({
+    x:wx, y:wy,
+    width:ww, height:wh,
+    stroke:'#FFD600',
+    strokeWidth:2,
+    strokeScaleEnabled:false,
+    dash:[8,4],
+    fill:'rgba(255,214,0,0.10)',
+    listening:false
+  });
+  uiLayer.add(h);
+  multiHighlights.push(h);
+  uiLayer.batchDraw();
+}
+
+function deselectAll(){
+  selectedPlant=null; selectedStruct=null; multiSelection=[];
+  if(tr){tr.nodes([]);}
+  clearMultiHighlights();
+  renderPanel();
+}
+
+function addToMultiSelection(kind,id,shape){
+  // Pull any single selection into multi
+  if(selectedPlant){
+    const prev={kind:'plant',id:selectedPlant.id,shape:selectedPlant.group};
+    if(!multiSelection.find(m=>m.id===prev.id)){multiSelection.push(prev);drawMultiHighlight(prev.shape);}
+    selectedPlant=null;
+  }
+  if(selectedStruct){
+    const prev={kind:'struct',id:selectedStruct.id,shape:selectedStruct.shape};
+    if(!multiSelection.find(m=>m.id===prev.id)){multiSelection.push(prev);drawMultiHighlight(prev.shape);}
+    selectedStruct=null;
+  }
+  // Add new item if not already in set
+  if(!multiSelection.find(m=>m.id===id)){
+    multiSelection.push({kind,id,shape});
+    drawMultiHighlight(shape);
+  }
+  if(tr)tr.nodes([]);
+  renderPanel();
+}
+
+document.getElementById('btn-delete-multi').onclick=()=>{
+  clearMultiHighlights();
+  multiSelection.forEach(m=>{
+    m.shape.destroy();
+    if(m.kind==='plant')delete plantData[m.id];
+    else delete structData[m.id];
+  });
+  multiSelection=[];
+  structLayer&&structLayer.batchDraw();
+  plantLayer&&plantLayer.batchDraw();
+  deselectAll();
+};
+function applySeason(idx){
+  currentSeason=idx;
+  ['spring','summer','fall','winter'].forEach(c=>document.body.classList.remove(c));
+  document.body.classList.add(['spring','summer','fall','winter'][idx]);
+  document.getElementById('season-badge').textContent=SEASON_NAMES[idx];
+  document.getElementById('season-slider').value=idx;
+  updatePlantVisibility();
+  if(showGrid)drawGrid();
+}
+function updatePlantVisibility(){
+  if(!plantLayer)return;
+  const sN=SEASONS[currentSeason];
+  plantLayer.find('Group').forEach(g=>{
+    const d=plantData[g.id()]; if(!d)return;
+    if(d.transparent){g.opacity(.35);return;}
+    g.opacity(d.seasons.includes(sN)?1:.1);
+  });
+  plantLayer.batchDraw();
+}
+document.getElementById('season-slider').addEventListener('input',e=>applySeason(+e.target.value));
+
+function positionSeasonLabels(){
+  const slider=document.getElementById('season-slider');
+  const wrap=document.getElementById('season-slider-wrap');
+  if(!slider||!wrap)return;
+  const thumbW=20; // matches CSS thumb width
+  const trackW=wrap.offsetWidth;
+  const usable=trackW-thumbW; // thumb travels within this range
+  const steps=3;
+  for(let i=0;i<=steps;i++){
+    const lbl=document.getElementById('slbl-'+i);
+    if(!lbl)continue;
+    // Centre of thumb at step i
+    const pct=i/steps;
+    const px=thumbW/2 + pct*usable;
+    lbl.style.left=px+'px';
+  }
+}
+
+// Position on load and on resize
+window.addEventListener('resize',positionSeasonLabels);
+setTimeout(positionSeasonLabels,100);
+
+function drawGrid(){
+  if(!stage||!gridLayer)return;
+  gridLayer.destroyChildren();
+  if(!showGrid){gridLayer.batchDraw();return;}
+  const col=getComputedStyle(document.body).getPropertyValue('--grid-color').trim();
+  const sc=stage.scaleX();
+  let mult=1;
+  const maxCellPx=stage.width()/4;
+  while(CELL_PX*sc*mult<16&&CELL_PX*sc*mult<maxCellPx) mult*=2;
+  // Minimum cell size: 6 inches (2× base cell of 3in) — grid stops shrinking below this
+  if(mult<2) mult=2;
+  snapCell=CELL_PX*mult;
+  const vc=CELL_PX*mult,sx=stage.x(),sy=stage.y(),W=stage.width(),H=stage.height();
+  const x0=-sx/sc,y0=-sy/sc,x1=x0+W/sc,y1=y0+H/sc;
+  const sX=Math.floor(x0/vc)*vc,sY=Math.floor(y0/vc)*vc;
+  for(let x=sX;x<x1+vc;x+=vc)
+    gridLayer.add(new Konva.Line({points:[x,y0-vc,x,y1+vc],stroke:col,strokeWidth:.5/sc,listening:false}));
+  for(let y=sY;y<y1+vc;y+=vc)
+    gridLayer.add(new Konva.Line({points:[x0-vc,y,x1+vc,y],stroke:col,strokeWidth:.5/sc,listening:false}));
+  gridLayer.batchDraw();
+  updateScaleDisplay(mult);
+}
+function updateScaleDisplay(mult){
+  if(!stage)return;
+  const sc=stage.scaleX(); mult=mult||1;
+  const maxCellPx=stage.width()/4;
+  while(CELL_PX*sc*mult<16&&CELL_PX*sc*mult<maxCellPx) mult*=2;
+  if(mult<2) mult=2;
+  const ri=CELL_IN*mult;
+  let lbl=gardenUnit==='ft'?(ri>=12?`1 cell = ${Math.round(ri/12*10)/10} ft`:`1 cell = ${ri} in`)
+                           :(ri>=39.37?`1 cell = ${Math.round(ri/39.37*10)/10} m`:`1 cell = ${Math.round(ri*2.54)} cm`);
+  document.getElementById('scale-display').textContent=lbl;
+}
+
+// ══════════════════════════════════════════════════════════
+// TOOLBAR / MODES / SUB-TOOLS
+// ══════════════════════════════════════════════════════════
+function setMode(mode){
+  if(isFreeMode()&&mode!==currentMode)cancelFreeShape();
+  if(editingShapeId&&mode!==currentMode)exitEditMode();
+  currentMode=mode;
+  ['select','beds','fences','paths','building','water'].forEach(m=>{
+    const b=document.getElementById('btn-'+m); if(b)b.classList.toggle('active',m===mode);
+  });
+  const wrap=document.getElementById('canvas-wrap');
+  ['mode-select','mode-beds','mode-fences','mode-paths','mode-building','mode-water'].forEach(c=>wrap.classList.remove(c));
+  wrap.classList.add('mode-'+mode);
+  if(mode!=='select'){deselectAll();}
+  renderPanel();
+  if(isFreeMode())updateHint();
+  else document.getElementById('hint-bar').style.display='none';
+}
+
+function setSubTool(sub){
+  bedSubTool=sub;
+  ['curved','straight','square'].forEach(s=>{const b=document.getElementById('sub-'+s);if(b)b.classList.toggle('active',s===sub);});
+  if(isFreeMode())updateHint();
+}
+function setSubToolFence(sub){
+  fenceSubTool=sub;
+  document.getElementById('subfence-fence')&&document.getElementById('subfence-fence').classList.remove('active');
+  ['curved','straight','square'].forEach(s=>{const b=document.getElementById('subf-'+s);if(b)b.classList.toggle('active',s===sub);});
+}
+function setFenceType(t){
+  fenceType=t;
+  ['curved','straight'].forEach(s=>{const b=document.getElementById('subf-'+s);if(b)b.classList.remove('active');});
+  const btn=document.getElementById('subfence-fence');
+  if(btn)btn.classList.toggle('active',t==='fence');
+}
+function setSubToolPath(sub){
+  pathSubTool=sub;
+  ['freeform','gate'].forEach(s=>{const b=document.getElementById('subp-'+s);if(b)b.classList.toggle('active',s===sub);});
+  const gtp=document.getElementById('pnl-gate-types');
+  if(gtp)gtp.style.display=(sub==='gate')?'block':'none';
+}
+function setGateType(t){
+  gateType=t;
+  document.querySelectorAll('[id^="gatetype-"]').forEach(el=>el.classList.remove('active'));
+  const btn=document.getElementById('gatetype-'+t);
+  if(btn)btn.classList.add('active');
+}
+function toggleUnderground(){
+  const panel=document.getElementById('pnl-underground');
+  const toggle=document.getElementById('subb-underground-toggle');
+  const isOpen=panel.style.display!=='none';
+  panel.style.display=isOpen?'none':'block';
+  toggle.classList.toggle('active',!isOpen);
+  if(!isOpen){
+    buildUndergroundColours();
+    setUndergroundType(undergroundType);
+  }
+}
+
+function setUndergroundType(t){
+  undergroundType=t;
+  undergroundColour=t==='electrical'?ELEC_COLOURS[0]:PLUMB_COLOURS[0];
+  ['electrical','plumbing'].forEach(s=>{
+    const b=document.getElementById('subu-'+s);
+    if(b)b.classList.toggle('active',s===t);
+  });
+  buildUndergroundColours();
+  // Activate draw mode immediately — same behaviour as all other sub-tools
+  activateUndergroundDraw();
+}
+
+function buildUndergroundColours(){
+  const cr=document.getElementById('underground-colours');
+  if(!cr)return;
+  const cols=undergroundType==='electrical'?ELEC_COLOURS:PLUMB_COLOURS;
+  cr.innerHTML='';
+  cols.forEach(c=>{
+    const sw=document.createElement('div');
+    sw.className='colour-swatch'+(c===undergroundColour?' selected':'');
+    sw.style.background=c; sw.title=c;
+    sw.onclick=()=>{undergroundColour=c;cr.querySelectorAll('.colour-swatch').forEach(x=>x.classList.remove('selected'));sw.classList.add('selected');};
+    cr.appendChild(sw);
+  });
+}
+
+function toggleUndergroundOpacity(){
+  undergroundOpaque=!undergroundOpaque;
+  const btn=document.getElementById('btn-underground-opacity');
+  if(btn)btn.textContent=undergroundOpaque?'Opaque':'Transparent';
+}
+
+document.getElementById('underground-width').addEventListener('input',e=>{
+  undergroundWidth=+e.target.value;
+  document.getElementById('underground-width-label').textContent=e.target.value+' px';
+});
+
+function activateUndergroundDraw(){
+  // Set subtool BEFORE setMode so isFreeMode() is already true when setMode runs
+  buildingSubTool='underground';
+  // Always call setMode — it handles deselectAll, renderPanel, cancelFreeShape if needed
+  setMode('building');
+  // Fix highlight — subb-underground-toggle is the correct ID (not subb-underground)
+  document.querySelectorAll('#pnl-building .subtool-opt').forEach(el=>el.classList.remove('active'));
+  const tog=document.getElementById('subb-underground-toggle');
+  if(tog)tog.classList.add('active');
+  // Re-apply underground type highlight
+  document.getElementById('subu-'+undergroundType)&&document.getElementById('subu-'+undergroundType).classList.add('active');
+}
+
+function toggleDeckTypes(){
+  const panel=document.getElementById('pnl-deck-types');
+  const toggle=document.getElementById('subb-deck-toggle');
+  const isOpen=panel.style.display!=='none';
+  panel.style.display=isOpen?'none':'block';
+  toggle.classList.toggle('active',!isOpen);
+}
+
+function setBuildingTool(t){
+  buildingSubTool=t;
+  document.querySelectorAll('#pnl-building .subtool-opt').forEach(el=>el.classList.remove('active'));
+  const btn=document.getElementById('subb-'+t);
+  if(btn)btn.classList.add('active');
+  // Keep deck toggle highlighted and panel open when a deck tool is active
+  const isDeck=t.startsWith('deck');
+  const deckPanel=document.getElementById('pnl-deck-types');
+  const deckToggle=document.getElementById('subb-deck-toggle');
+  if(isDeck&&deckPanel)deckPanel.style.display='block';
+  if(deckToggle)deckToggle.classList.toggle('active',isDeck);
+  if(isFreeMode())updateHint();
+  else document.getElementById('hint-bar').style.display='none';
+}
+function setWaterTool(t){
+  waterSubTool=t;
+  document.querySelectorAll('#pnl-water .subtool-opt').forEach(el=>el.classList.remove('active'));
+  const btn=document.getElementById('subw-'+t);
+  if(btn)btn.classList.add('active');
+  if(isFreeMode())updateHint();
+  else document.getElementById('hint-bar').style.display='none';
+}
+
+function toggleGrid(){
+  showGrid=!showGrid;
+  document.getElementById('btn-grid').classList.toggle('active',showGrid);
+  drawGrid();
+}
+function resetView(){
+  if(!stage)return;
+  zoomToFit();
+}
+function clearAll(){
+  // Use custom confirm overlay instead of browser confirm() which can be silently blocked
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;';
+  overlay.innerHTML=`
+    <div style="background:#fff;border-radius:14px;padding:28px 32px;box-shadow:0 4px 24px rgba(0,0,0,0.2);text-align:center;max-width:300px">
+      <div style="font-size:15px;font-weight:700;color:#2A3D1A;margin-bottom:8px">Clear everything?</div>
+      <div style="font-size:12px;color:#666;margin-bottom:20px">All plants and structures will be removed.</div>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <button id="clear-cancel" style="padding:8px 20px;border-radius:8px;border:1.5px solid #ccc;background:#f5f5f5;font-weight:700;cursor:pointer">Cancel</button>
+        <button id="clear-confirm" style="padding:8px 20px;border-radius:8px;border:none;background:#c62828;color:#fff;font-weight:700;cursor:pointer">Clear All</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.querySelector('#clear-cancel').onclick=()=>overlay.remove();
+  overlay.querySelector('#clear-confirm').onclick=()=>{
+    overlay.remove();
+    if(plantLayer){plantLayer.destroyChildren();Object.keys(plantData).forEach(k=>delete plantData[k]);plantLayer.batchDraw();}
+    if(structLayer){
+      structLayer.destroyChildren(); Object.keys(structData).forEach(k=>delete structData[k]);
+      if(propBounds){
+        const b=propBounds;
+        structLayer.add(new Konva.Rect({x:b.x,y:b.y,width:b.w,height:b.h,stroke:'#558B2F',strokeWidth:2,dash:[10,5],fill:'transparent',listening:false,strokeScaleEnabled:false}));
+        structLayer.add(new Konva.Text({x:b.x+6,y:b.y+5,text:`${gardenName}  ${gardenW}×${gardenH} ${gardenUnit}`,fontSize:11,fontStyle:'bold',fill:'#558B2F',opacity:.65,listening:false}));
+      }
+      structLayer.batchDraw();
+    }
+    clearMultiHighlights(); exitEditMode(); deselectAll();
+  };
+}
+
+// ══════════════════════════════════════════════════════════
+// GARDEN SAVE / LOAD
+// ══════════════════════════════════════════════════════════
+function saveGarden(){
+  if(!stage)return;
+  const plants=[];
+  plantLayer.find('Group').forEach(g=>{
+    const d=plantData[g.id()]; if(!d)return;
+    plants.push({id:g.id(),x:g.x(),y:g.y(),scaleX:g.scaleX(),scaleY:g.scaleY(),
+                 label:d.label,family:d.family,
+                 notes:d.notes,seasons:d.seasons,transparent:d.transparent,size:d.size,key:d.key});
+  });
+  const structs=[];
+  structLayer.find('Line,Rect,Circle,Path').forEach(s=>{
+    const id=s.id(); if(!id||!structData[id])return;
+    const d=structData[id];
+    const entry={id,type:d.type,colour:d.colour,label:d.label,pathWidth:d.pathWidth,tension:d.tension,transparent:d.transparent||false,zIndex:s.getZIndex()};
+    if(s instanceof Konva.Rect){entry.rx=s.x();entry.ry=s.y();entry.rw=s.width();entry.rh=s.height();}
+    else if(s instanceof Konva.Path){entry.svgPath=s.data();entry.lx=s.x();entry.ly=s.y();}
+    else if(s instanceof Konva.Line){entry.points=s.points();entry.lx=s.x();entry.ly=s.y();}
+    else if(s instanceof Konva.Circle){entry.cx=s.x();entry.cy=s.y();entry.radius=s.radius();}
+    structs.push(entry);
+  });
+  // Save propBounds origin so positions can be correctly restored regardless of window size
+  const originX=propBounds?propBounds.x:0;
+  const originY=propBounds?propBounds.y:0;
+  const gardenEntry={name:gardenName,unit:gardenUnit,w:gardenW,h:gardenH,originX,originY,plants,structs};
+  const gardens=JSON.parse(localStorage.getItem('gardenData')||'[]');
+  gardens[currentGardenIndex]=gardenEntry;
+  localStorage.setItem('gardenData',JSON.stringify(gardens));
+  showHint('Garden saved! 💾',2000);
+}
+
+function loadGarden(idx){
+  const gardens=JSON.parse(localStorage.getItem('gardenData')||'[]');
+  const g=gardens[idx]; if(!g)return;
+  currentGardenIndex=idx;
+  if(plantLayer){plantLayer.destroyChildren();Object.keys(plantData).forEach(k=>delete plantData[k]);}
+  if(structLayer){structLayer.destroyChildren();Object.keys(structData).forEach(k=>delete structData[k]);}
+  if(uiLayer){editHandles.forEach(h=>h.destroy());editHandles=[];if(tr)tr.nodes([]);}
+  editingShapeId=null;selectedPlant=null;selectedStruct=null;
+  gardenName=g.name;gardenUnit=g.unit;gardenW=g.w;gardenH=g.h;
+  const W=stage.width(),H=stage.height();
+  const pw=gardenW*UNIT_PX*(gardenUnit==='m'?3.281:1);
+  const ph=gardenH*UNIT_PX*(gardenUnit==='m'?3.281:1);
+  const ox=Math.max(16,(W-pw)/2),oy=Math.max(16,(H-ph)/2);
+  propBounds={x:ox,y:oy,w:pw,h:ph};
+  structLayer.add(new Konva.Rect({x:ox,y:oy,width:pw,height:ph,stroke:'#558B2F',
+    strokeWidth:2,dash:[10,5],fill:'transparent',listening:false,strokeScaleEnabled:false}));
+  structLayer.add(new Konva.Text({x:ox+6,y:oy+5,
+    text:`${gardenName}  ${gardenW}×${gardenH} ${gardenUnit}`,
+    fontSize:11,fontStyle:'bold',fill:'#558B2F',opacity:.65,listening:false}));
+  document.getElementById('logo-garden-name').textContent=gardenName;
+  document.getElementById('logo-garden-dims').textContent=`${gardenW}×${gardenH} ${gardenUnit}`;
+  // Calculate offset from saved origin to new origin — corrects for window size differences
+  const savedOX=g.originX??ox, savedOY=g.originY??oy;
+  const dX=ox-savedOX, dY=oy-savedOY;
+  let maxSId=structIdCtr,maxPId=plantIdCtr;
+  (g.structs||[]).forEach(entry=>{
+    const n=parseInt((entry.id||'').split('_')[1]||'0');
+    if(n>=maxSId)maxSId=n+1;
+    structData[entry.id]={type:entry.type,colour:entry.colour,label:entry.label,pathWidth:entry.pathWidth,tension:entry.tension,transparent:entry.transparent||false};
+    if(entry.svgPath!==undefined){
+      const isUG=entry.type==='underground-electrical'||entry.type==='underground-plumbing';
+      const fillC=isUG?'transparent':entry.colour+'CC';
+      const strokeC=isUG||entry.type==='path'?entry.colour:'#3A2A10';
+      const shape=new Konva.Path({id:entry.id,data:entry.svgPath,
+        x:(entry.lx||0)+dX,y:(entry.ly||0)+dY,
+        fill:fillC,stroke:strokeC,strokeWidth:2,
+        strokeScaleEnabled:false,lineCap:'round',lineJoin:'round',draggable:true});
+      shape.on('dragmove',()=>{if(showGrid&&snapCell){shape.x(Math.round(shape.x()/snapCell)*snapCell);shape.y(Math.round(shape.y()/snapCell)*snapCell);}});
+      shape.on('click tap',e=>{if(!isFreeMode()&&!editingShapeId)selectStruct(entry.id,shape,e)});
+      shape.on('dblclick dbltap',()=>{if(!isFreeMode())enterEditMode(entry.id);});
+      structLayer.add(shape);
+    } else if(entry.points!==undefined){
+      const isPath=entry.type==='path';
+      const isFenceType=entry.type==='fence'||entry.type==='gate';
+      const cl=!isPath&&!isFenceType;
+      const shape=new Konva.Line({id:entry.id,points:entry.points,
+        x:(entry.lx||0)+dX,y:(entry.ly||0)+dY,
+        tension:entry.tension||0,closed:cl,
+        fill:isPath||isFenceType?'transparent':entry.colour+'CC',
+        stroke:isPath||isFenceType?entry.colour:'#3A2A10',
+        strokeWidth:isPath?entry.pathWidth||18:isFenceType?6:2,
+        strokeScaleEnabled:false,lineCap:'round',lineJoin:'round',draggable:true,
+        hitStrokeWidth:isPath?(entry.pathWidth||18)+10:undefined});
+      shape.on('dragmove',()=>{if(showGrid&&snapCell){shape.x(Math.round(shape.x()/snapCell)*snapCell);shape.y(Math.round(shape.y()/snapCell)*snapCell);}});
+      shape.on('click tap',e=>{if(!isFreeMode()&&!editingShapeId)selectStruct(entry.id,shape,e)});
+      shape.on('dblclick dbltap',()=>{if(!isFreeMode())enterEditMode(entry.id);});
+      structLayer.add(shape);
+    } else if(entry.rx!==undefined){
+      const id2=entry.id;
+      const cornerR=(entry.type==='building')?3:0;
+      const rect=new Konva.Rect({id:id2,x:entry.rx+dX,y:entry.ry+dY,width:entry.rw,height:entry.rh,
+        fill:entry.colour+'CC',stroke:'#3A2A10',strokeWidth:2,cornerRadius:cornerR,draggable:true,strokeScaleEnabled:false});
+      rect.on('transformend',()=>{rect.width(rect.width()*rect.scaleX());rect.height(rect.height()*rect.scaleY());rect.scaleX(1);rect.scaleY(1);structLayer.batchDraw();});
+      rect.on('click tap',e=>{if(!isFreeMode()&&!editingShapeId)selectStruct(id2,rect,e)});
+      rect.on('dblclick dbltap',()=>{if(!isFreeMode())enterEditMode(id2);});
+      rect.on('dragmove',()=>{if(showGrid&&snapCell){rect.x(Math.round(rect.x()/snapCell)*snapCell);rect.y(Math.round(rect.y()/snapCell)*snapCell);}});
+      rect.on('dragend',()=>tryMergeRects(id2,rect));
+      structLayer.add(rect);
+    } else if(entry.cx!==undefined){
+      const id2=entry.id;
+      const circle=new Konva.Circle({id:id2,x:entry.cx+dX,y:entry.cy+dY,radius:entry.radius,
+        fill:entry.colour+'CC',stroke:entry.colour,strokeWidth:2,draggable:true});
+      circle.on('dragmove',()=>{if(showGrid&&snapCell){circle.x(Math.round(circle.x()/snapCell)*snapCell);circle.y(Math.round(circle.y()/snapCell)*snapCell);}});
+      circle.on('click tap',e=>{if(!isFreeMode()&&!editingShapeId)selectStruct(id2,circle,e)});
+      circle.on('dblclick dbltap',()=>{if(!isFreeMode())enterEditMode(id2);});
+      structLayer.add(circle);
+    }
+  });
+  (g.plants||[]).forEach(entry=>{
+    const n=parseInt((entry.id||'').split('_')[1]||'0');
+    if(n>=maxPId)maxPId=n+1;
+    const catalogEntry=PLANT_CATALOG.find(p=>p.label===entry.label)||
+                       {key:entry.key||'tree',label:entry.label,family:entry.family,src:`../stickers/${entry.key||'tree'}.svg`,size:entry.size||'M'};
+    plantData[entry.id]={label:entry.label,family:entry.family,notes:entry.notes||'',
+                         seasons:entry.seasons||[...SEASONS],transparent:entry.transparent||false,size:entry.size,key:entry.key};
+    const img=loadedImages[catalogEntry.key]; if(!img)return;
+    const SIZE=SIZE_MAP[entry.size]||64;
+    const group=makePlantGroup(entry.id,img,SIZE,entry.x+dX,entry.y+dY);
+    if(entry.scaleX)group.scaleX(entry.scaleX);
+    if(entry.scaleY)group.scaleY(entry.scaleY);
+    group.on('dragmove',()=>{if(showGrid&&snapCell){group.x(Math.round(group.x()/snapCell)*snapCell);group.y(Math.round(group.y()/snapCell)*snapCell);}});
+    group.on('click tap',e=>{if(!isFreeMode()&&!editingShapeId)selectPlant(entry.id,group,e)});
+    plantLayer.add(group);
+  });
+  structIdCtr=maxSId;plantIdCtr=maxPId;
+  // Restore struct transparency and z-order
+  (g.structs||[]).forEach(entry=>{
+    const shape=structLayer.findOne('#'+entry.id);
+    if(!shape)return;
+    if(entry.transparent){shape.opacity(0.35);shape.zIndex(Math.max(2,entry.zIndex||2));}
+    else if(entry.zIndex!==undefined){try{shape.zIndex(entry.zIndex);}catch(e){}}
+  });
+  structLayer.batchDraw();plantLayer.batchDraw();
+  updatePlantVisibility();
+  deselectAll();
+  hideSwitcher();
+  zoomToFit();
+}
+
+function showGardenSwitcher(){
+  const gardens=JSON.parse(localStorage.getItem('gardenData')||'[]');
+  const list=document.getElementById('garden-list');
+  document.getElementById('garden-limit-msg').style.display='none';
+  list.innerHTML='';
+  if(gardens.length===0){
+    list.innerHTML='<div style="font-size:12px;color:#888;text-align:center">No saved gardens yet. Click 💾 Save first.</div>';
+  } else {
+    gardens.forEach((g,i)=>{
+      const row=document.createElement('div');
+      row.style.cssText='display:flex;align-items:center;gap:8px;padding:8px 10px;border:1.5px solid #ddd;border-radius:9px;background:#f9f9f9;';
+      const nameEl=document.createElement('span');
+      nameEl.style.cssText='flex:1;font-size:13px;font-weight:700;color:#2A3D1A;';
+      nameEl.textContent=(g.name||'Garden '+(i+1))+(i===currentGardenIndex?' (current)':'');
+      const loadBtn=document.createElement('button');
+      loadBtn.style.cssText='background:#558B2F;color:#fff;border:none;border-radius:7px;padding:5px 10px;font-size:11px;font-weight:800;cursor:pointer;';
+      loadBtn.textContent='Load';
+      loadBtn.onclick=()=>loadGarden(i);
+      const delBtn=document.createElement('button');
+      delBtn.style.cssText='background:#fde8e8;color:#c62828;border:1.5px solid #ef9a9a;border-radius:7px;padding:5px 8px;font-size:11px;font-weight:800;cursor:pointer;';
+      delBtn.textContent='🗑';
+      delBtn.onclick=()=>{
+        const overlay=document.createElement('div');
+        overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;display:flex;align-items:center;justify-content:center;';
+        overlay.innerHTML=`<div style="background:#fff;border-radius:14px;padding:28px 32px;box-shadow:0 4px 24px rgba(0,0,0,0.2);text-align:center;max-width:300px"><div style="font-size:15px;font-weight:700;color:#2A3D1A;margin-bottom:8px">Delete this garden?</div><div style="font-size:12px;color:#666;margin-bottom:20px">This cannot be undone.</div><div style="display:flex;gap:10px;justify-content:center"><button id="del-cancel" style="padding:8px 20px;border-radius:8px;border:1.5px solid #ccc;background:#f5f5f5;font-weight:700;cursor:pointer">Cancel</button><button id="del-confirm" style="padding:8px 20px;border-radius:8px;border:none;background:#c62828;color:#fff;font-weight:700;cursor:pointer">Delete</button></div></div>`;
+        document.body.appendChild(overlay);
+        overlay.querySelector('#del-cancel').onclick=()=>overlay.remove();
+        overlay.querySelector('#del-confirm').onclick=()=>{
+          overlay.remove();
+          const gs=JSON.parse(localStorage.getItem('gardenData')||'[]');
+          gs.splice(i,1);
+          localStorage.setItem('gardenData',JSON.stringify(gs));
+          if(currentGardenIndex>=gs.length)currentGardenIndex=Math.max(0,gs.length-1);
+          showGardenSwitcher();
+        };
+      };
+      row.appendChild(nameEl);row.appendChild(loadBtn);row.appendChild(delBtn);
+      list.appendChild(row);
+    });
+  }
+  document.getElementById('switch-overlay').style.display='flex';
+}
+
+function hideSwitcher(){
+  document.getElementById('switch-overlay').style.display='none';
+}
+
+function newGarden(){
+  const gardens=JSON.parse(localStorage.getItem('gardenData')||'[]');
+  if(gardens.length>=2){
+    document.getElementById('garden-limit-msg').style.display='block';
+    return;
+  }
+  saveGarden();
+  const gs=JSON.parse(localStorage.getItem('gardenData')||'[]');
+  gs.push({name:'New Garden',unit:'ft',w:60,h:40,plants:[],structs:[]});
+  localStorage.setItem('gardenData',JSON.stringify(gs));
+  currentGardenIndex=gs.length-1;
+  hideSwitcher();
+  document.getElementById('setup-name').value='New Garden';
+  document.getElementById('setup-overlay').style.display='flex';
+}
+
+// ══════════════════════════════════════════════════════════
+// HINT / TOAST
+// ══════════════════════════════════════════════════════════
+let hintTimer=null;
+function showHint(msg,dur){
+  const h=document.getElementById('hint-bar');
+  if(!msg){h.style.display='none';return;}
+  h.textContent=msg; h.style.display='block';
+  if(hintTimer)clearTimeout(hintTimer);
+  if(dur)hintTimer=setTimeout(()=>{if(!isFreeMode())h.style.display='none';},dur);
+}
+
+// ══════════════════════════════════════════════════════════
+// KEYBOARD
+// ══════════════════════════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  const tag=document.activeElement.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA')return;
+  if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();undo();return;}
+  if((e.ctrlKey||e.metaKey)&&e.key==='c'){e.preventDefault();copyPlant();}
+  if((e.ctrlKey||e.metaKey)&&e.key==='v'){e.preventDefault();pastePlant();}
+  if(e.key==='Enter'){
+    if(isFreeMode()&&freePts.length>=2&&!(currentMode==='paths'&&pathSubTool==='gate'))
+      closeFreeShape();
+  }
+  if(e.key==='Delete'||e.key==='Backspace'){
+    if(editingShapeId)return;
+    if(multiSelection.length>0){
+      clearMultiHighlights();
+      multiSelection.forEach(m=>{m.shape.destroy();if(m.kind==='plant')delete plantData[m.id];else delete structData[m.id];});
+      multiSelection=[];structLayer&&structLayer.batchDraw();plantLayer&&plantLayer.batchDraw();deselectAll();
+    } else if(selectedPlant){selectedPlant.group.destroy();delete plantData[selectedPlant.id];deselectAll();plantLayer&&plantLayer.batchDraw();}
+    else if(selectedStruct){selectedStruct.shape.destroy();delete structData[selectedStruct.id];deselectAll();structLayer&&structLayer.batchDraw();}
+  }
+  if(e.key==='Escape'){cancelFreeShape();if(editingShapeId)exitEditMode();else{deselectAll();setMode('select');}}
+  if(['1','2','3','4'].includes(e.key)&&!e.ctrlKey)applySeason(+e.key-1);
+  if(e.key==='g')toggleGrid();
+});
+
+// ══════════════════════════════════════════════════════════
+// RESIZE
+// ══════════════════════════════════════════════════════════
+window.addEventListener('resize',()=>{
+  if(!stage)return;
+  stage.width(wrapEl.clientWidth);stage.height(wrapEl.clientHeight);
+  if(showGrid)drawGrid();
+});
+</script>
+</body>
+</html>
+
+

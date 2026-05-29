@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Garden Map — Prototype</title>
+  <script src="https://unpkg.com/konva@9/konva.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', 'DM Sans', system-ui, sans-serif;
+      background: #1a1a1a;
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* ── Top bar ────────────────────────────────── */
+    #topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      background: var(--ui-bg);
+      border-bottom: 2px solid var(--ui-border);
+      color: var(--text);
+      transition: background 0.4s, border-color 0.4s, color 0.4s;
+      z-index: 10;
+      flex-shrink: 0;
+    }
+    #topbar h1 { font-size: 16px; font-weight: 700; letter-spacing: 0.5px; }
+    #topbar .subtitle { font-size: 12px; opacity: 0.65; }
+    .season-badge {
+      font-size: 13px; font-weight: 700; padding: 4px 12px;
+      border-radius: 20px; background: var(--accent); color: #fff;
+      transition: background 0.4s;
+    }
+
+    /* ── Main layout ────────────────────────────── */
+    #main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* ── Plant tray (left sidebar) ──────────────── */
+    #tray {
+      width: 110px;
+      background: var(--ui-bg);
+      border-right: 2px solid var(--ui-border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 6px;
+      gap: 10px;
+      overflow-y: auto;
+      transition: background 0.4s, border-color 0.4s;
+      flex-shrink: 0;
+      z-index: 5;
+    }
+    #tray h2 {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text);
+      opacity: 0.6;
+      margin-bottom: 4px;
+    }
+    .tray-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: grab;
+      padding: 6px;
+      border-radius: 10px;
+      transition: background 0.15s;
+      width: 90px;
+    }
+    .tray-item:hover { background: var(--tray-hover); }
+    .tray-item:active { cursor: grabbing; }
+    .tray-item img {
+      width: 60px; height: 60px;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+    }
+    .tray-item span {
+      font-size: 10px; font-weight: 600;
+      color: var(--text); text-align: center;
+    }
+    .tray-divider {
+      width: 80%; height: 1px;
+      background: var(--ui-border);
+      margin: 2px 0;
+    }
+
+    /* ── Canvas area ─────────────────────────────── */
+    #canvas-wrap {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg);
+      transition: background 0.5s;
+      cursor: crosshair;
+    }
+    #canvas-wrap.drag-over { outline: 3px dashed var(--accent); }
+
+    /* drop preview ghost */
+    #drop-ghost {
+      position: absolute;
+      pointer-events: none;
+      display: none;
+      opacity: 0.65;
+      z-index: 100;
+      transform: translate(-50%, -50%);
+    }
+
+    /* ── Info panel (right) ─────────────────────── */
+    #info-panel {
+      width: 200px;
+      background: var(--ui-bg);
+      border-left: 2px solid var(--ui-border);
+      padding: 14px 12px;
+      color: var(--text);
+      transition: background 0.4s, border-color 0.4s, color 0.4s;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex-shrink: 0;
+      overflow-y: auto;
+    }
+    #info-panel h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6; }
+    #info-panel .plant-name { font-size: 16px; font-weight: 700; }
+    #info-panel .plant-family { font-size: 12px; opacity: 0.7; }
+    #info-panel textarea {
+      width: 100%; height: 80px; resize: vertical;
+      background: var(--input-bg); border: 1px solid var(--ui-border);
+      border-radius: 8px; padding: 6px 8px; font-size: 12px;
+      color: var(--text); font-family: inherit;
+    }
+    .season-checks { display: flex; flex-direction: column; gap: 5px; }
+    .season-checks label {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; cursor: pointer;
+    }
+    .btn-delete {
+      background: #c62828; color: #fff; border: none;
+      border-radius: 8px; padding: 7px; font-size: 12px;
+      font-weight: 600; cursor: pointer; text-align: center;
+      transition: background 0.15s;
+    }
+    .btn-delete:hover { background: #b71c1c; }
+    .empty-hint {
+      font-size: 12px; opacity: 0.5; text-align: center; margin-top: 20px;
+    }
+
+    /* ── Bottom controls ────────────────────────── */
+    #bottom {
+      background: var(--ui-bg);
+      border-top: 2px solid var(--ui-border);
+      padding: 10px 20px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.4s, border-color 0.4s;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+    #bottom-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      justify-content: center;
+    }
+    .slider-label {
+      font-size: 11px; font-weight: 700; color: var(--text);
+      text-transform: uppercase; letter-spacing: 1px;
+      opacity: 0.7; white-space: nowrap;
+    }
+
+    /* Season slider */
+    #season-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: min(480px, 60vw);
+      height: 8px;
+      border-radius: 4px;
+      background: var(--slider-track);
+      outline: none;
+      cursor: pointer;
+      transition: background 0.4s;
+    }
+    #season-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 3px solid #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+      cursor: pointer;
+      transition: background 0.4s;
+    }
+
+    /* Season labels row */
+    #season-labels {
+      display: flex;
+      justify-content: space-between;
+      width: min(480px, 60vw);
+      font-size: 11px;
+      color: var(--text);
+      opacity: 0.75;
+      font-weight: 600;
+    }
+
+    /* toolbar row */
+    #toolbar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .tool-btn {
+      background: var(--btn-bg);
+      border: 1.5px solid var(--ui-border);
+      border-radius: 8px; padding: 5px 12px;
+      font-size: 11px; font-weight: 600;
+      color: var(--text); cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .tool-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .tool-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    /* ── Season themes ──────────────────────────── */
+    :root {
+      /* Spring */
+      --bg:           #C8E6C9;
+      --ui-bg:        #F1F8E9;
+      --ui-border:    #A5D6A7;
+      --text:         #2A3D1A;
+      --accent:       #558B2F;
+      --slider-track: #A5D6A7;
+      --tray-hover:   #DCEDC8;
+      --btn-bg:       #E8F5E9;
+      --input-bg:     #F9FBE7;
+      --grid-color:   rgba(56, 142, 60, 0.15);
+    }
+    body.summer {
+      --bg:           #AED581;
+      --ui-bg:        #F9FBE7;
+      --ui-border:    #C5E1A5;
+      --text:         #1B5E20;
+      --accent:       #7CB342;
+      --slider-track: #C5E1A5;
+      --tray-hover:   #DCEDC8;
+      --btn-bg:       #F1F8E9;
+      --input-bg:     #FAFDF3;
+      --grid-color:   rgba(100, 180, 50, 0.18);
+    }
+    body.fall {
+      --bg:           #FFCC80;
+      --ui-bg:        #FFF8F0;
+      --ui-border:    #FFAB40;
+      --text:         #4E2A00;
+      --accent:       #E65100;
+      --slider-track: #FFAB40;
+      --tray-hover:   #FFE0B2;
+      --btn-bg:       #FFF3E0;
+      --input-bg:     #FFFDE7;
+      --grid-color:   rgba(180, 100, 20, 0.15);
+    }
+    body.winter {
+      --bg:           #E3F2FD;
+      --ui-bg:        #F5F5F5;
+      --ui-border:    #B0BEC5;
+      --text:         #263238;
+      --accent:       #546E7A;
+      --slider-track: #B0BEC5;
+      --tray-hover:   #ECEFF1;
+      --btn-bg:       #ECEFF1;
+      --input-bg:     #FAFAFA;
+      --grid-color:   rgba(70, 110, 130, 0.12);
+    }
+
+    /* Fade for hidden plants */
+    .plant-hidden { opacity: 0.15 !important; }
+  </style>
+</head>
+<body class="spring">
+
+<!-- Top bar -->
+<div id="topbar">
+  <div>
+    <div id="topbar-h1" class="h1">🌿 Your Garden Map</div>
+    <div class="subtitle">Prototype — drag plants onto the canvas</div>
+  </div>
+  <div class="season-badge" id="season-badge">🌸 Spring</div>
+</div>
+
+<!-- Main area -->
+<div id="main">
+
+  <!-- Plant tray -->
+  <div id="tray">
+    <h2>Plants</h2>
+    <div class="tray-item" draggable="true" data-plant="tree" data-label="Deciduous Tree" data-family="Tree">
+      <img src="../stickers/tree.svg" alt="Tree"/>
+      <span>Tree</span>
+    </div>
+    <div class="tray-divider"></div>
+    <div class="tray-item" draggable="true" data-plant="rose-bush" data-label="Rose Bush" data-family="Shrub / Rose">
+      <img src="../stickers/rose-bush.svg" alt="Rose Bush"/>
+      <span>Rose Bush</span>
+    </div>
+    <div class="tray-divider"></div>
+    <div class="tray-item" draggable="true" data-plant="lilac-bush" data-label="Lilac Bush" data-family="Shrub / Lilac">
+      <img src="../stickers/lilac-bush.svg" alt="Lilac Bush"/>
+      <span>Lilac Bush</span>
+    </div>
+  </div>
+
+  <!-- Canvas -->
+  <div id="canvas-wrap">
+    <img id="drop-ghost" src="" alt=""/>
+    <div id="konva-container"></div>
+  </div>
+
+  <!-- Info panel -->
+  <div id="info-panel">
+    <h2>Selected Plant</h2>
+    <div id="info-empty" class="empty-hint">Click a plant on the canvas to see its details.</div>
+    <div id="info-content" style="display:none; flex-direction:column; gap:8px;">
+      <div class="plant-name" id="info-name"></div>
+      <div class="plant-family" id="info-family"></div>
+      <div>
+        <div style="font-size:11px;opacity:0.6;margin-bottom:4px;">VISIBLE IN SEASONS</div>
+        <div class="season-checks">
+          <label><input type="checkbox" data-season="spring" checked/> 🌸 Spring</label>
+          <label><input type="checkbox" data-season="summer" checked/> ☀️ Summer</label>
+          <label><input type="checkbox" data-season="fall" checked/> 🍂 Fall</label>
+          <label><input type="checkbox" data-season="winter"/> ❄️ Winter</label>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;opacity:0.6;margin-bottom:4px;">NOTES</div>
+        <textarea id="info-notes" placeholder="Add notes..."></textarea>
+      </div>
+      <button class="btn-delete" id="btn-delete">🗑 Remove Plant</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Bottom: toolbar + season slider -->
+<div id="bottom">
+  <div id="toolbar">
+    <button class="tool-btn active" id="btn-select">✋ Select</button>
+    <button class="tool-btn" id="btn-grid">⊞ Grid</button>
+    <button class="tool-btn" id="btn-clear">🗑 Clear All</button>
+    <span style="font-size:11px; opacity:0.5; margin-left:8px;">
+      Scroll to zoom · Two-finger pan · Drag plants from tray
+    </span>
+  </div>
+  <div id="bottom-row">
+    <span class="slider-label">Season</span>
+    <input type="range" id="season-slider" min="0" max="3" step="1" value="0"/>
+  </div>
+  <div id="season-labels">
+    <span>🌸 Spring</span>
+    <span>☀️ Summer</span>
+    <span>🍂 Fall</span>
+    <span>❄️ Winter</span>
+  </div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────
+const SEASONS = ['spring', 'summer', 'fall', 'winter'];
+const SEASON_NAMES = ['🌸 Spring', '☀️ Summer', '🍂 Fall', '❄️ Winter'];
+const SEASON_CLASSES = ['spring', 'summer', 'fall', 'winter'];
+
+let currentSeason = 0;
+let selectedNode = null;
+let showGrid = false;
+let plantIdCounter = 0;
+
+// Plant data store
+const plantData = {}; // id -> { label, family, notes, seasons[] }
+
+// ── Konva setup ────────────────────────────────────────────────────
+const wrap = document.getElementById('konva-container');
+const wrapEl = document.getElementById('canvas-wrap');
+const W = wrapEl.clientWidth;
+const H = wrapEl.clientHeight;
+
+const stage = new Konva.Stage({
+  container: 'konva-container',
+  width: W,
+  height: H,
+});
+
+// Layers
+const gridLayer = new Konva.Layer();
+const bedLayer  = new Konva.Layer();
+const plantLayer = new Konva.Layer();
+const uiLayer   = new Konva.Layer();
+
+stage.add(gridLayer, bedLayer, plantLayer, uiLayer);
+
+// Transformer
+const tr = new Konva.Transformer({
+  rotateEnabled: false,
+  borderStroke: '#558B2F',
+  borderStrokeWidth: 2,
+  anchorFill: '#fff',
+  anchorStroke: '#558B2F',
+  anchorSize: 10,
+  keepRatio: true,
+});
+uiLayer.add(tr);
+
+// ── Grid drawing ──────────────────────────────────────────────────
+const CELL = 20; // px per grid cell (represents 3×3 inches)
+
+function drawGrid() {
+  gridLayer.destroyChildren();
+  if (!showGrid) { gridLayer.batchDraw(); return; }
+  const style = getComputedStyle(document.body);
+  const col = style.getPropertyValue('--grid-color').trim() || 'rgba(0,128,0,0.15)';
+  for (let x = 0; x < W; x += CELL) {
+    gridLayer.add(new Konva.Line({ points:[x,0,x,H], stroke:col, strokeWidth:0.5 }));
+  }
+  for (let y = 0; y < H; y += CELL) {
+    gridLayer.add(new Konva.Line({ points:[0,y,W,y], stroke:col, strokeWidth:0.5 }));
+  }
+  gridLayer.batchDraw();
+}
+
+// ── Season system ─────────────────────────────────────────────────
+function applySeason(idx) {
+  currentSeason = idx;
+  SEASON_CLASSES.forEach(c => document.body.classList.remove(c));
+  document.body.classList.add(SEASON_CLASSES[idx]);
+  document.getElementById('season-badge').textContent = SEASON_NAMES[idx];
+  document.getElementById('season-slider').value = idx;
+  updatePlantVisibility();
+  drawGrid();
+  tr.borderStroke(getComputedStyle(document.body).getPropertyValue('--accent').trim());
+  tr.getLayer()?.batchDraw();
+}
+
+function updatePlantVisibility() {
+  const sName = SEASONS[currentSeason];
+  plantLayer.find('Group').forEach(group => {
+    const id = group.id();
+    const data = plantData[id];
+    if (!data) return;
+    const visible = data.seasons.includes(sName);
+    group.opacity(visible ? 1 : 0.12);
+  });
+  plantLayer.batchDraw();
+}
+
+// ── Preload SVGs as images ────────────────────────────────────────
+const STICKER_SRCS = {
+  'tree':       '../stickers/tree.svg',
+  'rose-bush':  '../stickers/rose-bush.svg',
+  'lilac-bush': '../stickers/lilac-bush.svg',
+};
+
+const loadedImages = {};
+
+function loadImage(key, src) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => { loadedImages[key] = img; resolve(); };
+    img.onerror = () => resolve(); // fail silently
+    img.src = src;
+  });
+}
+
+// ── Add plant to canvas ───────────────────────────────────────────
+function addPlant(key, label, family, x, y) {
+  const id = 'plant_' + (plantIdCounter++);
+  plantData[id] = {
+    label, family,
+    notes: '',
+    seasons: ['spring', 'summer', 'fall', 'winter'], // default all seasons
+  };
+
+  const img = loadedImages[key];
+  if (!img) return;
+
+  const SIZE = 72;
+  const group = new Konva.Group({
+    id,
+    x: x - SIZE/2,
+    y: y - SIZE/2,
+    draggable: true,
+    width: SIZE,
+    height: SIZE,
+  });
+
+  const kImg = new Konva.Image({
+    image: img,
+    x: 0, y: 0,
+    width: SIZE, height: SIZE,
+  });
+
+  const nameLabel = new Konva.Text({
+    x: -20, y: SIZE + 2,
+    width: SIZE + 40,
+    text: label,
+    fontSize: 10,
+    fontFamily: 'Nunito, DM Sans, system-ui',
+    fontStyle: 'bold',
+    fill: getComputedStyle(document.body).getPropertyValue('--text').trim() || '#333',
+    align: 'center',
+  });
+
+  group.add(kImg, nameLabel);
+  plantLayer.add(group);
+
+  // Apply current season visibility
+  const sName = SEASONS[currentSeason];
+  if (!plantData[id].seasons.includes(sName)) group.opacity(0.12);
+
+  // Select on click
+  group.on('click tap', () => selectPlant(id, group));
+  group.on('dragend', () => {/* auto-saved in real app */});
+
+  plantLayer.batchDraw();
+  selectPlant(id, group);
+}
+
+// ── Selection ─────────────────────────────────────────────────────
+function selectPlant(id, group) {
+  selectedNode = { id, group };
+  tr.nodes([group]);
+  uiLayer.batchDraw();
+  showInfoPanel(id);
+}
+
+function deselectAll() {
+  selectedNode = null;
+  tr.nodes([]);
+  uiLayer.batchDraw();
+  hideInfoPanel();
+}
+
+stage.on('click tap', (e) => {
+  if (e.target === stage) deselectAll();
+});
+
+// ── Info panel ────────────────────────────────────────────────────
+function showInfoPanel(id) {
+  const data = plantData[id];
+  document.getElementById('info-empty').style.display = 'none';
+  const content = document.getElementById('info-content');
+  content.style.display = 'flex';
+  document.getElementById('info-name').textContent = data.label;
+  document.getElementById('info-family').textContent = data.family;
+  document.getElementById('info-notes').value = data.notes;
+
+  // Season checkboxes
+  document.querySelectorAll('#info-content input[data-season]').forEach(cb => {
+    cb.checked = data.seasons.includes(cb.dataset.season);
+  });
+}
+
+function hideInfoPanel() {
+  document.getElementById('info-empty').style.display = '';
+  document.getElementById('info-content').style.display = 'none';
+}
+
+// Season checkbox changes
+document.querySelectorAll('#info-content input[data-season]').forEach(cb => {
+  cb.addEventListener('change', () => {
+    if (!selectedNode) return;
+    const data = plantData[selectedNode.id];
+    if (cb.checked) {
+      if (!data.seasons.includes(cb.dataset.season)) data.seasons.push(cb.dataset.season);
+    } else {
+      data.seasons = data.seasons.filter(s => s !== cb.dataset.season);
+    }
+    updatePlantVisibility();
+  });
+});
+
+// Notes
+document.getElementById('info-notes').addEventListener('input', (e) => {
+  if (!selectedNode) return;
+  plantData[selectedNode.id].notes = e.target.value;
+});
+
+// Delete
+document.getElementById('btn-delete').addEventListener('click', () => {
+  if (!selectedNode) return;
+  const id = selectedNode.id;
+  selectedNode.group.destroy();
+  delete plantData[id];
+  deselectAll();
+  plantLayer.batchDraw();
+});
+
+// ── Drag from tray ────────────────────────────────────────────────
+let draggingItem = null;
+const ghost = document.getElementById('drop-ghost');
+
+document.querySelectorAll('.tray-item').forEach(item => {
+  item.addEventListener('dragstart', (e) => {
+    draggingItem = {
+      key: item.dataset.plant,
+      label: item.dataset.label,
+      family: item.dataset.family,
+    };
+    ghost.src = STICKER_SRCS[item.dataset.plant];
+    ghost.style.width = '72px';
+    ghost.style.height = '72px';
+    e.dataTransfer.effectAllowed = 'copy';
+    // Use transparent drag image
+    const blankImg = document.createElement('img');
+    blankImg.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+    e.dataTransfer.setDragImage(blankImg, 0, 0);
+  });
+  item.addEventListener('dragend', () => {
+    ghost.style.display = 'none';
+    draggingItem = null;
+    wrapEl.classList.remove('drag-over');
+  });
+});
+
+wrapEl.addEventListener('dragenter', (e) => {
+  e.preventDefault();
+  wrapEl.classList.add('drag-over');
+});
+wrapEl.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+  // Move ghost
+  const rect = wrapEl.getBoundingClientRect();
+  ghost.style.display = 'block';
+  ghost.style.left = (e.clientX - rect.left) + 'px';
+  ghost.style.top  = (e.clientY - rect.top)  + 'px';
+});
+wrapEl.addEventListener('dragleave', () => {
+  wrapEl.classList.remove('drag-over');
+  ghost.style.display = 'none';
+});
+wrapEl.addEventListener('drop', (e) => {
+  e.preventDefault();
+  wrapEl.classList.remove('drag-over');
+  ghost.style.display = 'none';
+  if (!draggingItem) return;
+  const rect = wrapEl.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  addPlant(draggingItem.key, draggingItem.label, draggingItem.family, x, y);
+  draggingItem = null;
+});
+
+// Touch drag from tray (for tablet)
+let touchDragItem = null;
+let touchGhostEl = null;
+
+document.querySelectorAll('.tray-item').forEach(item => {
+  item.addEventListener('touchstart', (e) => {
+    touchDragItem = {
+      key: item.dataset.plant,
+      label: item.dataset.label,
+      family: item.dataset.family,
+    };
+    // Create a floating ghost image
+    touchGhostEl = document.createElement('img');
+    touchGhostEl.src = STICKER_SRCS[item.dataset.plant];
+    touchGhostEl.style.cssText = 'position:fixed;width:72px;height:72px;pointer-events:none;z-index:9999;opacity:0.75;transform:translate(-50%,-50%)';
+    document.body.appendChild(touchGhostEl);
+  }, {passive: true});
+
+  item.addEventListener('touchmove', (e) => {
+    if (!touchGhostEl) return;
+    const t = e.touches[0];
+    touchGhostEl.style.left = t.clientX + 'px';
+    touchGhostEl.style.top  = t.clientY + 'px';
+  }, {passive: true});
+
+  item.addEventListener('touchend', (e) => {
+    if (!touchDragItem || !touchGhostEl) return;
+    const t = e.changedTouches[0];
+    document.body.removeChild(touchGhostEl);
+    touchGhostEl = null;
+    const rect = wrapEl.getBoundingClientRect();
+    // Check if dropped on canvas
+    if (t.clientX >= rect.left && t.clientX <= rect.right &&
+        t.clientY >= rect.top  && t.clientY <= rect.bottom) {
+      addPlant(touchDragItem.key, touchDragItem.label, touchDragItem.family,
+               t.clientX - rect.left, t.clientY - rect.top);
+    }
+    touchDragItem = null;
+  }, {passive: true});
+});
+
+// ── Season slider ─────────────────────────────────────────────────
+document.getElementById('season-slider').addEventListener('input', (e) => {
+  applySeason(parseInt(e.target.value));
+});
+
+// ── Toolbar buttons ───────────────────────────────────────────────
+document.getElementById('btn-grid').addEventListener('click', (e) => {
+  showGrid = !showGrid;
+  e.target.classList.toggle('active', showGrid);
+  drawGrid();
+});
+
+document.getElementById('btn-clear').addEventListener('click', () => {
+  if (!confirm('Remove all plants from the canvas?')) return;
+  plantLayer.destroyChildren();
+  Object.keys(plantData).forEach(k => delete plantData[k]);
+  deselectAll();
+  plantLayer.batchDraw();
+});
+
+// ── Pinch-to-zoom + scroll zoom ───────────────────────────────────
+const scaleBy = 1.08;
+stage.on('wheel', (e) => {
+  e.evt.preventDefault();
+  const oldScale = stage.scaleX();
+  const pointer = stage.getPointerPosition();
+  const mousePointTo = {
+    x: (pointer.x - stage.x()) / oldScale,
+    y: (pointer.y - stage.y()) / oldScale,
+  };
+  const direction = e.evt.deltaY > 0 ? -1 : 1;
+  const newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+  const clamped = Math.min(Math.max(newScale, 0.3), 4);
+  stage.scale({ x: clamped, y: clamped });
+  stage.position({
+    x: pointer.x - mousePointTo.x * clamped,
+    y: pointer.y - mousePointTo.y * clamped,
+  });
+  stage.batchDraw();
+});
+
+// ── Keyboard shortcuts ────────────────────────────────────────────
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Delete' || e.key === 'Backspace') {
+    if (selectedNode && document.activeElement.tagName !== 'TEXTAREA') {
+      const id = selectedNode.id;
+      selectedNode.group.destroy();
+      delete plantData[id];
+      deselectAll();
+      plantLayer.batchDraw();
+    }
+  }
+  if (e.key === 'Escape') deselectAll();
+  // Season shortcuts 1-4
+  if (['1','2','3','4'].includes(e.key)) {
+    applySeason(parseInt(e.key) - 1);
+    document.getElementById('season-slider').value = parseInt(e.key) - 1;
+  }
+});
+
+// ── Resize stage on window resize ────────────────────────────────
+window.addEventListener('resize', () => {
+  stage.width(wrapEl.clientWidth);
+  stage.height(wrapEl.clientHeight);
+  drawGrid();
+});
+
+// ── Init ──────────────────────────────────────────────────────────
+Promise.all(Object.entries(STICKER_SRCS).map(([k,v]) => loadImage(k,v))).then(() => {
+  drawGrid();
+  applySeason(0);
+});
+</script>
+</body>
+</html>

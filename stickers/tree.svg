@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <!-- Tree — top-down aerial view, PvZ-inspired -->
+  <!-- Shadow / ground ring -->
+  <ellipse cx="64" cy="68" rx="30" ry="18" fill="#3A2A10" opacity="0.18"/>
+
+  <!-- Outer canopy ring (darkest) -->
+  <circle cx="62" cy="62" r="46" fill="#2E7D32" stroke="#3A2A10" stroke-width="2.5"/>
+
+  <!-- Mid canopy ring -->
+  <circle cx="62" cy="60" r="36" fill="#43A047"/>
+
+  <!-- Inner highlight cluster -->
+  <circle cx="56" cy="54" r="22" fill="#66BB6A"/>
+  <circle cx="70" cy="58" r="16" fill="#81C784"/>
+
+  <!-- Top highlight blob -->
+  <ellipse cx="58" cy="50" rx="12" ry="10" fill="#A5D6A7"/>
+
+  <!-- Leaf bumps around canopy edge — gives it that bushy outline feel -->
+  <circle cx="24" cy="56" r="10" fill="#388E3C" stroke="#3A2A10" stroke-width="2"/>
+  <circle cx="32" cy="34" r="9" fill="#43A047" stroke="#3A2A10" stroke-width="2"/>
+  <circle cx="58" cy="22" r="10" fill="#43A047" stroke="#3A2A10" stroke-width="2"/>
+  <circle cx="84" cy="26" r="9" fill="#388E3C" stroke="#3A2A10" stroke-width="2"/>
+  <circle cx="100" cy="46" r="10" fill="#388E3C" stroke="#3A2A10" stroke-width="2"/>
+  <circle cx="100" cy="70" r="9" fill="#2E7D32" stroke="#3A2A10" stroke-width="2"/>
+  <circle cx="80" cy="92" r="9" fill="#2E7D32" stroke="#3A2A10" stroke-width="2"/>
+  <circle cx="50" cy="96" r="9" fill="#33691E" stroke="#3A2A10" stroke-width="2"/>
+  <circle cx="26" cy="78" r="9" fill="#33691E" stroke="#3A2A10" stroke-width="2"/>
+
+  <!-- Trunk visible in centre -->
+  <ellipse cx="62" cy="64" rx="6" ry="7" fill="#5D4037" stroke="#3A2A10" stroke-width="2"/>
+  <ellipse cx="62" cy="63" rx="4" ry="5" fill="#795548"/>
+</svg>

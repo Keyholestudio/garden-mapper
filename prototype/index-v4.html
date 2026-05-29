@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Garden Map — v4</title>
+  <script src="https://unpkg.com/konva@9/konva.min.js"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Nunito','DM Sans',system-ui,sans-serif;background:#1a1a1a;
+         display:flex;flex-direction:column;height:100dvh;overflow:hidden;user-select:none;}
+
+    /* ── Season themes ── */
+    :root{--bg:#C8E6C9;--ui-bg:#F1F8E9;--ui-border:#A5D6A7;--text:#2A3D1A;
+          --accent:#558B2F;--slider-track:#A5D6A7;--tray-hover:#DCEDC8;
+          --btn-bg:#E8F5E9;--input-bg:#F9FBE7;--grid-color:rgba(56,142,60,0.25);}
+    body.summer{--bg:#8BC34A;--ui-bg:#F9FBE7;--ui-border:#C5E1A5;--text:#1B5E20;
+                --accent:#33691E;--slider-track:#C5E1A5;--tray-hover:#DCEDC8;
+                --btn-bg:#F1F8E9;--input-bg:#FAFDF3;--grid-color:rgba(80,160,30,0.25);}
+    body.fall{--bg:#FFCC80;--ui-bg:#FFF8F0;--ui-border:#FFAB40;--text:#4E2A00;
+              --accent:#E65100;--slider-track:#FFAB40;--tray-hover:#FFE0B2;
+              --btn-bg:#FFF3E0;--input-bg:#FFFDE7;--grid-color:rgba(180,100,20,0.2);}
+    body.winter{--bg:#E3F2FD;--ui-bg:#F5F5F5;--ui-border:#B0BEC5;--text:#263238;
+                --accent:#546E7A;--slider-track:#B0BEC5;--tray-hover:#ECEFF1;
+                --btn-bg:#ECEFF1;--input-bg:#FAFAFA;--grid-color:rgba(70,110,130,0.18);}
+
+    /* ── Top bar ── */
+    #topbar{display:flex;align-items:center;justify-content:space-between;
+            padding:7px 14px;background:var(--ui-bg);border-bottom:2px solid var(--ui-border);
+            color:var(--text);z-index:10;flex-shrink:0;gap:10px;transition:background .4s,border-color .4s,color .4s;}
+    #topbar h1{font-size:14px;font-weight:800;white-space:nowrap;}
+    #garden-info{font-size:11px;opacity:.65;}
+    .season-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;
+                  background:var(--accent);color:#fff;white-space:nowrap;transition:background .4s;}
+    #scale-display{font-size:10px;font-weight:600;opacity:.75;background:var(--btn-bg);
+                   border:1px solid var(--ui-border);border-radius:6px;padding:3px 8px;white-space:nowrap;}
+
+    /* ── Main layout ── */
+    #main{display:flex;flex:1;overflow:hidden;}
+
+    /* ── Plant tray ── */
+    #tray{width:118px;background:var(--ui-bg);border-right:2px solid var(--ui-border);
+          display:flex;flex-direction:column;align-items:stretch;padding:7px 5px;
+          overflow-y:auto;flex-shrink:0;transition:background .4s,border-color .4s;}
+    #plant-search{width:100%;padding:5px 7px;border:1.5px solid var(--ui-border);border-radius:8px;
+                  background:var(--input-bg);color:var(--text);font-size:11px;font-family:inherit;
+                  outline:none;margin-bottom:6px;}
+    #plant-search:focus{border-color:var(--accent);}
+    .tray-section-label{font-size:9px;text-transform:uppercase;letter-spacing:1px;
+                        color:var(--text);opacity:.5;margin:3px 2px 2px;}
+    .tray-item{display:flex;align-items:center;gap:6px;cursor:grab;padding:4px 5px;
+               border-radius:7px;transition:background .12s;}
+    .tray-item:hover{background:var(--tray-hover);}
+    .tray-item img{width:34px;height:34px;pointer-events:none;flex-shrink:0;
+                   filter:drop-shadow(0 1px 3px rgba(0,0,0,.3));}
+    .tray-item span{font-size:10px;font-weight:600;color:var(--text);line-height:1.2;}
+    .tray-divider{width:100%;height:1px;background:var(--ui-border);margin:4px 0;}
+    #no-results{font-size:10px;opacity:.5;text-align:center;padding:8px 4px;display:none;}
+
+    /* ── Canvas ── */
+    #canvas-wrap{flex:1;position:relative;overflow:hidden;background:var(--bg);transition:background .5s;}
+    #canvas-wrap.drag-over{outline:3px dashed var(--accent);outline-offset:-3px;}
+    #drop-ghost{position:absolute;pointer-events:none;display:none;opacity:.65;z-index:100;transform:translate(-50%,-50%);}
+    #canvas-wrap.mode-select{cursor:default;}
+    #canvas-wrap.mode-panning{cursor:grabbing;}
+    #canvas-wrap.mode-beds,#canvas-wrap.mode-hedges,
+    #canvas-wrap.mode-paths,#canvas-wrap.mode-building{cursor:crosshair;}
+    #hint-bar{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
+              background:rgba(0,0,0,.65);color:#fff;font-size:11px;font-weight:600;
+              padding:4px 14px;border-radius:20px;pointer-events:none;
+              display:none;white-space:nowrap;z-index:50;}
+
+    /* ── Right panel ── */
+    #info-panel{width:200px;background:var(--ui-bg);border-left:2px solid var(--ui-border);
+                padding:10px 10px;color:var(--text);display:flex;flex-direction:column;gap:8px;
+                flex-shrink:0;overflow-y:auto;transition:background .4s,border-color .4s,color .4s;}
+    .panel-title{font-size:9px;text-transform:uppercase;letter-spacing:1px;opacity:.5;}
+    .panel-h2{font-size:13px;font-weight:800;}
+    .panel-sub{font-size:11px;opacity:.65;}
+    .panel-sep{width:100%;height:1px;background:var(--ui-border);margin:3px 0;}
+
+    /* sub-tool radio buttons */
+    .subtool-group{display:flex;flex-direction:column;gap:5px;margin-top:2px;}
+    .subtool-opt{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:8px;
+                 border:1.5px solid var(--ui-border);cursor:pointer;background:var(--btn-bg);
+                 transition:background .12s,border-color .12s;font-size:11px;font-weight:600;}
+    .subtool-opt:hover{background:var(--tray-hover);}
+    .subtool-opt.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .subtool-icon{font-size:16px;}
+
+    .btn-panel{background:var(--btn-bg);color:var(--text);border:1.5px solid var(--ui-border);
+               border-radius:7px;padding:6px 8px;font-size:11px;font-weight:700;cursor:pointer;
+               transition:background .12s,color .12s;width:100%;}
+    .btn-panel:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .btn-panel.toggled{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .btn-panel.danger{background:#fde8e8;color:#c62828;border-color:#ef9a9a;}
+    .btn-panel.danger:hover{background:#c62828;color:#fff;border-color:#c62828;}
+
+    .season-checks{display:flex;flex-direction:column;gap:3px;}
+    .season-checks label{display:flex;align-items:center;gap:5px;font-size:11px;cursor:pointer;}
+    #info-panel textarea{width:100%;height:60px;resize:vertical;background:var(--input-bg);
+                         border:1px solid var(--ui-border);border-radius:7px;padding:5px 6px;
+                         font-size:11px;color:var(--text);font-family:inherit;}
+    .colour-row{display:flex;gap:5px;flex-wrap:wrap;}
+    .colour-swatch{width:20px;height:20px;border-radius:50%;border:2px solid transparent;cursor:pointer;}
+    .colour-swatch.selected{border-color:var(--text);}
+    .text-input{width:100%;padding:4px 6px;border:1px solid var(--ui-border);border-radius:6px;
+                background:var(--input-bg);color:var(--text);font-size:11px;font-family:inherit;}
+
+    /* path width slider */
+    .slider-wrap{display:flex;align-items:center;gap:6px;}
+    .slider-wrap input[type=range]{flex:1;-webkit-appearance:none;height:5px;border-radius:3px;
+                                    background:var(--slider-track);outline:none;cursor:pointer;}
+    .slider-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;
+      border-radius:50%;background:var(--accent);border:2px solid #fff;cursor:pointer;}
+    .slider-wrap span{font-size:10px;font-weight:700;opacity:.7;white-space:nowrap;}
+
+    .empty-hint{font-size:11px;opacity:.45;text-align:center;margin-top:14px;line-height:1.6;}
+
+    /* ── Bottom ── */
+    #bottom{background:var(--ui-bg);border-top:2px solid var(--ui-border);
+            padding:7px 14px 9px;display:flex;flex-direction:column;align-items:center;gap:5px;
+            flex-shrink:0;z-index:10;transition:background .4s,border-color .4s;}
+    #toolbar{display:flex;gap:5px;align-items:center;flex-wrap:wrap;justify-content:center;}
+    .tool-btn{background:var(--btn-bg);border:1.5px solid var(--ui-border);border-radius:7px;
+              padding:4px 11px;font-size:10px;font-weight:700;color:var(--text);cursor:pointer;
+              transition:background .12s,color .12s;white-space:nowrap;}
+    .tool-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .tool-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+    .tool-sep{width:1px;height:20px;background:var(--ui-border);margin:0 1px;}
+    #season-slider{-webkit-appearance:none;appearance:none;width:min(420px,52vw);height:6px;
+                   border-radius:4px;background:var(--slider-track);outline:none;cursor:pointer;transition:background .4s;}
+    #season-slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+      background:var(--accent);border:3px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.3);cursor:pointer;}
+    #season-labels{display:flex;justify-content:space-between;width:min(420px,52vw);
+                   font-size:10px;color:var(--text);opacity:.7;font-weight:700;}
+    .slider-row{display:flex;align-items:center;gap:10px;}
+    .slider-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text);opacity:.6;}
+
+    /* ── Setup modal ── */
+    #setup-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.55);
+                   display:flex;align-items:center;justify-content:center;}
+    #setup-modal{background:#fff;border-radius:14px;padding:24px 28px;width:340px;
+                 box-shadow:0 8px 40px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:14px;}
+    #setup-modal h2{font-size:18px;font-weight:800;color:#2A3D1A;}
+    #setup-modal p{font-size:12px;color:#555;line-height:1.5;}
+    .field-row{display:flex;flex-direction:column;gap:4px;}
+    .field-row label{font-size:11px;font-weight:700;color:#333;}
+    .field-row input{padding:7px 9px;border:1.5px solid #ccc;border-radius:7px;font-size:13px;font-family:inherit;outline:none;}
+    .field-row input:focus{border-color:#558B2F;}
+    .unit-row{display:flex;gap:7px;}
+    .unit-btn{flex:1;padding:6px;border:1.5px solid #ccc;border-radius:7px;background:#f5f5f5;
+              font-size:12px;font-weight:700;cursor:pointer;transition:all .12s;}
+    .unit-btn.active{background:#558B2F;color:#fff;border-color:#558B2F;}
+    .dims-row{display:flex;gap:7px;align-items:center;}
+    .dims-row input{flex:1;}
+    .dims-row span{font-size:13px;color:#555;}
+    #btn-start{background:#558B2F;color:#fff;border:none;border-radius:9px;padding:11px;
+               font-size:14px;font-weight:800;cursor:pointer;}
+    #btn-start:hover{background:#33691E;}
+  </style>
+</head>
+<body class="spring">
+
+<!-- Setup modal -->
+<div id="setup-overlay">
+  <div id="setup-modal">
+    <h2>🌿 Your Garden Map</h2>
+    <p>Enter your property dimensions to calibrate the grid.</p>
+    <div class="field-row"><label>Garden Name</label>
+      <input id="setup-name" type="text" value="My Garden"/></div>
+    <div class="field-row"><label>Units</label>
+      <div class="unit-row">
+        <button class="unit-btn active" id="unit-ft" onclick="setUnit('ft')">Feet</button>
+        <button class="unit-btn" id="unit-m" onclick="setUnit('m')">Metres</button>
+      </div></div>
+    <div class="field-row">
+      <label>Size <span id="unit-label-dim" style="opacity:.6;font-weight:400">(width × depth in ft)</span></label>
+      <div class="dims-row">
+        <input id="setup-w" type="number" value="60" min="5" max="500"/>
+        <span>×</span>
+        <input id="setup-h" type="number" value="40" min="5" max="500"/>
+      </div></div>
+    <button id="btn-start" onclick="startGarden()">Create Garden →</button>
+  </div>
+</div>
+
+<!-- Top bar -->
+<div id="topbar">
+  <div style="display:flex;align-items:center;gap:10px">
+    <h1>🌿 Your Garden Map</h1>
+    <div id="garden-info">—</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div id="scale-display">1 cell = 3 in</div>
+    <div class="season-badge" id="season-badge">🌸 Spring</div>
+  </div>
+</div>
+
+<!-- Main -->
+<div id="main">
+  <!-- Tray -->
+  <div id="tray">
+    <input id="plant-search" type="search" placeholder="🔍 Search…" autocomplete="off"/>
+    <div id="tray-recents" style="display:none">
+      <div class="tray-section-label">Recent</div>
+      <div id="recents-list"></div>
+      <div class="tray-divider"></div>
+    </div>
+    <div class="tray-section-label">Plants</div>
+    <div id="plant-list"></div>
+    <div id="no-results">No matches.</div>
+  </div>
+
+  <!-- Canvas -->
+  <div id="canvas-wrap" class="mode-select">
+    <img id="drop-ghost" src="" alt=""/>
+    <div id="konva-container"></div>
+    <div id="hint-bar"></div>
+  </div>
+
+  <!-- Right panel -->
+  <div id="info-panel">
+    <div class="panel-title">Panel</div>
+
+    <!-- Empty -->
+    <div id="pnl-empty" class="empty-hint">
+      Click a plant or structure.<br/><br/>
+      Drag empty canvas to pan.<br/>Scroll to zoom.<br/><br/>
+      Keys: 1–4 = seasons<br/>Ctrl+C/V = copy/paste<br/>Del = remove<br/>Enter = close shape<br/>Esc = cancel
+    </div>
+
+    <!-- Beds sub-tools -->
+    <div id="pnl-beds" style="display:none">
+      <div class="panel-h2">🌿 Bed Type</div>
+      <div class="panel-sep"></div>
+      <div class="subtool-group">
+        <div class="subtool-opt active" id="sub-curved" onclick="setSubTool('curved')">
+          <span class="subtool-icon">〜</span><div><div>Curved</div><div style="font-size:9px;opacity:.6;font-weight:400">Click points · Enter to close</div></div>
+        </div>
+        <div class="subtool-opt" id="sub-straight" onclick="setSubTool('straight')">
+          <span class="subtool-icon">⬡</span><div><div>Straight</div><div style="font-size:9px;opacity:.6;font-weight:400">Click points · angular edges</div></div>
+        </div>
+        <div class="subtool-opt" id="sub-square" onclick="setSubTool('square')">
+          <span class="subtool-icon">⬜</span><div><div>Square</div><div style="font-size:9px;opacity:.6;font-weight:400">Click + drag rectangle</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hedges sub-tools -->
+    <div id="pnl-hedges" style="display:none">
+      <div class="panel-h2">🌱 Hedge Type</div>
+      <div class="panel-sep"></div>
+      <div class="subtool-group">
+        <div class="subtool-opt active" id="subh-curved" onclick="setSubToolHedge('curved')">
+          <span class="subtool-icon">〜</span><div><div>Curved</div><div style="font-size:9px;opacity:.6;font-weight:400">Click points · Enter to close</div></div>
+        </div>
+        <div class="subtool-opt" id="subh-straight" onclick="setSubToolHedge('straight')">
+          <span class="subtool-icon">⬡</span><div><div>Straight</div><div style="font-size:9px;opacity:.6;font-weight:400">Click points · angular edges</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paths sub-tools -->
+    <div id="pnl-paths" style="display:none">
+      <div class="panel-h2">〰 Path</div>
+      <div class="panel-sep"></div>
+      <div class="subtool-group">
+        <div class="subtool-opt active" id="subp-freeform" onclick="setSubToolPath('freeform')">
+          <span class="subtool-icon">〜</span><div><div>Freeform</div><div style="font-size:9px;opacity:.6;font-weight:400">Click points · Enter to finish</div></div>
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <div class="panel-title" style="margin-bottom:4px">DEFAULT WIDTH</div>
+        <div class="slider-wrap">
+          <input type="range" id="path-width-default" min="6" max="60" value="18"/>
+          <span id="path-width-label">18 px</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plant selected -->
+    <div id="pnl-plant" style="display:none;flex-direction:column;gap:7px;">
+      <div class="panel-h2" id="pnl-plant-name"></div>
+      <div class="panel-sub" id="pnl-plant-family"></div>
+      <button class="btn-panel" id="btn-transparency">👁 Make Transparent</button>
+      <button class="btn-panel" id="btn-copy-plant">⧉ Copy (Ctrl+C)</button>
+      <div class="panel-sep"></div>
+      <div class="panel-title">VISIBLE IN SEASONS</div>
+      <div class="season-checks">
+        <label><input type="checkbox" data-season="spring" checked/> 🌸 Spring</label>
+        <label><input type="checkbox" data-season="summer" checked/> ☀️ Summer</label>
+        <label><input type="checkbox" data-season="fall"   checked/> 🍂 Fall</label>
+        <label><input type="checkbox" data-season="winter"/>         ❄️ Winter</label>
+      </div>
+      <div class="panel-sep"></div>
+      <div class="panel-title">NOTES</div>
+      <textarea id="pnl-notes" placeholder="Add notes…"></textarea>
+      <button class="btn-panel danger" id="btn-delete-plant">🗑 Remove Plant</button>
+    </div>
+
+    <!-- Structure selected (non-edit) -->
+    <div id="pnl-struct" style="display:none;flex-direction:column;gap:7px;">
+      <div class="panel-h2" id="pnl-struct-name"></div>
+      <div class="panel-title">FILL COLOUR</div>
+      <div class="colour-row" id="pnl-struct-colours"></div>
+      <div class="panel-title" style="margin-top:4px">LABEL</div>
+      <input class="text-input" id="pnl-struct-label" type="text" placeholder="Label…"/>
+      <!-- Path width (shown only for paths) -->
+      <div id="pnl-path-width-wrap" style="display:none">
+        <div class="panel-title" style="margin-bottom:4px">PATH WIDTH</div>
+        <div class="slider-wrap">
+          <input type="range" id="pnl-path-width" min="6" max="60" value="18"/>
+          <span id="pnl-path-width-label">18 px</span>
+        </div>
+      </div>
+      <div class="panel-sep"></div>
+      <button class="btn-panel" id="btn-edit-struct">✏️ Edit Points (dblclick)</button>
+      <button class="btn-panel danger" id="btn-delete-struct">🗑 Remove</button>
+    </div>
+
+    <!-- Edit mode -->
+    <div id="pnl-edit" style="display:none;flex-direction:column;gap:7px;">
+      <div class="panel-h2">✏️ Editing</div>
+      <div class="panel-sub" id="pnl-edit-name"></div>
+      <div class="panel-sep"></div>
+      <div class="empty-hint" style="font-size:10px;margin-top:0;text-align:left;opacity:.65;">
+        Drag handles to move points.<br/>Click canvas to add a point to shape end.
+      </div>
+      <button class="btn-panel toggled" id="btn-add-pt">＋ Add Point (click canvas)</button>
+      <button class="btn-panel" id="btn-del-last-pt">－ Remove Last Point</button>
+      <div class="panel-sep"></div>
+      <button class="btn-panel" id="btn-done-edit">✓ Done Editing</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bottom -->
+<div id="bottom">
+  <div id="toolbar">
+    <button class="tool-btn active" id="btn-select"   onclick="setMode('select')">✋ Select</button>
+    <div class="tool-sep"></div>
+    <button class="tool-btn" id="btn-beds"     onclick="setMode('beds')">🌿 Beds</button>
+    <button class="tool-btn" id="btn-hedges"   onclick="setMode('hedges')">🌱 Hedges</button>
+    <button class="tool-btn" id="btn-paths"    onclick="setMode('paths')">〰 Paths</button>
+    <button class="tool-btn" id="btn-building" onclick="setMode('building')">🏠 Building</button>
+    <div class="tool-sep"></div>
+    <button class="tool-btn" id="btn-grid"     onclick="toggleGrid()">⊞ Grid</button>
+    <button class="tool-btn"                   onclick="resetView()">⊙ Reset</button>
+    <button class="tool-btn"                   onclick="clearAll()" style="color:#c62828">🗑 Clear</button>
+  </div>
+  <div class="slider-row">
+    <span class="slider-label">Season</span>
+    <input type="range" id="season-slider" min="0" max="3" step="1" value="0"/>
+  </div>
+  <div id="season-labels">
+    <span>🌸 Spring</span><span>☀️ Summer</span><span>🍂 Fall</span><span>❄️ Winter</span>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════
+const SEASONS=['spring','summer','fall','winter'];
+const SEASON_NAMES=['🌸 Spring','☀️ Summer','🍂 Fall','❄️ Winter'];
+let currentSeason=0, currentMode='select';
+let bedSubTool='curved', hedgeSubTool='curved', pathSubTool='freeform';
+let defaultPathWidth=18;
+let showGrid=false;
+let plantIdCtr=0, structIdCtr=0;
+let clipboard=null;
+let selectedPlant=null, selectedStruct=null;
+let editingShapeId=null, editHandles=[], addingPt=false;
+let gardenName='My Garden', gardenUnit='ft', gardenW=60, gardenH=40;
+let propBounds=null;
+const UNIT_PX=32; // pixels per foot at scale 1
+const CELL_IN=3, CELL_PX=8;
+let freePts=[], freeDots=[], freePreview=null;
+const plantData={}, structData={};
+let recents=[];
+
+const PLANT_CATALOG=[
+  {key:'tree',label:'Deciduous Tree',family:'Tree',src:'../stickers/tree.svg'},
+  {key:'tree',label:'Apple Tree',family:'Fruit Tree',src:'../stickers/tree.svg'},
+  {key:'tree',label:'Maple Tree',family:'Tree',src:'../stickers/tree.svg'},
+  {key:'tree',label:'Cedar',family:'Evergreen',src:'../stickers/tree.svg'},
+  {key:'rose-bush',label:'Rose Bush',family:'Shrub / Rose',src:'../stickers/rose-bush.svg'},
+  {key:'rose-bush',label:'Hydrangea',family:'Shrub',src:'../stickers/rose-bush.svg'},
+  {key:'rose-bush',label:'Peony',family:'Perennial',src:'../stickers/rose-bush.svg'},
+  {key:'lilac-bush',label:'Lilac Bush',family:'Shrub / Lilac',src:'../stickers/lilac-bush.svg'},
+  {key:'lilac-bush',label:'Lavender',family:'Herb / Perennial',src:'../stickers/lilac-bush.svg'},
+  {key:'lilac-bush',label:'Hostas',family:'Perennial',src:'../stickers/lilac-bush.svg'},
+];
+
+const BED_COLOURS=['#8B6340','#6D4C1F','#C8A96A','#9E9E9E','#BDBDBD','#78909C'];
+const BUILDING_COLOURS=['#90A4AE','#BCAAA4','#78909C','#A1887F'];
+const HEDGE_COLOURS=['#388E3C','#2E7D32','#1B5E20','#558B2F'];
+const PATH_COLOURS=['#D7CCC8','#BCAAA4','#9E9E9E','#5D4037'];
+
+// ══════════════════════════════════════════════════════════
+// SETUP
+// ══════════════════════════════════════════════════════════
+function setUnit(u){
+  gardenUnit=u;
+  ['ft','m'].forEach(x=>document.getElementById('unit-'+x).classList.toggle('active',x===u));
+  document.getElementById('unit-label-dim').textContent=`(width × depth in ${u})`;
+}
+function startGarden(){
+  gardenName=document.getElementById('setup-name').value.trim()||'My Garden';
+  gardenW=parseFloat(document.getElementById('setup-w').value)||60;
+  gardenH=parseFloat(document.getElementById('setup-h').value)||40;
+  document.getElementById('setup-overlay').style.display='none';
+  document.getElementById('garden-info').textContent=`${gardenName} · ${gardenW}×${gardenH} ${gardenUnit}`;
+  initKonva();
+}
+
+// path width default slider
+document.getElementById('path-width-default').addEventListener('input',e=>{
+  defaultPathWidth=+e.target.value;
+  document.getElementById('path-width-label').textContent=e.target.value+' px';
+});
+
+// ══════════════════════════════════════════════════════════
+// KONVA
+// ══════════════════════════════════════════════════════════
+let stage,gridLayer,structLayer,plantLayer,uiLayer,tr;
+let isPanning=false,panStart=null;
+let drawStart=null,previewRect=null;
+
+function initKonva(){
+  const wrap=document.getElementById('canvas-wrap');
+  const W=wrap.clientWidth,H=wrap.clientHeight;
+  stage=new Konva.Stage({container:'konva-container',width:W,height:H});
+  gridLayer=new Konva.Layer(); structLayer=new Konva.Layer();
+  plantLayer=new Konva.Layer(); uiLayer=new Konva.Layer();
+  stage.add(gridLayer,structLayer,plantLayer,uiLayer);
+  tr=new Konva.Transformer({rotateEnabled:false,borderStroke:'#558B2F',borderStrokeWidth:2,
+    anchorFill:'#fff',anchorStroke:'#558B2F',anchorSize:10,keepRatio:true});
+  uiLayer.add(tr);
+
+  // Property boundary
+  const pw=gardenW*UNIT_PX*(gardenUnit==='m'?3.281:1);
+  const ph=gardenH*UNIT_PX*(gardenUnit==='m'?3.281:1);
+  const ox=Math.max(16,(W-pw)/2), oy=Math.max(16,(H-ph)/2);
+  propBounds={x:ox,y:oy,w:pw,h:ph};
+  structLayer.add(new Konva.Rect({x:ox,y:oy,width:pw,height:ph,stroke:'#558B2F',
+    strokeWidth:2,dash:[10,5],fill:'transparent',listening:false,strokeScaleEnabled:false}));
+  structLayer.add(new Konva.Text({x:ox+6,y:oy+5,
+    text:`${gardenName}  ${gardenW}×${gardenH} ${gardenUnit}`,
+    fontSize:11,fontStyle:'bold',fill:'#558B2F',opacity:.65,listening:false}));
+  structLayer.batchDraw();
+
+  // ── Pan ──
+  stage.on('mousedown touchstart',e=>{
+    if(currentMode==='select'&&e.target===stage&&!editingShapeId){
+      isPanning=true; panStart=stage.getPointerPosition();
+      document.getElementById('canvas-wrap').classList.add('mode-panning');
+    }
+  });
+  stage.on('mousemove touchmove',()=>{
+    if(!isPanning||!panStart)return;
+    const pos=stage.getPointerPosition();
+    stage.x(stage.x()+pos.x-panStart.x); stage.y(stage.y()+pos.y-panStart.y);
+    panStart=pos; stage.batchDraw();
+  });
+  stage.on('mouseup touchend',()=>{
+    if(isPanning){isPanning=false;panStart=null;
+      document.getElementById('canvas-wrap').classList.remove('mode-panning');}
+  });
+
+  // ── Click: freeform / deselect / edit-add-point ──
+  stage.on('click tap',e=>{
+    if(editingShapeId&&addingPt){
+      handleAddPoint(stage.getRelativePointerPosition()); return;
+    }
+    if(isFreeMode()){handleFreeClick(); return;}
+    if(e.target===stage){
+      if(currentMode==='select') deselectAll();
+    }
+  });
+
+  // ── Freeform mouse-move preview ──
+  stage.on('mousemove',()=>{
+    if(!isFreeMode()||freePts.length===0)return;
+    const pos=stage.getRelativePointerPosition();
+    const pts=[...freePts.flatMap(p=>[p.x,p.y]),pos.x,pos.y];
+    const isPath=(currentMode==='paths');
+    if(!freePreview){
+      freePreview=new Konva.Line({points:pts,tension:0.4,
+        stroke:currentMode==='hedges'?'#4CAF50':isPath?'#D7CCC8':'#558B2F',
+        strokeWidth:isPath?defaultPathWidth/stage.scaleX():1.5/stage.scaleX(),
+        dash:isPath?[]:[4,3],strokeScaleEnabled:false,listening:false,closed:false,
+        opacity:isPath?0.55:1});
+      uiLayer.add(freePreview);
+    } else {
+      if(isPath) freePreview.strokeWidth(defaultPathWidth/stage.scaleX());
+      freePreview.points(pts);
+    }
+    uiLayer.batchDraw();
+  });
+
+  // ── Double-click to close freeform / enter edit mode ──
+  stage.on('dblclick dbltap',e=>{
+    if(isFreeMode()&&freePts.length>=2){closeFreeShape();return;}
+    // Enter edit on struct
+    if(e.target!==stage&&!isFreeMode()&&!editingShapeId){
+      const id=e.target.id()||e.target.parent?.id();
+      if(id&&structData[id]){enterEditMode(id);}
+    }
+  });
+
+  // ── Rect drawing (square bed / building) ──
+  stage.on('mousedown touchstart',e=>{
+    if(currentMode==='building'||(currentMode==='beds'&&bedSubTool==='square')){
+      const pos=stage.getRelativePointerPosition(); drawStart=pos;
+      const type=currentMode==='building'?'building':'bed-square';
+      previewRect=new Konva.Rect({x:pos.x,y:pos.y,width:0,height:0,
+        fill:(type==='building'?'#90A4AE':'#8B6340')+'AA',
+        stroke:'#3A2A10',strokeWidth:2,cornerRadius:type==='building'?3:0,
+        listening:false,strokeScaleEnabled:false});
+      structLayer.add(previewRect);
+    }
+  });
+  stage.on('mousemove touchmove',()=>{
+    if(!drawStart||!previewRect)return;
+    const pos=stage.getRelativePointerPosition();
+    previewRect.x(Math.min(drawStart.x,pos.x)); previewRect.y(Math.min(drawStart.y,pos.y));
+    previewRect.width(Math.abs(pos.x-drawStart.x)); previewRect.height(Math.abs(pos.y-drawStart.y));
+    structLayer.batchDraw();
+  });
+  stage.on('mouseup touchend',()=>{
+    if(!drawStart||!previewRect){drawStart=null;return;}
+    const pos=stage.getRelativePointerPosition();
+    const x=Math.min(drawStart.x,pos.x),y=Math.min(drawStart.y,pos.y);
+    const w=Math.abs(pos.x-drawStart.x),h=Math.abs(pos.y-drawStart.y);
+    previewRect.destroy(); previewRect=null; drawStart=null;
+    if(w<8||h<8){structLayer.batchDraw();return;}
+    addRectStruct(currentMode==='building'?'building':'bed-square',x,y,w,h);
+    structLayer.batchDraw();
+  });
+
+  // ── Scroll zoom ──
+  stage.on('wheel',e=>{
+    if(isFreeMode()||editingShapeId)return;
+    e.evt.preventDefault();
+    const old=stage.scaleX(),ptr=stage.getPointerPosition();
+    const to={x:(ptr.x-stage.x())/old, y:(ptr.y-stage.y())/old};
+    const dir=e.evt.deltaY>0?-1:1;
+    const next=Math.min(Math.max(old*(dir>0?1.1:0.9),0.2),6);
+    stage.scale({x:next,y:next}); stage.position({x:ptr.x-to.x*next,y:ptr.y-to.y*next});
+    stage.batchDraw(); updateScaleDisplay();
+    if(showGrid)drawGrid();
+  });
+
+  drawGrid(); updateScaleDisplay(); loadImages();
+}
+
+// ══════════════════════════════════════════════════════════
+// FREEFORM DRAWING
+// ══════════════════════════════════════════════════════════
+function isFreeMode(){
+  if(currentMode==='beds'&&bedSubTool!=='square')return true;
+  if(currentMode==='hedges')return true;
+  if(currentMode==='paths')return true;
+  return false;
+}
+
+function getBoundaryEdge(pt,b){
+  if(!b)return null;
+  const T=28/stage.scaleX();
+  if(Math.abs(pt.y-b.y)<T)return 0;
+  if(Math.abs(pt.x-(b.x+b.w))<T)return 1;
+  if(Math.abs(pt.y-(b.y+b.h))<T)return 2;
+  if(Math.abs(pt.x-b.x)<T)return 3;
+  return null;
+}
+
+// Returns corner points to insert between ptLast and ptFirst, following the boundary
+function getBoundaryClosure(ptLast,ptFirst,b){
+  const edgeL=getBoundaryEdge(ptLast,b);
+  const edgeF=getBoundaryEdge(ptFirst,b);
+  if(edgeL===null||edgeF===null)return[];
+  if(edgeL===edgeF)return[];
+  const corners=[{x:b.x,y:b.y},{x:b.x+b.w,y:b.y},{x:b.x+b.w,y:b.y+b.h},{x:b.x,y:b.y+b.h}];
+  const cwDist=(edgeF-edgeL+4)%4;
+  const ccwDist=(4-cwDist)%4;
+  const result=[];
+  if(cwDist<=ccwDist){
+    let e=edgeL;
+    for(let i=0;i<cwDist;i++){result.push(corners[(e+1)%4]);e=(e+1)%4;}
+  } else {
+    let e=edgeL;
+    for(let i=0;i<ccwDist;i++){result.push(corners[e]);e=(e+3)%4;}
+  }
+  return result;
+}
+
+function handleFreeClick(){
+  if(!isFreeMode())return;
+  let pos=stage.getRelativePointerPosition();
+  const T=22/stage.scaleX();
+
+  // Snap to boundary if close
+  if(propBounds){
+    const b=propBounds;
+    const edges=[
+      {edge:0,snap:{y:b.y}},
+      {edge:1,snap:{x:b.x+b.w}},
+      {edge:2,snap:{y:b.y+b.h}},
+      {edge:3,snap:{x:b.x}},
+    ];
+    for(const {edge,snap} of edges){
+      const dist=edge===0||edge===2?Math.abs(pos.y-snap.y):Math.abs(pos.x-snap.x);
+      if(dist<T){
+        if(edge===0||edge===2) pos={x:pos.x,y:snap.y,onBoundary:true};
+        else                   pos={x:snap.x,y:pos.y,onBoundary:true};
+        pos.onBoundary=true;
+        break;
+      }
+    }
+    // Snap to corners
+    const corners=[{x:b.x,y:b.y},{x:b.x+b.w,y:b.y},{x:b.x+b.w,y:b.y+b.h},{x:b.x,y:b.y+b.h}];
+    for(const c of corners){
+      if(Math.hypot(pos.x-c.x,pos.y-c.y)<T*1.5){
+        pos={x:c.x,y:c.y,onBoundary:true}; break;
+      }
+    }
+  }
+
+  // Close check: near first point
+  if(freePts.length>=3&&currentMode!=='paths'){
+    const first=freePts[0];
+    if(Math.hypot(pos.x-first.x,pos.y-first.y)<T*1.2){
+      closeFreeShape(); return;
+    }
+  }
+
+  freePts.push(pos);
+  const dot=new Konva.Circle({x:pos.x,y:pos.y,radius:5/stage.scaleX(),
+    fill:currentMode==='paths'?'#795548':currentMode==='hedges'?'#2E7D32':'#558B2F',
+    stroke:'#fff',strokeWidth:1.5/stage.scaleX(),listening:false});
+  uiLayer.add(dot); freeDots.push(dot); uiLayer.batchDraw();
+  updateHint();
+}
+
+function closeFreeShape(){
+  if(freePts.length<2){cancelFreeShape();return;}
+  const isPath=(currentMode==='paths');
+  const isHedge=(currentMode==='hedges');
+  const tension=(bedSubTool==='straight'||hedgeSubTool==='straight')?0:0.45;
+
+  // Build point list — insert boundary closure corners if applicable
+  let allPts=[...freePts];
+  if(!isPath&&freePts.length>=3&&propBounds){
+    const first=freePts[0], last=freePts[freePts.length-1];
+    if(first.onBoundary&&last.onBoundary){
+      const corners=getBoundaryClosure(last,first,propBounds);
+      allPts=[...freePts,...corners];
+    }
+  }
+  const flat=allPts.flatMap(p=>[p.x,p.y]);
+
+  const colour=isHedge?'#388E3C':isPath?'#D7CCC8':'#8B6340';
+  const id='struct_'+(structIdCtr++);
+  const type=isHedge?'hedge':isPath?'path':'bed';
+  structData[id]={type,colour,label:{hedge:'Hedge',path:'Path',bed:'Garden Bed'}[type],
+                  pathWidth:defaultPathWidth,tension};
+
+  const shape=new Konva.Line({id,points:flat,tension,closed:!isPath,
+    fill:isPath?'transparent':colour+'CC',
+    stroke:isPath?colour:'#3A2A10',
+    strokeWidth:isPath?defaultPathWidth:2,
+    strokeScaleEnabled:false,lineCap:'round',lineJoin:'round',draggable:true,
+    hitStrokeWidth:isPath?defaultPathWidth+10:undefined});
+
+  shape.on('click tap',()=>{if(!isFreeMode()&&!editingShapeId)selectStruct(id,shape);});
+  shape.on('dblclick dbltap',()=>{if(!isFreeMode())enterEditMode(id);});
+  structLayer.add(shape); structLayer.batchDraw();
+  cancelFreeShape();
+  selectStruct(id,shape);
+  setMode('select');
+}
+
+function cancelFreeShape(){
+  freePts=[];
+  freeDots.forEach(d=>d.destroy()); freeDots=[];
+  if(freePreview){freePreview.destroy();freePreview=null;}
+  document.getElementById('hint-bar').style.display='none';
+  if(uiLayer)uiLayer.batchDraw();
+}
+
+function updateHint(){
+  const h=document.getElementById('hint-bar');
+  const n=freePts.length, isPath=(currentMode==='paths');
+  if(isPath){
+    h.textContent=`${n} point${n!==1?'s':''} · Enter or double-click to finish`;
+  } else {
+    h.textContent=n<3?`${n} point${n!==1?'s':''} · Need ${3-n} more`
+                     :`${n} points · Enter, double-click, or click near start to close`;
+  }
+  h.style.display='block';
+}
+
+// ══════════════════════════════════════════════════════════
+// STRUCTURES
+// ══════════════════════════════════════════════════════════
+function addRectStruct(type,x,y,w,h){
+  const id='struct_'+(structIdCtr++);
+  const colour=type==='building'?'#90A4AE':'#8B6340';
+  structData[id]={type,colour,label:type==='building'?'Building':'Garden Bed'};
+  const rect=new Konva.Rect({id,x,y,width:w,height:h,fill:colour+'CC',
+    stroke:'#3A2A10',strokeWidth:2,cornerRadius:type==='building'?3:0,
+    draggable:true,strokeScaleEnabled:false});
+  rect.on('transformend',()=>{
+    rect.width(rect.width()*rect.scaleX()); rect.height(rect.height()*rect.scaleY());
+    rect.scaleX(1); rect.scaleY(1); structLayer.batchDraw();
+  });
+  rect.on('click tap',()=>{if(!isFreeMode()&&!editingShapeId)selectStruct(id,rect);});
+  rect.on('dblclick dbltap',()=>{if(!isFreeMode())enterEditMode(id);});
+  structLayer.add(rect); structLayer.batchDraw();
+  selectStruct(id,rect); setMode('select');
+}
+
+function selectStruct(id,shape){
+  if(editingShapeId)exitEditMode();
+  deselectAll();
+  selectedStruct={id,shape};
+  if(shape instanceof Konva.Rect){tr.keepRatio(false);tr.nodes([shape]);}
+  else tr.nodes([]);
+  uiLayer.batchDraw();
+  renderPanel();
+}
+
+document.getElementById('btn-delete-struct').onclick=()=>{
+  if(!selectedStruct)return;
+  selectedStruct.shape.destroy(); delete structData[selectedStruct.id];
+  deselectAll(); structLayer.batchDraw();
+};
+document.getElementById('btn-edit-struct').onclick=()=>{
+  if(!selectedStruct)return;
+  enterEditMode(selectedStruct.id);
+};
+
+// ══════════════════════════════════════════════════════════
+// EDIT MODE
+// ══════════════════════════════════════════════════════════
+function enterEditMode(id){
+  const shape=structLayer.findOne('#'+id);
+  if(!shape)return;
+  deselectAll();
+  editingShapeId=id;
+  tr.nodes([]);
+  buildEditHandles(id,shape);
+  renderPanel();
+}
+
+function buildEditHandles(id,shape){
+  editHandles.forEach(h=>h.destroy()); editHandles=[];
+  const pts=getShapePoints(shape);
+  pts.forEach((_,i)=>{
+    const h=makeHandle(id,shape,i);
+    uiLayer.add(h); editHandles.push(h);
+  });
+  uiLayer.batchDraw();
+}
+
+function makeHandle(id,shape,ptIdx){
+  const pts=getShapePoints(shape);
+  const p=pts[ptIdx];
+  const h=new Konva.Circle({x:p.x,y:p.y,radius:7/stage.scaleX(),
+    fill:'#558B2F',stroke:'#fff',strokeWidth:2/stage.scaleX(),draggable:true});
+  h.on('dragmove',()=>{
+    const cur=getShapePoints(shape);
+    cur[ptIdx]={x:h.x(),y:h.y()};
+    setShapePoints(shape,cur);
+    structLayer.batchDraw();
+  });
+  return h;
+}
+
+function getShapePoints(shape){
+  if(shape instanceof Konva.Rect){
+    return [{x:shape.x(),y:shape.y()}];
+  }
+  const flat=shape.points();
+  const pts=[];
+  for(let i=0;i<flat.length;i+=2) pts.push({x:flat[i],y:flat[i+1]});
+  return pts;
+}
+
+function setShapePoints(shape,pts){
+  if(shape instanceof Konva.Line){
+    shape.points(pts.flatMap(p=>[p.x,p.y]));
+  }
+}
+
+function exitEditMode(){
+  editHandles.forEach(h=>h.destroy()); editHandles=[];
+  editingShapeId=null; addingPt=false;
+  if(uiLayer)uiLayer.batchDraw();
+  renderPanel();
+}
+
+document.getElementById('btn-done-edit').onclick=()=>exitEditMode();
+
+document.getElementById('btn-add-pt').onclick=()=>{
+  addingPt=!addingPt;
+  document.getElementById('btn-add-pt').classList.toggle('toggled',addingPt);
+  showHint(addingPt?'Click anywhere on canvas to add a point':'');
+};
+
+document.getElementById('btn-del-last-pt').onclick=()=>{
+  if(!editingShapeId)return;
+  const shape=structLayer.findOne('#'+editingShapeId);
+  if(!shape||!(shape instanceof Konva.Line))return;
+  const pts=shape.points();
+  if(pts.length<=6)return;
+  shape.points(pts.slice(0,-2));
+  structLayer.batchDraw();
+  buildEditHandles(editingShapeId,shape);
+};
+
+function handleAddPoint(pos){
+  if(!editingShapeId)return;
+  const shape=structLayer.findOne('#'+editingShapeId);
+  if(!shape||!(shape instanceof Konva.Line))return;
+  const pts=[...shape.points(),pos.x,pos.y];
+  shape.points(pts); structLayer.batchDraw();
+  buildEditHandles(editingShapeId,shape);
+  addingPt=false;
+  document.getElementById('btn-add-pt').classList.remove('toggled');
+  document.getElementById('hint-bar').style.display='none';
+}
+
+// ══════════════════════════════════════════════════════════
+// PLANTS
+// ══════════════════════════════════════════════════════════
+const loadedImages={};
+function loadImages(){
+  const srcs={};
+  PLANT_CATALOG.forEach(p=>{srcs[p.key]=p.src;});
+  Promise.all(Object.entries(srcs).map(([k,v])=>new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{loadedImages[k]=img;res();};
+    img.onerror=()=>res(); img.src=v;
+  }))).then(()=>{buildTray(PLANT_CATALOG);applySeason(0);});
+}
+
+function addPlant(entry,x,y){
+  const id='plant_'+(plantIdCtr++);
+  plantData[id]={label:entry.label,family:entry.family,notes:'',seasons:[...SEASONS],transparent:false};
+  const img=loadedImages[entry.key]; if(!img)return;
+  const SIZE=64;
+  const group=new Konva.Group({id,x:x-SIZE/2,y:y-SIZE/2,draggable:true,width:SIZE,height:SIZE});
+  group.add(new Konva.Image({image:img,x:0,y:0,width:SIZE,height:SIZE}));
+  group.on('click tap',()=>{if(!isFreeMode()&&!editingShapeId)selectPlant(id,group);});
+  plantLayer.add(group);
+  updatePlantVisibility(); plantLayer.batchDraw();
+  selectPlant(id,group); addToRecents(entry);
+}
+
+function selectPlant(id,group){
+  if(isFreeMode()||editingShapeId)return;
+  if(editingShapeId)exitEditMode();
+  deselectAll();
+  selectedPlant={id,group};
+  tr.keepRatio(true); tr.nodes([group]); uiLayer.batchDraw();
+  renderPanel();
+}
+
+document.getElementById('btn-transparency').onclick=()=>{
+  if(!selectedPlant)return;
+  const data=plantData[selectedPlant.id];
+  data.transparent=!data.transparent;
+  const g=selectedPlant.group;
+  if(data.transparent){g.opacity(.35);g.moveToBottom();}
+  else{const sN=SEASONS[currentSeason];g.opacity(data.seasons.includes(sN)?1:.1);g.moveToTop();}
+  plantLayer.batchDraw();
+  document.getElementById('btn-transparency').textContent=data.transparent?'👁 Restore Opacity':'👁 Make Transparent';
+  document.getElementById('btn-transparency').classList.toggle('toggled',data.transparent);
+};
+
+document.getElementById('btn-copy-plant').onclick=copyPlant;
+function copyPlant(){
+  if(!selectedPlant)return;
+  const d=plantData[selectedPlant.id];
+  clipboard=PLANT_CATALOG.find(p=>p.label===d.label)||{key:Object.keys(loadedImages)[0],label:d.label,family:d.family,src:''};
+  showHint('Copied — Ctrl+V to paste',1800);
+}
+function pastePlant(){
+  if(!clipboard||!stage)return;
+  const cx=(stage.width()/2-stage.x())/stage.scaleX()+40;
+  const cy=(stage.height()/2-stage.y())/stage.scaleY()+40;
+  addPlant(clipboard,cx,cy);
+}
+
+document.querySelectorAll('#pnl-plant input[data-season]').forEach(cb=>{
+  cb.addEventListener('change',()=>{
+    if(!selectedPlant)return;
+    const d=plantData[selectedPlant.id];
+    if(cb.checked){if(!d.seasons.includes(cb.dataset.season))d.seasons.push(cb.dataset.season);}
+    else d.seasons=d.seasons.filter(s=>s!==cb.dataset.season);
+    updatePlantVisibility();
+  });
+});
+document.getElementById('pnl-notes').addEventListener('input',e=>{
+  if(selectedPlant)plantData[selectedPlant.id].notes=e.target.value;
+});
+document.getElementById('btn-delete-plant').onclick=()=>{
+  if(!selectedPlant)return;
+  selectedPlant.group.destroy(); delete plantData[selectedPlant.id];
+  deselectAll(); plantLayer.batchDraw();
+};
+
+// ══════════════════════════════════════════════════════════
+// RIGHT PANEL RENDER
+// ══════════════════════════════════════════════════════════
+const PANELS=['pnl-empty','pnl-beds','pnl-hedges','pnl-paths',
+              'pnl-plant','pnl-struct','pnl-edit'];
+
+function renderPanel(){
+  PANELS.forEach(p=>{const el=document.getElementById(p);if(el)el.style.display='none';});
+
+  if(editingShapeId){
+    const s=structData[editingShapeId];
+    document.getElementById('pnl-edit-name').textContent=s?s.label:'Shape';
+    show('pnl-edit'); return;
+  }
+  if(selectedPlant){
+    const d=plantData[selectedPlant.id];
+    document.getElementById('pnl-plant-name').textContent=d.label;
+    document.getElementById('pnl-plant-family').textContent=d.family;
+    document.getElementById('pnl-notes').value=d.notes;
+    document.querySelectorAll('#pnl-plant input[data-season]').forEach(cb=>cb.checked=d.seasons.includes(cb.dataset.season));
+    document.getElementById('btn-transparency').textContent=d.transparent?'👁 Restore Opacity':'👁 Make Transparent';
+    document.getElementById('btn-transparency').classList.toggle('toggled',d.transparent);
+    show('pnl-plant'); return;
+  }
+  if(selectedStruct){
+    const d=structData[selectedStruct.id];
+    const typeNames={bed:'Garden Bed','bed-square':'Garden Bed',building:'Building',path:'Path',hedge:'Hedge'};
+    document.getElementById('pnl-struct-name').textContent=typeNames[d.type]||d.type;
+    document.getElementById('pnl-struct-label').value=d.label;
+    // Colours
+    const allC={bed:BED_COLOURS,'bed-square':BED_COLOURS,building:BUILDING_COLOURS,path:PATH_COLOURS,hedge:HEDGE_COLOURS};
+    const colours=allC[d.type]||BED_COLOURS;
+    const cr=document.getElementById('pnl-struct-colours');
+    cr.innerHTML='';
+    colours.forEach(c=>{
+      const s=document.createElement('div');
+      s.className='colour-swatch'+(c===d.colour?' selected':'');
+      s.style.background=c; s.title=c;
+      s.onclick=()=>{
+        d.colour=c;
+        const shape=selectedStruct.shape;
+        if(shape instanceof Konva.Rect)shape.fill(c+'CC');
+        else{shape.fill(d.type==='path'?'transparent':c+'CC');
+             if(d.type==='path')shape.stroke(c);}
+        structLayer.batchDraw();
+        cr.querySelectorAll('.colour-swatch').forEach(x=>x.classList.remove('selected'));
+        s.classList.add('selected');
+      };
+      cr.appendChild(s);
+    });
+    // Path width
+    const isPth=d.type==='path';
+    document.getElementById('pnl-path-width-wrap').style.display=isPth?'block':'none';
+    if(isPth){
+      const sl=document.getElementById('pnl-path-width');
+      const lbl=document.getElementById('pnl-path-width-label');
+      sl.value=d.pathWidth||18; lbl.textContent=(d.pathWidth||18)+' px';
+      sl.oninput=()=>{
+        d.pathWidth=+sl.value; lbl.textContent=sl.value+' px';
+        selectedStruct.shape.strokeWidth(+sl.value); structLayer.batchDraw();
+      };
+    }
+    // Disable edit button for rects (no free points)
+    document.getElementById('btn-edit-struct').style.display=
+      (d.type==='bed'||d.type==='path'||d.type==='hedge')?'block':'none';
+    show('pnl-struct'); return;
+  }
+  if(currentMode==='beds'){show('pnl-beds');return;}
+  if(currentMode==='hedges'){show('pnl-hedges');return;}
+  if(currentMode==='paths'){show('pnl-paths');return;}
+  show('pnl-empty');
+}
+
+function show(id){
+  const el=document.getElementById(id);
+  if(el){el.style.display=el.classList.contains('season-checks')||id.startsWith('pnl-plant')||id==='pnl-struct'||id==='pnl-edit'?'flex':'block';}
+  if(['pnl-plant','pnl-struct','pnl-edit'].includes(id)) el.style.display='flex';
+}
+
+document.getElementById('pnl-struct-label').addEventListener('input',e=>{
+  if(selectedStruct)structData[selectedStruct.id].label=e.target.value;
+});
+
+// ══════════════════════════════════════════════════════════
+// TRAY
+// ══════════════════════════════════════════════════════════
+function buildTray(catalog){
+  const list=document.getElementById('plant-list');
+  list.innerHTML='';
+  document.getElementById('no-results').style.display=catalog.length?'none':'block';
+  catalog.forEach(e=>list.appendChild(makeTrayItem(e)));
+}
+function makeTrayItem(entry){
+  const el=document.createElement('div');
+  el.className='tray-item'; el.draggable=true;
+  el.innerHTML=`<img src="${entry.src}" alt="${entry.label}"/><span>${entry.label}</span>`;
+  let dItem=null,tItem=null,tGhost=null;
+  el.addEventListener('dragstart',e=>{
+    dItem=entry;
+    const b=document.createElement('img');
+    b.src='data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+    e.dataTransfer.setDragImage(b,0,0); e.dataTransfer.effectAllowed='copy';
+    ghost.src=entry.src; ghost.style.width=ghost.style.height='60px';
+    el.addEventListener('dragend',()=>{ghost.style.display='none';dItem=null;wrapEl.classList.remove('drag-over');},{once:true});
+  });
+  el.addEventListener('touchstart',()=>{
+    tItem=entry; tGhost=document.createElement('img');
+    tGhost.src=entry.src; tGhost.style.cssText='position:fixed;width:60px;height:60px;pointer-events:none;z-index:9999;opacity:.75;transform:translate(-50%,-50%)';
+    document.body.appendChild(tGhost);
+  },{passive:true});
+  el.addEventListener('touchmove',e=>{if(tGhost){tGhost.style.left=e.touches[0].clientX+'px';tGhost.style.top=e.touches[0].clientY+'px';}},{passive:true});
+  el.addEventListener('touchend',e=>{
+    if(!tItem||!tGhost)return;
+    document.body.removeChild(tGhost);tGhost=null;
+    const t=e.changedTouches[0],r=wrapEl.getBoundingClientRect();
+    if(t.clientX>=r.left&&t.clientX<=r.right&&t.clientY>=r.top&&t.clientY<=r.bottom&&stage){
+      const sp={x:(t.clientX-r.left-stage.x())/stage.scaleX(), y:(t.clientY-r.top-stage.y())/stage.scaleY()};
+      addPlant(tItem,sp.x,sp.y);
+    }
+    tItem=null;
+  },{passive:true});
+  // Also assign local dItem to outer scope for drop handler
+  el._getEntry=()=>entry;
+  return el;
+}
+function addToRecents(entry){
+  recents=recents.filter(r=>r.label!==entry.label);
+  recents.unshift(entry); if(recents.length>5)recents=recents.slice(0,5);
+  const w=document.getElementById('tray-recents'),l=document.getElementById('recents-list');
+  w.style.display=recents.length?'block':'none';
+  l.innerHTML=''; recents.forEach(e=>l.appendChild(makeTrayItem(e)));
+}
+document.getElementById('plant-search').addEventListener('input',e=>{
+  const q=e.target.value.trim().toLowerCase();
+  buildTray(q?PLANT_CATALOG.filter(p=>p.label.toLowerCase().includes(q)||p.family.toLowerCase().includes(q)):PLANT_CATALOG);
+});
+
+// ── Drag drop ──
+let draggingItem=null;
+const ghost=document.getElementById('drop-ghost'),wrapEl=document.getElementById('canvas-wrap');
+wrapEl.addEventListener('dragenter',e=>{e.preventDefault();wrapEl.classList.add('drag-over');});
+wrapEl.addEventListener('dragover',e=>{
+  e.preventDefault();e.dataTransfer.dropEffect='copy';
+  const r=wrapEl.getBoundingClientRect();
+  ghost.style.display='block';ghost.style.left=(e.clientX-r.left)+'px';ghost.style.top=(e.clientY-r.top)+'px';
+});
+wrapEl.addEventListener('dragleave',()=>{wrapEl.classList.remove('drag-over');ghost.style.display='none';});
+// Patch: intercept dragstart from tray items to capture draggingItem
+document.addEventListener('dragstart',e=>{
+  const item=e.target.closest('.tray-item');
+  if(item&&item._getEntry)draggingItem=item._getEntry();
+});
+document.addEventListener('dragend',()=>{draggingItem=null;});
+wrapEl.addEventListener('drop',e=>{
+  e.preventDefault();wrapEl.classList.remove('drag-over');ghost.style.display='none';
+  if(!draggingItem||!stage)return;
+  const r=wrapEl.getBoundingClientRect();
+  const sp={x:(e.clientX-r.left-stage.x())/stage.scaleX(), y:(e.clientY-r.top-stage.y())/stage.scaleY()};
+  addPlant(draggingItem,sp.x,sp.y); draggingItem=null;
+});
+
+// ══════════════════════════════════════════════════════════
+// SELECTION / SEASONS / GRID
+// ══════════════════════════════════════════════════════════
+function deselectAll(){
+  selectedPlant=null; selectedStruct=null;
+  if(tr){tr.nodes([]);uiLayer?.batchDraw();}
+  renderPanel();
+}
+function applySeason(idx){
+  currentSeason=idx;
+  ['spring','summer','fall','winter'].forEach(c=>document.body.classList.remove(c));
+  document.body.classList.add(['spring','summer','fall','winter'][idx]);
+  document.getElementById('season-badge').textContent=SEASON_NAMES[idx];
+  document.getElementById('season-slider').value=idx;
+  updatePlantVisibility();
+  if(showGrid)drawGrid();
+}
+function updatePlantVisibility(){
+  if(!plantLayer)return;
+  const sN=SEASONS[currentSeason];
+  plantLayer.find('Group').forEach(g=>{
+    const d=plantData[g.id()]; if(!d)return;
+    if(d.transparent){g.opacity(.35);return;}
+    g.opacity(d.seasons.includes(sN)?1:.1);
+  });
+  plantLayer.batchDraw();
+}
+document.getElementById('season-slider').addEventListener('input',e=>applySeason(+e.target.value));
+
+function drawGrid(){
+  if(!stage||!gridLayer)return;
+  gridLayer.destroyChildren();
+  if(!showGrid){gridLayer.batchDraw();return;}
+  const col=getComputedStyle(document.body).getPropertyValue('--grid-color').trim();
+  const sc=stage.scaleX();
+  let mult=1; while(CELL_PX*sc*mult<16)mult*=2;
+  const vc=CELL_PX*mult,sx=stage.x(),sy=stage.y(),W=stage.width(),H=stage.height();
+  const x0=-sx/sc,y0=-sy/sc,x1=x0+W/sc,y1=y0+H/sc;
+  const sX=Math.floor(x0/vc)*vc,sY=Math.floor(y0/vc)*vc;
+  for(let x=sX;x<x1+vc;x+=vc)
+    gridLayer.add(new Konva.Line({points:[x,y0-vc,x,y1+vc],stroke:col,strokeWidth:.5/sc,listening:false}));
+  for(let y=sY;y<y1+vc;y+=vc)
+    gridLayer.add(new Konva.Line({points:[x0-vc,y,x1+vc,y],stroke:col,strokeWidth:.5/sc,listening:false}));
+  gridLayer.batchDraw();
+  updateScaleDisplay(mult);
+}
+function updateScaleDisplay(mult){
+  if(!stage)return;
+  const sc=stage.scaleX(); mult=mult||1;
+  while(CELL_PX*sc*mult<16)mult*=2;
+  const ri=CELL_IN*mult;
+  let lbl=gardenUnit==='ft'?(ri>=12?`1 cell = ${Math.round(ri/12*10)/10} ft`:`1 cell = ${ri} in`)
+                           :(ri>=39.37?`1 cell = ${Math.round(ri/39.37*10)/10} m`:`1 cell = ${Math.round(ri*2.54)} cm`);
+  document.getElementById('scale-display').textContent=lbl;
+}
+
+// ══════════════════════════════════════════════════════════
+// TOOLBAR / MODES
+// ══════════════════════════════════════════════════════════
+function setMode(mode){
+  if(isFreeMode()&&mode!==currentMode)cancelFreeShape();
+  if(editingShapeId&&mode!==currentMode)exitEditMode();
+  currentMode=mode;
+  ['select','beds','hedges','paths','building'].forEach(m=>{
+    const b=document.getElementById('btn-'+m); if(b)b.classList.toggle('active',m===mode);
+  });
+  const wrap=document.getElementById('canvas-wrap');
+  ['mode-select','mode-beds','mode-hedges','mode-paths','mode-building'].forEach(c=>wrap.classList.remove(c));
+  wrap.classList.add('mode-'+mode);
+  if(mode!=='select'){deselectAll();}
+  renderPanel();
+  if(isFreeMode())updateHint();
+  else document.getElementById('hint-bar').style.display='none';
+}
+
+function setSubTool(sub){
+  bedSubTool=sub;
+  ['curved','straight','square'].forEach(s=>{
+    const b=document.getElementById('sub-'+s); if(b)b.classList.toggle('active',s===sub);
+  });
+  if(isFreeMode())updateHint();
+}
+function setSubToolHedge(sub){
+  hedgeSubTool=sub;
+  ['curved','straight'].forEach(s=>{
+    const b=document.getElementById('subh-'+s); if(b)b.classList.toggle('active',s===sub);
+  });
+}
+function setSubToolPath(sub){pathSubTool=sub;}
+
+function toggleGrid(){
+  showGrid=!showGrid;
+  document.getElementById('btn-grid').classList.toggle('active',showGrid);
+  drawGrid();
+}
+function resetView(){
+  if(!stage)return;
+  stage.scale({x:1,y:1});stage.position({x:0,y:0});stage.batchDraw();
+  updateScaleDisplay(); if(showGrid)drawGrid();
+}
+function clearAll(){
+  if(!confirm('Remove everything?'))return;
+  if(plantLayer){plantLayer.destroyChildren();Object.keys(plantData).forEach(k=>delete plantData[k]);plantLayer.batchDraw();}
+  if(structLayer){
+    structLayer.destroyChildren(); Object.keys(structData).forEach(k=>delete structData[k]);
+    if(propBounds){
+      const b=propBounds;
+      structLayer.add(new Konva.Rect({x:b.x,y:b.y,width:b.w,height:b.h,stroke:'#558B2F',strokeWidth:2,dash:[10,5],fill:'transparent',listening:false,strokeScaleEnabled:false}));
+      structLayer.add(new Konva.Text({x:b.x+6,y:b.y+5,text:`${gardenName}  ${gardenW}×${gardenH} ${gardenUnit}`,fontSize:11,fontStyle:'bold',fill:'#558B2F',opacity:.65,listening:false}));
+    }
+    structLayer.batchDraw();
+  }
+  exitEditMode(); deselectAll();
+}
+
+// ══════════════════════════════════════════════════════════
+// HINT / TOAST
+// ══════════════════════════════════════════════════════════
+let hintTimer=null;
+function showHint(msg,dur){
+  const h=document.getElementById('hint-bar');
+  if(!msg){h.style.display='none';return;}
+  h.textContent=msg; h.style.display='block';
+  if(hintTimer)clearTimeout(hintTimer);
+  if(dur)hintTimer=setTimeout(()=>{if(!isFreeMode())h.style.display='none';},dur);
+}
+
+// ══════════════════════════════════════════════════════════
+// KEYBOARD
+// ══════════════════════════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  const tag=document.activeElement.tagName;
+  if(tag==='INPUT'||tag==='TEXTAREA')return;
+  if((e.ctrlKey||e.metaKey)&&e.key==='c'){e.preventDefault();copyPlant();}
+  if((e.ctrlKey||e.metaKey)&&e.key==='v'){e.preventDefault();pastePlant();}
+  if(e.key==='Enter'){if(isFreeMode()&&freePts.length>=2)closeFreeShape();}
+  if(e.key==='Delete'||e.key==='Backspace'){
+    if(editingShapeId)return;
+    if(selectedPlant){selectedPlant.group.destroy();delete plantData[selectedPlant.id];deselectAll();plantLayer?.batchDraw();}
+    else if(selectedStruct){selectedStruct.shape.destroy();delete structData[selectedStruct.id];deselectAll();structLayer?.batchDraw();}
+  }
+  if(e.key==='Escape'){cancelFreeShape();if(editingShapeId)exitEditMode();else{deselectAll();setMode('select');}}
+  if(['1','2','3','4'].includes(e.key)&&!e.ctrlKey)applySeason(+e.key-1);
+  if(e.key==='g')toggleGrid();
+});
+
+// ══════════════════════════════════════════════════════════
+// RESIZE
+// ══════════════════════════════════════════════════════════
+window.addEventListener('resize',()=>{
+  if(!stage)return;
+  stage.width(wrapEl.clientWidth);stage.height(wrapEl.clientHeight);
+  if(showGrid)drawGrid();
+});
+</script>
+</body>
+</html>
