@@ -27,6 +27,7 @@ export default function GardenEditor() {
   const layersRef   = useRef({})
   const showGridRef = useRef(state.showGrid) // always-current ref for snap in dragmove closures
   const [stageReady, setStageReady] = useState(false)
+  const [scaleLabel, setScaleLabel] = useState('1 cell = 3 in')
 
   // Phase 5: save/load state
   const [currentGardenIndex, setCurrentGardenIndex] = useState(0)
@@ -49,6 +50,22 @@ export default function GardenEditor() {
 
   // Keep showGridRef current
   useEffect(() => { showGridRef.current = state.showGrid }, [state.showGrid])
+
+  // ── Season visibility — mirrors v8 updatePlantVisibility() ──
+  // Runs whenever season changes. Fades plants not visible in the current season.
+  useEffect(() => {
+    const { plantLayer } = layersRef.current
+    if (!plantLayer || !stageReady) return
+    const SEASON_NAMES = ['spring', 'summer', 'fall', 'winter']
+    const sN = SEASON_NAMES[state.currentSeason]
+    plantLayer.find('Group').forEach(g => {
+      const d = state.plantDataRef.current[g.id()]
+      if (!d) return
+      if (d.transparent) { g.opacity(0.35); return }
+      g.opacity(d.seasons?.includes(sN) ? 1 : 0.1)
+    })
+    plantLayer.batchDraw()
+  }, [state.currentSeason, stageReady])
 
   // ── Clear selection ──
   const clearSelection = () => {
@@ -110,6 +127,25 @@ export default function GardenEditor() {
     })
   }
 
+  // Compute scale label — mirrors v8 updateScaleDisplay()
+  const updateScaleLabel = (stage, gardenUnit) => {
+    const CELL_PX = 8, CELL_IN = 3
+    const sc = stage.scaleX()
+    const maxCellPx = stage.width() / 4
+    let mult = 1
+    while (CELL_PX * sc * mult < 16 && CELL_PX * sc * mult < maxCellPx) mult *= 2
+    if (mult < 2) mult = 2
+    const ri = CELL_IN * mult
+    const unit = gardenUnit || state.gardenUnit
+    let lbl
+    if (unit === 'ft') {
+      lbl = ri >= 12 ? `1 cell = ${Math.round(ri / 12 * 10) / 10} ft` : `1 cell = ${ri} in`
+    } else {
+      lbl = ri >= 39.37 ? `1 cell = ${Math.round(ri / 39.37 * 10) / 10} m` : `1 cell = ${Math.round(ri * 2.54)} cm`
+    }
+    setScaleLabel(lbl)
+  }
+
   const handleStageReady = (stage, layers) => {
     stageRef.current  = stage
     layersRef.current = layers
@@ -121,6 +157,13 @@ export default function GardenEditor() {
     const onKey = (e) => {
       const tag = document.activeElement?.tagName
       if (tag === 'INPUT' || tag === 'TEXTAREA') return
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+        e.preventDefault()
+        state.undo()
+        layersRef.current.structLayer?.batchDraw()
+        layersRef.current.plantLayer?.batchDraw()
+        return
+      }
       if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
         const sel = state.selectedPlant
         if (!sel) return
@@ -468,6 +511,7 @@ export default function GardenEditor() {
         onSave={handleSave}
         onOpenSwitcher={() => setSwitcherOpen(true)}
         saveFlash={saveFlash}
+        scaleLabel={scaleLabel}
       />
 
       <GardenSwitcher
@@ -489,6 +533,7 @@ export default function GardenEditor() {
             pendingPlantRef={pendingPlantRef}
             onStageReady={handleStageReady}
             onCanvasClick={handleCanvasClick}
+            onScaleChange={(stage) => updateScaleLabel(stage, state.gardenUnit)}
           />
           <div id="draw-hint" className="draw-hint" style={{ display: 'none' }} />
         </div>

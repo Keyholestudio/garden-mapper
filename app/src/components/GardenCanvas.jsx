@@ -26,6 +26,7 @@ export default function GardenCanvas({
   propBoundsRef,
   onStageReady,    // callback(stage, layers) — parent gets refs after init
   onCanvasClick,   // callback({x,y}) — world coords of click on empty canvas
+  onScaleChange,   // callback(stage) — fired after zoom/pan so parent can update scale label
 }) {
   const containerRef  = useRef(null)
   const stageRef      = useRef(null)
@@ -114,6 +115,7 @@ export default function GardenCanvas({
       panStart = pos
       drawGrid(stage, layersRef.current.gridLayer, showGridRef.current, gardenUnitRef.current, seasonRef.current)
       stage.batchDraw()
+      if (onScaleChange) onScaleChange(stage)
     })
     stage.on('mouseup touchend', () => {
       if (isPanning) {
@@ -141,6 +143,7 @@ export default function GardenCanvas({
       stage.y(pointer.y - mousePointTo.y * clamped)
       drawGrid(stage, layersRef.current.gridLayer, showGridRef.current, gardenUnitRef.current, seasonRef.current)
       stage.batchDraw()
+      if (onScaleChange) onScaleChange(stage)
     })
 
     // ── Canvas click → plant placement or deselect ──

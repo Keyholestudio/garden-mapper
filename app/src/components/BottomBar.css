@@ -119,22 +119,18 @@
 .season-labels {
   position: absolute;
   left: 0; right: 0;
-  top: 18px;
+  top: 20px;
   pointer-events: none;
-  display: flex;
-  justify-content: space-between;
 }
 
 .season-lbl {
+  position: absolute;
+  transform: translateX(-50%);  /* center label on thumb */
   font-size: 10px;
   font-weight: 700;
   color: #558B2F;
   opacity: 0.6;
   white-space: nowrap;
   text-align: center;
-  /* Each label is pinned to its thumb stop position */
-  flex: 1;
 }
-.season-lbl:first-child { text-align: left; }
-.season-lbl:last-child  { text-align: right; }
 .season-lbl.active { opacity: 1; color: #11502A; }

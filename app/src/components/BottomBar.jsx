@@ -1,4 +1,5 @@
 // BottomBar.jsx — Bottom floating card: toolbar + season slider (matches v8 layout)
+import { useEffect, useRef } from 'react'
 import './BottomBar.css'
 
 const SEASONS = ['🌸 Spring', '☀️ Summer', '🍂 Fall', '❄️ Winter']
@@ -41,6 +42,31 @@ export default function BottomBar({
   showGrid, onToggleGrid,
   onResetView, onClearAll,
 }) {
+  const wrapRef = useRef(null)
+  const lblRefs = [useRef(null), useRef(null), useRef(null), useRef(null)]
+
+  // Position labels under each thumb stop — mirrors v8 positionSeasonLabels()
+  const positionLabels = () => {
+    const wrap = wrapRef.current
+    if (!wrap) return
+    const thumbW = 20
+    const trackW = wrap.offsetWidth
+    const usable = trackW - thumbW
+    lblRefs.forEach((ref, i) => {
+      if (!ref.current) return
+      const px = thumbW / 2 + (i / 3) * usable
+      ref.current.style.left = px + 'px'
+    })
+  }
+
+  useEffect(() => {
+    positionLabels()
+    const ro = new ResizeObserver(positionLabels)
+    if (wrapRef.current) ro.observe(wrapRef.current)
+    window.addEventListener('resize', positionLabels)
+    return () => { ro.disconnect(); window.removeEventListener('resize', positionLabels) }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const subTools =
     currentMode === 'beds'     ? BED_SUBS :
     currentMode === 'fences'   ? FENCE_SUBS :
@@ -102,7 +128,7 @@ export default function BottomBar({
 
         {/* ── Season slider ── */}
         <div className="season-slider-area">
-          <div className="season-slider-wrap">
+          <div className="season-slider-wrap" ref={wrapRef}>
             <input
               type="range" min={0} max={3} step={1}
               value={currentSeason}
@@ -111,7 +137,11 @@ export default function BottomBar({
             />
             <div className="season-labels">
               {SEASONS.map((s, i) => (
-                <span key={i} className={`season-lbl${currentSeason === i ? ' active' : ''}`}>{s}</span>
+                <span
+                  key={i}
+                  ref={lblRefs[i]}
+                  className={`season-lbl${currentSeason === i ? ' active' : ''}`}
+                >{s}</span>
               ))}
             </div>
           </div>

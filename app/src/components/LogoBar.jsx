@@ -15,13 +15,14 @@ export default function LogoBar({
   gardenName, gardenW, gardenH, gardenUnit,
   currentSeason,
   onSave, onOpenSwitcher, saveFlash,
+  scaleLabel,
 }) {
   return (
     <div className="logo-bar">
 
       {/* LEFT — scale display + season badge (matches v8 #logo-left) */}
       <div className="logo-left">
-        <div className="scale-display">1 cell = {CELL_IN} in</div>
+        <div className="scale-display">{scaleLabel || '1 cell = 3 in'}</div>
         <div className={`season-badge season-${SEASON_BADGE_CLASS[currentSeason]}`}>
           {SEASON_NAMES[currentSeason]}
         </div>
