@@ -124,17 +124,29 @@ export default function GardenEditor() {
         const sel = state.selectedPlant
         if (!sel) return
         const img = sel.group.findOne('Image')?.image()
-        state.setClipboard({ kind: 'plant', entry: { ...state.plantDataRef.current[sel.id], _img: img } })
+        // Store source position so paste lands to the right of the original
+        state.setClipboard({
+          kind: 'plant',
+          entry: { ...state.plantDataRef.current[sel.id], _img: img },
+          srcX: sel.group.x(),
+          srcY: sel.group.y(),
+        })
       }
       if ((e.ctrlKey || e.metaKey) && e.key === 'v') {
         const cb = state.clipboard
         if (!cb || cb.kind !== 'plant' || !cb.entry._img) return
         const { plantLayer } = layersRef.current
         if (!plantLayer) return
-        addPlant({
+        const sizeMap = { XS: 24, S: 40, M: 64, L: 96 }
+        const size = sizeMap[cb.entry.size] || 64
+        // srcX/srcY are group top-left. addPlant expects center coords.
+        // Paste one plant-width to the right, same vertical position.
+        const srcX = cb.srcX ?? 100
+        const srcY = cb.srcY ?? 100
+        const newId = addPlant({
           entry: cb.entry,
-          x: (state.propBoundsRef.current?.x || 100) + 80,
-          y: (state.propBoundsRef.current?.y || 100) + 80,
+          x: srcX + size + 8 + size / 2,  // top-left of paste + half-size = center
+          y: srcY + size / 2,              // same row, center y
           stage: stageRef.current, plantLayer,
           plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr,
           showGridRef,
@@ -143,6 +155,12 @@ export default function GardenEditor() {
             state.setSelectedStruct(null)
           },
         })
+        // Move pasted plant to top of layer
+        if (newId) {
+          const group = plantLayer.findOne('#' + newId)
+          group?.moveToTop()
+          plantLayer.batchDraw()
+        }
       }
     }
     window.addEventListener('keydown', onKey)
@@ -468,7 +486,12 @@ export default function GardenEditor() {
           onTransparentPlant={handleTransparentPlant}
           onCopyPlant={() => {
             const sel = state.selectedPlant; if (!sel) return
-            state.setClipboard({ kind:'plant', entry:{ ...state.plantDataRef.current[sel.id], _img: sel.group.findOne('Image')?.image() } })
+            state.setClipboard({
+              kind: 'plant',
+              entry: { ...state.plantDataRef.current[sel.id], _img: sel.group.findOne('Image')?.image() },
+              srcX: sel.group.x(),
+              srcY: sel.group.y(),
+            })
           }}
           onColourChange={handleColourChange}
           onPathWidthChange={handlePathWidthChange}
