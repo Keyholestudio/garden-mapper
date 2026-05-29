@@ -129,6 +129,15 @@ export default function RightPanel({
       <div className="right-panel">
         <div className="panel-content">
           <div className="panel-h2">{TYPE_NAMES[d.type] || d.type || 'Object'}</div>
+          {/* Label rename — mirrors v8 pnl-struct-label input */}
+          <input
+            className="struct-label-input"
+            type="text"
+            defaultValue={d.label || ''}
+            placeholder="Label..."
+            key={selectedStruct.id}  // reset when selection changes
+            onChange={e => { if (d) d.label = e.target.value }}
+          />
 
           {/* Colour swatches */}
           <div className="panel-title">COLOUR</div>
