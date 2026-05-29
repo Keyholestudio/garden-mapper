@@ -1,5 +1,6 @@
+/* LogoBar.css — mirrors v8 #logo-bar exactly */
+
 .logo-bar {
-  position: relative;
   display: flex;
   align-items: center;
   height: 56px;
@@ -8,68 +9,142 @@
   flex-shrink: 0;
   z-index: 10;
   padding: 0 10px;
+  gap: 8px;
 }
 
-/* Logo absolutely centered — immune to content on either side */
+/* LEFT — scale display + season badge */
+.logo-left {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.scale-display {
+  font-size: 11px;
+  font-weight: 600;
+  color: #555;
+  white-space: nowrap;
+}
+
+/* CENTER — logo, flex:1 so it truly centers */
 .logo-center {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  flex: 1;
   display: flex;
   align-items: center;
-  pointer-events: none;
+  justify-content: center;
+  min-width: 0;
 }
-.logo-img    { height: 44px; object-fit: contain; }
+.logo-img {
+  height: 44px;
+  object-fit: contain;
+  max-width: 100%;
+}
 
-.logo-left   { flex: 1; display: flex; align-items: center; gap: 6px; }
-.logo-right  { display: flex; align-items: center; gap: 8px; flex-shrink: 0; margin-left: auto; }
+/* RIGHT — garden info + buttons */
+.logo-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  min-width: 0;
+  max-width: 45%;
+}
 
+.garden-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.garden-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #2A3D1A;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+.garden-dims {
+  font-size: 10px;
+  color: #666;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Buttons — matches v8 .logo-btn */
+.logo-btn {
+  background: #11502A;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.logo-btn:hover { background: #0a3d1e; }
+.logo-btn.flash {
+  animation: savePop 0.4s ease;
+}
+@keyframes savePop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.1); background: #2E7D32; }
+  100% { transform: scale(1); }
+}
+
+/* YouTube button — matches v8 #logo-yt-btn */
+.logo-yt-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #11502A;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+.logo-yt-btn:hover { opacity: 0.7; }
+
+/* Profile circle — matches v8 #logo-profile-btn */
+.logo-profile-btn {
+  background: #11502A;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.logo-profile-btn:hover { background: #0a3d1e; }
+
+/* Season badge — matches v8 .season-badge */
 .season-badge {
-  font-size: 11px; font-weight: 700;
-  padding: 2px 10px; border-radius: 20px;
-  color: #fff; white-space: nowrap;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  color: #fff;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .season-spring { background: #558B2F; }
 .season-summer { background: #33691E; }
 .season-fall   { background: #E65100; }
 .season-winter { background: #546E7A; }
-
-.garden-info   { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
-.garden-name   { font-size: 12px; font-weight: 700; color: #2a3d1a; }
-.garden-dims   { font-size: 11px; color: #888; }
-
-/* Save / switcher buttons */
-.btn-save-garden {
-  background: #558B2F;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 5px 12px;
-  font-size: 12px;
-  font-weight: 800;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.15s, transform 0.1s;
-}
-.btn-save-garden:hover { background: #33691E; }
-.btn-save-garden.flash {
-  animation: savePop 0.4s ease;
-}
-@keyframes savePop {
-  0%   { transform: scale(1); background: #558B2F; }
-  40%  { transform: scale(1.12); background: #2E7D32; }
-  100% { transform: scale(1); background: #558B2F; }
-}
-
-.btn-switcher {
-  background: #E8F5E9;
-  color: #2E7D32;
-  border: 1.5px solid #A5D6A7;
-  border-radius: 8px;
-  padding: 5px 12px;
-  font-size: 12px;
-  font-weight: 800;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.btn-switcher:hover { background: #C8E6C9; }
