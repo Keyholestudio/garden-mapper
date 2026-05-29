@@ -327,15 +327,21 @@ export default function GardenEditor() {
     shape.points(pts.slice(0,-2)); layersRef.current.structLayer.batchDraw()
   }
 
-  const handleClearAll = () => {
-    if (!window.confirm('Clear all objects?')) return
+  const [showClearConfirm, setShowClearConfirm] = useState(false)
+
+  const handleClearAll = () => setShowClearConfirm(true)
+
+  const doClearAll = () => {
     layersRef.current.structLayer?.getChildren()
       .filter(c => c.id() !== '__propBounds' && c.id() !== '__propLabel')
       .forEach(c => c.destroy())
+    Object.keys(state.structDataRef.current).forEach(k => delete state.structDataRef.current[k])
     layersRef.current.plantLayer?.destroyChildren()
+    Object.keys(state.plantDataRef.current).forEach(k => delete state.plantDataRef.current[k])
     layersRef.current.structLayer?.batchDraw()
     layersRef.current.plantLayer?.batchDraw()
     clearSelection()
+    setShowClearConfirm(false)
   }
 
   const handleResetView = () => {
@@ -513,6 +519,32 @@ export default function GardenEditor() {
         saveFlash={saveFlash}
         scaleLabel={scaleLabel}
       />
+
+      {/* Clear All confirm modal */}
+      {showClearConfirm && (
+        <div style={{
+          position:'fixed',inset:0,background:'rgba(0,0,0,0.45)',
+          zIndex:9000,display:'flex',alignItems:'center',justifyContent:'center'
+        }} onClick={() => setShowClearConfirm(false)}>
+          <div style={{
+            background:'#fff',borderRadius:14,padding:'28px 32px',
+            boxShadow:'0 4px 24px rgba(0,0,0,0.2)',textAlign:'center',maxWidth:300
+          }} onClick={e => e.stopPropagation()}>
+            <div style={{fontSize:15,fontWeight:700,color:'#2A3D1A',marginBottom:8}}>Clear all objects?</div>
+            <div style={{fontSize:12,color:'#666',marginBottom:20}}>This cannot be undone.</div>
+            <div style={{display:'flex',gap:10,justifyContent:'center'}}>
+              <button onClick={() => setShowClearConfirm(false)}
+                style={{padding:'8px 20px',borderRadius:8,border:'1.5px solid #ccc',background:'#f5f5f5',fontWeight:700,cursor:'pointer'}}>
+                Cancel
+              </button>
+              <button onClick={doClearAll}
+                style={{padding:'8px 20px',borderRadius:8,border:'none',background:'#c62828',color:'#fff',fontWeight:700,cursor:'pointer'}}>
+                Clear All
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <GardenSwitcher
         open={switcherOpen}
