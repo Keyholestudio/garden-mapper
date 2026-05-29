@@ -1,7 +1,7 @@
 // GardenEditor.jsx — Top-level layout shell
 // Phase 5: save/load localStorage, garden switcher
 
-import { useRef, useState, useEffect, useCallback } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import Konva from 'konva'
 import { useGardenState }  from '../hooks/useGardenState'
 import { useDrawTools }    from '../hooks/useDrawTools'
@@ -24,13 +24,14 @@ export default function GardenEditor() {
   const stageRef    = useRef(null)
   const layersRef   = useRef({})
   const showGridRef = useRef(state.showGrid) // always-current ref for snap in dragmove closures
-  const snapCellRef = useRef(null)           // updated by GardenCanvas via onSnapCellChange
   const [stageReady, setStageReady] = useState(false)
 
   // Phase 5: save/load state
   const [currentGardenIndex, setCurrentGardenIndex] = useState(0)
   const [switcherOpen, setSwitcherOpen] = useState(false)
   const [saveFlash, setSaveFlash] = useState(false)
+  // Ref so save always reads the latest index without stale closures
+  const currentGardenIndexRef = useRef(0)
 
   // ── Image loading ──
   const [loadedImages, setLoadedImages] = useState({})
@@ -267,55 +268,56 @@ export default function GardenEditor() {
   }
 
   // ── Phase 5: Save ──
-  const handleSave = useCallback(() => {
+  // Plain function (not useCallback) — closes over refs so always reads latest values
+  const handleSave = () => {
     if (!stageRef.current) return
     saveGarden({
       stage: stageRef.current,
       layers: layersRef.current,
       state,
-      currentGardenIndex,
+      currentGardenIndex: currentGardenIndexRef.current,
     })
     setSaveFlash(true)
     setTimeout(() => setSaveFlash(false), 500)
-  }, [state, currentGardenIndex])
+  }
 
   // ── Phase 5: Load ──
-  const handleLoad = useCallback((idx) => {
+  const handleLoad = (idx) => {
     if (!stageRef.current) return
-    loadGarden({
+    const ok = loadGarden({
       idx,
       stage: stageRef.current,
       layers: layersRef.current,
       state,
       loadedImages,
       showGridRef,
-      snapCellRef,
       onSelectPlant: (id, group) => {
         state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
         state.setSelectedStruct(null)
       },
-      onSelectStruct: (id, shape) => {
+      onSelectStruct: (id, shape, e) => {
         state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
         state.setSelectedPlant(null)
       },
       onClearSelection: clearSelection,
-      onSetGardenName: state.setGardenName,
-      onSetGardenW: state.setGardenW,
-      onSetGardenH: state.setGardenH,
-      onSetGardenUnit: state.setGardenUnit,
-      onSetIsSetup: state.setIsSetup,
-      onZoomToFit: handleResetView,
-      structIdCtr: state.structIdCtr,
-      plantIdCtr: state.plantIdCtr,
+      setGardenName: state.setGardenName,
+      setGardenW:    state.setGardenW,
+      setGardenH:    state.setGardenH,
+      setGardenUnit: state.setGardenUnit,
+      setIsSetup:    state.setIsSetup,
+      onZoomToFit:   handleResetView,
     })
-    setCurrentGardenIndex(idx)
-  }, [state, loadedImages, showGridRef, snapCellRef])
+    if (ok) {
+      currentGardenIndexRef.current = idx
+      setCurrentGardenIndex(idx)
+    }
+  }
 
   // ── Phase 5: New garden ──
-  const handleNewGarden = useCallback(() => {
+  const handleNewGarden = () => {
     if (!stageRef.current) return
     const result = createNewGarden({
-      currentGardenIndex,
+      currentGardenIndex: currentGardenIndexRef.current,
       stage: stageRef.current,
       layers: layersRef.current,
       state,
@@ -327,9 +329,10 @@ export default function GardenEditor() {
     state.setGardenH(40)
     state.setGardenUnit('ft')
     state.setIsSetup(false)
+    currentGardenIndexRef.current = result.newIndex
     setCurrentGardenIndex(result.newIndex)
     setSwitcherOpen(false)
-  }, [state, currentGardenIndex])
+  }
 
   return (
     <div className="editor-layout">
@@ -339,7 +342,37 @@ export default function GardenEditor() {
           gardenH={state.gardenH}      gardenUnit={state.gardenUnit}
           onSetGardenName={state.setGardenName} onSetGardenW={state.setGardenW}
           onSetGardenH={state.setGardenH}       onSetGardenUnit={state.setGardenUnit}
-          onStart={() => state.setIsSetup(true)}
+          onStart={(name, w, h, unit) => {
+            // Reinit the canvas boundary for this garden's dimensions
+            const stage = stageRef.current
+            const { structLayer } = layersRef.current
+            if (stage && structLayer) {
+              // Remove old boundary
+              structLayer.findOne('#__propBounds')?.destroy()
+              structLayer.findOne('#__propLabel')?.destroy()
+              // Recalculate propBounds
+              const UNIT_PX = 32
+              const pw = w * UNIT_PX * (unit === 'm' ? 3.281 : 1)
+              const ph = h * UNIT_PX * (unit === 'm' ? 3.281 : 1)
+              const ox = Math.max(16, (stage.width() - pw) / 2)
+              const oy = Math.max(16, (stage.height() - ph) / 2)
+              state.propBoundsRef.current = { x: ox, y: oy, w: pw, h: ph }
+              structLayer.add(new Konva.Rect({
+                id: '__propBounds', x: ox, y: oy, width: pw, height: ph,
+                stroke: '#558B2F', strokeWidth: 2, dash: [10, 5],
+                fill: 'transparent', listening: false, strokeScaleEnabled: false,
+              }))
+              structLayer.add(new Konva.Text({
+                id: '__propLabel', x: ox + 6, y: oy + 5,
+                text: `${name}  ${w}x${h} ${unit}`,
+                fontSize: 11, fontStyle: 'bold', fill: '#558B2F', opacity: 0.65, listening: false,
+              }))
+              structLayer.batchDraw()
+              // Zoom to fit new boundary
+              handleResetView()
+            }
+            state.setIsSetup(true)
+          }}
         />
       )}
 

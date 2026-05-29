@@ -16,7 +16,7 @@ export default function SetupOverlay({
     const h = parseFloat(hStr) || 40
     onSetGardenW(w)
     onSetGardenH(h)
-    onStart()
+    onStart(gardenName, w, h, gardenUnit)
   }
 
   return (

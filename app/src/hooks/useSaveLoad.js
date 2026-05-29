@@ -1,13 +1,14 @@
 // useSaveLoad.js — Phase 5: localStorage save/load/switcher
-// Mirrors v8 saveGarden/loadGarden/newGarden/showGardenSwitcher faithfully
+// Direct port of v8 saveGarden / loadGarden / newGarden
+// Designed to run synchronously against Konva layer refs (no React state async issues)
 
 import Konva from 'konva'
-import { addPlant } from '../utils/plantUtils'
+import { SIZE_MAP } from './useGardenState'
 
-const LS_KEY = 'gardenData'
+const LS_KEY     = 'gardenData'
 const MAX_GARDENS = 2
 
-// ── Read / Write helpers ──────────────────────────────────────────────────────
+// ── localStorage helpers ──────────────────────────────────────────────────────
 export function readGardens() {
   try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]') } catch { return [] }
 }
@@ -15,16 +16,15 @@ function writeGardens(arr) {
   localStorage.setItem(LS_KEY, JSON.stringify(arr))
 }
 
-// ── Save current canvas to localStorage ──────────────────────────────────────
-export function saveGarden({
-  stage, layers, state, currentGardenIndex, loadedImages,
-}) {
-  if (!stage) return
+// ── saveGarden ────────────────────────────────────────────────────────────────
+// Mirrors v8 saveGarden() exactly. All data comes from refs (synchronous).
+export function saveGarden({ stage, layers, state, currentGardenIndex }) {
+  if (!stage) return false
 
   const { plantLayer, structLayer } = layers
   const propBounds = state.propBoundsRef.current
 
-  // Collect plants
+  // Collect plants (from Konva layer — same as v8)
   const plants = []
   plantLayer?.find('Group').forEach(g => {
     const d = state.plantDataRef.current[g.id()]
@@ -37,13 +37,12 @@ export function saveGarden({
     })
   })
 
-  // Collect structs
+  // Collect structs (from Konva layer — same as v8)
   const structs = []
   structLayer?.find('Line,Rect,Circle,Path').forEach(s => {
     const id = s.id()
-    if (!id || id === '__propBounds' || id === '__propLabel') return
+    if (!id || !state.structDataRef.current[id]) return  // skips __propBounds, __propLabel
     const d = state.structDataRef.current[id]
-    if (!d) return
     const entry = {
       id, type: d.type, colour: d.colour, label: d.label,
       pathWidth: d.pathWidth, tension: d.tension,
@@ -64,10 +63,10 @@ export function saveGarden({
   })
 
   const gardenEntry = {
-    name: state.gardenName,
-    unit: state.gardenUnit,
-    w: state.gardenW,
-    h: state.gardenH,
+    name:    state.gardenName,
+    unit:    state.gardenUnit,
+    w:       state.gardenW,
+    h:       state.gardenH,
     originX: propBounds?.x ?? 0,
     originY: propBounds?.y ?? 0,
     plants,
@@ -77,51 +76,51 @@ export function saveGarden({
   const gardens = readGardens()
   gardens[currentGardenIndex] = gardenEntry
   writeGardens(gardens)
-  return gardenEntry
+  return true
 }
 
-// ── Load garden from localStorage by index ───────────────────────────────────
+// ── loadGarden ────────────────────────────────────────────────────────────────
+// Direct port of v8 loadGarden(idx). All Konva work is synchronous.
+// React state setters are called at the END so they don't race with Konva ops.
 export function loadGarden({
-  idx, stage, layers, state, loadedImages,
-  showGridRef, snapCellRef,
+  idx,
+  stage, layers, state, loadedImages,
+  showGridRef,
   onSelectPlant, onSelectStruct, onClearSelection,
-  onSetGardenName, onSetGardenW, onSetGardenH, onSetGardenUnit,
-  onSetIsSetup, onZoomToFit,
-  structIdCtr, plantIdCtr,
+  setGardenName, setGardenW, setGardenH, setGardenUnit, setIsSetup,
+  onZoomToFit,
 }) {
   const gardens = readGardens()
   const g = gardens[idx]
-  if (!g) return null
+  if (!g) return false
 
   const { plantLayer, structLayer, uiLayer } = layers
 
-  // Clear canvas
+  // ── Clear canvas (mirrors v8) ──
   plantLayer?.destroyChildren()
   structLayer?.destroyChildren()
+  // Clear edit handles from uiLayer (keep transformer)
   if (uiLayer) {
     uiLayer.find('Circle,Line').forEach(n => n.destroy())
+    const tr = layers.tr
+    if (tr) tr.nodes([])
   }
+
+  // Clear data registries
   Object.keys(state.plantDataRef.current).forEach(k => delete state.plantDataRef.current[k])
   Object.keys(state.structDataRef.current).forEach(k => delete state.structDataRef.current[k])
   onClearSelection()
 
-  // Apply garden metadata
-  onSetGardenName(g.name)
-  onSetGardenUnit(g.unit)
-  onSetGardenW(g.w)
-  onSetGardenH(g.h)
-  onSetIsSetup(true)
-
-  // Recalculate propBounds for current window size
+  // ── Recalculate propBounds (matches v8 exactly) ──
   const W = stage.width(), H = stage.height()
-  const px = 32 * (g.unit === 'm' ? 3.281 : 1)
-  const pw = g.w * px, ph = g.h * px
+  const UNIT_PX = 32
+  const pw = g.w * UNIT_PX * (g.unit === 'm' ? 3.281 : 1)
+  const ph = g.h * UNIT_PX * (g.unit === 'm' ? 3.281 : 1)
   const ox = Math.max(16, (W - pw) / 2)
   const oy = Math.max(16, (H - ph) / 2)
-  const propBounds = { x: ox, y: oy, w: pw, h: ph }
-  state.propBoundsRef.current = propBounds
+  state.propBoundsRef.current = { x: ox, y: oy, w: pw, h: ph }
 
-  // Re-draw boundary
+  // Re-draw boundary (same as v8)
   structLayer?.add(new Konva.Rect({
     id: '__propBounds',
     x: ox, y: oy, width: pw, height: ph,
@@ -135,15 +134,16 @@ export function loadGarden({
     fontSize: 11, fontStyle: 'bold', fill: '#558B2F', opacity: 0.65, listening: false,
   }))
 
-  // Origin delta (corrects for different window size)
+  // Origin delta (same as v8)
   const savedOX = g.originX ?? ox
   const savedOY = g.originY ?? oy
-  const dX = ox - savedOX, dY = oy - savedOY
+  const dX = ox - savedOX
+  const dY = oy - savedOY
 
-  let maxSId = structIdCtr.current
-  let maxPId = plantIdCtr.current
+  let maxSId = state.structIdCtr.current
+  let maxPId = state.plantIdCtr.current
 
-  // Restore structs
+  // ── Restore structs (mirrors v8 exactly) ──
   ;(g.structs || []).forEach(entry => {
     const n = parseInt((entry.id || '').split('_')[1] || '0')
     if (n >= maxSId) maxSId = n + 1
@@ -155,29 +155,23 @@ export function loadGarden({
     }
 
     let shape
-    const snapShape = (s) => {
-      s.on('dragmove', () => {
-        if (showGridRef.current && snapCellRef?.current) {
-          const c = snapCellRef.current
-          s.x(Math.round(s.x() / c) * c)
-          s.y(Math.round(s.y() / c) * c)
-        }
-      })
-    }
 
     if (entry.svgPath !== undefined) {
       const isUG = entry.type === 'underground-electrical' || entry.type === 'underground-plumbing'
-      const fillC  = isUG ? 'transparent' : entry.colour + 'CC'
-      const strokeC = isUG || entry.type === 'path' ? entry.colour : '#3A2A10'
       shape = new Konva.Path({
         id: entry.id,
         data: entry.svgPath,
         x: (entry.lx || 0) + dX, y: (entry.ly || 0) + dY,
-        fill: fillC, stroke: strokeC, strokeWidth: entry.pathWidth || 2,
+        fill: isUG ? 'transparent' : entry.colour + 'CC',
+        stroke: (isUG || entry.type === 'path') ? entry.colour : '#3A2A10',
+        strokeWidth: 2,
         strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round', draggable: true,
       })
+      shape.on('click tap', e => { if (!state.editingShapeIdRef?.current) onSelectStruct(entry.id, shape, e) })
+      shape.on('dblclick dbltap', () => { /* enterEditMode wired via useSelection */ })
+
     } else if (entry.points !== undefined) {
-      const isPath = entry.type === 'path'
+      const isPath     = entry.type === 'path'
       const isFenceType = entry.type === 'fence' || entry.type === 'gate'
       const cl = !isPath && !isFenceType
       shape = new Konva.Line({
@@ -186,12 +180,14 @@ export function loadGarden({
         x: (entry.lx || 0) + dX, y: (entry.ly || 0) + dY,
         tension: entry.tension || 0,
         closed: cl,
-        fill: isPath || isFenceType ? 'transparent' : entry.colour + 'CC',
-        stroke: isPath || isFenceType ? entry.colour : '#3A2A10',
+        fill: (isPath || isFenceType) ? 'transparent' : entry.colour + 'CC',
+        stroke: (isPath || isFenceType) ? entry.colour : '#3A2A10',
         strokeWidth: isPath ? (entry.pathWidth || 18) : isFenceType ? 6 : 2,
         strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round', draggable: true,
         hitStrokeWidth: isPath ? (entry.pathWidth || 18) + 10 : undefined,
       })
+      shape.on('click tap', e => { if (!state.editingShapeIdRef?.current) onSelectStruct(entry.id, shape, e) })
+
     } else if (entry.rx !== undefined) {
       const cornerR = entry.type === 'building' ? 3 : 0
       shape = new Konva.Rect({
@@ -207,6 +203,8 @@ export function loadGarden({
         shape.scaleX(1); shape.scaleY(1)
         structLayer?.batchDraw()
       })
+      shape.on('click tap', e => { if (!state.editingShapeIdRef?.current) onSelectStruct(entry.id, shape, e) })
+
     } else if (entry.cx !== undefined) {
       shape = new Konva.Circle({
         id: entry.id,
@@ -215,23 +213,21 @@ export function loadGarden({
         fill: entry.colour + 'CC', stroke: entry.colour,
         strokeWidth: 2, draggable: true,
       })
+      shape.on('click tap', e => { if (!state.editingShapeIdRef?.current) onSelectStruct(entry.id, shape, e) })
     }
 
-    if (shape) {
-      snapShape(shape)
-      shape.on('click tap', e => onSelectStruct(entry.id, shape, e))
-      structLayer?.add(shape)
-    }
+    if (shape) structLayer?.add(shape)
   })
 
-  // Restore plants
+  // ── Restore plants (mirrors v8 exactly) ──
   ;(g.plants || []).forEach(entry => {
     const n = parseInt((entry.id || '').split('_')[1] || '0')
     if (n >= maxPId) maxPId = n + 1
 
     state.plantDataRef.current[entry.id] = {
       label: entry.label, family: entry.family,
-      notes: entry.notes || '', seasons: entry.seasons || ['spring','summer','fall','winter'],
+      notes: entry.notes || '',
+      seasons: entry.seasons || ['spring', 'summer', 'fall', 'winter'],
       transparent: entry.transparent || false,
       size: entry.size, key: entry.key,
     }
@@ -239,15 +235,15 @@ export function loadGarden({
     const img = loadedImages[entry.key]
     if (!img) return
 
-    const SIZE_MAP = { XS: 24, S: 40, M: 64, L: 96 }
     const size = SIZE_MAP[entry.size] || 64
 
-    // Build group manually (mirrors makePlantGroup from v8)
+    // makePlantGroup equivalent (mirrors v8)
     const group = new Konva.Group({
       id: entry.id,
       x: entry.x + dX, y: entry.y + dY,
       draggable: true,
-      scaleX: entry.scaleX || 1, scaleY: entry.scaleY || 1,
+      scaleX: entry.scaleX || 1,
+      scaleY: entry.scaleY || 1,
     })
     const imgNode = new Konva.Image({
       image: img, width: size, height: size,
@@ -261,23 +257,15 @@ export function loadGarden({
       ctx.fillStrokeShape(shape)
     })
     group.add(imgNode)
-
-    if (showGridRef.current && snapCellRef?.current) {
-      group.on('dragmove', () => {
-        const c = snapCellRef.current
-        group.x(Math.round(group.x() / c) * c)
-        group.y(Math.round(group.y() / c) * c)
-      })
-    }
     group.on('click tap', () => onSelectPlant(entry.id, group))
     plantLayer?.add(group)
   })
 
-  // Update counters
-  structIdCtr.current = maxSId
-  plantIdCtr.current  = maxPId
+  // Update counters (same as v8)
+  state.structIdCtr.current = maxSId
+  state.plantIdCtr.current  = maxPId
 
-  // Restore transparency + z-order
+  // ── Restore transparency + z-order (same as v8) ──
   ;(g.structs || []).forEach(entry => {
     const shape = structLayer?.findOne('#' + entry.id)
     if (!shape) return
@@ -292,28 +280,38 @@ export function loadGarden({
   structLayer?.batchDraw()
   plantLayer?.batchDraw()
 
-  // Zoom to fit after a tick (stage needs to settle)
-  setTimeout(() => onZoomToFit(), 50)
+  // ── Update React state AFTER all Konva work (avoid async races) ──
+  setGardenName(g.name)
+  setGardenUnit(g.unit)
+  setGardenW(g.w)
+  setGardenH(g.h)
+  setIsSetup(true)
 
-  return idx
+  // Zoom to fit (same as v8 — called last)
+  setTimeout(() => onZoomToFit(), 30)
+
+  return true
 }
 
-// ── New garden ────────────────────────────────────────────────────────────────
+// ── createNewGarden ───────────────────────────────────────────────────────────
+// Mirrors v8 newGarden(). Saves current, pushes new entry, returns new index.
 export function createNewGarden({ currentGardenIndex, stage, layers, state }) {
   const gardens = readGardens()
   if (gardens.length >= MAX_GARDENS) return { limitReached: true }
-  // Save current first
+
+  // Save current garden first (same as v8)
   saveGarden({ stage, layers, state, currentGardenIndex })
+
   const updated = readGardens()
   updated.push({ name: 'New Garden', unit: 'ft', w: 60, h: 40, plants: [], structs: [] })
   writeGardens(updated)
   return { newIndex: updated.length - 1, limitReached: false }
 }
 
-// ── Delete garden ─────────────────────────────────────────────────────────────
+// ── deleteGarden ──────────────────────────────────────────────────────────────
 export function deleteGarden(idx) {
   const gardens = readGardens()
   gardens.splice(idx, 1)
   writeGardens(gardens)
-  return gardens
+  return [...gardens]
 }
