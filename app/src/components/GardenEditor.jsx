@@ -494,18 +494,40 @@ export default function GardenEditor() {
           onCopyPlant={() => {
             const sel = state.selectedPlant; if (!sel) return
             const d = state.plantDataRef.current[sel.id]
-            // Use loadedImages[key] — more reliable than findOne('Image') on the group
             const img = loadedImages[d?.key] || sel.group.findOne('Image')?.image()
-            state.setClipboard({
-              kind: 'plant',
-              entry: { ...d, _img: img,
-                // Preserve current visual scale so paste matches copied size
-                scaleX: sel.group.scaleX(),
-                scaleY: sel.group.scaleY(),
+            if (!img) return
+            const scaleX = sel.group.scaleX()
+            const scaleY = sel.group.scaleY()
+            const srcX   = sel.group.x()
+            const srcY   = sel.group.y()
+            const sizeMap = { XS: 24, S: 40, M: 64, L: 96 }
+            const size = sizeMap[d?.size] || 64
+            const entry = { ...d, _img: img, scaleX, scaleY }
+            // Copy + immediately paste to the right (touch-friendly: one tap)
+            const { plantLayer } = layersRef.current
+            if (!plantLayer) return
+            const newId = addPlant({
+              entry,
+              x: srcX + size + 8 + size / 2,
+              y: srcY + size / 2,
+              stage: stageRef.current, plantLayer,
+              plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr,
+              showGridRef,
+              onSelect: (id, group) => {
+                state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
+                state.setSelectedStruct(null)
               },
-              srcX: sel.group.x(),
-              srcY: sel.group.y(),
             })
+            if (newId) {
+              const group = plantLayer.findOne('#' + newId)
+              if (group) {
+                group.scaleX(scaleX); group.scaleY(scaleY)
+                group.moveToTop()
+              }
+              plantLayer.batchDraw()
+            }
+            // Also set clipboard so Ctrl+V still works
+            state.setClipboard({ kind: 'plant', entry, srcX, srcY })
           }}
           onColourChange={handleColourChange}
           onPathWidthChange={handlePathWidthChange}
