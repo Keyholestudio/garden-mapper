@@ -166,6 +166,8 @@ export default function GardenEditor() {
             if (cb.entry.scaleX) group.scaleX(cb.entry.scaleX)
             if (cb.entry.scaleY) group.scaleY(cb.entry.scaleY)
             group.moveToTop()
+            // Advance srcX so next Ctrl+V steps one more plant to the right
+            state.setClipboard({ ...cb, srcX: srcX + size + 8 })
           }
           plantLayer.batchDraw()
         }
@@ -538,8 +540,8 @@ export default function GardenEditor() {
               }
               plantLayer.batchDraw()
             }
-            // Also set clipboard so Ctrl+V still works
-            state.setClipboard({ kind: 'plant', entry, srcX, srcY })
+            // Advance srcX so next tap steps one more plant to the right
+            state.setClipboard({ kind: 'plant', entry, srcX: srcX + size + 8, srcY })
           }}
           onColourChange={handleColourChange}
           onPathWidthChange={handlePathWidthChange}
