@@ -1,15 +1,79 @@
-// PlantTray.jsx — Left sidebar: plant/tool selection
-// Phase 1: stub with correct structure — Phase 2 will port catalog + tools
+// PlantTray.jsx — Left sidebar: plant catalog, search, click-to-place
+// Phase 2: full catalog + search + recents + click-to-place
 
+import { useState, useMemo } from 'react'
+import { PLANT_CATALOG } from '../hooks/usePlantCatalog'
 import './PlantTray.css'
 
-export default function PlantTray({ currentMode, onModeChange }) {
+export default function PlantTray({ loadedImages, onPlantClick }) {
+  const [query, setQuery]   = useState('')
+  const [recents, setRecents] = useState([])
+
+  const filtered = useMemo(() => {
+    if (!query.trim()) return PLANT_CATALOG
+    const q = query.toLowerCase()
+    return PLANT_CATALOG.filter(p =>
+      p.label.toLowerCase().includes(q) || p.family.toLowerCase().includes(q)
+    )
+  }, [query])
+
+  const handleClick = (entry) => {
+    const img = loadedImages?.[entry.key]
+    if (!img || typeof img === 'string') return
+    const enriched = { ...entry, _img: img }
+    // Add to recents
+    setRecents(prev => {
+      const next = prev.filter(r => r.key !== entry.key)
+      return [enriched, ...next].slice(0, 5)
+    })
+    if (onPlantClick) onPlantClick(enriched)
+  }
+
   return (
     <div className="plant-tray">
-      <input className="tray-search" type="search" placeholder="Search plants..." />
-      <div className="tray-scroll">
-        <p className="tray-placeholder">Plant tray — Phase 2</p>
+      <input
+        className="tray-search"
+        type="search"
+        placeholder="Search plants..."
+        value={query}
+        onChange={e => setQuery(e.target.value)}
+      />
+      <div className="tray-scroll" id="tray-scroll">
+        {recents.length > 0 && !query && (
+          <>
+            <div className="tray-section-label">Recently Used</div>
+            {recents.map(e => <TrayItem key={e.key + '_r'} entry={e} loadedImages={loadedImages} onClick={handleClick} />)}
+            <div className="tray-divider" />
+          </>
+        )}
+
+        {filtered.length === 0 && (
+          <div className="tray-no-results">No results</div>
+        )}
+
+        {filtered.map(e => (
+          <TrayItem key={e.key} entry={e} loadedImages={loadedImages} onClick={handleClick} />
+        ))}
       </div>
+    </div>
+  )
+}
+
+function TrayItem({ entry, loadedImages, onClick }) {
+  const img = loadedImages?.[entry.key]
+  const loaded = img && typeof img !== 'string'
+
+  return (
+    <div
+      className={`tray-item${loaded ? '' : ' tray-item-loading'}`}
+      onClick={() => loaded && onClick(entry)}
+      title={`${entry.label} — ${entry.family}`}
+    >
+      {loaded
+        ? <img src={entry.src} alt={entry.label} draggable={false} />
+        : <div className="tray-img-placeholder" />
+      }
+      <span>{entry.label}</span>
     </div>
   )
 }

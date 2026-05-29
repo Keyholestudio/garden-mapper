@@ -1,5 +1,5 @@
 // GardenCanvas.jsx — Konva stage with grid, pan, zoom, property boundary
-// Phase 1: canvas init + grid + zoom-to-fit + pan
+// Phase 2: + canvas click → world coords for plant placement
 
 import { useEffect, useRef, useCallback } from 'react'
 import Konva from 'konva'
@@ -24,7 +24,8 @@ export default function GardenCanvas({
   gardenName, gardenW, gardenH, gardenUnit,
   currentSeason, showGrid,
   propBoundsRef,
-  onStageReady,   // callback(stage, layers) — parent gets refs after init
+  onStageReady,    // callback(stage, layers) — parent gets refs after init
+  onCanvasClick,   // callback({x,y}) — world coords of click on empty canvas
 }) {
   const containerRef = useRef(null)
   const stageRef     = useRef(null)
@@ -139,6 +140,15 @@ export default function GardenCanvas({
       stage.y(pointer.y - mousePointTo.y * clamped)
       drawGrid(stage, layersRef.current.gridLayer, showGrid, gardenUnit, currentSeason)
       stage.batchDraw()
+    })
+
+    // ── Canvas click → plant placement or deselect ──
+    stage.on('click tap', e => {
+      if (e.target === stage) {
+        // Pass world position to parent (plant placement, deselect, etc.)
+        const pos = stage.getRelativePointerPosition()
+        if (onCanvasClick) onCanvasClick(pos)
+      }
     })
 
     // Initial zoom-to-fit + draw
