@@ -45,44 +45,6 @@ export default function GardenEditor() {
     }))).then(() => setLoadedImages({ ...result }))
   }, [])
 
-  // ── Auto-load last saved garden on startup (v8: initKonva always runs after startGarden) ──
-  // Once stage is ready AND images are loaded, load garden[0] from localStorage if it exists.
-  // This replaces the setup overlay for returning users.
-  useEffect(() => {
-    if (!stageReady || Object.keys(loadedImages).length === 0) return
-    const gardens = readGardens()
-    if (gardens.length === 0) return // first run: show setup overlay
-    // Load the last used garden (index 0 by default; could store lastIndex in LS later)
-    const ok = loadGarden({
-      idx: 0,
-      stage: stageRef.current,
-      layers: layersRef.current,
-      state,
-      loadedImages,
-      showGridRef,
-      onSelectPlant: (id, group) => {
-        state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
-        state.setSelectedStruct(null)
-      },
-      onSelectStruct: (id, shape) => {
-        state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
-        state.setSelectedPlant(null)
-      },
-      onClearSelection: clearSelection,
-      setGardenName: state.setGardenName,
-      setGardenW:    state.setGardenW,
-      setGardenH:    state.setGardenH,
-      setGardenUnit: state.setGardenUnit,
-      setIsSetup:    state.setIsSetup,
-      onZoomToFit:   handleResetView,
-    })
-    if (ok) {
-      currentGardenIndexRef.current = 0
-      setCurrentGardenIndex(0)
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stageReady, Object.keys(loadedImages).length])
-
   // Keep showGridRef current
   useEffect(() => { showGridRef.current = state.showGrid }, [state.showGrid])
 
@@ -304,6 +266,41 @@ export default function GardenEditor() {
     stage.y(H/2 - (propBounds.y + propBounds.h/2) * scale)
     stage.batchDraw()
   }
+
+  // ── Auto-load on startup: runs after all handlers are defined so closures are valid ──
+  // Mirrors v8: on first load, reads LS and restores last garden. Skips setup for returning users.
+  const loadedImagesCount = Object.keys(loadedImages).length
+  useEffect(() => {
+    if (!stageReady || loadedImagesCount === 0) return
+    const gardens = readGardens()
+    if (gardens.length === 0) return  // first run — show setup overlay
+    loadGarden({
+      idx: 0,
+      stage: stageRef.current,
+      layers: layersRef.current,
+      state,
+      loadedImages,
+      showGridRef,
+      onSelectPlant: (id, group) => {
+        state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
+        state.setSelectedStruct(null)
+      },
+      onSelectStruct: (id, shape) => {
+        state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
+        state.setSelectedPlant(null)
+      },
+      onClearSelection: clearSelection,
+      setGardenName: state.setGardenName,
+      setGardenW:    state.setGardenW,
+      setGardenH:    state.setGardenH,
+      setGardenUnit: state.setGardenUnit,
+      setIsSetup:    state.setIsSetup,
+      onZoomToFit:   handleResetView,
+    })
+    currentGardenIndexRef.current = 0
+    setCurrentGardenIndex(0)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stageReady, loadedImagesCount])
 
   // ── Phase 5: Save ──
   // Plain function (not useCallback) — closes over refs so always reads latest values

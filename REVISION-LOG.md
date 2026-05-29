@@ -169,3 +169,16 @@ _This file tracks all changes made to each prototype version. Use it to backdate
 - ✅ Basic drag/drop
 - ✅ Season slider
 - ✅ 3 initial stickers
+
+## Phase 5 — Save/Load (2026-05-29)
+**Status:** Working after 3 fix rounds
+
+### Bugs found and fixed
+- [x] Stale useCallback closures on handleLoad/handleSave — switched to plain functions
+- [x] null entries in gardenData array — readGardens() now filters nulls; save uses safe index bounds
+- [x] GardenSwitcher crash on null garden entry — null guard on .map()
+- [x] Load did nothing (gardens with objects) — root cause was a 500 compile error from bad debug code; load itself works
+- [x] Auto-load on startup — useEffect loads garden[0] from localStorage once stage+images are ready; skips setup overlay for returning users
+- [x] New garden doesn't immediately load — canvas is now cleared before showing setup overlay; onStart reinits boundary with new dimensions
+- [x] New garden name not persisted — createNewGarden saves current first, new entry pushed to LS
+
