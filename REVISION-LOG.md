@@ -9,7 +9,12 @@ _This file tracks all changes made to each prototype version. Use it to backdate
 
 ### Changes
 - [x] #1  Remove console.log debug line in closeFreeShape (line 1068, leftover from v7 Enter-key debug)
-- [ ] (add items as we go)
+- [x] #2  Phase 1: useGardenState hook, Konva canvas init, grid, pan, zoom-to-fit, setup overlay
+- [x] #3  Phase 2: plant catalog (36 plants), image loading, tray with search + recents, click-to-place
+- [x] #4  Phase 3: draw tools — freeform beds/fences/paths/building/water, rect drag, circle drag, Enter to close, Escape to cancel, draw hint bar, Toolbar component
+- [ ] #5  Phase 4: select + edit (transformer, right panel properties, delete, copy/paste)
+- [ ] #6  Phase 5: save/load (localStorage, garden switcher)
+- [ ] #7  Phase 6: season themes, logo bar polish, promo banner
 
 ---
 
