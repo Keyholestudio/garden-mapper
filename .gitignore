@@ -14,3 +14,6 @@ stickers/generator_state.json
 # OS junk
 .DS_Store
 Thumbs.db
+
+app/node_modules/
+app/dist/
