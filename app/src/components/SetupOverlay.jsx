@@ -35,13 +35,13 @@ export default function SetupOverlay({
           <div className="setup-dims">
             <input
               type="number" min="1" max="1000"
-              value={gardenW}
+              value={gardenW || ''}
               onChange={e => onSetGardenW(parseFloat(e.target.value) || 60)}
             />
             <span>×</span>
             <input
               type="number" min="1" max="1000"
-              value={gardenH}
+              value={gardenH || ''}
               onChange={e => onSetGardenH(parseFloat(e.target.value) || 40)}
             />
           </div>

@@ -11,7 +11,7 @@ export function isFreeMode(currentMode, bedSubTool, fenceSubTool, fenceType, bui
   if (currentMode === 'fences'   && fenceSubTool !== 'square') return true
   if (currentMode === 'paths') return true
   if (currentMode === 'water'    && waterSubTool === 'pond') return true
-  if (currentMode === 'building' && (buildingSubTool === 'deck-curved' || buildingSubTool === 'deck-straight' || buildingSubTool === 'underground')) return true
+  if (currentMode === 'building' && (buildingSubTool === 'deck-curved' || buildingSubTool === 'deck-straight' || buildingSubTool === 'underground' || buildingSubTool === 'underground-electrical' || buildingSubTool === 'underground-plumbing')) return true
   return false
 }
 
@@ -135,7 +135,7 @@ export function closeFreeShape({
 
   const isPath       = currentMode === 'paths'
   const isFenceOpen  = currentMode === 'fences' && fenceType === 'fence'
-  const isUnderground= currentMode === 'building' && buildingSubTool === 'underground'
+  const isUnderground= currentMode === 'building' && (buildingSubTool === 'underground' || buildingSubTool === 'underground-electrical' || buildingSubTool === 'underground-plumbing')
   const isDeckFree   = currentMode === 'building' && (buildingSubTool === 'deck-curved' || buildingSubTool === 'deck-straight')
   const isWaterPond  = currentMode === 'water'    && waterSubTool === 'pond'
   const closedShape  = !isPath && !isFenceOpen && !isUnderground
@@ -153,7 +153,12 @@ export function closeFreeShape({
   // Type
   let type, label
   if (isPath)        { type = 'path';                      label = 'Path'      }
-  else if (isUnderground) { type = 'underground-'+undergroundType; label = undergroundType === 'electrical' ? 'Electrical' : 'Plumbing' }
+  else if (isUnderground) {
+    // buildingSubTool may be 'underground-electrical' or 'underground-plumbing' directly
+    const ugType = buildingSubTool.includes('plumbing') ? 'plumbing' : 'electrical'
+    type = 'underground-' + ugType
+    label = ugType === 'electrical' ? 'Electrical' : 'Plumbing'
+  }
   else if (isFenceOpen)   { type = 'fence';                label = 'Fence'     }
   else if (currentMode === 'fences')   { type = 'hedge';   label = 'Hedge'     }
   else if (isWaterPond)                { type = 'pond';    label = 'Pond'      }

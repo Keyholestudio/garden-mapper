@@ -14,7 +14,10 @@ export function useDrawTools({
 }) {
   // Keep current state in refs so event handlers always see latest values
   const sRef = useRef(state)
-  useEffect(() => { sRef.current = state }, [state])
+  useEffect(() => {
+    sRef.current = state
+    snapCellRef.current = state.showGrid ? 16 : 0
+  }, [state])
 
   const freePtsRef     = useRef([])
   const freeDotsRef    = useRef([])
@@ -23,7 +26,7 @@ export function useDrawTools({
   const previewRectRef = useRef(null)
   const waterStartRef  = useRef(null)
   const circlePreviewRef = useRef(null)
-  const snapCellRef    = useRef(8)
+  const snapCellRef    = useRef(8) // updated reactively below
 
   // ── Hint bar (floating hint over canvas) ──────────────────
   function updateHint(pts, currentMode, buildingSubTool, pathSubTool) {
@@ -196,12 +199,17 @@ export function useDrawTools({
       }
     }
 
-    // ── Mouse down: start rect / circle drag ──
+    // ── Mouse down: pan (select mode) | rect drag | circle drag ──
     const onMouseDown = (e) => {
       if (e.target !== stage) return
       const s = sRef.current
       const free = isFreeMode(s.currentMode, s.bedSubTool, s.fenceSubTool, s.fenceType, s.buildingSubTool, s.waterSubTool, s.pathSubTool)
-      if (free) return // freeform handles its own clicks
+
+      // Select mode — hand off to canvas pan handler
+      if (s.currentMode === 'select' || free) {
+        if (s.currentMode === 'select') stage.fire('pan:start')
+        return
+      }
 
       const isRectMode =
         (s.currentMode === 'building' && (s.buildingSubTool === 'building' || s.buildingSubTool === 'deck-square')) ||
@@ -281,12 +289,27 @@ export function useDrawTools({
       })
     }
 
-    // ── Click: freeform point placement ──
+    // ── Click: freeform point placement + fountain ──
     const onClick = (e) => {
       const s = sRef.current
+      if (e.target !== stage) return
+
+      // Fountain — click to place
+      if (s.currentMode === 'water' && s.waterSubTool === 'fountain') {
+        const pos = stage.getRelativePointerPosition()
+        const sx = s.showGrid && snapCellRef.current ? Math.round(pos.x / snapCellRef.current) * snapCellRef.current : pos.x
+        const sy = s.showGrid && snapCellRef.current ? Math.round(pos.y / snapCellRef.current) * snapCellRef.current : pos.y
+        addCircleStruct({
+          cx: sx, cy: sy, radius: 30,
+          structIdCtr: s.structIdCtr, structDataRef: s.structDataRef,
+          snapCell: snapCellRef.current, showGrid: s.showGrid,
+          structLayer, onSelect: onStructSelect, onModeChange,
+        })
+        return
+      }
+
       const free = isFreeMode(s.currentMode, s.bedSubTool, s.fenceSubTool, s.fenceType, s.buildingSubTool, s.waterSubTool, s.pathSubTool)
       if (!free) return
-      if (e.target !== stage) return // don't fire on placed objects
       const pos = stage.getRelativePointerPosition()
       handleFreeClick(pos)
     }

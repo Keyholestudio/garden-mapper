@@ -88,22 +88,20 @@ export default function GardenCanvas({
     }))
     structLayer.batchDraw()
 
-    // ── Pan (drag on empty canvas in select mode) ──
+    // ── Pan — only when in select mode and clicking empty canvas ──
+    // Draw tools (useDrawTools) handle mousedown for all other modes
     let isPanning = false, panStart = null
 
-    stage.on('mousedown touchstart', (e) => {
-      // Blur inputs so Enter key reaches keydown handlers
+    stage.on('mousedown touchstart', () => {
       if (document.activeElement && document.activeElement !== document.body) {
         document.activeElement.blur()
       }
     })
 
-    stage.on('mousedown', (e) => {
-      if (e.target === stage) {
-        isPanning = true
-        panStart = stage.getPointerPosition()
-        wrap.style.cursor = 'grabbing'
-      }
+    stage.on('pan:start', () => {
+      isPanning = true
+      panStart = stage.getPointerPosition()
+      wrap.style.cursor = 'grabbing'
     })
     stage.on('mousemove', () => {
       if (!isPanning || !panStart) return
