@@ -17,6 +17,7 @@ import GardenCanvas  from './GardenCanvas'
 import RightPanel    from './RightPanel'
 import SetupOverlay  from './SetupOverlay'
 import GardenSwitcher from './GardenSwitcher'
+import PromoBanner from './PromoBanner'
 import './GardenEditor.css'
 
 export default function GardenEditor() {
@@ -382,6 +383,7 @@ export default function GardenEditor() {
 
   return (
     <div className="editor-layout">
+      <PromoBanner />
       {!state.isSetup && (
         <SetupOverlay
           gardenName={state.gardenName} gardenW={state.gardenW}
