@@ -1,16 +1,20 @@
 // GardenEditor.jsx — Top-level layout shell
-// Phase 3: draw tools wired (beds, fences, paths, building, water)
+// Phase 4: selection, transformer, edit mode, delete, right panel properties
 
 import { useRef, useState, useEffect } from 'react'
-import { useGardenState } from '../hooks/useGardenState'
-import { useDrawTools }   from '../hooks/useDrawTools'
-import { PLANT_CATALOG }  from '../hooks/usePlantCatalog'
-import { addPlant }       from '../utils/plantUtils'
-import LogoBar     from './LogoBar'
-import Toolbar     from './Toolbar'
-import PlantTray   from './PlantTray'
+import Konva from 'konva'
+import { useGardenState }  from '../hooks/useGardenState'
+import { useDrawTools }    from '../hooks/useDrawTools'
+import { useSelection }    from '../hooks/useSelection'
+import { PLANT_CATALOG }   from '../hooks/usePlantCatalog'
+import { isFreeMode }      from '../utils/drawUtils'
+import { addPlant }        from '../utils/plantUtils'
+import { insertPointNearestSegment } from '../hooks/useSelection'
+import LogoBar      from './LogoBar'
+import Toolbar      from './Toolbar'
+import PlantTray    from './PlantTray'
 import GardenCanvas from './GardenCanvas'
-import RightPanel  from './RightPanel'
+import RightPanel   from './RightPanel'
 import SetupOverlay from './SetupOverlay'
 import './GardenEditor.css'
 
@@ -24,32 +28,51 @@ export default function GardenEditor() {
   const [loadedImages, setLoadedImages] = useState({})
   useEffect(() => {
     const result = {}
-    Promise.all(
-      PLANT_CATALOG.map(p => new Promise(res => {
-        const img = new Image()
-        img.onload  = () => { result[p.key] = img; res() }
-        img.onerror = () => res()
-        img.src = p.src
-      }))
-    ).then(() => setLoadedImages({ ...result }))
+    Promise.all(PLANT_CATALOG.map(p => new Promise(res => {
+      const img = new Image()
+      img.onload  = () => { result[p.key] = img; res() }
+      img.onerror = () => res()
+      img.src = p.src
+    }))).then(() => setLoadedImages({ ...result }))
   }, [])
+
+  // ── Clear selection helper ──
+  const clearSelection = () => {
+    state.setSelectedPlant(null)
+    state.setSelectedStruct(null)
+    state.setMultiSelection([])
+    state.setEditingShapeId(null)
+  }
+
+  // ── Selection hook ──
+  const { enterEdit, exitEdit, deleteSelected } = useSelection({
+    stage:   stageReady ? stageRef.current : null,
+    layers:  stageReady ? layersRef.current : null,
+    state,
+    onSelectPlant:   (id, group) => { state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] }); state.setSelectedStruct(null) },
+    onSelectStruct:  (id, shape) => { state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] }); state.setSelectedPlant(null) },
+    onClearSelection: clearSelection,
+    onEditMode:      state.setEditingShapeId,
+    onExitEditMode:  () => state.setEditingShapeId(null),
+  })
 
   // ── Draw tools hook ──
   useDrawTools({
-    stage:      stageReady ? stageRef.current : null,
-    layers:     stageReady ? layersRef.current : null,
+    stage:  stageReady ? stageRef.current : null,
+    layers: stageReady ? layersRef.current : null,
     propBoundsRef: state.propBoundsRef,
     state,
     onStructSelect: (id, shape, evt) => {
-      if (!evt || !(evt.evt?.ctrlKey || evt.evt?.metaKey || evt.evt?.shiftKey)) {
-        state.setSelectedPlant(null)
-        state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
-      }
+      const ne = evt?.evt || evt
+      if (ne && (ne.ctrlKey || ne.metaKey || ne.shiftKey)) return
+      state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
+      state.setSelectedPlant(null)
+      state.setEditingShapeId(null)
     },
     onModeChange: state.setCurrentMode,
   })
 
-  // ── Pending plant ──
+  // ── Plant placement ──
   const pendingPlantRef = useRef(null)
   const handlePlantClick = (enrichedEntry) => {
     pendingPlantRef.current = enrichedEntry
@@ -66,8 +89,7 @@ export default function GardenEditor() {
       stage: stageRef.current, plantLayer,
       plantDataRef: state.plantDataRef,
       plantIdCtr:   state.plantIdCtr,
-      showGrid:     state.showGrid,
-      snapCell:     8,
+      showGrid: state.showGrid, snapCell: 8,
       onSelect: (id, group) => {
         state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
         state.setSelectedStruct(null)
@@ -79,6 +101,122 @@ export default function GardenEditor() {
     stageRef.current  = stage
     layersRef.current = layers
     setStageReady(true)
+  }
+
+  // ── Right panel action handlers ──────────────────────────
+
+  const handleColourChange = (colour) => {
+    const sel = state.selectedStruct
+    if (!sel) return
+    const d = state.structDataRef.current[sel.id]
+    d.colour = colour
+    const shape = sel.shape
+    const noFill = ['path','fence','gate','underground-electrical','underground-plumbing'].includes(d.type)
+    if (shape instanceof Konva.Rect)   shape.fill(colour + 'CC')
+    else if (shape instanceof Konva.Circle) { shape.fill(colour + 'CC'); shape.stroke(colour) }
+    else {
+      shape.fill(noFill ? 'transparent' : colour + 'CC')
+      if (noFill) shape.stroke(colour)
+    }
+    layersRef.current.structLayer?.batchDraw()
+    // Force re-render to update swatch highlight
+    state.setSelectedStruct({ ...sel, colour })
+  }
+
+  const handlePathWidthChange = (w) => {
+    const sel = state.selectedStruct
+    if (!sel) return
+    state.structDataRef.current[sel.id].pathWidth = w
+    sel.shape.strokeWidth(w)
+    layersRef.current.structLayer?.batchDraw()
+  }
+
+  const handleDimRectApply = (w, h) => {
+    const sel = state.selectedStruct
+    if (!sel || !(sel.shape instanceof Konva.Rect)) return
+    const pxPerUnit = 32 * (state.gardenUnit === 'm' ? 3.281 : 1)
+    sel.shape.width(w * pxPerUnit); sel.shape.height(h * pxPerUnit)
+    sel.shape.scaleX(1); sel.shape.scaleY(1)
+    layersRef.current.structLayer?.batchDraw()
+  }
+
+  const handleDimCircleApply = (d) => {
+    const sel = state.selectedStruct
+    if (!sel || !(sel.shape instanceof Konva.Circle)) return
+    const pxPerUnit = 32 * (state.gardenUnit === 'm' ? 3.281 : 1)
+    sel.shape.radius((d / 2) * pxPerUnit)
+    layersRef.current.structLayer?.batchDraw()
+  }
+
+  const handleLayerMove = (kind, dir) => {
+    if (kind === 'plant' && state.selectedPlant) {
+      dir === 'up' ? state.selectedPlant.group.moveUp() : state.selectedPlant.group.moveDown()
+      layersRef.current.plantLayer?.batchDraw()
+    } else if (kind === 'struct' && state.selectedStruct) {
+      dir === 'up' ? state.selectedStruct.shape.moveUp() : state.selectedStruct.shape.moveDown()
+      layersRef.current.structLayer?.batchDraw()
+    }
+  }
+
+  const handleTransparentPlant = () => {
+    const sel = state.selectedPlant
+    if (!sel) return
+    const d = state.plantDataRef.current[sel.id]
+    d.transparent = !d.transparent
+    if (d.transparent) { sel.group.opacity(0.35); sel.group.moveToBottom() }
+    else { sel.group.opacity(1); sel.group.moveToTop() }
+    layersRef.current.plantLayer?.batchDraw()
+    state.setSelectedPlant({ ...sel }) // trigger re-render
+  }
+
+  const handleTransparentStruct = () => {
+    const sel = state.selectedStruct
+    if (!sel) return
+    const d = state.structDataRef.current[sel.id]
+    d.transparent = !d.transparent
+    if (d.transparent) { sel.shape.opacity(0.35); sel.shape.moveToBottom() }
+    else               { sel.shape.opacity(1);    sel.shape.moveToTop()    }
+    layersRef.current.structLayer?.batchDraw()
+    state.setSelectedStruct({ ...sel })
+  }
+
+  const handleDisconnect = () => {
+    const sel = state.selectedStruct
+    if (!sel || !(sel.shape instanceof Konva.Group)) return
+    const members = sel.shape.getChildren().filter(c => c instanceof Konva.Rect).map(r => ({
+      x: r.x() + sel.shape.x(), y: r.y() + sel.shape.y(),
+      w: r.width(), h: r.height(),
+      colour: r.fill().replace('CC',''),
+      type: state.structDataRef.current[sel.id]?.type,
+    }))
+    sel.shape.destroy()
+    delete state.structDataRef.current[sel.id]
+    members.forEach(m => {
+      const id = 'struct_' + state.structIdCtr.current++
+      state.structDataRef.current[id] = { type: m.type, colour: m.colour, label: m.type }
+      const rect = new Konva.Rect({
+        id, x: m.x, y: m.y, width: m.w, height: m.h,
+        fill: m.colour + 'CC', stroke: '#3A2A10', strokeWidth: 2,
+        draggable: true, strokeScaleEnabled: false,
+      })
+      rect.on('click tap', () => {
+        state.setSelectedStruct({ id, shape: rect, ...state.structDataRef.current[id] })
+      })
+      layersRef.current.structLayer?.add(rect)
+    })
+    layersRef.current.structLayer?.batchDraw()
+    clearSelection()
+  }
+
+  const handleRemoveLastPt = () => {
+    const id = state.editingShapeId
+    if (!id || !layersRef.current.structLayer) return
+    const shape = layersRef.current.structLayer.findOne('#' + id)
+    if (!shape || !(shape instanceof Konva.Line)) return
+    const pts = shape.points()
+    if (pts.length <= 6) return
+    shape.points(pts.slice(0, -2))
+    layersRef.current.structLayer.batchDraw()
   }
 
   return (
@@ -101,13 +239,13 @@ export default function GardenEditor() {
       />
 
       <Toolbar
-        currentMode={state.currentMode}       onModeChange={state.setCurrentMode}
-        bedSubTool={state.bedSubTool}         onBedSubTool={state.setBedSubTool}
-        fenceSubTool={state.fenceSubTool}     onFenceSubTool={state.setFenceSubTool}
-        fenceType={state.fenceType}           onFenceType={state.setFenceType}
-        pathSubTool={state.pathSubTool}       onPathSubTool={state.setPathSubTool}
+        currentMode={state.currentMode}        onModeChange={state.setCurrentMode}
+        bedSubTool={state.bedSubTool}          onBedSubTool={state.setBedSubTool}
+        fenceSubTool={state.fenceSubTool}      onFenceSubTool={state.setFenceSubTool}
+        fenceType={state.fenceType}            onFenceType={state.setFenceType}
+        pathSubTool={state.pathSubTool}        onPathSubTool={state.setPathSubTool}
         buildingSubTool={state.buildingSubTool} onBuildingSubTool={state.setBuildingSubTool}
-        waterSubTool={state.waterSubTool}     onWaterSubTool={state.setWaterSubTool}
+        waterSubTool={state.waterSubTool}      onWaterSubTool={state.setWaterSubTool}
       />
 
       <div className="editor-body">
@@ -122,13 +260,32 @@ export default function GardenEditor() {
             onStageReady={handleStageReady}
             onCanvasClick={handleCanvasClick}
           />
-          {/* Draw hint overlay */}
           <div id="draw-hint" className="draw-hint" style={{ display: 'none' }} />
         </div>
         <RightPanel
           selectedPlant={state.selectedPlant}
           selectedStruct={state.selectedStruct}
           multiSelection={state.multiSelection}
+          editingShapeId={state.editingShapeId}
+          plantDataRef={state.plantDataRef}
+          structDataRef={state.structDataRef}
+          layers={layersRef.current}
+          gardenUnit={state.gardenUnit}
+          onDeletePlant={() => { state.selectedPlant?.group.destroy(); delete state.plantDataRef.current[state.selectedPlant?.id]; layersRef.current.plantLayer?.batchDraw(); clearSelection() }}
+          onDeleteStruct={() => { state.selectedStruct?.shape.destroy(); delete state.structDataRef.current[state.selectedStruct?.id]; layersRef.current.structLayer?.batchDraw(); clearSelection() }}
+          onDeleteMulti={deleteSelected}
+          onTransparentPlant={handleTransparentPlant}
+          onCopyPlant={() => {}} // Phase 5
+          onColourChange={handleColourChange}
+          onPathWidthChange={handlePathWidthChange}
+          onEnterEdit={enterEdit}
+          onExitEdit={exitEdit}
+          onDimRectApply={handleDimRectApply}
+          onDimCircleApply={handleDimCircleApply}
+          onRemoveLastPt={handleRemoveLastPt}
+          onLayerMove={handleLayerMove}
+          onTransparentStruct={handleTransparentStruct}
+          onDisconnect={handleDisconnect}
         />
       </div>
     </div>

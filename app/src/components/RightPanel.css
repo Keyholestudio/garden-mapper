@@ -31,3 +31,33 @@
   background: #fff3f3;
   color: #c62828;
 }
+.btn-panel.active {
+  background: #11502A;
+  color: #fff;
+  border-color: #11502A;
+}
+
+.panel-sep   { width: 100%; height: 1px; background: #e8f5e9; margin: 2px 0; }
+.panel-title { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: #888; margin: 4px 0 3px; }
+
+.colour-row  { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 4px; }
+.colour-swatch {
+  width: 20px; height: 20px; border-radius: 4px;
+  cursor: pointer; border: 2px solid transparent;
+  transition: border-color .1s;
+}
+.colour-swatch.selected { border-color: #11502A; }
+.colour-swatch:hover    { border-color: #558B2F; }
+
+.slider-wrap { display: flex; align-items: center; gap: 6px; }
+.slider-wrap input[type=range] { flex: 1; }
+
+.dim-input {
+  width: 60px; padding: 3px 6px;
+  border: 1.5px solid #c8e6c9; border-radius: 6px;
+  font-size: 12px; font-family: inherit; outline: none;
+}
+.dim-input:focus { border-color: #558B2F; }
+
+.season-checks { display: flex; flex-direction: column; gap: 3px; }
+.season-checks label { font-size: 11px; color: #444; display: flex; align-items: center; gap: 5px; cursor: pointer; }
