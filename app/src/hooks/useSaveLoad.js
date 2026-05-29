@@ -10,7 +10,11 @@ const MAX_GARDENS = 2
 
 // ── localStorage helpers ──────────────────────────────────────────────────────
 export function readGardens() {
-  try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]') } catch { return [] }
+  try {
+    const raw = JSON.parse(localStorage.getItem(LS_KEY) || '[]')
+    // Filter out any null/corrupt entries left from buggy saves
+    return Array.isArray(raw) ? raw.filter(g => g && typeof g === 'object') : []
+  } catch { return [] }
 }
 function writeGardens(arr) {
   localStorage.setItem(LS_KEY, JSON.stringify(arr))
@@ -74,7 +78,12 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
   }
 
   const gardens = readGardens()
-  gardens[currentGardenIndex] = gardenEntry
+  // Safe write: if index is within bounds, overwrite; otherwise append
+  if (currentGardenIndex < gardens.length) {
+    gardens[currentGardenIndex] = gardenEntry
+  } else {
+    gardens.push(gardenEntry)
+  }
   writeGardens(gardens)
   return true
 }

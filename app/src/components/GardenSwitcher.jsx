@@ -46,7 +46,7 @@ export default function GardenSwitcher({
           {gardens.length === 0 && (
             <div className="switcher-empty">No saved gardens yet. Click Save first.</div>
           )}
-          {gardens.map((g, i) => (
+          {gardens.map((g, i) => !g ? null : (
             <div key={i} className={`switcher-row ${i === currentIndex ? 'current' : ''}`}>
               <span className="switcher-name">
                 {g.name || `Garden ${i + 1}`}
