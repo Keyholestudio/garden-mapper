@@ -9,7 +9,7 @@ import { useSelection }    from '../hooks/useSelection'
 import { PLANT_CATALOG }   from '../hooks/usePlantCatalog'
 import { addPlant }        from '../utils/plantUtils'
 import { insertPointNearestSegment } from '../hooks/useSelection'
-import { saveGarden, loadGarden, createNewGarden } from '../hooks/useSaveLoad'
+import { saveGarden, loadGarden, createNewGarden, readGardens } from '../hooks/useSaveLoad'
 import LogoBar        from './LogoBar'
 import BottomBar      from './BottomBar'
 import PlantTray      from './PlantTray'
@@ -44,6 +44,44 @@ export default function GardenEditor() {
       img.src = p.src
     }))).then(() => setLoadedImages({ ...result }))
   }, [])
+
+  // ── Auto-load last saved garden on startup (v8: initKonva always runs after startGarden) ──
+  // Once stage is ready AND images are loaded, load garden[0] from localStorage if it exists.
+  // This replaces the setup overlay for returning users.
+  useEffect(() => {
+    if (!stageReady || Object.keys(loadedImages).length === 0) return
+    const gardens = readGardens()
+    if (gardens.length === 0) return // first run: show setup overlay
+    // Load the last used garden (index 0 by default; could store lastIndex in LS later)
+    const ok = loadGarden({
+      idx: 0,
+      stage: stageRef.current,
+      layers: layersRef.current,
+      state,
+      loadedImages,
+      showGridRef,
+      onSelectPlant: (id, group) => {
+        state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
+        state.setSelectedStruct(null)
+      },
+      onSelectStruct: (id, shape) => {
+        state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
+        state.setSelectedPlant(null)
+      },
+      onClearSelection: clearSelection,
+      setGardenName: state.setGardenName,
+      setGardenW:    state.setGardenW,
+      setGardenH:    state.setGardenH,
+      setGardenUnit: state.setGardenUnit,
+      setIsSetup:    state.setIsSetup,
+      onZoomToFit:   handleResetView,
+    })
+    if (ok) {
+      currentGardenIndexRef.current = 0
+      setCurrentGardenIndex(0)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stageReady, Object.keys(loadedImages).length])
 
   // Keep showGridRef current
   useEffect(() => { showGridRef.current = state.showGrid }, [state.showGrid])
@@ -313,7 +351,7 @@ export default function GardenEditor() {
     }
   }
 
-  // ── Phase 5: New garden ──
+  // ── Phase 5: New garden (mirrors v8 newGarden exactly) ──
   const handleNewGarden = () => {
     if (!stageRef.current) return
     const result = createNewGarden({
@@ -323,7 +361,18 @@ export default function GardenEditor() {
       state,
     })
     if (result.limitReached) return
-    // Show setup overlay for the new garden
+
+    // Clear the canvas (mirrors v8: initKonva creates a fresh canvas)
+    const { structLayer, plantLayer, uiLayer } = layersRef.current
+    plantLayer?.destroyChildren()
+    structLayer?.destroyChildren()
+    if (uiLayer) { uiLayer.find('Circle,Line').forEach(n => n.destroy()); layersRef.current.tr?.nodes([]) }
+    Object.keys(state.plantDataRef.current).forEach(k => delete state.plantDataRef.current[k])
+    Object.keys(state.structDataRef.current).forEach(k => delete state.structDataRef.current[k])
+    structLayer?.batchDraw(); plantLayer?.batchDraw()
+    clearSelection()
+
+    // Show setup overlay (same as v8 showing setup-overlay)
     state.setGardenName('New Garden')
     state.setGardenW(60)
     state.setGardenH(40)
@@ -343,14 +392,13 @@ export default function GardenEditor() {
           onSetGardenName={state.setGardenName} onSetGardenW={state.setGardenW}
           onSetGardenH={state.setGardenH}       onSetGardenUnit={state.setGardenUnit}
           onStart={(name, w, h, unit) => {
-            // Reinit the canvas boundary for this garden's dimensions
+            // Mirrors v8 startGarden() → initKonva(): reinit boundary for new dimensions
             const stage = stageRef.current
             const { structLayer } = layersRef.current
             if (stage && structLayer) {
-              // Remove old boundary
+              // Replace boundary rect + label
               structLayer.findOne('#__propBounds')?.destroy()
               structLayer.findOne('#__propLabel')?.destroy()
-              // Recalculate propBounds
               const UNIT_PX = 32
               const pw = w * UNIT_PX * (unit === 'm' ? 3.281 : 1)
               const ph = h * UNIT_PX * (unit === 'm' ? 3.281 : 1)
@@ -368,7 +416,6 @@ export default function GardenEditor() {
                 fontSize: 11, fontStyle: 'bold', fill: '#558B2F', opacity: 0.65, listening: false,
               }))
               structLayer.batchDraw()
-              // Zoom to fit new boundary
               handleResetView()
             }
             state.setIsSetup(true)
