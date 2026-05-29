@@ -1,11 +1,16 @@
 .right-panel {
-  width: 220px;
-  background: #fff;
-  border-left: 1px solid #e0e0e0;
+  width: 200px;
+  background: #ffffff;
+  border: 1.5px solid #11502A;
+  border-radius: 14px;
+  padding: 10px 10px;
   flex-shrink: 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  gap: 8px;
+  margin: 10px 8px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
 }
 
 .panel-content { padding: 12px 10px; display: flex; flex-direction: column; gap: 8px; }
