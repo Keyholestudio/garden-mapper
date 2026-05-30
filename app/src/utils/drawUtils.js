@@ -107,9 +107,11 @@ export function snapToBoundary(pos, propBounds, scale) {
 
 // ── Type → colour/style lookup ───────────────────────────
 export function getShapeStyle(type, opts = {}) {
-  const { undergroundColour, undergroundWidth, defaultPathWidth } = opts
+  const { undergroundColour, undergroundWidth, defaultPathWidth, gateType } = opts
+  const gs = GATE_STYLES[gateType] || GATE_STYLES.wood
   switch (type) {
     case 'path':       return { fillC: 'transparent', strokeC: PATH_COLOURS[0],    sWidth: defaultPathWidth || 18, tension: 0.4,  closed: false }
+    case 'gate':       return { fillC: 'transparent', strokeC: gs.stroke,          sWidth: gs.strokeWidth,         tension: 0,    closed: false }
     case 'fence':      return { fillC: 'transparent', strokeC: FENCE_COLOURS[0],   sWidth: 8,  tension: 0,    closed: false }
     case 'hedge':      return { fillC: HEDGE_COLOURS[0]+'CC',   strokeC: '#3A2A10', sWidth: 2,  tension: 0.45, closed: true  }
     case 'pond':       return { fillC: WATER_COLOURS[0]+'CC',   strokeC: '#1976D2', sWidth: 2,  tension: 0.45, closed: true  }
@@ -126,6 +128,7 @@ export function getShapeStyle(type, opts = {}) {
 // ── Close freeform shape → Konva shape ───────────────────
 export function closeFreeShape({
   freePts, currentMode, bedSubTool, fenceSubTool, fenceType,
+  pathSubTool, gateType,
   buildingSubTool, waterSubTool, undergroundType, undergroundColour,
   undergroundWidth, undergroundOpaque, defaultPathWidth,
   propBounds, structIdCtr, structDataRef, snapCell, showGrid,
@@ -134,11 +137,12 @@ export function closeFreeShape({
   if (freePts.length < 2) return null
 
   const isPath       = currentMode === 'paths'
+  const isGate       = currentMode === 'paths' && pathSubTool === 'gate'
   const isFenceOpen  = currentMode === 'fences' && fenceType === 'fence'
   const isUnderground= currentMode === 'building' && (buildingSubTool === 'underground' || buildingSubTool === 'underground-electrical' || buildingSubTool === 'underground-plumbing')
   const isDeckFree   = currentMode === 'building' && (buildingSubTool === 'deck-curved' || buildingSubTool === 'deck-straight')
   const isWaterPond  = currentMode === 'water'    && waterSubTool === 'pond'
-  const closedShape  = !isPath && !isFenceOpen && !isUnderground
+  const closedShape  = !isPath && !isGate && !isFenceOpen && !isUnderground
 
   // Tension
   let tension = 0.45
@@ -152,7 +156,8 @@ export function closeFreeShape({
 
   // Type
   let type, label
-  if (isPath)        { type = 'path';                      label = 'Path'      }
+  if (isGate)        { type = 'gate';                      label = GATE_STYLES[gateType]?.label || 'Gate' }
+  else if (isPath)   { type = 'path';                      label = 'Path'      }
   else if (isUnderground) {
     // buildingSubTool may be 'underground-electrical' or 'underground-plumbing' directly
     const ugType = buildingSubTool.includes('plumbing') ? 'plumbing' : 'electrical'
@@ -165,7 +170,7 @@ export function closeFreeShape({
   else if (isDeckFree)                 { type = 'deck';    label = 'Deck'      }
   else                                 { type = 'bed';     label = 'Garden Bed'}
 
-  const style  = getShapeStyle(type, { undergroundColour, undergroundWidth, defaultPathWidth })
+  const style  = getShapeStyle(type, { undergroundColour, undergroundWidth, defaultPathWidth, gateType })
   const id     = 'struct_' + structIdCtr.current++
   const opacity = (isUnderground && !undergroundOpaque) ? 0.45 : 1
 

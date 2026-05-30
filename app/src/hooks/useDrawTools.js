@@ -10,7 +10,7 @@ import {
 import { PATH_COLOURS, WATER_COLOURS, HEDGE_COLOURS, DECKING_COLOURS } from './useGardenState'
 
 export function useDrawTools({
-  stage, layers, propBoundsRef, state, onStructSelect, onModeChange,
+  stage, layers, propBoundsRef, state, onStructSelect, onModeChange, onPushUndo,
 }) {
   // Keep current state in refs so event handlers always see latest values
   const sRef = useRef(state)
@@ -109,12 +109,14 @@ export function useDrawTools({
     const { structLayer, uiLayer } = layers || {}
     if (!structLayer) return
 
-    closeFreeShape({
+    const closedId = closeFreeShape({
       freePts:         freePtsRef.current,
       currentMode:     s.currentMode,
       bedSubTool:      s.bedSubTool,
       fenceSubTool:    s.fenceSubTool,
       fenceType:       s.fenceType,
+      pathSubTool:     s.pathSubTool,
+      gateType:        s.gateType,
       buildingSubTool: s.buildingSubTool,
       waterSubTool:    s.waterSubTool,
       undergroundType: s.undergroundType,
@@ -132,6 +134,12 @@ export function useDrawTools({
       onSelect:       onStructSelect,
       onModeChange,
     })
+    if (closedId && onPushUndo) {
+      onPushUndo(() => {
+        const sh = structLayer.findOne('#' + closedId)
+        if (sh) { sh.destroy(); delete s.structDataRef.current[closedId]; structLayer.batchDraw() }
+      })
+    }
 
     cancelFree(uiLayer)
   }
@@ -281,13 +289,19 @@ export function useDrawTools({
       else if (s.currentMode === 'water'    && s.waterSubTool === 'pool-sq')   type = 'pool-sq'
       else if (s.currentMode === 'fences'   && s.fenceSubTool === 'square')    type = 'hedge-sq'
 
-      addRectStruct({
+      const rectId = addRectStruct({
         type, x, y, w, h,
         structIdCtr: s.structIdCtr, structDataRef: s.structDataRef,
         groupIdCtr: s.groupIdCtr,
         snapCell: snapCellRef.current, showGrid: s.showGrid,
         structLayer, onSelect: onStructSelect, onModeChange,
       })
+      if (rectId && onPushUndo) {
+        onPushUndo(() => {
+          const sh = structLayer.findOne('#' + rectId)
+          if (sh) { sh.destroy(); delete s.structDataRef.current[rectId]; structLayer.batchDraw() }
+        })
+      }
     }
 
     // ── Click: freeform point placement + fountain ──
@@ -300,12 +314,18 @@ export function useDrawTools({
         const pos = stage.getRelativePointerPosition()
         const sx = s.showGrid && snapCellRef.current ? Math.round(pos.x / snapCellRef.current) * snapCellRef.current : pos.x
         const sy = s.showGrid && snapCellRef.current ? Math.round(pos.y / snapCellRef.current) * snapCellRef.current : pos.y
-        addCircleStruct({
+        const circId = addCircleStruct({
           cx: sx, cy: sy, radius: 30,
           structIdCtr: s.structIdCtr, structDataRef: s.structDataRef,
           snapCell: snapCellRef.current, showGrid: s.showGrid,
           structLayer, onSelect: onStructSelect, onModeChange,
         })
+        if (circId && onPushUndo) {
+          onPushUndo(() => {
+            const sh = structLayer.findOne('#' + circId)
+            if (sh) { sh.destroy(); delete s.structDataRef.current[circId]; structLayer.batchDraw() }
+          })
+        }
         return
       }
 

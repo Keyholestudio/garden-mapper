@@ -80,7 +80,7 @@ export default function GardenEditor() {
     stage:  stageReady ? stageRef.current : null,
     layers: stageReady ? layersRef.current : null,
     state,
-    onSelectPlant:    (id, group) => { state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] }); state.setSelectedStruct(null) },
+    onSelectPlant:    handlePlantSelect,
     onSelectStruct:   (id, shape) => { state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] }); state.setSelectedPlant(null) },
     onClearSelection: clearSelection,
     onEditMode:       state.setEditingShapeId,
@@ -93,15 +93,47 @@ export default function GardenEditor() {
     layers: stageReady ? layersRef.current : null,
     propBoundsRef: state.propBoundsRef,
     state,
+    onPushUndo: state.pushUndo,
     onStructSelect: (id, shape, evt) => {
       const ne = evt?.evt || evt
-      if (ne && (ne.ctrlKey || ne.metaKey || ne.shiftKey)) return
+      if (ne && (ne.ctrlKey || ne.metaKey || ne.shiftKey)) {
+        // Multi-select: add/remove from multiSelection
+        state.setSelectedPlant(null)
+        state.setSelectedStruct(null)
+        state.setEditingShapeId(null)
+        state.setMultiSelection(prev => {
+          const already = prev.findIndex(x => x.id === id)
+          if (already >= 0) return prev.filter(x => x.id !== id)
+          return [...prev, { kind: 'struct', id, shape }]
+        })
+        return
+      }
+      state.setMultiSelection([])
       state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
       state.setSelectedPlant(null)
       state.setEditingShapeId(null)
     },
     onModeChange: state.setCurrentMode,
   })
+
+  // ── Plant selection handler (shared) — handles Ctrl+click multi-select ──
+  const handlePlantSelect = (id, group, evt) => {
+    const ne = evt?.evt || evt
+    if (ne && (ne.ctrlKey || ne.metaKey || ne.shiftKey)) {
+      state.setSelectedPlant(null)
+      state.setSelectedStruct(null)
+      state.setEditingShapeId(null)
+      state.setMultiSelection(prev => {
+        const already = prev.findIndex(x => x.id === id)
+        if (already >= 0) return prev.filter(x => x.id !== id)
+        return [...prev, { kind: 'plant', id, shape: group }]
+      })
+      return
+    }
+    state.setMultiSelection([])
+    state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
+    state.setSelectedStruct(null)
+  }
 
   // ── Plant placement ──
   const pendingPlantRef = useRef(null)
@@ -115,16 +147,20 @@ export default function GardenEditor() {
     pendingPlantRef.current = null
     const { plantLayer } = layersRef.current
     if (!plantLayer || !stageRef.current) return
-    addPlant({
+    const newId = addPlant({
       entry, x: worldPos.x, y: worldPos.y,
       stage: stageRef.current, plantLayer,
       plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr,
       showGridRef,
-      onSelect: (id, group) => {
-        state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
-        state.setSelectedStruct(null)
-      },
+      onSelect: handlePlantSelect,
     })
+    // Push undo: remove the placed plant
+    if (newId) {
+      state.pushUndo(() => {
+        const g = layersRef.current.plantLayer?.findOne('#' + newId)
+        if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() }
+      })
+    }
   }
 
   // Compute scale label — mirrors v8 updateScaleDisplay()
@@ -197,10 +233,7 @@ export default function GardenEditor() {
           stage: stageRef.current, plantLayer,
           plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr,
           showGridRef,
-          onSelect: (id, group) => {
-            state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
-            state.setSelectedStruct(null)
-          },
+          onSelect: handlePlantSelect,
         })
         // Apply stored scale + move to top
         if (newId) {
@@ -213,6 +246,11 @@ export default function GardenEditor() {
             state.setClipboard({ ...cb, srcX: srcX + size + 8 })
           }
           plantLayer.batchDraw()
+          // Push undo: remove pasted plant
+          state.pushUndo(() => {
+            const g = layersRef.current.plantLayer?.findOne('#' + newId)
+            if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() }
+          })
         }
       }
     }
@@ -370,10 +408,7 @@ export default function GardenEditor() {
       state,
       loadedImages,
       showGridRef,
-      onSelectPlant: (id, group) => {
-        state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
-        state.setSelectedStruct(null)
-      },
+      onSelectPlant: handlePlantSelect,
       onSelectStruct: (id, shape) => {
         state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
         state.setSelectedPlant(null)
@@ -415,11 +450,8 @@ export default function GardenEditor() {
       state,
       loadedImages,
       showGridRef,
-      onSelectPlant: (id, group) => {
-        state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
-        state.setSelectedStruct(null)
-      },
-      onSelectStruct: (id, shape, e) => {
+      onSelectPlant: handlePlantSelect,
+      onSelectStruct: (id, shape) => {
         state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
         state.setSelectedPlant(null)
       },
@@ -604,10 +636,7 @@ export default function GardenEditor() {
               stage: stageRef.current, plantLayer,
               plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr,
               showGridRef,
-              onSelect: (id, group) => {
-                state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
-                state.setSelectedStruct(null)
-              },
+              onSelect: handlePlantSelect,
             })
             if (newId) {
               const group = plantLayer.findOne('#' + newId)
@@ -616,6 +645,10 @@ export default function GardenEditor() {
                 group.moveToTop()
               }
               plantLayer.batchDraw()
+              state.pushUndo(() => {
+                const g = layersRef.current.plantLayer?.findOne('#' + newId)
+                if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() }
+              })
             }
             // Advance srcX so next tap steps one more plant to the right
             state.setClipboard({ kind: 'plant', entry, srcX: srcX + size + 8, srcY })
