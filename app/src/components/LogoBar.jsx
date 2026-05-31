@@ -14,7 +14,7 @@ const CELL_IN = 3  // 3 inches per cell at base zoom
 export default function LogoBar({
   gardenName, gardenW, gardenH, gardenUnit,
   currentSeason,
-  onSave, onOpenSwitcher, saveFlash,
+  onSave, onOpenSwitcher, onExport, saveFlash,
   scaleLabel,
   isMobile,
 }) {
@@ -67,6 +67,14 @@ export default function LogoBar({
           title="Switch gardens"
         >
           🌿 Gardens
+        </button>
+
+        <button
+          className="logo-btn"
+          onClick={onExport}
+          title="Export garden plan as PDF"
+        >
+          🖨 Export
         </button>
 
         {/* YouTube button (matches v8 #logo-yt-btn) */}

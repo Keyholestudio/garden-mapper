@@ -21,6 +21,7 @@ import RightPanel    from './RightPanel'
 import SetupOverlay  from './SetupOverlay'
 import GardenSwitcher from './GardenSwitcher'
 import PromoBanner from './PromoBanner'
+import ExportModal from './ExportModal'
 import './GardenEditor.css'
 
 export default function GardenEditor() {
@@ -35,6 +36,7 @@ export default function GardenEditor() {
   // Phase 5: save/load state
   const [currentGardenIndex, setCurrentGardenIndex] = useState(0)
   const [switcherOpen, setSwitcherOpen] = useState(false)
+  const [exportOpen, setExportOpen] = useState(false)
   const [saveFlash, setSaveFlash] = useState(false)
   // Ref so save always reads the latest index without stale closures
   const currentGardenIndexRef = useRef(0)
@@ -596,6 +598,7 @@ export default function GardenEditor() {
         currentSeason={state.currentSeason}
         onSave={handleSave}
         onOpenSwitcher={() => setSwitcherOpen(true)}
+        onExport={() => setExportOpen(true)}
         saveFlash={saveFlash}
         scaleLabel={scaleLabel}
         isMobile={isMobile}
@@ -626,6 +629,16 @@ export default function GardenEditor() {
           </div>
         </div>
       )}
+
+      <ExportModal
+        open={exportOpen}
+        onClose={() => setExportOpen(false)}
+        stage={stageRef.current}
+        plantLayer={layersRef.current.plantLayer}
+        plantDataRef={state.plantDataRef}
+        propBoundsRef={state.propBoundsRef}
+        gardenName={state.gardenName}
+      />
 
       <GardenSwitcher
         open={switcherOpen}

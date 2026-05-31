@@ -1,0 +1,129 @@
+/* ExportModal.css */
+
+.export-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.export-panel {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+  width: 400px;
+  max-width: 94vw;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.export-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 10px;
+  border-bottom: 1.5px solid #e8f5e9;
+  background: #f1f8e9;
+}
+
+.export-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #2E7D32;
+}
+
+.export-close {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #888;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+.export-close:hover { background: #f5f5f5; }
+
+.export-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.export-desc {
+  font-size: 12px;
+  color: #555;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.export-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.export-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.export-option-icon {
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.export-option-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.export-option-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2A3D1A;
+  margin-bottom: 2px;
+}
+
+.export-option-sub {
+  font-size: 11px;
+  color: #777;
+  line-height: 1.4;
+}
+
+.export-btn {
+  background: #11502A;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.15s;
+  min-width: 72px;
+}
+.export-btn:hover:not(:disabled) { background: #0a3d1e; }
+.export-btn:disabled              { opacity: 0.55; cursor: not-allowed; }
+.export-btn.done                  { background: #388E3C; }
+.export-btn.loading               { background: #558B2F; }
+
+.export-note {
+  font-size: 11px;
+  color: #888;
+  background: #f9fbe7;
+  border-radius: 8px;
+  padding: 9px 12px;
+  line-height: 1.5;
+}
