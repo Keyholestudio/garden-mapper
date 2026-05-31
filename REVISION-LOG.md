@@ -28,6 +28,7 @@ _History for v1–v7 and Phases 1–6 archived at: `memory/deep/garden-planner/r
 
 | # | Change | Status |
 |---|--------|--------|
+| 7.3 | Mobile bottom-sheet — plant grid (2-col), stripped logo bar, tools in sheet | b1fef50 | ✅ |
 | — | iPad touch confirmation — run start.bat, open tunnel URL, verify pinch/pan | ⏳ Untested |
 | 7.2 | Tablet layout — confirm current layout works touch-enabled (minimal changes) | 🔲 |
 | 7.3 | Mobile layout — bottom-sheet redesign per `design/mockup-mobile.jpg` | 🔲 |
