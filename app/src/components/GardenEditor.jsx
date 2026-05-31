@@ -75,6 +75,25 @@ export default function GardenEditor() {
     state.setEditingShapeId(null)
   }
 
+  // ── Plant selection handler (shared) — handles Ctrl+click multi-select ──
+  const handlePlantSelect = (id, group, evt) => {
+    const ne = evt?.evt || evt
+    if (ne && (ne.ctrlKey || ne.metaKey || ne.shiftKey)) {
+      state.setSelectedPlant(null)
+      state.setSelectedStruct(null)
+      state.setEditingShapeId(null)
+      state.setMultiSelection(prev => {
+        const already = prev.findIndex(x => x.id === id)
+        if (already >= 0) return prev.filter(x => x.id !== id)
+        return [...prev, { kind: 'plant', id, shape: group }]
+      })
+      return
+    }
+    state.setMultiSelection([])
+    state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
+    state.setSelectedStruct(null)
+  }
+
   // ── Selection hook ──
   const { enterEdit, exitEdit, deleteSelected } = useSelection({
     stage:  stageReady ? stageRef.current : null,
@@ -115,25 +134,6 @@ export default function GardenEditor() {
     },
     onModeChange: state.setCurrentMode,
   })
-
-  // ── Plant selection handler (shared) — handles Ctrl+click multi-select ──
-  const handlePlantSelect = (id, group, evt) => {
-    const ne = evt?.evt || evt
-    if (ne && (ne.ctrlKey || ne.metaKey || ne.shiftKey)) {
-      state.setSelectedPlant(null)
-      state.setSelectedStruct(null)
-      state.setEditingShapeId(null)
-      state.setMultiSelection(prev => {
-        const already = prev.findIndex(x => x.id === id)
-        if (already >= 0) return prev.filter(x => x.id !== id)
-        return [...prev, { kind: 'plant', id, shape: group }]
-      })
-      return
-    }
-    state.setMultiSelection([])
-    state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
-    state.setSelectedStruct(null)
-  }
 
   // ── Plant placement ──
   const pendingPlantRef = useRef(null)
