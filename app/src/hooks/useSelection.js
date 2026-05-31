@@ -11,9 +11,11 @@ export function useSelection({
   const sRef = useRef(state)
   useEffect(() => { sRef.current = state }, [state])
 
-  const editHandlesRef = useRef([])
-  const addingPtRef    = useRef(state.addingPt ?? false)
-  useEffect(() => { addingPtRef.current = state.addingPt ?? false }, [state.addingPt])
+  const editHandlesRef  = useRef([])
+  const addingPtRef     = useRef(state.addingPt ?? false)
+  const removingPtRef   = useRef(state.removingPt ?? false)
+  useEffect(() => { addingPtRef.current   = state.addingPt   ?? false }, [state.addingPt])
+  useEffect(() => { removingPtRef.current = state.removingPt ?? false }, [state.removingPt])
 
   // ── Transformer: attach to selected rect ──────────────────
   useEffect(() => {
@@ -50,8 +52,13 @@ export function useSelection({
     if (!stage || !layers) return
     const { uiLayer, structLayer } = layers
     const pts = getShapePts(shape)
+    const removing = removingPtRef.current
     pts.forEach((_, i) => {
       const h = makeHandle(id, shape, i, uiLayer, structLayer)
+      if (removing) {
+        h.fill('#c62828')   // red = remove mode
+        h.draggable(false)
+      }
       uiLayer.add(h)
       editHandlesRef.current.push(h)
     })
@@ -76,10 +83,24 @@ export function useSelection({
       draggable: true,
     })
     h.on('dragmove', () => {
+      if (removingPtRef.current) return  // don't drag when in remove mode
       const cur = getShapePts(shape)
       cur[ptIdx] = { x: h.x(), y: h.y() }
       setShapePts(shape, cur)
       structLayer.batchDraw()
+    })
+    h.on('click tap', () => {
+      if (!removingPtRef.current) return
+      // Remove this point — guard minimum
+      if (!(shape instanceof Konva.Line)) return
+      const flat = shape.points()
+      const minPts = shape.closed() ? 3 : 2
+      if (flat.length / 2 <= minPts) return  // won't remove below minimum
+      const newFlat = [...flat.slice(0, ptIdx * 2), ...flat.slice(ptIdx * 2 + 2)]
+      shape.points(newFlat)
+      structLayer.batchDraw()
+      buildEditHandles(id, shape)  // rebuild with updated points
+      sRef.current.setRemovingPt?.(false)
     })
     return h
   }
@@ -151,7 +172,7 @@ export function useSelection({
     return () => window.removeEventListener('keydown', onKey)
   }, [stage, layers])
 
-  return { enterEdit, exitEdit, deleteSelected, addingPtRef }
+  return { enterEdit, exitEdit, deleteSelected, addingPtRef, buildEditHandles }
 }
 
 // ── Shape point helpers (shared with edit mode) ───────────

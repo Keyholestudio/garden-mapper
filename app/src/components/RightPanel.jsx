@@ -34,10 +34,11 @@ export default function RightPanel({
   onColourChange, onPathWidthChange,
   onEnterEdit, onExitEdit,
   onDimRectApply, onDimCircleApply,
-  onRemoveLastPt, onLayerMove,
+  onLayerMove,
   onTransparentStruct, onDisconnect,
   onSeasonsChange,
   addingPt, onToggleAddPt,
+  removingPt, onToggleRemovePt,
 }) {
   const pxPerUnit = UNIT_PX * (gardenUnit === 'm' ? 3.281 : 1)
 
@@ -63,7 +64,12 @@ export default function RightPanel({
             </button>
           )}
           {isLine && (
-            <button className="btn-panel" onClick={() => onRemoveLastPt?.()}>− Remove Last Point</button>
+            <button
+              className={`btn-panel${removingPt ? ' active' : ''}`}
+              onClick={() => onToggleRemovePt?.()}
+            >
+              − Remove Point{removingPt ? ' — click a handle' : ''}
+            </button>
           )}
           <div className="panel-sep" />
           <button className="btn-panel active" onClick={() => onExitEdit?.()}>✓ Done Editing</button>

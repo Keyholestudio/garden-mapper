@@ -111,6 +111,7 @@ export default function GardenEditor() {
     state.setMultiSelection([])   // triggers highlight useEffect which destroys rects
     state.setEditingShapeId(null)
     state.setAddingPt(false)
+    state.setRemovingPt(false)
   }
 
   // ── Plant selection handler (shared) — handles Ctrl+click multi-select ──
@@ -133,7 +134,7 @@ export default function GardenEditor() {
   }
 
   // ── Selection hook ──
-  const { enterEdit, exitEdit, deleteSelected } = useSelection({
+  const { enterEdit, exitEdit, deleteSelected, buildEditHandles } = useSelection({
     stage:  stageReady ? stageRef.current : null,
     layers: stageReady ? layersRef.current : null,
     state,
@@ -141,7 +142,7 @@ export default function GardenEditor() {
     onSelectStruct:   (id, shape) => { state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] }); state.setSelectedPlant(null) },
     onClearSelection: clearSelection,
     onEditMode:       state.setEditingShapeId,
-    onExitEditMode:   () => { state.setEditingShapeId(null); state.setAddingPt(false) },
+    onExitEditMode:   () => { state.setEditingShapeId(null); state.setAddingPt(false); state.setRemovingPt(false) },
   })
 
   // ── Draw tools hook ──
@@ -702,10 +703,27 @@ export default function GardenEditor() {
           onEnterEdit={enterEdit}
           onExitEdit={exitEdit}
           addingPt={state.addingPt}
-          onToggleAddPt={() => state.setAddingPt(v => !v)}
+          onToggleAddPt={() => {
+            const next = !state.addingPt
+            state.setAddingPt(next)
+            if (next) state.setRemovingPt(false)  // mutually exclusive
+            if (state.editingShapeId) {
+              const sh = layersRef.current.structLayer?.findOne('#' + state.editingShapeId)
+              if (sh) buildEditHandles(state.editingShapeId, sh)
+            }
+          }}
+          removingPt={state.removingPt}
+          onToggleRemovePt={() => {
+            const next = !state.removingPt
+            state.setRemovingPt(next)
+            if (next) state.setAddingPt(false)  // mutually exclusive
+            if (state.editingShapeId) {
+              const sh = layersRef.current.structLayer?.findOne('#' + state.editingShapeId)
+              if (sh) buildEditHandles(state.editingShapeId, sh)
+            }
+          }}
           onDimRectApply={handleDimRectApply}
           onDimCircleApply={handleDimCircleApply}
-          onRemoveLastPt={handleRemoveLastPt}
           onLayerMove={handleLayerMove}
           onTransparentStruct={handleTransparentStruct}
           onDisconnect={handleDisconnect}

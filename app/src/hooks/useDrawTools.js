@@ -321,25 +321,31 @@ export function useDrawTools({
         const pos = stage.getRelativePointerPosition()
         const shape = structLayer.findOne('#' + s.editingShapeId)
         if (shape && shape instanceof Konva.Line) {
-          // inline insertPointNearestSegment to avoid circular dep
+          // pointToSegmentDist — mirrors v8 exactly
+          const ptSeg = (p, a, b) => {
+            const dx = b.x-a.x, dy = b.y-a.y, len2 = dx*dx+dy*dy
+            if (!len2) return Math.hypot(p.x-a.x, p.y-a.y)
+            const t = Math.max(0, Math.min(1, ((p.x-a.x)*dx + (p.y-a.y)*dy) / len2))
+            return Math.hypot(p.x-(a.x+t*dx), p.y-(a.y+t*dy))
+          }
           const flat = shape.points()
           const n = flat.length / 2
           let bestIdx = 0, bestDist = Infinity
           for (let i = 0; i < n - 1; i++) {
-            const ax = flat[i*2], ay = flat[i*2+1], bx = flat[(i+1)*2], by = flat[(i+1)*2+1]
-            const dx = bx-ax, dy = by-ay, len2 = dx*dx+dy*dy
-            const t = len2 ? Math.max(0,Math.min(1,((pos.x-ax)*dx+(pos.y-ay)*dy)/len2)) : 0
-            const d = Math.hypot(pos.x-(ax+t*dx), pos.y-(ay+t*dy))
+            const d = ptSeg(pos,
+              { x: flat[i*2],     y: flat[i*2+1]     },
+              { x: flat[(i+1)*2], y: flat[(i+1)*2+1] })
             if (d < bestDist) { bestDist = d; bestIdx = i }
           }
+          // Closing segment (last → first) for closed shapes — fix from v8
           if (shape.closed()) {
-            const ax = flat[(n-1)*2], ay = flat[(n-1)*2+1]
-            const d = Math.hypot(pos.x-ax, pos.y-ay)
-            if (d < bestDist) bestIdx = n - 1
+            const d = ptSeg(pos,
+              { x: flat[(n-1)*2], y: flat[(n-1)*2+1] },
+              { x: flat[0],       y: flat[1]          })
+            if (d < bestDist) { bestDist = d; bestIdx = n - 1 }
           }
           shape.points([...flat.slice(0,(bestIdx+1)*2), pos.x, pos.y, ...flat.slice((bestIdx+1)*2)])
           structLayer.batchDraw()
-          // Signal GardenEditor to rebuild handles and turn off addingPt
           if (onAddPointDone) onAddPointDone(s.editingShapeId)
         }
         return
