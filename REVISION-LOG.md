@@ -29,6 +29,9 @@ _History for v1–v7 and Phases 1–6 archived at: `memory/deep/garden-planner/r
 | # | Change | Status |
 |---|--------|--------|
 | 7.3 | Mobile bottom-sheet — plant grid (2-col), stripped logo bar, tools in sheet | b1fef50 | ✅ |
+| 7.6 | Garden switcher unlock upsell row + 2-garden free tier enforced | a9f3039 | ✅ |
+| 7.7 | PDF export — 1-page + 4-page tiled, numbered callouts, legend | 49c87d3 | ✅ |
+| 7.7 | Export polish — crops to propBounds, legend on own page, number centering | 8bba0b4 | ✅ |
 | — | iPad touch confirmation — run start.bat, open tunnel URL, verify pinch/pan | ⏳ Untested |
 | 7.2 | Tablet layout — confirm current layout works touch-enabled (minimal changes) | 🔲 |
 | 7.3 | Mobile layout — bottom-sheet redesign per `design/mockup-mobile.jpg` | 🔲 |
