@@ -34,33 +34,53 @@ export function buildPlantLegend(plantLayer, plantDataRef) {
   return { legend, plantNums }
 }
 
-// ── Core export: renders garden + callout circles to a composite dataURL ─────
-export async function renderExportCanvas(stage, plantLayer, plantDataRef) {
+// ── Core export: crops to propBounds, renders callouts, returns dataURL ──────
+// propBoundsRef: { x, y, w, h } in Konva world coords
+export async function renderExportCanvas(stage, plantLayer, plantDataRef, propBoundsRef) {
   const { legend, plantNums } = buildPlantLegend(plantLayer, plantDataRef)
+  const PR = 2  // pixelRatio for crisp output
 
-  // Capture stage at 2× for crisp print resolution
-  const stageDataUrl = stage.toDataURL({ pixelRatio: 2 })
+  // propBounds in stage-pixel space
+  const pb     = propBoundsRef.current
+  const pad    = 24  // small padding around property boundary (world px)
+  const cropX  = (pb.x - pad) * stage.scaleX() + stage.x()
+  const cropY  = (pb.y - pad) * stage.scaleY() + stage.y()
+  const cropW  = (pb.w + pad * 2) * stage.scaleX()
+  const cropH  = (pb.h + pad * 2) * stage.scaleY()
+
+  // Capture full stage at PR then crop to propBounds region
+  const stageDataUrl = stage.toDataURL({ pixelRatio: PR })
   const stageImg     = await loadImage(stageDataUrl)
-  const sw = stageImg.width
-  const sh = stageImg.height
+
+  const outW = Math.round(cropW * PR)
+  const outH = Math.round(cropH * PR)
 
   const offscreen = document.createElement('canvas')
-  offscreen.width  = sw
-  offscreen.height = sh
+  offscreen.width  = outW
+  offscreen.height = outH
   const ctx = offscreen.getContext('2d')
-  ctx.drawImage(stageImg, 0, 0)
 
-  // Draw numbered callout circles centered on each plant
+  // Draw only the cropped region
+  ctx.drawImage(
+    stageImg,
+    Math.round(cropX * PR), Math.round(cropY * PR), outW, outH,  // src region
+    0, 0, outW, outH                                               // dest
+  )
+
+  // Draw numbered callout circles — positions relative to crop origin
   plantLayer.find('Group').forEach(group => {
     const id  = group.id()
     const num = plantNums[id]
     if (num === undefined) return
 
     const SIZE = group.width() * group.scaleX()
-    // Center in rendered-canvas space (pixelRatio:2)
-    const cx = (group.x() * stage.scaleX() + stage.x() + SIZE * stage.scaleX() / 2) * 2
-    const cy = (group.y() * stage.scaleY() + stage.y() + SIZE * stage.scaleY() / 2) * 2
-    const r  = Math.max(12, Math.min(22, SIZE * stage.scaleX() * 2 * 0.18))
+    // Plant center in full-stage pixel space (PR applied)
+    const fullCx = (group.x() * stage.scaleX() + stage.x() + SIZE * stage.scaleX() / 2) * PR
+    const fullCy = (group.y() * stage.scaleY() + stage.y() + SIZE * stage.scaleY() / 2) * PR
+    // Shift to crop-relative coords
+    const cx = fullCx - Math.round(cropX * PR)
+    const cy = fullCy - Math.round(cropY * PR)
+    const r  = Math.max(12, Math.min(22, SIZE * stage.scaleX() * PR * 0.18))
 
     // White fill, dark green border
     ctx.beginPath()
@@ -71,8 +91,7 @@ export async function renderExportCanvas(stage, plantLayer, plantDataRef) {
     ctx.lineWidth   = Math.max(2, r * 0.14)
     ctx.stroke()
 
-    // Number — truly centered using measureText + explicit y offset
-    // textBaseline 'middle' + textAlign 'center' is the most reliable cross-browser approach
+    // Number — centered
     const fontSize = Math.max(10, Math.min(16, r * 1.05))
     ctx.save()
     ctx.font         = `bold ${fontSize}px sans-serif`
@@ -83,7 +102,7 @@ export async function renderExportCanvas(stage, plantLayer, plantDataRef) {
     ctx.restore()
   })
 
-  return { dataUrl: offscreen.toDataURL('image/png'), legend, canvasW: sw, canvasH: sh }
+  return { dataUrl: offscreen.toDataURL('image/png'), legend, canvasW: outW, canvasH: outH }
 }
 
 // ── Fit image into available area preserving aspect ratio ────────────────────
@@ -164,8 +183,8 @@ function addLegend(doc, legend, pageW, pageH) {
 
 // ── 1-Page export ─────────────────────────────────────────────────────────────
 // Page 1: full garden filling the page. Page 2: legend.
-export async function exportOnePage(stage, plantLayer, plantDataRef, _propBoundsRef, gardenName) {
-  const { dataUrl, legend, canvasW, canvasH } = await renderExportCanvas(stage, plantLayer, plantDataRef)
+export async function exportOnePage(stage, plantLayer, plantDataRef, propBoundsRef, gardenName) {
+  const { dataUrl, legend, canvasW, canvasH } = await renderExportCanvas(stage, plantLayer, plantDataRef, propBoundsRef)
 
   const doc   = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'letter' })
   const pageW = doc.internal.pageSize.getWidth()   // 612pt
@@ -189,8 +208,8 @@ export async function exportOnePage(stage, plantLayer, plantDataRef, _propBounds
 
 // ── 4-Page tiled export ───────────────────────────────────────────────────────
 // Pages 1-4: garden quadrants, each filling a page. Page 5: legend.
-export async function exportFourPage(stage, plantLayer, plantDataRef, _propBoundsRef, gardenName) {
-  const { dataUrl, legend, canvasW, canvasH } = await renderExportCanvas(stage, plantLayer, plantDataRef)
+export async function exportFourPage(stage, plantLayer, plantDataRef, propBoundsRef, gardenName) {
+  const { dataUrl, legend, canvasW, canvasH } = await renderExportCanvas(stage, plantLayer, plantDataRef, propBoundsRef)
 
   const doc   = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'letter' })
   const pageW = doc.internal.pageSize.getWidth()
