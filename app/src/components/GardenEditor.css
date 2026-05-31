@@ -72,17 +72,46 @@
 }
 
 /* ── Tablet layout (bp-tablet = 600–1024px) ── */
-/* Essentially the current desktop layout — minor touch-target sizing only */
 .bp-tablet .editor-body {
   padding: 0 4px;
 }
 
-/* Larger hit targets on tablet for finger tapping */
-.bp-tablet .tool-btn,
+/* Wider plant tray — more breathing room for finger taps */
+.bp-tablet .plant-tray {
+  width: 175px;
+}
+.bp-tablet .tray-item img {
+  width: 42px;
+  height: 42px;
+}
+.bp-tablet .tray-item span {
+  font-size: 12px;
+}
+.bp-tablet .tray-search {
+  font-size: 13px;
+  padding: 7px 9px;
+}
+
+/* Wider right panel */
+.bp-tablet .right-panel {
+  width: 220px;
+}
+
+/* Larger tool + subtool buttons for finger tapping */
+.bp-tablet .tool-btn {
+  min-height: 44px;
+  font-size: 13px;
+  padding: 8px 14px;
+}
 .bp-tablet .subtool-btn {
-  min-height: 40px;
-  font-size: 14px;
-  padding: 6px 10px;
+  min-height: 38px;
+  font-size: 12px;
+  padding: 6px 12px;
+}
+
+/* Wider season slider on tablet */
+.bp-tablet .season-slider-wrap {
+  width: min(520px, 65vw);
 }
 
 /* ── Touch-action: let Konva handle all touch on the canvas container ── */

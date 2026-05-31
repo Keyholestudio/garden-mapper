@@ -61,10 +61,19 @@ Mockups: `design/mockup-mobile.jpg`, `design/mockup-tablet.jpg`
 ## Phase 7 — Next Steps
 
 ### Must-have (blocking deployment)
-- [ ] 7.1 Touch input — Konva pinch-to-zoom + single-finger pan (unblocks iPad testing via LAN)
+- [x] 7.1 Touch input — Konva pinch-to-zoom + 1-finger pan ✅ (commit a30184f)
 - [ ] 7.2 Tablet layout — current layout confirmed, touch-enabled (minimal changes)
 - [ ] 7.3 Mobile layout — bottom-sheet redesign per `design/mockup-mobile.jpg`
-- [ ] 7.4 PWA manifest + Vite service worker (installable on iOS/Android home screen)
+- [x] 7.4 PWA manifest + viewport meta + iOS tags ✅ (commit a30184f)
+- [ ] 7.4b App icons — need 192px + 512px PNGs in `app/public/icons/`
+
+### Infrastructure
+- [x] Breakpoint hook (`useBreakpoint.js`) — mobile/tablet/desktop detection wired into GardenEditor ✅
+- [x] Responsive CSS foundation — mobile hides sidebars, tablet gets bigger touch targets ✅
+
+### LAN Testing
+- Dev server with `--host`: `npx vite --host` → `http://10.0.0.71:5174`
+- iPad: open Safari on same WiFi, go to that URL. Pinch + pan should work immediately.
 
 ### Should-have
 - [ ] 7.5 Capacitor.js wrapper for App Store submission
@@ -75,6 +84,15 @@ Mockups: `design/mockup-mobile.jpg`, `design/mockup-tablet.jpg`
 ### Low priority / quick wins
 - [ ] 7.9 Persist last-used garden index
 - [ ] 7.10 Hide "Edit Shape" for square objects
+
+---
+
+## Future Roadmap Topics *(to discuss — not yet scoped)*
+- **Monetization** — pricing model, free tier vs paid, App Store pricing
+- **Gamification** — badges, streaks, planting milestones
+- **User accounts** — auth, cloud save, multi-device sync
+- **Sandbox / test environment** — staging vs live, test users
+- **Marketing / promotion** — launch strategy, social, App Store ASO
 
 ---
 
