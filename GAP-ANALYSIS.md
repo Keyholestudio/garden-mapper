@@ -67,6 +67,8 @@ _Generated: 2026-05-29_
 |---|---|---|---|
 | **Last-used garden index persisted** | `currentGardenIndex` in LS | 🟢 Low | Refresh always loads garden[0]. Should store last-used index. |
 | **PDF export** | (browser print / canvas export) | 🔵 Deferred | Long-term to-do. Not a priority for current phase. |
+| **Undo for point add/remove/move** | pushUndo in edit mode | 🔵 Deferred | Complex — skip for now. Undo works for place actions only. |
+| **Hide Edit Shape for square objects** | isLine guard on button | 🔵 Deferred | Rect edit handles appear but do nothing useful. Button should be hidden for bed-square, building, deck-sq, pool-sq, hedge-sq. |
 
 ## ✅ Recently Completed (2026-05-29 afternoon)
 
@@ -88,6 +90,23 @@ _Generated: 2026-05-29_
 | Right panel — floating card style | ✅ |
 
 ---
+
+## ✅ Confirmed Working (2026-05-31 session)
+
+| Feature | Notes |
+|---|---|
+| Multi-select + yellow highlight | Ctrl+click, ported v8 drawMultiHighlight |
+| Ctrl+Z undo | Works for place plant/struct |
+| Gate line width slider | Shows in right panel |
+| Gate/path dashed preview | Fixed — was thick grey |
+| Dblclick → edit mode | All shape types |
+| Add Point | Accuracy fixed (ptSeg closing segment) |
+| Remove Point | Toggle → red handles → click to remove |
+| Fountain bounding box | keepRatio transformer |
+| Boundary snap | Confirmed working |
+| Edit mode handles | Confirmed across beds, fences, paths, decks |
+| Object merge + disconnect | Confirmed |
+| Gate, fountain, underground | Confirmed |
 
 ## ⚠️ Implemented but Needs Testing
 
