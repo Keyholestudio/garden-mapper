@@ -22,11 +22,11 @@ export function useSelection({
     if (!layers?.tr) return
     const { tr, structLayer } = layers
     const sel = state.selectedStruct
-    if (sel && sel.shape instanceof Konva.Rect) {
+    if (sel && (sel.shape instanceof Konva.Rect || sel.shape instanceof Konva.Group)) {
       tr.keepRatio(false)
       tr.nodes([sel.shape])
-    } else if (sel && sel.shape instanceof Konva.Group) {
-      tr.keepRatio(false)
+    } else if (sel && sel.shape instanceof Konva.Circle) {
+      tr.keepRatio(true)  // keep circular — equal width/height
       tr.nodes([sel.shape])
     } else {
       tr.nodes([])

@@ -373,6 +373,12 @@ export function addCircleStruct({
       circle.y(Math.round(circle.y() / snapCell) * snapCell)
     }
   })
+  circle.on('transformend', () => {
+    // Bake scale into radius so stroke width stays consistent
+    circle.radius(circle.radius() * Math.max(circle.scaleX(), circle.scaleY()))
+    circle.scaleX(1); circle.scaleY(1)
+    structLayer.batchDraw()
+  })
   circle.on('click tap', e => { if (onSelect) onSelect(id, circle, e) })
   circle.on('dblclick dbltap', () => { if (onEnterEdit) onEnterEdit(id) })
   structLayer.add(circle)
