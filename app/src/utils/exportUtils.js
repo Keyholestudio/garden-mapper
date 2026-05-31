@@ -5,11 +5,11 @@
 import { jsPDF } from 'jspdf'
 
 // jsPDF letter page in pts: 612 × 792
-const MARGIN    = 18   // ~0.25" — small margin, garden fills most of the page
-const HDR_H     = 18   // header height (garden name + date)
-const ROW_H     = 9    // legend row height
-const CIRCLE_R  = 3.5  // legend circle radius (pt)
-const COL_GAP   = 4    // gap between circle and label text
+const MARGIN   = 18    // ~0.25" margins
+const HDR_H    = 22    // space reserved for header above image
+const ROW_H    = 10    // legend row height (pt)
+const CIRCLE_R = 3.8   // legend number circle radius (pt)
+const COL_GAP  = 4     // gap between circle edge and label text
 
 // ── Build numbered plant legend ───────────────────────────────────────────────
 // Same plant type (key) shares one number — landscape plan convention
@@ -71,79 +71,99 @@ export async function renderExportCanvas(stage, plantLayer, plantDataRef) {
     ctx.lineWidth   = Math.max(2, r * 0.14)
     ctx.stroke()
 
-    // Centered number — textBaseline: 'middle' + textAlign: 'center' for true centering
+    // Number — truly centered using measureText + explicit y offset
+    // textBaseline 'middle' + textAlign 'center' is the most reliable cross-browser approach
     const fontSize = Math.max(10, Math.min(16, r * 1.05))
+    ctx.save()
     ctx.font         = `bold ${fontSize}px sans-serif`
     ctx.fillStyle    = '#11502A'
     ctx.textAlign    = 'center'
     ctx.textBaseline = 'middle'
     ctx.fillText(String(num), cx, cy)
+    ctx.restore()
   })
 
   return { dataUrl: offscreen.toDataURL('image/png'), legend, canvasW: sw, canvasH: sh }
 }
 
-// ── Legend: draw on current page, add new page if it overflows ───────────────
-function addLegend(doc, legend, afterY, pageW, pageH) {
-  const margin  = MARGIN
-  const colW    = (pageW - margin * 2) / 2
-  const rowsPerPage = Math.floor((pageH - margin * 2 - 16) / ROW_H)
+// ── Fit image into available area preserving aspect ratio ────────────────────
+function fitImage(srcW, srcH, areaW, areaH) {
+  const aspect = srcW / srcH
+  let w = areaW
+  let h = w / aspect
+  if (h > areaH) { h = areaH; w = h * aspect }
+  return { w, h }
+}
 
-  // Check if legend fits on current page — if not, start a new one
-  const legendH = Math.ceil(legend.length / 2) * ROW_H + 16
-  if (afterY + legendH > pageH - margin) {
-    doc.addPage()
-    afterY = margin
-  }
-
-  // Legend heading
-  doc.setFontSize(10)
+// ── Draw page header ──────────────────────────────────────────────────────────
+function drawHeader(doc, title, margin) {
+  doc.setFontSize(11)
   doc.setFont('helvetica', 'bold')
   doc.setTextColor(17, 80, 42)
-  doc.text('Plant Legend', margin, afterY + 8)
-  afterY += 14
+  doc.text(title, margin, margin + 9)
+  doc.setFontSize(7)
+  doc.setFont('helvetica', 'normal')
+  doc.setTextColor(150, 150, 150)
+  doc.text(`Garden Mapper  ·  ${new Date().toLocaleDateString()}`, margin, margin + 17)
+}
 
-  // Divider
+// ── Legend page ───────────────────────────────────────────────────────────────
+// Always called after doc.addPage() — legend gets its own page(s)
+function addLegend(doc, legend, pageW, pageH) {
+  const margin  = MARGIN
+  const colW    = (pageW - margin * 2) / 2
+
+  // Heading
+  doc.setFontSize(12)
+  doc.setFont('helvetica', 'bold')
+  doc.setTextColor(17, 80, 42)
+  doc.text('Plant Legend', margin, margin + 10)
+
   doc.setDrawColor(180, 220, 180)
-  doc.line(margin, afterY, pageW - margin, afterY)
-  afterY += 5
+  doc.line(margin, margin + 14, pageW - margin, margin + 14)
+
+  let baseY = margin + 22   // y of first row center
 
   legend.forEach((item, i) => {
     const col = i % 2
     const row = Math.floor(i / 2)
 
-    // Check if this row overflows onto the next page
-    if (row > 0 && row % rowsPerPage === 0 && col === 0) {
+    // New page when rows would overflow
+    const rowY = baseY + row * ROW_H
+    if (rowY + ROW_H > pageH - margin) {
       doc.addPage()
-      afterY = margin
+      baseY = margin + 10 - row * ROW_H  // reset so next row starts near top
     }
 
-    const x   = margin + col * colW
-    const cy  = afterY + row * ROW_H - (row >= rowsPerPage ? rowsPerPage * ROW_H : 0) + CIRCLE_R + 1
+    const cy = baseY + row * ROW_H  // vertical center of this row
+    const x  = margin + col * colW
 
-    // Circle — white fill, green stroke
+    // Circle
     doc.setFillColor(255, 255, 255)
     doc.setDrawColor(17, 80, 42)
-    doc.setLineWidth(0.5)
+    doc.setLineWidth(0.6)
     doc.circle(x + CIRCLE_R, cy, CIRCLE_R, 'FD')
 
-    // Number — centered in circle using jsPDF text centering
-    doc.setFontSize(5.5)
+    // Number — jsPDF centers text horizontally with align:'center'
+    // Vertical: jsPDF text y is the baseline. To visually center in circle,
+    // offset up by ~35% of font size (empirically correct for helvetica)
+    const numFontSize = 6
+    doc.setFontSize(numFontSize)
     doc.setFont('helvetica', 'bold')
     doc.setTextColor(17, 80, 42)
-    // jsPDF baseline is roughly 0.35× fontSize above bottom — offset upward by ~1pt for visual center
-    doc.text(String(item.num), x + CIRCLE_R, cy + 1.8, { align: 'center', baseline: 'middle' })
+    doc.text(String(item.num), x + CIRCLE_R, cy + numFontSize * 0.35, { align: 'center' })
 
     // Plant name
     doc.setFontSize(8)
     doc.setFont('helvetica', 'normal')
     doc.setTextColor(40, 40, 40)
-    const label = item.label.length > 26 ? item.label.slice(0, 24) + '…' : item.label
-    doc.text(label, x + CIRCLE_R * 2 + COL_GAP, cy + 1.8, { baseline: 'middle' })
+    const label = item.label.length > 28 ? item.label.slice(0, 26) + '…' : item.label
+    doc.text(label, x + CIRCLE_R * 2 + COL_GAP, cy + 8 * 0.35)
   })
 }
 
 // ── 1-Page export ─────────────────────────────────────────────────────────────
+// Page 1: full garden filling the page. Page 2: legend.
 export async function exportOnePage(stage, plantLayer, plantDataRef, _propBoundsRef, gardenName) {
   const { dataUrl, legend, canvasW, canvasH } = await renderExportCanvas(stage, plantLayer, plantDataRef)
 
@@ -151,50 +171,37 @@ export async function exportOnePage(stage, plantLayer, plantDataRef, _propBounds
   const pageW = doc.internal.pageSize.getWidth()   // 612pt
   const pageH = doc.internal.pageSize.getHeight()  // 792pt
 
-  // ── Header ──
-  doc.setFontSize(11)
-  doc.setFont('helvetica', 'bold')
-  doc.setTextColor(17, 80, 42)
-  doc.text(gardenName || 'My Garden', MARGIN, MARGIN + 8)
-  doc.setFontSize(7)
-  doc.setFont('helvetica', 'normal')
-  doc.setTextColor(150, 150, 150)
-  doc.text(`Garden Mapper  ·  ${new Date().toLocaleDateString()}`, MARGIN, MARGIN + 16)
+  // Header
+  drawHeader(doc, gardenName || 'My Garden', MARGIN)
 
-  // ── Garden image — fills page leaving only MARGIN on all sides ──
-  const imgAreaW = pageW - MARGIN * 2
-  const imgAreaH = pageH - MARGIN * 2 - HDR_H
-  const aspect   = canvasW / canvasH
-  let imgW = imgAreaW
-  let imgH = imgW / aspect
-  if (imgH > imgAreaH) { imgH = imgAreaH; imgW = imgH * aspect }
+  // Garden image — fills entire printable area below header
+  const areaW = pageW - MARGIN * 2
+  const areaH = pageH - MARGIN * 2 - HDR_H
+  const { w: imgW, h: imgH } = fitImage(canvasW, canvasH, areaW, areaH)
+  doc.addImage(dataUrl, 'PNG', MARGIN + (areaW - imgW) / 2, MARGIN + HDR_H, imgW, imgH)
 
-  const imgX = MARGIN + (imgAreaW - imgW) / 2
-  const imgY = MARGIN + HDR_H
-
-  doc.addImage(dataUrl, 'PNG', imgX, imgY, imgW, imgH)
-
-  // ── Legend — on same page if it fits, new page if not ──
-  addLegend(doc, legend, imgY + imgH + 8, pageW, pageH)
+  // Legend on its own page
+  doc.addPage()
+  addLegend(doc, legend, pageW, pageH)
 
   doc.save(`${gardenName || 'garden'}-plan.pdf`)
 }
 
 // ── 4-Page tiled export ───────────────────────────────────────────────────────
+// Pages 1-4: garden quadrants, each filling a page. Page 5: legend.
 export async function exportFourPage(stage, plantLayer, plantDataRef, _propBoundsRef, gardenName) {
   const { dataUrl, legend, canvasW, canvasH } = await renderExportCanvas(stage, plantLayer, plantDataRef)
 
   const doc   = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'letter' })
   const pageW = doc.internal.pageSize.getWidth()
   const pageH = doc.internal.pageSize.getHeight()
-
-  const imgAreaW = pageW - MARGIN * 2
-  const imgAreaH = pageH - MARGIN * 2 - HDR_H
+  const areaW = pageW - MARGIN * 2
+  const areaH = pageH - MARGIN * 2 - HDR_H
 
   const quadrants = [
-    { qx: 0,          qy: 0,          label: 'Top Left     (1 of 4)' },
-    { qx: canvasW / 2, qy: 0,          label: 'Top Right    (2 of 4)' },
-    { qx: 0,          qy: canvasH / 2, label: 'Bottom Left  (3 of 4)' },
+    { qx: 0,           qy: 0,           label: 'Top Left (1 of 4)'     },
+    { qx: canvasW / 2, qy: 0,           label: 'Top Right (2 of 4)'    },
+    { qx: 0,           qy: canvasH / 2, label: 'Bottom Left (3 of 4)'  },
     { qx: canvasW / 2, qy: canvasH / 2, label: 'Bottom Right (4 of 4)' },
   ]
 
@@ -204,40 +211,26 @@ export async function exportFourPage(stage, plantLayer, plantDataRef, _propBound
     if (i > 0) doc.addPage()
     const { qx, qy, label } = quadrants[i]
 
-    // Crop quadrant to offscreen canvas
+    // Crop quadrant
+    const qW = Math.ceil(canvasW / 2)
+    const qH = Math.ceil(canvasH / 2)
     const qCanvas = document.createElement('canvas')
-    qCanvas.width  = Math.ceil(canvasW / 2)
-    qCanvas.height = Math.ceil(canvasH / 2)
-    const qCtx = qCanvas.getContext('2d')
-    qCtx.drawImage(srcImg, qx, qy, qCanvas.width, qCanvas.height, 0, 0, qCanvas.width, qCanvas.height)
+    qCanvas.width  = qW
+    qCanvas.height = qH
+    qCanvas.getContext('2d').drawImage(srcImg, qx, qy, qW, qH, 0, 0, qW, qH)
     const qDataUrl = qCanvas.toDataURL('image/png')
 
     // Header
-    doc.setFontSize(10)
-    doc.setFont('helvetica', 'bold')
-    doc.setTextColor(17, 80, 42)
-    doc.text(`${gardenName || 'My Garden'} — ${label}`, MARGIN, MARGIN + 8)
-    doc.setFontSize(7)
-    doc.setFont('helvetica', 'normal')
-    doc.setTextColor(150, 150, 150)
-    doc.text(`Garden Mapper  ·  ${new Date().toLocaleDateString()}`, MARGIN, MARGIN + 16)
+    drawHeader(doc, `${gardenName || 'My Garden'} — ${label}`, MARGIN)
 
-    // Quadrant image — fills page
-    const aspect = qCanvas.width / qCanvas.height
-    let imgW = imgAreaW
-    let imgH = imgW / aspect
-    if (imgH > imgAreaH) { imgH = imgAreaH; imgW = imgH * aspect }
-
-    const imgX = MARGIN + (imgAreaW - imgW) / 2
-    const imgY = MARGIN + HDR_H
-
-    doc.addImage(qDataUrl, 'PNG', imgX, imgY, imgW, imgH)
-
-    // Legend after the last quadrant (page 4 or new page if it overflows)
-    if (i === 3) {
-      addLegend(doc, legend, imgY + imgH + 8, pageW, pageH)
-    }
+    // Quadrant fills the page
+    const { w: imgW, h: imgH } = fitImage(qW, qH, areaW, areaH)
+    doc.addImage(qDataUrl, 'PNG', MARGIN + (areaW - imgW) / 2, MARGIN + HDR_H, imgW, imgH)
   }
+
+  // Legend on its own page (page 5)
+  doc.addPage()
+  addLegend(doc, legend, pageW, pageH)
 
   doc.save(`${gardenName || 'garden'}-plan-tiled.pdf`)
 }
