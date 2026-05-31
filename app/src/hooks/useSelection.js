@@ -12,7 +12,8 @@ export function useSelection({
   useEffect(() => { sRef.current = state }, [state])
 
   const editHandlesRef = useRef([])
-  const addingPtRef    = useRef(false)
+  const addingPtRef    = useRef(state.addingPt ?? false)
+  useEffect(() => { addingPtRef.current = state.addingPt ?? false }, [state.addingPt])
 
   // ── Transformer: attach to selected rect ──────────────────
   useEffect(() => {

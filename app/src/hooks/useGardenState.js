@@ -66,6 +66,7 @@ export function useGardenState() {
 
   // Edit mode
   const [editingShapeId, setEditingShapeId] = useState(null)
+  const [addingPt, setAddingPt] = useState(false)
 
   // Object registries (mutable refs — Konva manages these, React doesn't need to re-render)
   const plantDataRef  = useRef({})  // id → {entry, group, seasons, notes, transparent}
@@ -128,6 +129,7 @@ export function useGardenState() {
 
     // Edit mode
     editingShapeId, setEditingShapeId,
+    addingPt, setAddingPt,
 
     // Registries
     plantDataRef,

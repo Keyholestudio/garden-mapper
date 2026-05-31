@@ -110,6 +110,7 @@ export default function GardenEditor() {
     state.setSelectedStruct(null)
     state.setMultiSelection([])   // triggers highlight useEffect which destroys rects
     state.setEditingShapeId(null)
+    state.setAddingPt(false)
   }
 
   // ── Plant selection handler (shared) — handles Ctrl+click multi-select ──
@@ -140,7 +141,7 @@ export default function GardenEditor() {
     onSelectStruct:   (id, shape) => { state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] }); state.setSelectedPlant(null) },
     onClearSelection: clearSelection,
     onEditMode:       state.setEditingShapeId,
-    onExitEditMode:   () => state.setEditingShapeId(null),
+    onExitEditMode:   () => { state.setEditingShapeId(null); state.setAddingPt(false) },
   })
 
   // ── Draw tools hook ──
@@ -150,6 +151,12 @@ export default function GardenEditor() {
     propBoundsRef: state.propBoundsRef,
     state,
     onPushUndo: state.pushUndo,
+    onEnterEdit: (id) => { enterEdit(id) },
+    onAddPointDone: (id) => {
+      // Rebuild edit handles after point insertion, turn off addingPt
+      enterEdit(id)
+      state.setAddingPt(false)
+    },
     onStructSelect: (id, shape, evt) => {
       const ne = evt?.evt || evt
       if (ne && (ne.ctrlKey || ne.metaKey || ne.shiftKey)) {
@@ -694,6 +701,8 @@ export default function GardenEditor() {
           onPathWidthChange={handlePathWidthChange}
           onEnterEdit={enterEdit}
           onExitEdit={exitEdit}
+          addingPt={state.addingPt}
+          onToggleAddPt={() => state.setAddingPt(v => !v)}
           onDimRectApply={handleDimRectApply}
           onDimCircleApply={handleDimCircleApply}
           onRemoveLastPt={handleRemoveLastPt}

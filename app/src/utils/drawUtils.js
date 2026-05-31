@@ -132,7 +132,7 @@ export function closeFreeShape({
   buildingSubTool, waterSubTool, undergroundType, undergroundColour,
   undergroundWidth, undergroundOpaque, defaultPathWidth,
   propBounds, structIdCtr, structDataRef, snapCell, showGrid,
-  structLayer, uiLayer, onSelect, onModeChange,
+  structLayer, uiLayer, onSelect, onModeChange, onEnterEdit,
 }) {
   if (freePts.length < 2) return null
 
@@ -210,6 +210,7 @@ export function closeFreeShape({
     }
   })
   shape.on('click tap', e => { if (onSelect) onSelect(id, shape, e) })
+  shape.on('dblclick dbltap', () => { if (onEnterEdit) onEnterEdit(id) })
 
   if (opacity < 1) shape.opacity(opacity)
   structLayer.add(shape)
@@ -312,7 +313,7 @@ export function tryMergeRects(id, rect, { structDataRef, structIdCtr, groupIdCtr
 export function addRectStruct({
   type, x, y, w, h, colour,
   structIdCtr, structDataRef, groupIdCtr, snapCell, showGrid,
-  structLayer, onSelect, onModeChange,
+  structLayer, onSelect, onModeChange, onEnterEdit,
 }) {
   if (!colour) {
     if (type === 'building') colour = BUILDING_COLOURS[0]
@@ -336,6 +337,7 @@ export function addRectStruct({
     rect.scaleX(1); rect.scaleY(1); structLayer.batchDraw()
   })
   rect.on('click tap', e => { if (onSelect) onSelect(id, rect, e) })
+  rect.on('dblclick dbltap', () => { if (onEnterEdit) onEnterEdit(id) })
   rect.on('dragmove', () => {
     if (showGrid && snapCell) {
       rect.x(Math.round(rect.x() / snapCell) * snapCell)
@@ -357,7 +359,7 @@ export function addRectStruct({
 export function addCircleStruct({
   cx, cy, radius,
   structIdCtr, structDataRef, snapCell, showGrid,
-  structLayer, onSelect, onModeChange,
+  structLayer, onSelect, onModeChange, onEnterEdit,
 }) {
   const id = 'struct_' + structIdCtr.current++
   structDataRef.current[id] = { type: 'pool-circle', colour: '#64B5F6', label: 'Pool' }
@@ -372,6 +374,7 @@ export function addCircleStruct({
     }
   })
   circle.on('click tap', e => { if (onSelect) onSelect(id, circle, e) })
+  circle.on('dblclick dbltap', () => { if (onEnterEdit) onEnterEdit(id) })
   structLayer.add(circle)
   structLayer.batchDraw()
   if (onSelect) onSelect(id, circle)

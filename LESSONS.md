@@ -1,5 +1,12 @@
 # Garden Planner — Project Lessons
 
+## L012 — Reference v8 before solving any canvas/visual/coordinate problem
+**Date:** 2026-05-31
+**What:** Spent 2 iterations getting multi-select highlight coords wrong (offset down-right, then offset up-left) before referencing v8's `drawMultiHighlight`. V8 had the exact correct math in ~10 lines.
+**Rule:** Before writing any Konva positioning, coordinate conversion, drawing, or visual behaviour — **read v8 first**. It is the working reference. The React scaffold is a port of v8, not a rewrite. If v8 has it, copy it exactly and adapt for React.
+**Applies to:** getClientRect, coordinate transforms, stage/layer offsets, pan/zoom math, shape drawing, preview lines, highlights, anything visual.
+
+
 ## L006 — Gemini canvas grab bakes in checkerboard background
 **Date:** 2026-05-27
 **What:** Saving Gemini-generated images via canvas `toDataURL()` captures the UI's checkered transparency indicator baked into the pixels. Corner alpha=255, no real transparency.

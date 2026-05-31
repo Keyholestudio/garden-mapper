@@ -37,6 +37,7 @@ export default function RightPanel({
   onRemoveLastPt, onLayerMove,
   onTransparentStruct, onDisconnect,
   onSeasonsChange,
+  addingPt, onToggleAddPt,
 }) {
   const pxPerUnit = UNIT_PX * (gardenUnit === 'm' ? 3.281 : 1)
 
@@ -47,9 +48,21 @@ export default function RightPanel({
       <div className="right-panel">
         <div className="panel-content">
           <div className="panel-h2">✏️ {d?.label || 'Shape'}</div>
-          <div className="panel-sub">Edit mode — drag handles to reshape</div>
+          <div className="panel-sub" style={{fontSize:10,opacity:.65,textAlign:'left'}}>
+            {isLine ? 'Drag handles to move points. Click near a segment to insert.' : 'Drag corner handles to reshape.'}
+          </div>
           <div className="panel-sep" />
-          <button className="btn-panel" onClick={() => onRemoveLastPt?.()}>− Remove Last Point</button>
+          {isLine && (
+            <button
+              className={`btn-panel${addingPt ? ' active' : ''}`}
+              onClick={() => onToggleAddPt?.()}
+            >
+              + Add Point{addingPt ? ' — click near segment' : ''}
+            </button>
+          )}
+          {isLine && (
+            <button className="btn-panel" onClick={() => onRemoveLastPt?.()}>− Remove Last Point</button>
+          )}
           <div className="panel-sep" />
           <button className="btn-panel active" onClick={() => onExitEdit?.()}>✓ Done Editing</button>
         </div>

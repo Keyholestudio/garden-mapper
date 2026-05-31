@@ -10,7 +10,7 @@ import {
 import { PATH_COLOURS, WATER_COLOURS, HEDGE_COLOURS, DECKING_COLOURS } from './useGardenState'
 
 export function useDrawTools({
-  stage, layers, propBoundsRef, state, onStructSelect, onModeChange, onPushUndo,
+  stage, layers, propBoundsRef, state, onStructSelect, onModeChange, onPushUndo, onEnterEdit, onAddPointDone,
 }) {
   // Keep current state in refs so event handlers always see latest values
   const sRef = useRef(state)
@@ -133,6 +133,7 @@ export function useDrawTools({
       uiLayer,
       onSelect:       onStructSelect,
       onModeChange,
+      onEnterEdit,
     })
     if (closedId && onPushUndo) {
       onPushUndo(() => {
@@ -274,7 +275,7 @@ export function useDrawTools({
             cx, cy, radius: r,
             structIdCtr: s.structIdCtr, structDataRef: s.structDataRef,
             snapCell: snapCellRef.current, showGrid: s.showGrid,
-            structLayer, onSelect: onStructSelect, onModeChange,
+            structLayer, onSelect: onStructSelect, onModeChange, onEnterEdit,
           })
         }
         return
@@ -301,7 +302,7 @@ export function useDrawTools({
         structIdCtr: s.structIdCtr, structDataRef: s.structDataRef,
         groupIdCtr: s.groupIdCtr,
         snapCell: snapCellRef.current, showGrid: s.showGrid,
-        structLayer, onSelect: onStructSelect, onModeChange,
+        structLayer, onSelect: onStructSelect, onModeChange, onEnterEdit,
       })
       if (rectId && onPushUndo) {
         onPushUndo(() => {
@@ -314,6 +315,36 @@ export function useDrawTools({
     // ── Click: freeform point placement + fountain ──
     const onClick = (e) => {
       const s = sRef.current
+
+      // Add-point mode: insert point on nearest segment, rebuild handles
+      if (s.editingShapeId && s.addingPt) {
+        const pos = stage.getRelativePointerPosition()
+        const shape = structLayer.findOne('#' + s.editingShapeId)
+        if (shape && shape instanceof Konva.Line) {
+          // inline insertPointNearestSegment to avoid circular dep
+          const flat = shape.points()
+          const n = flat.length / 2
+          let bestIdx = 0, bestDist = Infinity
+          for (let i = 0; i < n - 1; i++) {
+            const ax = flat[i*2], ay = flat[i*2+1], bx = flat[(i+1)*2], by = flat[(i+1)*2+1]
+            const dx = bx-ax, dy = by-ay, len2 = dx*dx+dy*dy
+            const t = len2 ? Math.max(0,Math.min(1,((pos.x-ax)*dx+(pos.y-ay)*dy)/len2)) : 0
+            const d = Math.hypot(pos.x-(ax+t*dx), pos.y-(ay+t*dy))
+            if (d < bestDist) { bestDist = d; bestIdx = i }
+          }
+          if (shape.closed()) {
+            const ax = flat[(n-1)*2], ay = flat[(n-1)*2+1]
+            const d = Math.hypot(pos.x-ax, pos.y-ay)
+            if (d < bestDist) bestIdx = n - 1
+          }
+          shape.points([...flat.slice(0,(bestIdx+1)*2), pos.x, pos.y, ...flat.slice((bestIdx+1)*2)])
+          structLayer.batchDraw()
+          // Signal GardenEditor to rebuild handles and turn off addingPt
+          if (onAddPointDone) onAddPointDone(s.editingShapeId)
+        }
+        return
+      }
+
       if (e.target !== stage) return
 
       // Fountain — click to place
@@ -325,7 +356,7 @@ export function useDrawTools({
           cx: sx, cy: sy, radius: 30,
           structIdCtr: s.structIdCtr, structDataRef: s.structDataRef,
           snapCell: snapCellRef.current, showGrid: s.showGrid,
-          structLayer, onSelect: onStructSelect, onModeChange,
+          structLayer, onSelect: onStructSelect, onModeChange, onEnterEdit,
         })
         if (circId && onPushUndo) {
           onPushUndo(() => {
@@ -364,11 +395,23 @@ export function useDrawTools({
       }
     }
 
+    // ── Dblclick: enter edit mode on any struct shape ──
+    const onStageDblClick = (e) => {
+      const s = sRef.current
+      const free = isFreeMode(s.currentMode, s.bedSubTool, s.fenceSubTool, s.fenceType, s.buildingSubTool, s.waterSubTool, s.pathSubTool)
+      if (free && freePtsRef.current.length >= 2) { doClose(); return }
+      if (e.target !== stage && !free && !s.editingShapeId) {
+        const id = e.target.id?.() || e.target.parent?.id?.()
+        if (id && s.structDataRef.current[id] && onEnterEdit) onEnterEdit(id)
+      }
+    }
+
     stage.on('mousemove', onMouseMove)
     stage.on('mousedown', onMouseDown)
     stage.on('mouseup',   onMouseUp)
     stage.on('click',     onClick)
     stage.on('dblclick',  onDblClick)
+    stage.on('dblclick dbltap', onStageDblClick)
     window.addEventListener('keydown', onKeyDown)
 
     return () => {
@@ -377,6 +420,7 @@ export function useDrawTools({
       stage.off('mouseup',   onMouseUp)
       stage.off('click',     onClick)
       stage.off('dblclick',  onDblClick)
+      stage.off('dblclick dbltap', onStageDblClick)
       window.removeEventListener('keydown', onKeyDown)
     }
   }, [stage, layers]) // re-register only if stage or layers change
