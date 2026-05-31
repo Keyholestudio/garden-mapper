@@ -80,21 +80,22 @@ export default function GardenEditor() {
       const stage = stageRef.current
       state.multiSelection.forEach(({ shape }) => {
         if (!shape || !stage) return
-        // getClientRect() returns absolute screen px; convert to stage world coords
-        const abs = shape.getClientRect()
-        const scale = stage.scaleX()
-        const stageBox = stage.container().getBoundingClientRect()
-        const wx = (abs.x - stageBox.left - stage.x()) / scale
-        const wy = (abs.y - stageBox.top  - stage.y()) / scale
-        const ww = abs.width  / scale
-        const wh = abs.height / scale
-        const pad = 6 / scale
+        // getClientRect() returns coords relative to the canvas container (not screen)
+        // Mirrors v8 drawMultiHighlight exactly
+        const box = shape.getClientRect()
+        const sc  = stage.scaleX()
+        const ox  = stage.x(), oy = stage.y()
+        const pad = 6
+        const wx  = (box.x - ox) / sc - pad / sc
+        const wy  = (box.y - oy) / sc - pad / sc
+        const ww  = box.width  / sc + (pad * 2) / sc
+        const wh  = box.height / sc + (pad * 2) / sc
         const r = new Konva.Rect({
-          x: wx - pad, y: wy - pad,
-          width: ww + pad * 2, height: wh + pad * 2,
-          stroke: '#F9A825', strokeWidth: 2 / scale,
-          dash: [6 / scale, 3 / scale], fill: 'rgba(249,168,37,0.08)',
-          listening: false, strokeScaleEnabled: false,
+          x: wx, y: wy, width: ww, height: wh,
+          stroke: '#FFD600', strokeWidth: 2,
+          strokeScaleEnabled: false,
+          dash: [8, 4], fill: 'rgba(255,214,0,0.10)',
+          listening: false,
         })
         uiLayer.add(r)
         multiHighlightRef.current.push(r)
