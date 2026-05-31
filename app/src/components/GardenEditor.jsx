@@ -67,11 +67,39 @@ export default function GardenEditor() {
     plantLayer.batchDraw()
   }, [state.currentSeason, stageReady])
 
+  // ── Multi-select yellow highlight ──
+  // Redraws highlight rects on uiLayer whenever multiSelection changes
+  const multiHighlightRef = useRef([])
+  useEffect(() => {
+    const { uiLayer } = layersRef.current
+    if (!uiLayer) return
+    // Clear old highlights
+    multiHighlightRef.current.forEach(r => r.destroy())
+    multiHighlightRef.current = []
+    if (state.multiSelection?.length > 0) {
+      state.multiSelection.forEach(({ shape }) => {
+        if (!shape) return
+        const box = shape.getClientRect({ relativeTo: uiLayer })
+        const pad = 4
+        const r = new Konva.Rect({
+          x: box.x - pad, y: box.y - pad,
+          width: box.width + pad * 2, height: box.height + pad * 2,
+          stroke: '#F9A825', strokeWidth: 2,
+          dash: [6, 3], fill: 'rgba(249,168,37,0.08)',
+          listening: false, strokeScaleEnabled: false,
+        })
+        uiLayer.add(r)
+        multiHighlightRef.current.push(r)
+      })
+    }
+    uiLayer.batchDraw()
+  }, [state.multiSelection, stageReady])
+
   // ── Clear selection ──
   const clearSelection = () => {
     state.setSelectedPlant(null)
     state.setSelectedStruct(null)
-    state.setMultiSelection([])
+    state.setMultiSelection([])   // triggers highlight useEffect which destroys rects
     state.setEditingShapeId(null)
   }
 

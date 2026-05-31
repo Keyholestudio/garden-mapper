@@ -153,8 +153,8 @@ export default function RightPanel({
             ))}
           </div>
 
-          {/* Path / underground width */}
-          {(isPath || isUG) && (
+          {/* Path / gate / underground width */}
+          {(isPath || isUG || d.type === 'gate') && (
             <>
               <div className="panel-title">LINE WIDTH</div>
               <div className="slider-wrap">

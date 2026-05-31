@@ -161,6 +161,7 @@ export function useDrawTools({
         const pts = [...freePts.flatMap(p => [p.x, p.y]), pos.x, pos.y]
         const isFences = s.currentMode === 'fences'
         const isPath   = s.currentMode === 'paths'
+        const isGate   = s.currentMode === 'paths' && s.pathSubTool === 'gate'
         const isWater  = s.currentMode === 'water'
         const isBldg   = s.currentMode === 'building'
         const strokeC  = isFences ? '#4CAF50' : isPath ? '#D7CCC8' : isWater ? '#1976D2' : isBldg ? DECKING_COLOURS[0] : '#558B2F'
@@ -169,19 +170,25 @@ export function useDrawTools({
           (s.currentMode === 'fences'   && s.fenceSubTool === 'straight') ||
           (s.currentMode === 'fences'   && s.fenceType === 'fence') ||
           (s.currentMode === 'building' && s.buildingSubTool === 'deck-straight') ? 0 : 0.4
+        // Gate + path preview: always dashed thin line, never scaled with path width
+        const previewStrokeW = (isPath && !isGate) ? s.defaultPathWidth / stage.scaleX() : 1.5 / stage.scaleX()
+        const previewDash    = (isPath && !isGate) ? [] : [4, 3]
+        const previewOpacity = (isPath && !isGate) ? 0.55 : 1
 
         if (!freePreviewRef.current) {
           freePreviewRef.current = new Konva.Line({
             points: pts, tension: previewTension,
             stroke: strokeC,
-            strokeWidth: isPath ? s.defaultPathWidth / stage.scaleX() : 1.5 / stage.scaleX(),
-            dash: isPath ? [] : [4, 3],
+            strokeWidth: previewStrokeW,
+            dash: previewDash,
             strokeScaleEnabled: false, listening: false, closed: false,
-            opacity: isPath ? 0.55 : 1,
+            opacity: previewOpacity,
           })
           uiLayer.add(freePreviewRef.current)
         } else {
-          if (isPath) freePreviewRef.current.strokeWidth(s.defaultPathWidth / stage.scaleX())
+          freePreviewRef.current.strokeWidth(previewStrokeW)
+          freePreviewRef.current.dash(previewDash)
+          freePreviewRef.current.opacity(previewOpacity)
           freePreviewRef.current.points(pts)
           freePreviewRef.current.tension(previewTension)
         }
