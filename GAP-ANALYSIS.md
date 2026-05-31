@@ -70,6 +70,21 @@ _Generated: 2026-05-29_
 | **Undo for point add/remove/move** | pushUndo in edit mode | 🔵 Deferred | Complex — skip for now. Undo works for place actions only. |
 | **Hide Edit Shape for square objects** | isLine guard on button | 🔵 Deferred | Rect edit handles appear but do nothing useful. Button should be hidden for bed-square, building, deck-sq, pool-sq, hedge-sq. |
 
+---
+
+## 🚀 Phase 7 — Mobile & App Readiness *(planned 2026-05-31)*
+
+| Feature | Priority | Notes |
+|---|---|---|
+| **Touch input** — Konva pinch-to-zoom + 1-finger pan | 🔴 Must | Blocks all mobile use |
+| **Responsive layout** — toolbar/tray/panel at mobile breakpoints | 🔴 Must | Desktop-only currently |
+| **PWA manifest + service worker** | 🔴 Must | Installable on iOS/Android, offline capable |
+| **Garden switcher — more slots or JSON export/import** | 🟡 Should | 2-garden limit is a real constraint for power users |
+| **PDF / PNG export** | 🟡 Should | Most-requested feature category in garden apps |
+| **Onboarding flow** | 🟡 Should | Light guided first-run beyond setup overlay |
+| **Persist last-used garden index** | 🟢 Low | Trivial carry-forward from Phase 5 |
+| **Hide Edit Shape for square objects** | 🟢 Low | Cosmetic polish |
+
 ## ✅ Recently Completed (2026-05-29 afternoon)
 
 | Feature | Done |

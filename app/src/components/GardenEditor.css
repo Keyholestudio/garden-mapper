@@ -1,9 +1,13 @@
+/* ── Base layout (desktop + tablet) ── */
 .editor-layout {
   display: flex;
   flex-direction: column;
   height: 100vh;
   width: 100vw;
   position: relative;
+  /* Prevent iOS Safari bounce/overscroll */
+  overflow: hidden;
+  touch-action: none;
 }
 
 .editor-body {
@@ -35,4 +39,53 @@
   pointer-events: none;
   white-space: nowrap;
   z-index: 50;
+}
+
+/* ── Mobile layout (bp-mobile = < 600px) ── */
+/* Canvas fills the top portion, plant tray + toolbar slide up from bottom */
+.bp-mobile .editor-body {
+  flex-direction: column;
+  padding: 0;
+}
+
+/* On mobile: hide the left sidebar (PlantTray renders inside bottom sheet instead) */
+.bp-mobile .plant-tray-sidebar {
+  display: none;
+}
+
+/* On mobile: hide the right panel (properties panel — future: slide-up sheet) */
+.bp-mobile .right-panel-sidebar {
+  display: none;
+}
+
+/* On mobile: canvas takes all available vertical space above the bottom sheet */
+.bp-mobile .canvas-wrap {
+  flex: 1;
+  min-height: 0;
+}
+
+/* On mobile: bottom bar floats as a taller sheet with tray + tools stacked */
+.bp-mobile .bottom-wrap {
+  border-radius: 16px 16px 0 0;
+  margin: 0;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+}
+
+/* ── Tablet layout (bp-tablet = 600–1024px) ── */
+/* Essentially the current desktop layout — minor touch-target sizing only */
+.bp-tablet .editor-body {
+  padding: 0 4px;
+}
+
+/* Larger hit targets on tablet for finger tapping */
+.bp-tablet .tool-btn,
+.bp-tablet .subtool-btn {
+  min-height: 40px;
+  font-size: 14px;
+  padding: 6px 10px;
+}
+
+/* ── Touch-action: let Konva handle all touch on the canvas container ── */
+.canvas-container {
+  touch-action: none;
 }

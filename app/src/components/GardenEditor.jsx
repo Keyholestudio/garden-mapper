@@ -1,5 +1,6 @@
 // GardenEditor.jsx — Top-level layout shell
 // Phase 5: save/load localStorage, garden switcher
+// Phase 7: responsive breakpoints
 
 import { useRef, useState, useEffect } from 'react'
 import Konva from 'konva'
@@ -11,6 +12,7 @@ import { addPlant }        from '../utils/plantUtils'
 import { insertPointNearestSegment } from '../hooks/useSelection'
 import { saveGarden, loadGarden, createNewGarden, readGardens } from '../hooks/useSaveLoad'
 import { addRectStruct } from '../utils/drawUtils'
+import { useBreakpoint } from '../hooks/useBreakpoint'
 import LogoBar        from './LogoBar'
 import BottomBar      from './BottomBar'
 import PlantTray      from './PlantTray'
@@ -23,6 +25,7 @@ import './GardenEditor.css'
 
 export default function GardenEditor() {
   const state = useGardenState()
+  const { isMobile, isTablet, isDesktop, breakpoint } = useBreakpoint()
   const stageRef    = useRef(null)
   const layersRef   = useRef({})
   const showGridRef = useRef(state.showGrid) // always-current ref for snap in dragmove closures
@@ -547,7 +550,7 @@ export default function GardenEditor() {
   }
 
   return (
-    <div className="editor-layout">
+    <div className={`editor-layout bp-${breakpoint}`}>
       <PromoBanner />
       {!state.isSetup && (
         <SetupOverlay

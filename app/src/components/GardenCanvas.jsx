@@ -125,7 +125,7 @@ export default function GardenCanvas({
       }
     })
 
-    // ── Scroll to zoom ──
+    // ── Scroll to zoom (mouse wheel) ──
     stage.on('wheel', (e) => {
       e.evt.preventDefault()
       const oldScale = stage.scaleX()
@@ -145,6 +145,88 @@ export default function GardenCanvas({
       stage.batchDraw()
       if (onScaleChange) onScaleChange(stage)
     })
+
+    // ── Touch: pinch-to-zoom + 1-finger pan ──
+    // Uses native DOM touch events on the container (not Konva events)
+    // so we get raw multi-touch data before Konva processes it.
+    let lastTouchDist  = null  // distance between two fingers (pinch)
+    let lastTouchMid   = null  // midpoint between two fingers (pinch pivot)
+    let touchPanStart  = null  // single-finger pan origin
+
+    function getTouchDist(t1, t2) {
+      const dx = t1.clientX - t2.clientX
+      const dy = t1.clientY - t2.clientY
+      return Math.sqrt(dx * dx + dy * dy)
+    }
+    function getTouchMid(t1, t2, rect) {
+      return {
+        x: (t1.clientX + t2.clientX) / 2 - rect.left,
+        y: (t1.clientY + t2.clientY) / 2 - rect.top,
+      }
+    }
+
+    function onTouchStart(e) {
+      if (e.touches.length === 2) {
+        // Pinch start — record initial distance and midpoint
+        e.preventDefault()
+        const rect = wrap.getBoundingClientRect()
+        lastTouchDist = getTouchDist(e.touches[0], e.touches[1])
+        lastTouchMid  = getTouchMid(e.touches[0], e.touches[1], rect)
+        touchPanStart = null
+      } else if (e.touches.length === 1) {
+        // Single finger — pan start (only in select mode; draw tools handle their own touch)
+        touchPanStart = { x: e.touches[0].clientX, y: e.touches[0].clientY }
+        lastTouchDist = null
+      }
+    }
+
+    function onTouchMove(e) {
+      if (e.touches.length === 2) {
+        e.preventDefault()
+        if (lastTouchDist === null) return
+        const rect    = wrap.getBoundingClientRect()
+        const newDist = getTouchDist(e.touches[0], e.touches[1])
+        const newMid  = getTouchMid(e.touches[0], e.touches[1], rect)
+        const oldScale = stage.scaleX()
+        const scaleFactor = newDist / lastTouchDist
+        const newScale = Math.min(Math.max(oldScale * scaleFactor, 0.1), 8)
+
+        // Zoom around pinch midpoint
+        const pivotWorld = {
+          x: (lastTouchMid.x - stage.x()) / oldScale,
+          y: (lastTouchMid.y - stage.y()) / oldScale,
+        }
+        stage.scale({ x: newScale, y: newScale })
+        stage.x(newMid.x - pivotWorld.x * newScale)
+        stage.y(newMid.y - pivotWorld.y * newScale)
+
+        lastTouchDist = newDist
+        lastTouchMid  = newMid
+        drawGrid(stage, layersRef.current.gridLayer, showGridRef.current, gardenUnitRef.current, seasonRef.current)
+        stage.batchDraw()
+        if (onScaleChange) onScaleChange(stage)
+      } else if (e.touches.length === 1 && touchPanStart && isPanning) {
+        // Single-finger pan (only active when pan:start was fired by draw tools / select mode)
+        const dx = e.touches[0].clientX - touchPanStart.x
+        const dy = e.touches[0].clientY - touchPanStart.y
+        stage.x(stage.x() + dx)
+        stage.y(stage.y() + dy)
+        touchPanStart = { x: e.touches[0].clientX, y: e.touches[0].clientY }
+        drawGrid(stage, layersRef.current.gridLayer, showGridRef.current, gardenUnitRef.current, seasonRef.current)
+        stage.batchDraw()
+        if (onScaleChange) onScaleChange(stage)
+      }
+    }
+
+    function onTouchEnd(e) {
+      if (e.touches.length < 2) { lastTouchDist = null; lastTouchMid = null }
+      if (e.touches.length === 0) { touchPanStart = null }
+    }
+
+    wrap.addEventListener('touchstart',  onTouchStart, { passive: false })
+    wrap.addEventListener('touchmove',   onTouchMove,  { passive: false })
+    wrap.addEventListener('touchend',    onTouchEnd)
+    wrap.addEventListener('touchcancel', onTouchEnd)
 
     // ── Canvas click → plant placement or deselect ──
     stage.on('click tap', e => {
@@ -174,6 +256,10 @@ export default function GardenCanvas({
 
     return () => {
       ro.disconnect()
+      wrap.removeEventListener('touchstart',  onTouchStart)
+      wrap.removeEventListener('touchmove',   onTouchMove)
+      wrap.removeEventListener('touchend',    onTouchEnd)
+      wrap.removeEventListener('touchcancel', onTouchEnd)
       stage.destroy()
       stageRef.current = null
     }

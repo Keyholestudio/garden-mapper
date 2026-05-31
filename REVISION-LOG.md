@@ -29,11 +29,35 @@ _This file tracks all changes made to each prototype version. Use it to backdate
 
 ### Outstanding
 - [ ] Phase 5 remainder: persist last-used garden index in localStorage (refresh always loads garden[0] currently)
-- [ ] Phase 5 remainder: draw tools need full testing (square beds, building, deck, hedge — curved/path/electrical confirmed only)
-- [ ] Phase 6: season themes (colour palette swap per season beyond canvas bg — already partial)
-- [ ] Phase 6: promo banner (rotating slogans, v8 style)
-- [ ] Phase 6: logo bar polish (match v8 final layout exactly)
-- [ ] Code legend / architecture doc (see ARCHITECTURE.md — to be created)
+- [x] Phase 6: season themes — canvas bg + grid colour per season ✅ confirmed working
+- [x] Phase 6: promo banner (rotating slogans, 60s, < > nav) ✅ confirmed working
+- [x] Phase 6: logo bar polish — matches v8 exactly ✅ confirmed working
+- [x] Code legend / architecture doc → ARCHITECTURE.md created ✅
+- [x] GAP-ANALYSIS.md created and maintained ✅
+- [x] All 10 previously untested features confirmed working (2026-05-31)
+
+### Deferred
+- [ ] Hide "Edit Shape" for square objects (bed-sq, building, deck-sq, pool-sq, hedge-sq)
+- [ ] Undo for point add/remove/move in edit mode (complex — skipped)
+- [ ] PDF export (long-term, deferred)
+
+---
+
+## Phase 7 — Mobile & App Readiness *(planned 2026-05-31)*
+
+### Must-have (blocking deployment)
+- [ ] Phase 7.1: Touch input — Konva pinch-to-zoom + single-finger pan wired
+- [ ] Phase 7.2: Responsive layout — bottom toolbar, plant tray, right panel reflow at mobile breakpoints
+- [ ] Phase 7.3: PWA manifest + Vite service worker (installable, offline-capable)
+
+### Should-have
+- [ ] Phase 7.4: Garden switcher — more than 2 slots, or export/import JSON save files
+- [ ] Phase 7.5: PDF / image export (canvas → PNG download minimum)
+- [ ] Phase 7.6: Onboarding flow — light guided first-run beyond the setup overlay
+
+### Quick wins
+- [ ] Phase 7.7: Persist last-used garden index (trivial — carry forward from Phase 5)
+- [ ] Phase 7.8: Hide "Edit Shape" for square objects (cosmetic)
 
 ---
 
