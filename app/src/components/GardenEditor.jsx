@@ -77,15 +77,23 @@ export default function GardenEditor() {
     multiHighlightRef.current.forEach(r => r.destroy())
     multiHighlightRef.current = []
     if (state.multiSelection?.length > 0) {
+      const stage = stageRef.current
       state.multiSelection.forEach(({ shape }) => {
-        if (!shape) return
-        const box = shape.getClientRect({ relativeTo: uiLayer })
-        const pad = 4
+        if (!shape || !stage) return
+        // getClientRect() returns absolute screen px; convert to stage world coords
+        const abs = shape.getClientRect()
+        const scale = stage.scaleX()
+        const stageBox = stage.container().getBoundingClientRect()
+        const wx = (abs.x - stageBox.left - stage.x()) / scale
+        const wy = (abs.y - stageBox.top  - stage.y()) / scale
+        const ww = abs.width  / scale
+        const wh = abs.height / scale
+        const pad = 6 / scale
         const r = new Konva.Rect({
-          x: box.x - pad, y: box.y - pad,
-          width: box.width + pad * 2, height: box.height + pad * 2,
-          stroke: '#F9A825', strokeWidth: 2,
-          dash: [6, 3], fill: 'rgba(249,168,37,0.08)',
+          x: wx - pad, y: wy - pad,
+          width: ww + pad * 2, height: wh + pad * 2,
+          stroke: '#F9A825', strokeWidth: 2 / scale,
+          dash: [6 / scale, 3 / scale], fill: 'rgba(249,168,37,0.08)',
           listening: false, strokeScaleEnabled: false,
         })
         uiLayer.add(r)
