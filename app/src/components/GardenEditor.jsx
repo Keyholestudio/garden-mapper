@@ -598,6 +598,7 @@ export default function GardenEditor() {
         onOpenSwitcher={() => setSwitcherOpen(true)}
         saveFlash={saveFlash}
         scaleLabel={scaleLabel}
+        isMobile={isMobile}
       />
 
       {/* Clear All confirm modal */}
@@ -758,6 +759,9 @@ export default function GardenEditor() {
         showGrid={state.showGrid}               onToggleGrid={() => state.setShowGrid(v => !v)}
         onResetView={handleResetView}
         onClearAll={handleClearAll}
+        isMobile={isMobile}
+        loadedImages={loadedImages}
+        onPlantClick={handlePlantClick}
       />
     </div>
   )

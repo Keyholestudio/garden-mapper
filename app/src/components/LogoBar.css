@@ -147,3 +147,26 @@
 .season-summer { background: #33691E; }
 .season-fall   { background: #E65100; }
 .season-winter { background: #546E7A; }
+
+/* ── Mobile logo bar ── */
+.logo-bar-mobile {
+  height: 48px;
+  padding: 0 12px;
+  justify-content: center;
+  position: relative;
+}
+.logo-center-mobile {
+  position: static;
+  transform: none;
+  flex: 1;
+  justify-content: center;
+}
+.logo-img-mobile {
+  height: 36px;
+}
+.logo-profile-mobile {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}

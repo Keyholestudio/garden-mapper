@@ -16,7 +16,20 @@ export default function LogoBar({
   currentSeason,
   onSave, onOpenSwitcher, saveFlash,
   scaleLabel,
+  isMobile,
 }) {
+  // Mobile: stripped logo bar — logo + profile only
+  if (isMobile) {
+    return (
+      <div className="logo-bar logo-bar-mobile">
+        <div className="logo-center logo-center-mobile">
+          <img src="/stickers/Logo.png" alt="Garden Mapper" className="logo-img logo-img-mobile" />
+        </div>
+        <button className="logo-profile-btn logo-profile-mobile" title="Profile">👤</button>
+      </div>
+    )
+  }
+
   return (
     <div className="logo-bar">
 
