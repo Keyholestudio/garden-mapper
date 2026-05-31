@@ -34,6 +34,9 @@ export default function GardenSwitcher({
   const MAX_GARDENS = 2
   const atLimit = gardens.length >= MAX_GARDENS
 
+  // Placeholder subscription URL — swap in real page when ready
+  const SUBSCRIBE_URL = '/subscribe'
+
   return (
     <div className="switcher-overlay" onClick={onClose}>
       <div className="switcher-panel" onClick={e => e.stopPropagation()}>
@@ -57,16 +60,26 @@ export default function GardenSwitcher({
               <button className="btn-delete" onClick={() => handleDelete(i)}>🗑</button>
             </div>
           ))}
-        </div>
 
-        {atLimit && (
-          <div className="switcher-limit">Max 2 gardens. Delete one to create a new one.</div>
-        )}
+          {/* Unlock upsell — always shown after the garden list */}
+          <a
+            href={SUBSCRIBE_URL}
+            className="switcher-unlock-row"
+            onClick={onClose}
+          >
+            <span className="switcher-unlock-icon">🔒</span>
+            <span className="switcher-unlock-text">Unlock more gardens</span>
+            <span className="switcher-unlock-arrow">›</span>
+          </a>
+        </div>
 
         <div className="switcher-footer">
           <button className="btn-new" onClick={onNew} disabled={atLimit}>
             + New Garden
           </button>
+          {atLimit && (
+            <span className="switcher-limit-inline">2-garden limit reached</span>
+          )}
         </div>
       </div>
 

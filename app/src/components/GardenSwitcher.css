@@ -135,19 +135,54 @@
 }
 .btn-delete:hover { background: #ffcdd2; }
 
-.switcher-limit {
-  font-size: 11px;
-  color: #e53935;
-  text-align: center;
-  padding: 4px 12px 0;
-  font-weight: 600;
-}
-
 .switcher-footer {
   padding: 12px 16px 14px;
   border-top: 1.5px solid #f0f0f0;
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.switcher-limit-inline {
+  font-size: 11px;
+  color: #999;
+  font-weight: 600;
+}
+
+/* Unlock upsell row */
+.switcher-unlock-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1.5px dashed #A5D6A7;
+  border-radius: 9px;
+  background: #f9fdf5;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+  margin-top: 2px;
+}
+.switcher-unlock-row:hover {
+  background: #E8F5E9;
+  border-color: #558B2F;
+}
+.switcher-unlock-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.switcher-unlock-text {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: #2E7D32;
+}
+.switcher-unlock-arrow {
+  font-size: 18px;
+  color: #558B2F;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
 .btn-new {
