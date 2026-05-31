@@ -44,7 +44,8 @@ export default function RightPanel({
   // ── Edit mode panel ───────────────────────────────────────
   if (editingShapeId) {
     const d = structDataRef?.current[editingShapeId]
-    const isLine = !['bed-square','building','deck','pool-sq','hedge-sq','pool-circle','water-fountain'].includes(d?.type)
+    const editShape = layers?.structLayer?.findOne('#' + editingShapeId)
+    const isLine = editShape instanceof Konva.Line
     return (
       <div className="right-panel">
         <div className="panel-content">
