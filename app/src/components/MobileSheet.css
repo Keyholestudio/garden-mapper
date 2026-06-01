@@ -77,9 +77,9 @@
   transition: max-height 0.2s ease;
 }
 
-/* Expand to ~4 rows when search field is focused */
-.mobile-sheet-body:focus-within .mobile-plant-grid {
-  max-height: 320px;
+/* When tools are hidden (search focused), grid fills available space */
+.mobile-plant-grid.search-active {
+  max-height: 400px;
 }
 
 .mobile-plant-item {

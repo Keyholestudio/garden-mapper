@@ -22,6 +22,7 @@ export default function MobileSheet({
 }) {
   const [expanded, setExpanded] = useState(true)  // default: menu mode
   const [query, setQuery] = useState('')
+  const [searchFocused, setSearchFocused] = useState(false)
 
   const filtered = useMemo(() => {
     if (!query.trim()) return PLANT_CATALOG
@@ -71,10 +72,12 @@ export default function MobileSheet({
             placeholder="Search plants..."
             value={query}
             onChange={e => setQuery(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
           />
 
-          {/* Plant grid — 2 columns, scrollable */}
-          <div className="mobile-plant-grid">
+          {/* Plant grid — 2 columns, scrollable; expands when tools are hidden */}
+          <div className={`mobile-plant-grid${searchFocused ? ' search-active' : ''}`}>
             {filtered.length === 0 && (
               <div className="mobile-no-results">No results</div>
             )}
@@ -97,11 +100,11 @@ export default function MobileSheet({
             })}
           </div>
 
-          {/* Divider */}
-          <div className="mobile-sheet-divider" />
+          {/* Divider + tools hidden when keyboard is open (searchFocused) */}
+          {!searchFocused && <div className="mobile-sheet-divider" />}
 
-          {/* Tool menu — same logic as desktop right panel */}
-          <div className="mobile-tool-section">
+          {/* Tool menu — hidden while search keyboard is open */}
+          {!searchFocused && <div className="mobile-tool-section">
             <ToolMenu
               currentMode={currentMode}         onModeChange={onModeChange}
               bedSubTool={bedSubTool}           onBedSubTool={onBedSubTool}
@@ -114,9 +117,10 @@ export default function MobileSheet({
               onResetView={onResetView}         onClearAll={onClearAll}
               extraClass="mobile-tool-menu"
             />
-          </div>
+          </div>}
 
-          {/* Season slider */}
+          {/* Season slider — also hidden when keyboard open */}
+          {!searchFocused && <>
           <div className="mobile-sheet-divider" />
           <div className="mobile-season-wrap" ref={wrapRef}>
             <input
@@ -133,6 +137,7 @@ export default function MobileSheet({
               ))}
             </div>
           </div>
+          </>}
 
         </div>
       )}
