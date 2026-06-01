@@ -337,7 +337,7 @@ export function addRectStruct({
     rect.scaleX(1); rect.scaleY(1); structLayer.batchDraw()
   })
   rect.on('click tap', e => { if (onSelect) onSelect(id, rect, e) })
-  rect.on('dblclick dbltap', () => { if (onEnterEdit) onEnterEdit(id) })
+  // No dblclick for rects — they have no editable points
   rect.on('dragmove', () => {
     if (showGrid && snapCell) {
       rect.x(Math.round(rect.x() / snapCell) * snapCell)
@@ -380,7 +380,7 @@ export function addCircleStruct({
     structLayer.batchDraw()
   })
   circle.on('click tap', e => { if (onSelect) onSelect(id, circle, e) })
-  circle.on('dblclick dbltap', () => { if (onEnterEdit) onEnterEdit(id) })
+  // No dblclick for circles — they have no editable points
   structLayer.add(circle)
   structLayer.batchDraw()
   if (onSelect) onSelect(id, circle)

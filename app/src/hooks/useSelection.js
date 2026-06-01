@@ -118,6 +118,8 @@ export function useSelection({
     if (!layers?.structLayer) return
     const shape = layers.structLayer.findOne('#' + id)
     if (!shape) return
+    // Rect and Circle shapes have no editable points — block edit mode entirely
+    if (shape instanceof Konva.Rect || shape instanceof Konva.Circle) return
     if (onExitEditMode) onExitEditMode() // clear any prior edit
     buildEditHandles(id, shape)
     if (onEditMode) onEditMode(id)
