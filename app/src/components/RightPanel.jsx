@@ -1,7 +1,9 @@
 // RightPanel.jsx — Context-sensitive right panel
 // Phase 4: full properties for plants, structs, edit mode, multi-select
 // Phase 7 (June 1): toolbar integrated into idle panel state
+// Phase 7 (June 1 1B): Decks/Hedges/Pools as expandable sub-groups
 
+import { useState } from 'react'
 import Konva from 'konva'
 import {
   BED_COLOURS, BUILDING_COLOURS, FENCE_COLOURS, HEDGE_COLOURS,
@@ -45,35 +47,52 @@ const BED_SUBS = [
   { id: 'straight', label: 'Straight', hint: 'Click points · angular edges'  },
   { id: 'square',   label: 'Square',   hint: 'Click + drag rectangle'         },
 ]
-const FENCE_SUBS = [
-  { id: 'fence',    label: 'Fence',        hint: 'Open freeform line' },
-  { id: 'gate',     label: 'Gate',         hint: 'Place a gate section' },
-  { id: 'curved',   label: 'Hedge Curved', hint: 'Click points · Enter to close' },
-  { id: 'straight', label: 'Hedge Straight', hint: 'Angular hedge line' },
-  { id: 'square',   label: 'Hedge Square', hint: 'Click + drag hedge rect' },
+
+// Fences: flat items + a Hedges group
+const FENCE_ITEMS = [
+  { id: 'fence', label: 'Fence', hint: 'Open freeform line' },
+  { id: 'gate',  label: 'Gate',  hint: 'Place a gate section' },
+  {
+    id: '__hedges', label: 'Hedges', emoji: '🌳', group: true,
+    children: [
+      { id: 'curved',   label: 'Curved Hedge',   hint: 'Click points · Enter to close' },
+      { id: 'square',   label: 'Square Hedge',   hint: 'Click + drag hedge rect' },
+      { id: 'straight', label: 'Straight Hedge', hint: 'Angular hedge line' },
+    ],
+  },
 ]
+
 const PATH_SUBS = [
   { id: 'freeform', label: 'Freeform', hint: 'Click points · Enter to finish' },
 ]
-const BUILD_SUBS = [
-  { id: 'building',             label: 'Building',    hint: 'Click + drag footprint' },
-  { id: 'deck-curved',          label: 'Deck Curved', hint: 'Click points · Enter to close' },
-  { id: 'deck-straight',        label: 'Deck Straight', hint: 'Angular deck line' },
-  { id: 'deck-square',          label: 'Deck Square', hint: 'Click + drag deck rect' },
+
+// Buildings: flat items + a Decks group
+const BUILD_ITEMS = [
+  { id: 'building', label: 'Building', hint: 'Click + drag footprint' },
+  {
+    id: '__decks', label: 'Decks', emoji: '🪵', group: true,
+    children: [
+      { id: 'deck-curved',   label: 'Curved Deck',   hint: 'Click points · Enter to close' },
+      { id: 'deck-straight', label: 'Straight Deck', hint: 'Angular deck line' },
+      { id: 'deck-square',   label: 'Square Deck',   hint: 'Click + drag deck rect' },
+    ],
+  },
   { id: 'underground-electrical', label: '⚡ Electrical', hint: 'Freeform underground run' },
   { id: 'underground-plumbing',   label: '🔵 Plumbing',   hint: 'Freeform underground run' },
 ]
-const WATER_SUBS = [
-  { id: 'fountain',   label: 'Fountain',   hint: 'Place a fountain' },
-  { id: 'pond',       label: 'Pond',        hint: 'Freeform pond outline' },
-  { id: 'pool-sq',    label: 'Pool Rect',   hint: 'Click + drag rectangular pool' },
-  { id: 'pool-circle',label: 'Pool Circle', hint: 'Click to place circular pool' },
-]
 
-const SUB_MAP = {
-  beds: BED_SUBS, fences: FENCE_SUBS, paths: PATH_SUBS,
-  building: BUILD_SUBS, water: WATER_SUBS,
-}
+// Water: flat items + a Pools group
+const WATER_ITEMS = [
+  { id: 'fountain', label: 'Fountain', hint: 'Place a fountain' },
+  { id: 'pond',     label: 'Pond',     hint: 'Freeform pond outline' },
+  {
+    id: '__pools', label: 'Pools', emoji: '🏊', group: true,
+    children: [
+      { id: 'pool-circle', label: 'Circular Pool', hint: 'Click to place circular pool' },
+      { id: 'pool-sq',     label: 'Square Pool',   hint: 'Click + drag rectangular pool' },
+    ],
+  },
+]
 
 // ── Idle Tool Menu ────────────────────────────────────────────────────────────
 function ToolMenu({
@@ -82,7 +101,8 @@ function ToolMenu({
   onBedSubTool, onFenceSubTool, onFenceType, onPathSubTool, onBuildingSubTool, onWaterSubTool,
   showGrid, onToggleGrid, onResetView, onClearAll,
 }) {
-  const subs = SUB_MAP[currentMode] || []
+  // Which group accordion is open within the current sub-menu
+  const [openGroup, setOpenGroup] = useState(null)
 
   const activeSub =
     currentMode === 'beds'     ? bedSubTool :
@@ -103,11 +123,60 @@ function ToolMenu({
     if (currentMode === 'water')    { onWaterSubTool(id); return }
   }
 
-  // If a tool with subs is active, show sub-menu level
-  if (currentMode && subs.length > 0) {
+  // Items list per mode (may contain group objects)
+  const items =
+    currentMode === 'beds'     ? BED_SUBS :
+    currentMode === 'fences'   ? FENCE_ITEMS :
+    currentMode === 'paths'    ? PATH_SUBS :
+    currentMode === 'building' ? BUILD_ITEMS :
+    currentMode === 'water'    ? WATER_ITEMS : []
+
+  // Helper: is any child of a group the current active sub?
+  const groupHasActive = (group) =>
+    group.children.some(c => c.id === activeSub ||
+      (currentMode === 'fences' && fenceType === 'hedge' && c.id === fenceSubTool))
+
+  // Render a flat item button
+  const renderItem = (s) => (
+    <button
+      key={s.id}
+      className={`tool-menu-btn${activeSub === s.id ? ' active' : ''}`}
+      onClick={() => handleSubChange(s.id)}
+      title={s.hint}
+    >
+      <span className="tool-menu-label">{s.label}</span>
+      {activeSub === s.id && <span className="tool-menu-hint">{s.hint}</span>}
+    </button>
+  )
+
+  // Render an expandable group
+  const renderGroup = (g) => {
+    const isOpen   = openGroup === g.id || groupHasActive(g)
+    const hasActive = groupHasActive(g)
+    return (
+      <div key={g.id} className="tool-menu-group">
+        <button
+          className={`tool-menu-btn group-header${hasActive ? ' active' : ''}`}
+          onClick={() => setOpenGroup(isOpen ? null : g.id)}
+        >
+          {g.emoji && <span className="tool-menu-emoji">{g.emoji}</span>}
+          <span className="tool-menu-label">{g.label}</span>
+          <span className="tool-menu-chevron">{isOpen ? '▾' : '▸'}</span>
+        </button>
+        {isOpen && (
+          <div className="tool-menu-group-children">
+            {g.children.map(c => renderItem(c))}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // If a tool with items is active, show sub-menu level
+  if (currentMode && items.length > 0) {
     return (
       <div className="panel-content">
-        <button className="tool-menu-back" onClick={() => onModeChange('select')}>
+        <button className="tool-menu-back" onClick={() => { onModeChange('select'); setOpenGroup(null) }}>
           ← Back
         </button>
         <div className="panel-h2" style={{ marginTop: 2 }}>
@@ -115,17 +184,7 @@ function ToolMenu({
           {TOP_TOOLS.find(t => t.id === currentMode)?.label}
         </div>
         <div className="panel-sep" />
-        {subs.map(s => (
-          <button
-            key={s.id}
-            className={`tool-menu-btn${activeSub === s.id ? ' active' : ''}`}
-            onClick={() => handleSubChange(s.id)}
-            title={s.hint}
-          >
-            <span className="tool-menu-label">{s.label}</span>
-            {activeSub === s.id && <span className="tool-menu-hint">{s.hint}</span>}
-          </button>
-        ))}
+        {items.map(item => item.group ? renderGroup(item) : renderItem(item))}
       </div>
     )
   }
@@ -139,7 +198,7 @@ function ToolMenu({
         <button
           key={t.id}
           className={`tool-menu-btn${currentMode === t.id ? ' active' : ''}`}
-          onClick={() => onModeChange(t.id)}
+          onClick={() => { onModeChange(t.id); setOpenGroup(null) }}
         >
           <span className="tool-menu-emoji">{t.emoji}</span>
           <span className="tool-menu-label">{t.label}</span>

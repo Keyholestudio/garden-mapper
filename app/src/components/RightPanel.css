@@ -150,3 +150,25 @@
   width: fit-content;
 }
 .tool-menu-back:hover { background: #e8f5e9; }
+
+/* ── Expandable group (Decks / Hedges / Pools) ── */
+.tool-menu-group { display: flex; flex-direction: column; gap: 3px; }
+
+.tool-menu-btn.group-header {
+  justify-content: space-between;
+}
+.tool-menu-chevron {
+  font-size: 10px;
+  opacity: 0.6;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.tool-menu-group-children {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-left: 12px;
+  border-left: 2px solid #c8e6c9;
+  margin-left: 6px;
+}
