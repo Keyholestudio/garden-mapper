@@ -1,6 +1,6 @@
 # Garden Mapper — Project Status
 
-_Last updated: 2026-05-31_
+_Last updated: 2026-06-01_
 
 ---
 
@@ -9,7 +9,7 @@ A web-based garden planner with a Konva canvas, 36 plant stickers, freeform + re
 
 ---
 
-## Current Phase: 7 — Mobile & App Readiness
+## Current Phase: 7 — Mobile & App Readiness (in progress)
 
 ### Resume Phrase
 `resume Garden Mapper React scaffold`
@@ -20,9 +20,10 @@ A web-based garden planner with a Konva canvas, 36 plant stickers, freeform + re
 ```
 cd projects/garden-planner/app && npm run dev
 ```
-- Frontend: http://localhost:5175 (or next available port)
+- Frontend: **http://localhost:5200** (pinned — never floats)
 - Git: initialized in `projects/garden-planner/`
 - Reference prototype: `prototype/index-v8.html` — always open for comparison
+- Garden Organizer doc: `1F3mA5UZw1qo2wxd3pqMuSvyph3L4biChiJ18kbhRf5Q` (use `gog docs cat` — see L014)
 
 ---
 
@@ -36,93 +37,102 @@ cd projects/garden-planner/app && npm run dev
 | Phase 4 — Select + edit (transformer, handles, right panel) | ✅ Complete |
 | Phase 5 — Save/load localStorage + garden switcher | ✅ Complete |
 | Phase 6 — Season themes, promo banner, logo bar | ✅ Complete |
-| All 10 previously untested features | ✅ Confirmed working (2026-05-31) |
 | Phase 7 — Mobile & App Readiness | 🟡 In Progress |
 | Phase 8 — Textures & Visual Polish | 🔲 Planned |
 
 ---
 
-## App Strategy
+## June 1 Changes (Rob's doc notes — all committed)
 
-**Target:** PWA → Capacitor.js → App Store (Google Play + Apple App Store)
-**Path:** One React codebase → three deployment targets (web, iOS, Android)
-**Monetization:** App Store listing provides visibility + legitimacy
+| # | Feature | Commit | Status |
+|---|---------|--------|--------|
+| 1 | Toolbar → right panel (two-level menu, ← Back) | `0137157` | ✅ |
+| 1B | Decks/Hedges/Pools as nested expandable groups | `1b6d523` | ✅ |
+| 2 | Gate moved to Fences; order: Fence→Gate→Hedges | `963d0ec` | ✅ |
+| 3 | Plumbing moved to Water; order: Fountain/Plumbing/Pools/Pond | `963d0ec` | ✅ |
+| 4 | Touch press-drag + tap-to-place for all square objects | `76e674c` | ✅ |
+| 5 | Tool menu scales to fit panel (no scroll) | `26fdd8f` | ✅ |
+| 5B | Reverted flex-stretch on desktop/tablet; mobile-only scaling | `afdb18d` | ✅ |
+| 6 | Plant tray text bumped to 12px to match panel | `04ea2c7` | ✅ |
+| 7 | Dark green logo bar separator (2px #11502A) | `ea2f577` | ✅ |
+| 8 | Drag-to-place plants from tray (HTML5 drag+drop) | `65280aa` | ✅ |
+| 9 | Dream garden — deferred until #10 confirmed + Rob creates it | — | 🔲 |
+| 10 | Super saves — versioned schema + backup slot + migration | `ea2f577` | ✅ |
+| 11 | Sunny/shady garden areas — deferred | — | ⏳ |
+| 12 | Multi-device sync — needs server architecture discussion | — | 🔲 |
+| 13 | Mobile season cycle button (top-left tap-to-advance) | `9dc9365` | ✅ |
+| 14 | (incomplete in doc — awaiting Rob's notes) | — | 🔲 |
 
-### Layout Breakpoints (per mockups in `design/`)
+### Additional polish (June 1)
+- Season slider → frosted floating pill over canvas (`95583df`)
+- Transparent backing + larger text on slider (`c598c5e`, `6e3066a`)
+- Drag ghost shrunk to 48×48px (`2bb420b`)
+- Mobile bottom sheet: plant grid + tool menu + toggle (`8f39d0c`)
+- Plant grid expands on search focus, tools hide when keyboard open (`8096fa1`)
+- Season button moved to top-left, user icon top-right (`a2c254a`)
+- Port pinned to 5200, vite.config fixed (`a25e3c8`)
+
+---
+
+## Architecture — Key Components
+
+| Component | Role |
+|-----------|------|
+| `GardenEditor.jsx` | Top-level shell, owns all state |
+| `RightPanel.jsx` | Desktop/tablet: properties + tool menu |
+| `MobileSheet.jsx` | Mobile: bottom sheet with plant grid + tools |
+| `toolMenuData.jsx` | Shared tool menu data + ToolMenu component (used by both) |
+| `LogoBar.jsx` | Top bar; mobile has season cycle button (left) + profile (right) |
+| `BottomBar.jsx` | Season slider (desktop/tablet floating pill only) |
+| `GardenCanvas.jsx` | Konva stage, grid, pan/zoom, touch, drag-drop target |
+| `useSaveLoad.js` | Versioned save/load with backup slot + migration |
+
+---
+
+## Layout by Breakpoint
+
 | Breakpoint | Layout |
 |---|---|
-| Mobile (phone) | Canvas top ~60%, bottom sheet with plant tray + 2×4 tool grid + season slider |
-| Tablet (iPad) | Current desktop layout — left tray, canvas center, right panel, bottom toolbar |
-| Desktop (web) | Current layout unchanged |
-
-Mockups: `design/mockup-mobile.jpg`, `design/mockup-tablet.jpg`
+| Mobile (< 600px) | Full canvas + MobileSheet bottom sheet; season = tap-to-cycle button top-left |
+| Tablet (600–1024px) | Left plant tray + canvas + right panel + floating season slider |
+| Desktop (> 1024px) | Same as tablet |
 
 ---
 
-## Phase 7 — Next Steps
-
-### Must-have (blocking deployment)
-- [x] 7.1 Touch input — Konva pinch-to-zoom + 1-finger pan ✅ (commit a30184f)
-- [x] 7.2 Tablet layout — wider tray/panel, bigger buttons ✅ (commit 14d669f)
-- [x] 7.3 Mobile layout — bottom-sheet with plant grid ✅ (commit b1fef50)
-- [x] 7.4 PWA manifest + viewport meta + iOS tags ✅ (commit a30184f)
-- [x] 7.4b App icons — 192px + 512px placeholder PNGs ✅ (commit 749a578)
-
-### Infrastructure
-- [x] Breakpoint hook (`useBreakpoint.js`) — mobile/tablet/desktop detection wired into GardenEditor ✅
-- [x] Responsive CSS foundation — mobile hides sidebars, tablet gets bigger touch targets ✅
-
-### LAN Testing
-- Dev server with `--host`: `npx vite --host` → `http://10.0.0.71:5174`
-- iPad: open Safari on same WiFi, go to that URL. Pinch + pan should work immediately.
-
-### Should-have
-- [ ] 7.5 Capacitor.js wrapper — deferred (needs Android Studio or Mac)
-- [x] 7.6 Garden switcher — unlock upsell row, 2-garden free tier ✅ (commit a9f3039)
-- [x] 7.7 PDF export — 1-page + 4-page tiled, numbered callouts, legend ✅ (commit 8bba0b4)
-- [x] 7.9 Persist last-used garden index ✅ (commit ebf8ede)
-- [x] 7.10 Hide Edit Shape + block dblclick for all rect/circle types ✅ (commit 45d71e8)
-- [ ] 7.8 Onboarding flow — defer until layout stable (post 7.2/7.5)
-
-### Low priority / quick wins
-- [ ] 7.9 Persist last-used garden index
-- [ ] 7.10 Hide "Edit Shape" for square objects
+## Save System (v2)
+- Schema version stamped on every save (`_schemaVersion: 2`)
+- Backup slot: `gardenData_backup` — auto-updated before each write
+- Migration: old saves upgraded on load (missing fields filled with defaults)
+- `exportGardensJSON()` ready to wire to a "Download Backup" button
 
 ---
 
-## Future Roadmap Topics *(to discuss — not yet scoped)*
-- **Monetization** — pricing model, free tier vs paid, App Store pricing
-- **Gamification** — badges, streaks, planting milestones
-- **User accounts** — auth, cloud save, multi-device sync
-- **Sandbox / test environment** — staging vs live, test users
-- **Marketing / promotion** — launch strategy, social, App Store ASO
+## Open Items
+- **#9** Dream garden — Rob creates when ready; needs a finalized garden first
+- **#12** Multi-device — deferred; needs backend + user accounts
+- **#14** Incomplete in doc — awaiting Rob's additions
+- **Phase 8** Textures — planned next major phase
+- **Capacitor.js** wrapper — deferred (needs Android Studio or Mac)
 
 ---
 
 ## Key Files
 | File | Purpose |
 |------|---------|
-| `ARCHITECTURE.md` | Component tree, hooks, refs, layers, struct types — read before touching code |
-| `GAP-ANALYSIS.md` | Feature status vs v8 prototype, Phase 7 roadmap |
-| `REVISION-LOG.md` | Version history, per-change checklist |
-| `LESSONS.md` | Project-specific bugs and patterns |
-| `prototype/index-v8.html` | Working reference — read before any canvas/Konva work |
-| `stickers/` | 36 plant PNG stickers |
-| `app/` | React scaffold (Vite + Konva) |
-
----
-
-## Sticker Catalog
-- 36 plants confirmed in catalog
-- Art style: PvZ × Stardew Valley — bold, retro game feel
-- Junction: `app/public/stickers` → `../stickers/`
-- Research: `research/STICKER-ROADMAP.md`, `research/STICKER-STRATEGY.md`
+| `ARCHITECTURE.md` | Component tree, hooks, refs, layers — read before touching code |
+| `LESSONS.md` | Project-specific bugs and patterns (L010–L014) |
+| `REVISION-LOG.md` | Version history per change |
+| `GAP-ANALYSIS.md` | Feature status |
+| `prototype/index-v8.html` | Working reference — read before canvas/Konva work |
+| `garden-organizer-export.txt` | Latest export of Garden Organizer Google Doc |
 
 ---
 
 ## Standing Rules
-1. Read `ARCHITECTURE.md` at the start of every coding session
+1. Read `ARCHITECTURE.md` at session start
 2. Read v8 before solving any canvas/visual/coordinate problem
 3. One fix at a time — verify compile + behaviour before moving on
 4. Commit after every confirmed working change
 5. No session ends with uncommitted changes or stale docs
+6. Port = 5200 always (never float)
+7. Garden Organizer doc = `1F3mA5UZw1qo2wxd3pqMuSvyph3L4biChiJ18kbhRf5Q`
