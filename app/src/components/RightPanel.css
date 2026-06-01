@@ -25,8 +25,15 @@
   min-height: 0;
 }
 
-/* Tool menu idle state: fill panel, buttons share space evenly */
+/* Tool menu idle state: natural stacking on desktop/tablet */
 .panel-content.tool-menu {
+  gap: 6px;
+  justify-content: flex-start;
+  overflow-y: auto;
+}
+
+/* Mobile: fill panel and distribute space evenly */
+.bp-mobile .panel-content.tool-menu {
   gap: 0;
   justify-content: space-between;
   overflow: hidden;
@@ -118,8 +125,7 @@
   color: #2a3d1a;
   text-align: left;
   transition: background .12s;
-  flex: 1;
-  min-height: 0;
+  flex: none;        /* fixed height — no stretching on desktop/tablet */
   box-sizing: border-box;
   overflow: hidden;
   white-space: nowrap;
@@ -175,10 +181,23 @@
 }
 .tool-menu-back:hover { background: #e8f5e9; }
 
-/* ── Mobile: re-enable fluid scaling for tool menu ── */
+/* ── Mobile: re-enable fluid scaling + stretching for tool menu ── */
 .bp-mobile .tool-menu-btn {
+  flex: 1;           /* stretch to fill on mobile */
+  min-height: 0;
   padding: clamp(4px, 1.2vh, 8px) 10px;
   font-size: clamp(10px, 1.4vh, 12px);
+}
+.bp-mobile .tool-menu-items {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  gap: clamp(2px, 0.6vh, 5px);
+}
+.bp-mobile .tool-menu-group {
+  flex: 1;
+  min-height: 0;
+  gap: clamp(2px, 0.5vh, 4px);
 }
 .bp-mobile .tool-menu-emoji { font-size: clamp(11px, 1.4vh, 14px); }
 .bp-mobile .tool-menu-label { font-size: clamp(10px, 1.4vh, 12px); }
@@ -186,18 +205,16 @@
 .bp-mobile .tool-menu-back  { padding: clamp(3px, 0.8vh, 5px) 8px; font-size: clamp(9px, 1.1vh, 11px); }
 .bp-mobile .panel-sep.menu-sep { margin: clamp(2px, 0.5vh, 4px) 0; }
 
-/* ── Tool menu item container (distributes buttons evenly) ── */
+/* ── Tool menu item container ── */
 .tool-menu-items {
   display: flex;
   flex-direction: column;
-  gap: clamp(2px, 0.6vh, 6px);
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
+  gap: 5px;      /* fixed gap on desktop/tablet */
+  flex: none;    /* don't stretch — natural content height */
 }
 
 /* ── Expandable group (Decks / Hedges / Pools) ── */
-.tool-menu-group { display: flex; flex-direction: column; gap: clamp(2px, 0.5vh, 4px); flex: 1; min-height: 0; }
+.tool-menu-group { display: flex; flex-direction: column; gap: 4px; }
 
 .tool-menu-btn.group-header {
   justify-content: space-between;
