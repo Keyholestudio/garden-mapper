@@ -18,7 +18,7 @@
   border: 1.5px solid #a5d6a7;
   border-radius: 8px;
   background: #f9fbe7;
-  font-size: 11px;
+  font-size: 12px;
   font-family: inherit;
   outline: none;
   margin-bottom: 6px;
@@ -61,9 +61,9 @@
 .tray-item:hover         { background: #dcedc8; }
 .tray-item-loading       { opacity: 0.4; cursor: default; }
 .tray-item img           { width: 34px; height: 34px; pointer-events: none; flex-shrink: 0; filter: drop-shadow(0 1px 3px rgba(0,0,0,.3)); object-fit: contain; }
-.tray-item span          { font-size: 10px; font-weight: 600; color: #2a3d1a; line-height: 1.2; }
+.tray-item span          { font-size: 12px; font-weight: 600; color: #2a3d1a; line-height: 1.2; }
 
 .tray-img-placeholder    { width: 34px; height: 34px; background: #e8f5e9; border-radius: 4px; flex-shrink: 0; }
 
 .tray-divider            { width: 100%; height: 1px; background: #a5d6a7; margin: 4px 0; }
-.tray-no-results         { font-size: 10px; opacity: .5; text-align: center; padding: 8px 4px; }
+.tray-no-results         { font-size: 12px; opacity: .5; text-align: center; padding: 8px 4px; }
