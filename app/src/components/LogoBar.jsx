@@ -13,19 +13,26 @@ const CELL_IN = 3  // 3 inches per cell at base zoom
 
 export default function LogoBar({
   gardenName, gardenW, gardenH, gardenUnit,
-  currentSeason,
+  currentSeason, onSeasonChange,
   onSave, onOpenSwitcher, onExport, saveFlash,
   scaleLabel,
   isMobile,
 }) {
-  // Mobile: stripped logo bar — logo + profile only
+  // Mobile: logo + season cycle button (top-right)
   if (isMobile) {
+    const cycleSeason = () => onSeasonChange?.((currentSeason + 1) % 4)
     return (
       <div className="logo-bar logo-bar-mobile">
         <div className="logo-center logo-center-mobile">
           <img src="/stickers/Logo.png" alt="Garden Mapper" className="logo-img logo-img-mobile" />
         </div>
-        <button className="logo-profile-btn logo-profile-mobile" title="Profile">👤</button>
+        <button
+          className={`season-cycle-btn season-cycle-${['spring','summer','fall','winter'][currentSeason]}`}
+          onClick={cycleSeason}
+          title={`Season: ${SEASON_NAMES[currentSeason]} — tap to advance`}
+        >
+          {SEASON_NAMES[currentSeason]}
+        </button>
       </div>
     )
   }

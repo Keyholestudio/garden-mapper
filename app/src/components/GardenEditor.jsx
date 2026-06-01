@@ -628,6 +628,7 @@ export default function GardenEditor() {
         gardenName={state.gardenName} gardenW={state.gardenW}
         gardenH={state.gardenH}       gardenUnit={state.gardenUnit}
         currentSeason={state.currentSeason}
+        onSeasonChange={state.setCurrentSeason}
         onSave={handleSave}
         onOpenSwitcher={() => setSwitcherOpen(true)}
         onExport={() => setExportOpen(true)}
@@ -703,7 +704,6 @@ export default function GardenEditor() {
           {isMobile && (
             <MobileSheet
               loadedImages={loadedImages}       onPlantClick={handlePlantClick}
-              currentSeason={state.currentSeason} onSeasonChange={state.setCurrentSeason}
               currentMode={state.currentMode}   onModeChange={state.setCurrentMode}
               bedSubTool={state.bedSubTool}     onBedSubTool={state.setBedSubTool}
               fenceSubTool={state.fenceSubTool} onFenceSubTool={state.setFenceSubTool}

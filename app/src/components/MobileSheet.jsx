@@ -1,26 +1,20 @@
 // MobileSheet.jsx — Mobile bottom sheet
-// Contains: ↑↓ toggle, plant search + 2-col grid, tool menu (same as desktop right panel)
-// Default: expanded (menu mode). Toggle collapses to just the handle bar.
+// Contains: ↑↓ toggle, plant search + 2-col grid, tool menu
+// Season is now controlled by a tap-to-cycle button in LogoBar (top right)
 
-import { useState, useMemo, useLayoutEffect, useRef } from 'react'
+import { useState, useMemo } from 'react'
 import { PLANT_CATALOG } from '../hooks/usePlantCatalog'
 import { ToolMenu } from './toolMenuData.jsx'
 import './MobileSheet.css'
 
-const SEASONS = ['🌸 Spring', '☀️ Summer', '🍂 Fall', '❄️ Winter']
-
 export default function MobileSheet({
-  // Plant tray
   loadedImages, onPlantClick,
-  // Season slider
-  currentSeason, onSeasonChange,
-  // Tool menu
   currentMode, onModeChange,
   bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool,
   onBedSubTool, onFenceSubTool, onFenceType, onPathSubTool, onBuildingSubTool, onWaterSubTool,
   showGrid, onToggleGrid, onResetView, onClearAll,
 }) {
-  const [expanded, setExpanded] = useState(true)  // default: menu mode
+  const [expanded, setExpanded] = useState(true)
   const [query, setQuery] = useState('')
   const [searchFocused, setSearchFocused] = useState(false)
 
@@ -31,21 +25,6 @@ export default function MobileSheet({
       p.label.toLowerCase().includes(q) || p.family.toLowerCase().includes(q)
     )
   }, [query])
-
-  // Season slider label positioning
-  const wrapRef = useRef(null)
-  const lblRefs = [useRef(null), useRef(null), useRef(null), useRef(null)]
-  const positionLabels = () => {
-    const wrap = wrapRef.current
-    if (!wrap) return
-    const thumbW = 20
-    const usable = wrap.offsetWidth - thumbW
-    lblRefs.forEach((ref, i) => {
-      if (!ref.current) return
-      ref.current.style.left = (thumbW / 2 + (i / 3) * usable) + 'px'
-    })
-  }
-  useLayoutEffect(() => { positionLabels() })
 
   return (
     <div className={`mobile-sheet${expanded ? ' expanded' : ' collapsed'}`}>
@@ -61,7 +40,7 @@ export default function MobileSheet({
         </button>
       </div>
 
-      {/* ── Sheet body (only visible when expanded) ── */}
+      {/* ── Sheet body ── */}
       {expanded && (
         <div className="mobile-sheet-body" onPointerDown={e => e.stopPropagation()}>
 
@@ -76,7 +55,7 @@ export default function MobileSheet({
             onBlur={() => setSearchFocused(false)}
           />
 
-          {/* Plant grid — 2 columns, scrollable; expands when tools are hidden */}
+          {/* Plant grid — expands to full height when search is focused */}
           <div className={`mobile-plant-grid${searchFocused ? ' search-active' : ''}`}>
             {filtered.length === 0 && (
               <div className="mobile-no-results">No results</div>
@@ -100,44 +79,26 @@ export default function MobileSheet({
             })}
           </div>
 
-          {/* Divider + tools hidden when keyboard is open (searchFocused) */}
-          {!searchFocused && <div className="mobile-sheet-divider" />}
-
           {/* Tool menu — hidden while search keyboard is open */}
-          {!searchFocused && <div className="mobile-tool-section">
-            <ToolMenu
-              currentMode={currentMode}         onModeChange={onModeChange}
-              bedSubTool={bedSubTool}           onBedSubTool={onBedSubTool}
-              fenceSubTool={fenceSubTool}       onFenceSubTool={onFenceSubTool}
-              fenceType={fenceType}             onFenceType={onFenceType}
-              pathSubTool={pathSubTool}         onPathSubTool={onPathSubTool}
-              buildingSubTool={buildingSubTool} onBuildingSubTool={onBuildingSubTool}
-              waterSubTool={waterSubTool}       onWaterSubTool={onWaterSubTool}
-              showGrid={showGrid}               onToggleGrid={onToggleGrid}
-              onResetView={onResetView}         onClearAll={onClearAll}
-              extraClass="mobile-tool-menu"
-            />
-          </div>}
-
-          {/* Season slider — also hidden when keyboard open */}
-          {!searchFocused && <>
-          <div className="mobile-sheet-divider" />
-          <div className="mobile-season-wrap" ref={wrapRef}>
-            <input
-              type="range" min={0} max={3} step={1}
-              value={currentSeason}
-              onChange={e => onSeasonChange(Number(e.target.value))}
-              className="season-slider"
-            />
-            <div className="season-labels">
-              {SEASONS.map((s, i) => (
-                <span key={i} ref={lblRefs[i]}
-                  className={`season-lbl${currentSeason === i ? ' active' : ''}`}
-                >{s}</span>
-              ))}
-            </div>
-          </div>
-          </>}
+          {!searchFocused && (
+            <>
+              <div className="mobile-sheet-divider" />
+              <div className="mobile-tool-section">
+                <ToolMenu
+                  currentMode={currentMode}         onModeChange={onModeChange}
+                  bedSubTool={bedSubTool}           onBedSubTool={onBedSubTool}
+                  fenceSubTool={fenceSubTool}       onFenceSubTool={onFenceSubTool}
+                  fenceType={fenceType}             onFenceType={onFenceType}
+                  pathSubTool={pathSubTool}         onPathSubTool={onPathSubTool}
+                  buildingSubTool={buildingSubTool} onBuildingSubTool={onBuildingSubTool}
+                  waterSubTool={waterSubTool}       onWaterSubTool={onWaterSubTool}
+                  showGrid={showGrid}               onToggleGrid={onToggleGrid}
+                  onResetView={onResetView}         onClearAll={onClearAll}
+                  extraClass="mobile-tool-menu"
+                />
+              </div>
+            </>
+          )}
 
         </div>
       )}
