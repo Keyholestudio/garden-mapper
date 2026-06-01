@@ -107,24 +107,20 @@
   align-items: center;
   gap: 8px;
   width: 100%;
-  /* Fluid padding: shrinks on short screens */
-  padding: clamp(4px, 1.2vh, 10px) 10px;
+  padding: 8px 10px;
   border: 1.5px solid #a5d6a7;
   border-radius: 9px;
   background: #f1f8e9;
   cursor: pointer;
-  /* Fluid font: shrinks on short screens */
-  font-size: clamp(10px, 1.4vh, 13px);
+  font-size: 12px;
   font-weight: 600;
   font-family: inherit;
   color: #2a3d1a;
   text-align: left;
   transition: background .12s;
-  /* In tool-menu context, share height equally */
   flex: 1;
   min-height: 0;
   box-sizing: border-box;
-  /* Prevent text overflow */
   overflow: hidden;
   white-space: nowrap;
 }
@@ -153,24 +149,24 @@
 
 /* Row layout for emoji + label */
 .tool-menu-btn > * { pointer-events: none; }
-.tool-menu-emoji { font-size: clamp(11px, 1.4vh, 14px); flex-shrink: 0; }
-.tool-menu-label { font-size: clamp(10px, 1.4vh, 13px); font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
-.tool-menu-hint  { font-size: clamp(8px, 1vh, 9px); color: #888; margin-top: 1px; display: block; }
+.tool-menu-emoji { font-size: 14px; flex-shrink: 0; }
+.tool-menu-label { font-size: 12px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+.tool-menu-hint  { font-size: 9px; color: #888; margin-top: 1px; display: block; }
 .tool-menu-btn.active .tool-menu-hint { color: rgba(255,255,255,0.7); }
 
 /* Separator in tool menu (between tools and utilities) */
-.panel-sep.menu-sep { flex-shrink: 0; margin: clamp(2px, 0.5vh, 6px) 0; }
+.panel-sep.menu-sep { flex-shrink: 0; margin: 4px 0; }
 
 .tool-menu-back {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: clamp(3px, 0.8vh, 6px) 8px;
+  padding: 5px 8px;
   border: 1.5px solid #c8e6c9;
   border-radius: 7px;
   background: #f9fdf9;
   cursor: pointer;
-  font-size: clamp(10px, 1.2vh, 12px);
+  font-size: 11px;
   font-weight: 700;
   font-family: inherit;
   color: #558B2F;
@@ -178,6 +174,17 @@
   flex-shrink: 0;
 }
 .tool-menu-back:hover { background: #e8f5e9; }
+
+/* ── Mobile: re-enable fluid scaling for tool menu ── */
+.bp-mobile .tool-menu-btn {
+  padding: clamp(4px, 1.2vh, 8px) 10px;
+  font-size: clamp(10px, 1.4vh, 12px);
+}
+.bp-mobile .tool-menu-emoji { font-size: clamp(11px, 1.4vh, 14px); }
+.bp-mobile .tool-menu-label { font-size: clamp(10px, 1.4vh, 12px); }
+.bp-mobile .tool-menu-hint  { font-size: clamp(8px, 1vh, 9px); }
+.bp-mobile .tool-menu-back  { padding: clamp(3px, 0.8vh, 5px) 8px; font-size: clamp(9px, 1.1vh, 11px); }
+.bp-mobile .panel-sep.menu-sep { margin: clamp(2px, 0.5vh, 4px) 0; }
 
 /* ── Tool menu item container (distributes buttons evenly) ── */
 .tool-menu-items {
