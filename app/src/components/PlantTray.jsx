@@ -31,12 +31,26 @@ export default function PlantTray({ loadedImages, onPlantClick, onPlantDragStart
     const img = loadedImages?.[entry.key]
     if (!img || typeof img === 'string') return
     const enriched = { ...entry, _img: img }
-    // Store key in dataTransfer so drop handler can identify the plant
     e.dataTransfer.setData('text/plain', entry.key)
     e.dataTransfer.effectAllowed = 'copy'
-    // Use the sticker image as drag ghost
-    if (e.dataTransfer.setDragImage && img instanceof HTMLImageElement) {
-      e.dataTransfer.setDragImage(img, img.width / 2, img.height / 2)
+    // Draw a small 48×48 ghost onto an offscreen canvas so the drag image
+    // is compact and doesn't blow up to the raw sticker dimensions.
+    try {
+      const GHOST = 48
+      const offscreen = document.createElement('canvas')
+      offscreen.width  = GHOST
+      offscreen.height = GHOST
+      const ctx = offscreen.getContext('2d')
+      ctx.globalAlpha = 0.85
+      ctx.drawImage(img, 0, 0, GHOST, GHOST)
+      // Position offscreen element so Chrome doesn't complain
+      offscreen.style.cssText = 'position:fixed;top:-200px;left:-200px;'
+      document.body.appendChild(offscreen)
+      e.dataTransfer.setDragImage(offscreen, GHOST / 2, GHOST / 2)
+      // Clean up after the drag starts
+      requestAnimationFrame(() => document.body.removeChild(offscreen))
+    } catch (_) {
+      // Fallback: no custom ghost (browser default)
     }
     if (onPlantDragStart) onPlantDragStart(enriched)
   }
