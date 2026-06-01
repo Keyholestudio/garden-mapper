@@ -3,7 +3,7 @@
   position: absolute;
   /* Bottom offset = labels(18px) + pill-bottom-pad(12px) + margin(12px) = 42px
      This ensures the whole pill + labels clear editor-layout's overflow:hidden boundary */
-  bottom: 42px;
+  bottom: 28px;
   left: 0;
   right: 0;
   display: flex;
@@ -14,15 +14,13 @@
 
 .season-float-pill {
   pointer-events: all;
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1.5px solid rgba(17, 80, 42, 0.25);
-  border-radius: 40px;
-  padding: 8px 24px 8px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  /* Extra vertical padding so labels sit clear of the track */
+  padding: 6px 24px 24px;
   width: min(560px, 60vw);
-  /* Allow labels to overflow below the pill border */
   overflow: visible;
 }
 
@@ -121,7 +119,7 @@
 .season-slider-wrap {
   position: relative;
   width: 100%;
-  padding-bottom: 18px; /* space for absolute labels */
+  padding-bottom: 22px; /* space for 12px labels + gap */
 }
 
 .season-slider {
@@ -157,12 +155,14 @@
 .season-lbl {
   position: absolute;
   transform: translateX(-50%);
-  font-size: 10px;
+  font-size: 12px;   /* matches panel/menu text */
   font-weight: 700;
   color: #558B2F;
-  opacity: 0.6;
+  opacity: 0.7;
   white-space: nowrap;
   text-align: center;
+  /* Subtle text shadow so labels read against any season background */
+  text-shadow: 0 1px 3px rgba(255,255,255,0.7);
 }
 .season-lbl.active { opacity: 1; color: #11502A; }
 
