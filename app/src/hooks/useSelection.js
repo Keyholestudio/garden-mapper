@@ -51,7 +51,7 @@ export function useSelection({
     exitHandles()
     if (!stage || !layers) return
     const { uiLayer, structLayer } = layers
-    const pts = getShapePts(shape)
+    const pts = getShapeWorldPts(shape)
     const removing = removingPtRef.current
     pts.forEach((_, i) => {
       const h = makeHandle(id, shape, i, uiLayer, structLayer)
@@ -64,7 +64,7 @@ export function useSelection({
     })
     shape.off('dragmove.edithandles')
     shape.on('dragmove.edithandles', () => {
-      const pts2 = getShapePts(shape)
+      const pts2 = getShapeWorldPts(shape)
       editHandlesRef.current.forEach((h, i) => {
         if (pts2[i]) { h.x(pts2[i].x); h.y(pts2[i].y) }
       })
@@ -74,7 +74,7 @@ export function useSelection({
   }
 
   function makeHandle(id, shape, ptIdx, uiLayer, structLayer) {
-    const pts = getShapePts(shape)
+    const pts = getShapeWorldPts(shape)
     const p   = pts[ptIdx]
     const h   = new Konva.Circle({
       x: p.x, y: p.y,
@@ -84,8 +84,11 @@ export function useSelection({
     })
     h.on('dragmove', () => {
       if (removingPtRef.current) return  // don't drag when in remove mode
-      const cur = getShapePts(shape)
-      cur[ptIdx] = { x: h.x(), y: h.y() }
+      // h.x/y are world coords; convert to local (shape-relative) for Line shapes
+      const cur = getShapeLocalPts(shape)
+      const lx  = shape instanceof Konva.Line ? shape.x() : 0
+      const ly  = shape instanceof Konva.Line ? shape.y() : 0
+      cur[ptIdx] = { x: h.x() - lx, y: h.y() - ly }
       setShapePts(shape, cur)
       structLayer.batchDraw()
     })
@@ -176,6 +179,32 @@ export function useSelection({
 }
 
 // ── Shape point helpers (shared with edit mode) ───────────
+
+// Returns points in local (shape-relative) coords — used for writing back to shape
+export function getShapeLocalPts(shape) {
+  if (shape instanceof Konva.Rect) {
+    const x=shape.x(), y=shape.y(), w=shape.width(), h=shape.height()
+    return [{ x, y }, { x: x+w, y }, { x: x+w, y: y+h }, { x, y: y+h }]
+  }
+  if (shape instanceof Konva.Circle) return [{ x: shape.x(), y: shape.y() }]
+  if (shape instanceof Konva.Group)  return [{ x: shape.x(), y: shape.y() }]
+  const flat = shape.points?.() || []
+  const pts  = []
+  for (let i = 0; i < flat.length; i += 2) pts.push({ x: flat[i], y: flat[i+1] })
+  return pts
+}
+
+// Returns points in world (stage) coords — used for placing handles
+export function getShapeWorldPts(shape) {
+  const local = getShapeLocalPts(shape)
+  // Konva.Line stores points relative to shape.x/y — offset to world coords
+  if (shape instanceof Konva.Line) {
+    const ox = shape.x(), oy = shape.y()
+    return local.map(p => ({ x: p.x + ox, y: p.y + oy }))
+  }
+  return local  // Rect/Circle/Group already use world coords
+}
+
 export function getShapePts(shape) {
   if (shape instanceof Konva.Rect) {
     const x=shape.x(), y=shape.y(), w=shape.width(), h=shape.height()

@@ -142,9 +142,10 @@ export default function RightPanel({
     const colours = TYPE_COLOURS[d.type] || BED_COLOURS
     const isPath  = d.type === 'path'
     const isUG    = d.type?.startsWith('underground')
-    const rectTypes = ['bed-square', 'building', 'deck', 'pool-sq', 'hedge-sq']
-    const showDimRect   = isRect   && rectTypes.includes(d.type)
-    const showDimCircle = isCircle && ['water-fountain','pool-circle'].includes(d.type)
+    const rectTypes = ['bed-sq', 'building', 'deck', 'deck-sq', 'pool-sq', 'hedge-sq']
+    const isRectType    = isRect   && rectTypes.includes(d.type)
+    const showDimRect   = isRectType
+    const showDimCircle = isCircle && ['water-fountain','pool-circle','fountain','pond'].includes(d.type)
 
     return (
       <div className="right-panel">
@@ -232,8 +233,8 @@ export default function RightPanel({
             👁 {d.transparent ? 'Restore' : 'Make Transparent'}
           </button>
 
-          {/* Edit / Disconnect */}
-          {!isCircle && !isGroup && (
+          {/* Edit / Disconnect — hide for rect types, circles, groups (no point editing needed) */}
+          {!isCircle && !isGroup && !isRectType && (
             <button className="btn-panel" onClick={() => onEnterEdit?.(selectedStruct.id)}>✏️ Edit Shape</button>
           )}
           {isGroup && (
