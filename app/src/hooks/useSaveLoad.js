@@ -6,8 +6,20 @@ import Konva from 'konva'
 import { SIZE_MAP } from './useGardenState'
 import { makePlantGroup } from '../utils/plantUtils'
 
-const LS_KEY     = 'gardenData'
-const MAX_GARDENS = 2
+const LS_KEY          = 'gardenData'
+const LS_LAST_IDX_KEY = 'gardenLastIndex'
+const MAX_GARDENS     = 2
+
+// ── Last-used index helpers ───────────────────────────────────────────────────
+export function readLastGardenIndex() {
+  try {
+    const v = parseInt(localStorage.getItem(LS_LAST_IDX_KEY) ?? '0')
+    return isNaN(v) ? 0 : v
+  } catch { return 0 }
+}
+export function writeLastGardenIndex(idx) {
+  try { localStorage.setItem(LS_LAST_IDX_KEY, String(idx)) } catch {}
+}
 
 // ── localStorage helpers ──────────────────────────────────────────────────────
 export function readGardens() {
@@ -86,6 +98,7 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
     gardens.push(gardenEntry)
   }
   writeGardens(gardens)
+  writeLastGardenIndex(currentGardenIndex)
   return true
 }
 

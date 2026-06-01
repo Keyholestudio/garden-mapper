@@ -10,7 +10,7 @@ import { useSelection }    from '../hooks/useSelection'
 import { PLANT_CATALOG }   from '../hooks/usePlantCatalog'
 import { addPlant }        from '../utils/plantUtils'
 import { insertPointNearestSegment } from '../hooks/useSelection'
-import { saveGarden, loadGarden, createNewGarden, readGardens } from '../hooks/useSaveLoad'
+import { saveGarden, loadGarden, createNewGarden, readGardens, readLastGardenIndex, writeLastGardenIndex } from '../hooks/useSaveLoad'
 import { addRectStruct } from '../utils/drawUtils'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import LogoBar        from './LogoBar'
@@ -451,8 +451,9 @@ export default function GardenEditor() {
     if (!stageReady || loadedImagesCount === 0) return
     const gardens = readGardens()
     if (gardens.length === 0) return  // first run — show setup overlay
+    const lastIdx = Math.min(readLastGardenIndex(), gardens.length - 1)
     loadGarden({
-      idx: 0,
+      idx: lastIdx,
       stage: stageRef.current,
       layers: layersRef.current,
       state,
@@ -471,8 +472,8 @@ export default function GardenEditor() {
       setIsSetup:    state.setIsSetup,
       onZoomToFit:   handleResetView,
     })
-    currentGardenIndexRef.current = 0
-    setCurrentGardenIndex(0)
+    currentGardenIndexRef.current = lastIdx
+    setCurrentGardenIndex(lastIdx)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stageReady, loadedImagesCount])
 
@@ -516,6 +517,7 @@ export default function GardenEditor() {
     if (ok) {
       currentGardenIndexRef.current = idx
       setCurrentGardenIndex(idx)
+      writeLastGardenIndex(idx)
     }
   }
 
