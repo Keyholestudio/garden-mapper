@@ -38,6 +38,7 @@ cd projects/garden-planner/app && npm run dev
 | Phase 6 — Season themes, promo banner, logo bar | ✅ Complete |
 | All 10 previously untested features | ✅ Confirmed working (2026-05-31) |
 | Phase 7 — Mobile & App Readiness | 🟡 In Progress |
+| Phase 8 — Textures & Visual Polish | 🔲 Planned |
 
 ---
 
@@ -79,7 +80,9 @@ Mockups: `design/mockup-mobile.jpg`, `design/mockup-tablet.jpg`
 - [ ] 7.5 Capacitor.js wrapper — deferred (needs Android Studio or Mac)
 - [x] 7.6 Garden switcher — unlock upsell row, 2-garden free tier ✅ (commit a9f3039)
 - [x] 7.7 PDF export — 1-page + 4-page tiled, numbered callouts, legend ✅ (commit 8bba0b4)
-- [ ] 7.8 Onboarding flow — guided first-run **← next**
+- [x] 7.9 Persist last-used garden index ✅ (commit ebf8ede)
+- [x] 7.10 Hide Edit Shape + block dblclick for all rect/circle types ✅ (commit 45d71e8)
+- [ ] 7.8 Onboarding flow — defer until layout stable (post 7.2/7.5)
 
 ### Low priority / quick wins
 - [ ] 7.9 Persist last-used garden index
