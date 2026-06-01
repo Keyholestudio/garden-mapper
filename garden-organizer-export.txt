@@ -1,0 +1,1114 @@
+﻿Garden App Plan
+https://docs.google.com/document/d/1F3mA5UZw1qo2wxd3pqMuSvyph3L4biChiJ18kbhRf5Q/edit?usp=sharing
+
+Garden Planning Tool:
+
+
+Before we action anything, I’ve added the ‘Expanded app plan” tab to this document. That’s where we will be working and expand on what I have written below. We will build out a plan for the app, add inspiration graphics, and highlight areas that we need to focus on before acting on them. Please read the plan below, create a project plan for this, use subagents to research the tools needed for tool building (create a framework of what’s needed for now and future uses -- I want to build with the future in mind but keep costs to a minimum till we have a workable tool). A subagent to research garden planning tools that already exist like this, read the reviews of these tools and find common complaints and preferred features by the users that we should consider when building out the plan. Please also research the process of creating a cohesive theme for an app that includes things like creating textures for apps, etc.
+
+
+The goal is to create an interactive gardening web based tool that’s accessible on a tablet/webpage and, in the future, a mobile phone compatible app. Webpage compatibility with kofi.
+We, for now, can self-host and use the trycloudflare link as the tunnel that will provide the URL (Like we have set up on our marketmap tool)
+I want to be able to show a drawing of my garden/property. I want to be able to drag and drop “stickers” and/or a label of the flower/plants in my yard.
+
+This app will allow me to:
+Set the time of the year (Spring, summer, fall, and winter) as a slider at the bottom of the screen.
+* When changing seasons, plants like tulips will be selected for spring and summer and I can toggle them off for fall and (by default) winter. 
+* The colour of the landscape/background colour will change a bit in each season. Spring green, summer dark green, fall oranges, winter white or beige.
+We will create a catalog of graphical images of plants using image generation software.
+We will create the ability to draw flower beds, decks, pools, buildings, fences and decor in the yard. These shapes will not be on the same layer of drag and drop as the plants, they will be in a sub layer beneath the plants and will be accessible in the “draw my property” section.
+Scrape plant information: when to plant, when to harvest, what the soil ph should be, light conditions required.
+Provide a link to a plant identification tool so people can figure out what their plants are.
+
+
+Tools we will lean heavily on:
+Image generation software to create images of the plants and trees.
+* We will work to create a cohesive theme.
+* We will use flat colours to start, but we will have to build a system where the flat colours are replaced by textures and images of plants that we have on file and have created together. 
+* The stylistic choices are not yet confirmed, so we will have to use basic colours and shapes for now, but we will have to be able to replace those shapes with created images.
+   * I like the esthetic of stardew valley, however gardens are not always so heavily gridded. I would like a flowier version.
+
+
+Example workflow:
+Open the app
+Log in
+Select your garden (you may have different properties and want to select one or the other: Cottage or Home for example)
+If you haven’t created a garden yet, you create one:
+* Enter the name of the garden
+* Then draw out the dimensions. The base layer utilizes snap to dimensions where you can draw out lines of the property on a grid. The flowerbeds can be rounded or square. You will draw in the garden beds and the can be coloured according to a drop down of colour options (browns, greys, tans). We will build out textures for that.
+Adding plants: Then when the garden is created, you have a search bar for the plants and after you select one from the quicklist/most recently used list, you click and drag it from the list to its position in the garden.
+* You can pinch and zoom or use the mouse zoom to map the garden larger or smaller and you can make the plant bigger or smaller as well.
+* After you place the plant, you can select it to be given a list of options: delete, copy, create a range of this plant using points and lines (This will allow you to mark a border of a plant but now be required to copy, paste and move dozens of plants), add photo of the flower from your camera (upload from PC or accessible through the images on the phone, a notes section, a wikipedia scraped information secion that displays the plants basic information, and decide what seasons this plant should appear in.
+* Change season on the slider at the bottom. Allowing you to access different seasons and see the garden in that season: a tulip sticker in spring can be a different size then the tulip in summer. And, may be not visible in fall and winter.
+Everything is saved automatically.
+
+
+────────────────────────────────────────────────────
+PROTOTYPE v2 FEEDBACK (May 24, 2026) — integrated into v3
+────────────────────────────────────────────────────
+✅ Panning: click+drag on empty canvas now pans in select mode
+✅ Adaptive grid: cells always readable at any zoom level; scale label updates
+✅ Stroke width fix: strokeScaleEnabled:false + transformend normalization
+   (border stays consistent when resizing a bed)
+✅ Square corners on beds (cornerRadius: 0)
+✅ Plant transparency toggle: button in right panel makes plant semi-transparent (0.35 opacity)
+   and sends it behind other plants (still above structures)
+✅ Copy/paste plants: Ctrl+C / Ctrl+V with offset placement
+✅ Freeform Bed tool: click to place points, smooth spline on double-click or click near start
+✅ Freeform Path tool: same mechanic, open shape with thick stroke
+✅ Hedge tool: same as freeform bed, green colour palette
+DEFERRED to v4:
+   - Snap-fit beds (edge proximity + magnetic snap)
+   - Moving individual spline control points after placement
+   - Parallel-edge path distortion
+Expanded App Plan
+════════════════════════════════════════════════════════════════════
+  EXPANDED APP PLAN — GARDEN PLANNING TOOL
+  v7 — V7 prototype complete | May 28, 2026
+════════════════════════════════════════════════════════════════════
+
+
+══════════════════════════════════════════════════════
+1. PROJECT VISION
+══════════════════════════════════════════════════════
+
+
+Name candidates: "Your Garden Map" / "Notre Plan du Jardin"
+Tagline: "Your garden, through every season."
+
+
+Aerial top-down view. Retro game plants (PvZ × Stardew Valley).
+Bright vibrant colours, bold outlines, symbolic and iconic stickers.
+Design and beauty first. Data secondary.
+
+
+── MONETIZATION ──────────────────────────────────────────────────
+Phase 1: Free + Ko-fi optional.
+Phase 2: $25/year hosted access with personal passcode.
+Long-term: Downloadable PDF. Web version persists. No data hostage.
+
+
+
+
+══════════════════════════════════════════════════════
+2. KEY DECISIONS (confirmed)
+══════════════════════════════════════════════════════
+
+
+✅ Single user for MVP
+✅ No location-dependent data
+✅ Plant families over individual species
+✅ No or minimal notifications
+✅ Season slider snaps to 4 seasons, per-plant visibility on placement
+✅ Grid: 3×3 inches per cell (min display: 6 inches), imperial/metric toggle
+✅ Drawing tool MVP: rectangles, curved/straight freeform. Freeform paths.
+✅ Top-down aerial view only.
+✅ Language: English first, French future.
+✅ Sticker style: Computer's SVGs approved; Rob to contribute more.
+✅ Plant sizes: XS (15cm) / S (30cm) / M (60cm) / L (1m)
+✅ Up to 2 gardens per user (localStorage for prototype, DB for React app)
+✅ Page background: white. Canvas retains seasonal colour.
+✅ Panels (tray, right panel, bottom bar): floating white cards, #11502A border, rounded corners.
+✅ Logo: "Garden Mapper" wordmark (Rob's design, dark green serif). Centered in logo bar (locked).
+✅ Rotating promotional banner: #11502A, auto-rotates every 60s.
+✅ Logo bar: cell+season on one line (left), logo (center, locked), garden name+dims on one line + controls (right).
+✅ Canvas has rounded corners (14px radius) matching panels.
+✅ Gap between canvas and bottom slider panel (matching panel gaps).
+✅ Default startup zoom: full property fits in view.
+✅ Object grouping: up to 4 same-type objects can join. Disconnect button splits them.
+✅ Banner rotation confirmed: setInterval(60000) runs on page load.
+✅ Underground tools (Electrical + Plumbing) in Building panel — freeform curved lines.
+✅ Layer ordering: Forward/Back buttons in right panel for all objects.
+✅ Struct transparency toggle in right panel. Transparent structs move to back.
+✅ Positions and sizes persist correctly across saves/refreshes (origin-relative storage).
+✅ Reset button zooms to fit (same as default load).
+✅ Grid minimum: 1 cell = 6 inches / 15cm — grid stops shrinking beyond this.
+
+
+
+
+══════════════════════════════════════════════════════
+3. PROTOTYPE LOG
+══════════════════════════════════════════════════════
+
+
+Prototype v1 (May 20): prototype/index.html
+  - Basic drag/drop, season slider, 3 stickers
+
+
+Prototype v2 (May 22): prototype/index-v2.html
+  - Property setup, bed/building/path tools, search, recents, grid, scale bar
+
+
+Prototype v3 (May 22, updated May 24): prototype/index-v3.html
+  - Pan, freeform beds/paths/hedges, transparency, copy/paste, adaptive grid,
+    boundary snap + bugfixes
+
+
+Prototype v4 (May 24, 2026): prototype/index-v4.html
+  - Tool consolidation (Beds/Hedges/Paths sub-tools in right panel)
+  - Boundary close via perimeter traversal
+  - Edit mode (dblclick → draggable handles, add/remove points)
+  - Path width slider
+
+
+Prototype v5 (May 26, 2026): prototype/index-v5.html
+  ALL V4 FEEDBACK ACTIONED:
+  ✅ Dynamic min zoom, grid always renders, straight bed preview fix
+  ✅ Edit handles follow shape on drag
+  ✅ Plant size classifications (XS/S/M/L)
+  ✅ Snap-to-grid toggle
+  ✅ Insert point anywhere on line
+  ✅ Square bed/building snap-join merge
+  ✅ Hedges → Fences (renamed), Gate types, Water tool, Decking
+  ✅ Two gardens per user, boundary close fix
+
+
+Prototype v6 (May 26, 2026): prototype/index-v6.html
+  ALL V5 FEEDBACK ACTIONED:
+  ✅ Object merge — groups preserve original sizes (no bounding-box expansion)
+  ✅ ← Back button in right panel
+  ✅ Rotating banner (#11502A, 60s, fade, 5 slogans)
+  ✅ White page background, floating panels
+  ✅ Logo bar with Garden Mapper logo
+  ✅ Old topbar removed
+
+
+Prototype v6b (May 26-27, 2026): prototype/index-v6.html (updated in-place)
+  ✅ Logo bar one-line layout (cell+season left, name+dims right)
+  ✅ Tray scrollbar inset (no corner overlap)
+  ✅ Canvas rounded corners + gaps
+  ✅ Default zoom fits full property
+  ✅ Disconnect Objects button for groups
+  ✅ Group merge up to 4 same-type rects
+  ✅ Banner rotation confirmed
+
+
+Prototype v7 (May 28, 2026): prototype/index-v7.html
+  ALL V6b + ROB'S NOTES ACTIONED:
+  ✅ V7 created with REVISION-LOG.md system (full paper trail)
+  ✅ Logo bar: cell size + season badge side-by-side (auto-width, no wrap)
+  ✅ Right zone: garden name + dimensions on one line (no wrap, ellipsis on overflow)
+  ✅ Scrollbar: 10px, inset, no arrows, search bar pinned above scroll
+  ✅ Default zoom: zoomToFit() on load and garden switch
+  ✅ Object disconnect button (groups → individual rects)
+  ✅ Group merging up to 4 objects (beds, buildings, decks, pools, hedges)
+  ✅ Multi-select: Ctrl/Shift+click, yellow bounding boxes, Delete All button
+  ✅ User icon: always circular (aspect-ratio + flex-shrink fix)
+  ✅ Curved bed boundary close: hybrid SVG path (curves preserved, boundary straight)
+  ✅ PNG sticker selectability: makePlantGroup() factory with hitRect
+  ✅ Clear button: custom modal (browser confirm() was silently blocked)
+  ✅ Square hedge tool (same join/break/edit as other square objects)
+  ✅ Dimension entry: square objects (L×W), circle objects (diameter)
+  ✅ Fountains + round pools: snap-to-grid on placement and drag
+  ✅ Decks: collapsed under "Deck Type" accordion in Building panel
+  ✅ Season slider: labels precisely aligned using positionSeasonLabels()
+  ✅ Underground category: Electrical (black/red/yellow) + Plumbing (grey/blue/brown)
+     Freeform curved lines, colour change after placement, width slider, transparency
+  ✅ Feature Roadmap updated in doc (V4: Touch, Gamification, Subscriptions, Textures, Play Store; V1: PDF Export)
+  ✅ Garden switcher delete: custom modal (same confirm() fix)
+  ✅ Logo locked to center (max-width on right zone, ellipsis on name)
+  ✅ Grid minimum: 6in / 15cm (mult forced ≥ 2 in drawGrid + updateScaleDisplay)
+  ✅ Position/size persistence: scaleX/Y saved for plants; lx/ly for lines; svgPath saved for boundary-close curves; originX/Y offset applied on load
+  ✅ Struct transparency toggle in right panel (sends to back at 0.35 opacity)
+  ✅ Layer order: ▲ Forward / ▼ Back buttons for plants and structs
+  ✅ Reset button: calls zoomToFit() (centered, full garden visible)
+
+
+  KEY BUG FIXED (May 28): closeFreeShape() crashed silently due to `const opacity`
+  scoped inside else-block but referenced outside it. ReferenceError broke Enter
+  for ALL freeform tools. Fix: hoist opacity declaration above if/else block.
+  Lesson: always verify variable scope when adding vars inside if/else blocks.
+
+
+  DEFERRED to React scaffold:
+  - Snap-fit beds (magnetic edge snapping)
+  - Top-down fence visuals (Metal/Stone/Plastic drawn appearance)
+  - Undo for freeform shapes
+  - Multi-garden group merging
+
+
+
+
+══════════════════════════════════════════════════════
+4. TECH STACK
+══════════════════════════════════════════════════════
+
+
+Layer          | Choice                   | Why
+──────────────────────────────────────────────────────────────
+Frontend       | React 19 + Vite          | Best Konva.js ecosystem; React Native path for mobile
+Canvas         | Konva.js (react-konva)   | Native drag/drop, layers, pinch-zoom, Transformer
+Backend        | FastAPI (Python 3.12)    | Fast, async, same pattern as other projects
+Database       | PostgreSQL (Docker)      | JSONB for canvas state, multi-garden ready
+Auth           | FastAPI JWT              | Self-hosted, lightweight
+Styling        | TailwindCSS + CSS tokens | Seasonal swap = 6 CSS variable changes
+Deploy         | Docker Compose + CF Tunnel| Same as MarketMap
+Ko-fi          | Static embed widget      | Zero backend work, optional
+
+
+Monthly cost: $0–$10/month. Plant data: V3+.
+
+
+
+
+══════════════════════════════════════════════════════
+5. DESIGN SYSTEM
+══════════════════════════════════════════════════════
+
+
+Design pillars: Organic · Vibrant · Seasonal · Calm
+
+
+Art style: "Retro Aerial Garden"
+  - PvZ (bright colours, bold outlines, simplified icons, top-down)
+  - Stardew Valley (warmth, cozy atmosphere)
+  - All stickers are TOP-DOWN AERIAL perspective
+
+
+Current stickers:
+  ✅ tree.svg       — Deciduous tree (top-down canopy)
+  ✅ rose-bush.svg  — Rose bush (3 blooms + bud)
+  ✅ lilac-bush.svg — Lilac bush (3 bloom clusters)
+  ✅ Logo.png / Logo.jpg — Rob's "Garden Mapper" wordmark (May 26, 2026)
+  ✅ Generated PNG stickers (20-25) — flower clusters, daisies, etc.
+  🔲 Rob's plant designs — pending
+
+
+Seasonal palettes:
+  SPRING: BG #C8E6C9  Accent #558B2F  (confirmed)
+  SUMMER: BG #8BC34A  → to revise brighter post sticker confirmation
+  FALL:   BG #FFCC80  Accent #E65100  (confirmed)
+  WINTER: BG #E3F2FD  Accent #546E7A  (confirmed)
+
+
+Brand colour: #11502A (dark green — banner, borders, buttons)
+
+
+Texture: Phase 1 = flat colours. Phase 2 = ::after overlays.
+
+
+
+
+══════════════════════════════════════════════════════
+6. FEATURE ROADMAP
+══════════════════════════════════════════════════════
+
+
+── PROTOTYPE COMPLETE (v1–v7) ──────────────────────────────────
+  [x] Drag/drop plants, resize (Transformer)
+  [x] Season slider, per-plant visibility
+  [x] Plant tray: search + recently used
+  [x] Property setup (name, dimensions, ft/m)
+  [x] Grid overlay (adaptive cells, min 6in, dynamic scale label)
+  [x] Pan by drag on empty canvas · Scroll to zoom
+  [x] Beds tool: Square / Curved / Straight sub-tools
+  [x] Fences tool: Curved Hedge / Straight Hedge / Straight Fence / Square Hedge
+  [x] Paths tool: Freeform + width control
+  [x] Gate tool: Wood / Metal / Stone / Plastic types
+  [x] Building tool: Building rect / Deck (Curved / Straight / Square)
+  [x] Underground tool: Electrical / Plumbing (freeform curved, colour options)
+  [x] Water tool: Pond / Fountain / Pool Square / Pool Circle
+  [x] Freeform shapes: click points, Enter/dblclick to close
+  [x] Property boundary snap + closure (hybrid SVG path — curves preserved)
+  [x] Edit mode: double-click → draggable handles, insert/remove points
+  [x] Plant transparency toggle · Copy/paste · Ctrl+Z undo
+  [x] Plant sizes XS/S/M/L — default size on placement
+  [x] Snap-to-grid toggle (all objects including fountains/circles)
+  [x] Object grouping (up to 4 same-type objects) + Disconnect button
+  [x] Multi-select (Ctrl/Shift+click) + yellow highlight + Delete All
+  [x] Dimension entry for square objects (L×W) and circles (diameter)
+  [x] Layer ordering: ▲ Forward / ▼ Back for plants and structs
+  [x] Struct transparency toggle (sends to back at 35% opacity)
+  [x] Dynamic zoom-out to fit full property (default load + Reset button)
+  [x] Two-garden switcher (localStorage save/load, delete working)
+  [x] Rotating promotional banner (#11502A, 60s auto-rotate, fade)
+  [x] White page background, floating rounded panels
+  [x] Logo bar (locked center, auto-width zones, ellipsis on overflow)
+  [x] Canvas rounded corners + proper gaps
+  [x] Tray scrollbar inset (10px, no corner overlap, search pinned)
+  [x] Season slider labels precisely aligned (JS positioning, responsive)
+  [x] Position/size persistence across saves and window resizes
+  [x] Garden Mapper logo (Rob's design) integrated
+  [x] Picket fence SVG icon for Fences tool
+  [x] Custom modals (Clear + Delete garden — browser confirm() was blocked)
+  [x] REVISION-LOG.md system for full code change tracking
+
+
+── MVP (v0.1) — REACT SCAFFOLD ──────────────────────────────────
+  [ ] Scaffold React 19 + Vite + react-konva project
+  [ ] Migrate prototype canvas logic to React components
+  [ ] FastAPI backend + PostgreSQL (Docker Compose)
+  [ ] User login (email/password JWT)
+  [ ] Auto-save (2-second debounce to DB)
+  [ ] Multiple gardens per account
+  [ ] Link out to PlantNet for plant ID
+  [ ] Cloudflare tunnel deploy
+
+
+── V1 — ENRICHED ─────────────────────────────────────────────
+  [ ] Photo upload per plant
+  [ ] Notes per plant with timestamps
+  [ ] Season archive — view previous years
+  [ ] Ko-fi widget embed
+  [ ] PWA — installable on tablet, offline cache
+  [ ] French language toggle
+  [ ] PDF export: full canvas, watermark (free tier), no watermark (paid)
+  [ ] Expanded plant family catalog
+  [ ] Top-down fence visuals (Metal/Stone/Plastic appearances)
+  [ ] YouTube tutorial video link (currently placeholder #)
+  [ ] User profile page
+
+
+── V2 — TEXTURES + MOBILE ────────────────────────────────────
+  [ ] Texture overlay system (soil, grass, wood, gravel)
+      Research: WebP vs PNG vs SVG patterns, target < 50KB per texture
+      CSS ::after vs Konva fillPatternImage — decide approach
+  [ ] Seasonal plant states (plant looks different per season)
+  [ ] React Native mobile app / TWA for Android (Play Store)
+  [ ] $25/year hosted access with passcode
+  [ ] Snap-fit beds (magnetic edge snapping)
+  [ ] Merging groups with groups (currently only rect → group)
+  [ ] Two layout modes: Web/Tablet vs Phone (touch-first)
+  [ ] Pointer Events API unification (mouse + touch + stylus)
+
+
+── V3 — PLANT DATA + IDENTIFICATION ──────────────────────────
+  [ ] PlantNet plant ID (embedded)
+  [ ] Optional plant data (Perenual + OpenFarm local import)
+  [ ] Companion planting hints
+  [ ] Succession planting planner
+  [ ] Community sharing
+
+
+── V4 — GAMIFICATION + MONETIZATION ─────────────────────────
+  [ ] Plant counter: track plants per family per garden
+  [ ] Achievement system: milestone badges (10 vegetables = Casual Gardener)
+  [ ] Unlockable decorative stickers (statues, garden ornaments)
+  [ ] Points: plants placed + days logged in + garden completeness
+  [ ] Top Gardens: opt-in community submission + leaderboard
+  [ ] Sound effects for prize unlocks
+  [ ] Subscription model: Stripe / Ko-fi / Lemon Squeezy research
+  [ ] One-time lifetime purchase option
+  [ ] Free tier: limited gardens + watermarked PDF
+  [ ] Paid tier: unlimited gardens, no watermark, priority features
+  [ ] Google Play Store release roadmap
+  [ ] iOS App Store (React Native parallel track)
+
+
+
+
+══════════════════════════════════════════════════════
+7. STICKER CATALOG
+══════════════════════════════════════════════════════
+
+
+By Computer (current):
+  tree.svg, rose-bush.svg, lilac-bush.svg
+  ~20-25 generated PNG stickers (flower clusters, daisies, echinacea, etc.)
+
+
+By Rob (current):
+  Logo.png, Logo.jpg — Garden Mapper wordmark
+
+
+In prototype catalog (labeled variants):
+  L (96px):  Deciduous Tree, Apple Tree, Maple Tree, Cedar, Ferns
+  M (64px):  Rose Bush, Hydrangea, Peony, Beebalm, Lilac Bush, Lavender, Hostas,
+             Allium, Black-eyed Susan, Cosmos, Echinacea, and more
+  S (40px):  Parsley, Tulips
+  XS (24px): Marigold, Mint
+
+
+Pending (Rob's designs + future batch):
+  [ ] Raspberry cane     [ ] Tulip / spring bulb (improve XS)
+  [ ] Sunflower          [ ] Vegetable patch
+  [ ] Fence / hedge      [ ] Pond / water feature
+  [ ] Unique SVGs per plant family (currently reusing 3 base stickers)
+
+
+
+
+══════════════════════════════════════════════════════
+8. NEXT ACTIONS
+══════════════════════════════════════════════════════
+
+
+Current prototype: prototype/index-v7.html
+File location: C:\Users\RG\.openclaw\workspace\projects\garden-planner\prototype\
+Revision log: C:\Users\RG\.openclaw\workspace\projects\garden-planner\REVISION-LOG.md
+
+
+NEXT SESSION PRIORITIES:
+  1. Review v7 prototype — confirm all May 28 changes working
+  2. Begin React scaffold (MVP v0.1) OR continue prototype refinements
+  3. Touch/mobile framework planning (tablet-first breakpoints)
+  4. Sticker pipeline: resume transparent PNG generation + selectability fix confirmed
+
+
+Project: C:\Users\RG\.openclaw\workspace\projects\garden-planner\
+Resume:  "resume Garden Planner"
+
+
+════════════════════════════════════════════════════════════════════
+  END OF EXPANDED APP PLAN v7
+  Updated by Computer 🔑 | May 28, 2026
+════════════════════════════════════════════════════════════════════
+
+
+Rob’s sticker notes:
+I was looking for a way to generate true PNG with transparent backgrounds in Gemini. The backgrounds in the last round of plants were fake transparent backgrounds. So, I went to find another option. Rob’s plan is to add to the prompt language: sharp, crisp edges, flat chroma-key green background (#00FF00). We tested the removal of the chroma green with success and will be automating the removal.
+
+Garden Issues: 
+
+June 1st Updates:
+1) I would like to integrate the toolbar into the info panel. The several buttons will be added to the right. See the the screen shot below for what will be seen when first loading up the web and tablet version
+We will keep the slider centered at the bottom of the screen hovering over the bottom of the garden.
+
+All menu interactions for these tools will be contained within the info panel (menu panel).
+For example, when you click Build, in the info panel you’ll get the list of building tools: Buildings, Decks, and Electrical. If you click Decks, the menu will expand to show the three deck types. At the top, you’ll have the <Back button to return one level up the menu.
+
+Additional details:
+Once a drawing is complete. The object menu appears with the current set up.
+At any point, clicking on the background of the garden will set the menu back to the first level with all the tool options.
+Moving on the menu (two finger scrolling/pinch and zooming) on the menu will not reset the menu back to the first level.
+
+  
+
+
+2) The gate tool will be moved from the Path folder into the Fences folder.
+The Fences folder will be organized top to bottom: Fences, Gates, Hedges
+When clicked, they will all expand to their sub folders.
+
+3) Water: We will move plumbing under the Water button. From top to bottom, we will have Fountain, Plumbing, Pools, Ponds. The menu will expand when clicked.
+
+
+4) Drawing square objects (mobile/tablet): It looks like we don’t have a way to draw those on a mobile/tablet device. I would like to be able to press and drag to set the shape and when releasing the shape is created Also,I would like to be able to tap the screen and have a default square shape 15x15ft or 5x5m appear at the point that was clicked.
+The square drawing set up applies to all square objects (beds, hedges, buildings, decks, pools).
+
+Robs reference:
+
+
+════════════════════════════════════════════════════════════════════
+  EXPANDED APP PLAN — GARDEN PLANNING TOOL
+  v3 — Prototype v1 feedback integrated | May 22, 2026
+════════════════════════════════════════════════════════════════════
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. PROJECT VISION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+Name candidates: "Your Garden Map" / "Notre Plan du Jardin"
+Tagline: "Your garden, through every season."
+
+
+A personal, beautiful, interactive garden planning tool that lives in your browser.
+Designed for real gardeners — beds, perennials, annuals, trees, structures.
+Not a vegetable planner. Not a subscription trap.
+
+
+Aesthetic: Aerial/top-down view. Retro game plants (PvZ × Stardew Valley).
+Bright vibrant colours, bold outlines, symbolic and iconic stickers.
+Design and beauty first. Data secondary.
+
+
+── MONETIZATION ─────────────────────────────────────
+Phase 1: Free + Ko-fi optional.
+Phase 2: $25/year hosted access with personal passcode.
+         Free trial → flat annual fee. No auto-charges. No data hostage.
+Long-term: Downloadable PDF of garden map for printing.
+
+
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. KEY DECISIONS (all confirmed)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+✅ Single user for MVP
+✅ No location-dependent data — focus on beautiful layout
+✅ Plant families over individual species (e.g. "Rose Bush" = all roses)
+✅ No or minimal notifications
+✅ Season slider snaps to Spring / Summer / Fall / Winter
+✅ Per-plant season visibility set when placing sticker
+✅ Grid: 3×3 inches per cell, imperial/metric toggle, stickers can overlap
+✅ Drawing tool MVP: rectangles + rounded corners. Freeform paths in V1.
+✅ Top-down aerial view. No 3D, no AR, no first-person.
+✅ Language: English first, French future option.
+✅ Sticker style: Computer's SVG designs approved for now.
+   Rob will contribute additional stickers over time.
+
+
+── PROTOTYPE v1 FEEDBACK (May 22, 2026) ─────────────
+✅ Plant text labels on canvas = clutter → REMOVED in v2.
+   Labels and names only appear in the right info panel.
+✅ Search bar added to plant tray (fuzzy match on name + family).
+   No exact match → shows closest results.
+✅ Recently used plants: last 5 shown at top of tray, auto-updating.
+✅ Structure drawing validated: beds, buildings, paths working.
+✅ Season slider + background palette swap confirmed working.
+✅ Overall feel approved — ready to build full functionality.
+
+
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. COMPETITIVE ANALYSIS (summary)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+5 problems we solve that no current app does well:
+  1. Data hostage → PDF download + passcode URL + web version persists
+  2. Subscription dark patterns → $25 flat, no tricks
+  3. No perennial/permanent plant support → first-class in our tool
+  4. Desktop-only → tablet-first, mobile in V2
+  5. Cluttered outdated UI → vibrant game-inspired seasonal design
+
+
+5 key differentiators:
+  1. Season slider — garden changes visually per season (unique)
+  2. Mixed garden — annuals + perennials + trees + structures (unique)
+  3. Aerial top-down view — real property map feel (unique)
+  4. No subscription, no data hostage (underserved)
+  5. Retro game aesthetic — beautiful, not utilitarian (underserved)
+
+
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. TECH STACK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+Layer          | Choice                   | Why
+──────────────────────────────────────────────────────────────
+Frontend       | React 19 + Vite          | Best Konva.js ecosystem; React Native path for mobile
+Canvas         | Konva.js (react-konva)   | Native drag/drop, layers, pinch-zoom, Transformer
+Backend        | FastAPI (Python 3.12)    | Fast, async, same pattern as other projects
+Database       | PostgreSQL (Docker)      | JSONB for canvas state, multi-garden ready
+Auth           | FastAPI JWT              | Self-hosted, lightweight
+Styling        | TailwindCSS + CSS tokens | Seasonal swap = 6 CSS variable changes
+Deploy         | Docker Compose + CF Tunnel| Same as MarketMap — zero exposed ports
+Ko-fi          | Static embed widget      | Zero backend work, optional tip jar
+
+
+Monthly cost: $0–$10/month
+Plant data: Low priority, V3+. Not needed to build or test.
+Plant ID: Link out to PlantNet (free). Embed API in V3.
+
+
+── CANVAS LAYERS ────────────────────────────────────
+Layer 1: Background — seasonal colour fill + property boundary dashes
+Layer 2: Structures — beds, buildings, paths (permanent, drawn shapes)
+Layer 3: Plants — draggable, resizable, season-filtered, can overlap
+Layer 4: UI overlays — transformer handles, labels
+
+
+── SEASON SYSTEM ────────────────────────────────────
+Slider snaps to 4 seasons.
+Per-plant visibility set on placement.
+Season change = CSS token swap + plant layer filter.
+Non-destructive view toggle — no data changed on season switch.
+
+
+── GRID ─────────────────────────────────────────────
+1 cell = 3×3 inches. Toggle: imperial / metric.
+Property dimensions entered at garden creation.
+Plants can overlap — no collision rules.
+Scale bar updates dynamically as user zooms.
+
+
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. DESIGN SYSTEM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+Design pillars: Organic · Vibrant · Seasonal · Calm
+
+
+── ART STYLE ────────────────────────────────────────
+Style: "Retro Aerial Garden"
+Refs: PvZ (bright colours, bold outlines) × Stardew Valley (warmth, cozy) × Cosmos 1992 (minimal symbolic clarity)
+Key: TOP-DOWN AERIAL perspective throughout.
+Bold 1.5–2px warm brown outlines. Bright saturated colours.
+Symbolic / iconic: one "Rose Bush" sticker = all rose varieties.
+Readable at 32×32 and 128×128.
+
+
+Current sticker status:
+  ✅ Deciduous Tree (tree.svg)
+  ✅ Rose Bush (rose-bush.svg)
+  ✅ Lilac Bush (lilac-bush.svg)
+  🔲 More families to be added — Rob contributing additional designs
+
+
+── SEASONAL PALETTES ────────────────────────────────
+
+
+SPRING (confirmed):
+  BG: #E8F5E2  Ground: #C4A882  Accent: #7CB87A  Highlight: #F4D4E8  Water: #B8D4F0
+
+
+SUMMER (to revise — current is too dark):
+  Target: bright PvZ-style. Vivid lawn green, punchy yellows, clear sky blue.
+  Revise after sticker catalog expands.
+
+
+FALL (confirmed):
+  BG: #D4651A  Ground: #6B3D1A  Accent: #D4A017  Highlight: #C44B2A  Water: #9DB5C2
+
+
+WINTER (confirmed):
+  BG: #F0EDE6  Ground: #C8C4BC  Accent: #7A9E9F  Highlight: #A8BFCA  Water: #D4DCE8
+
+
+── TYPOGRAPHY ───────────────────────────────────────
+Headers: Lora or Fraunces (warm serif)
+Body: DM Sans or Nunito (tablet legible)
+Labels: DM Mono (metadata, scale)
+Scale (1.25 modular): 12/14/16/20/25/31/39px
+
+
+── TEXTURE ──────────────────────────────────────────
+Phase 1 (MVP): flat colours only.
+Phase 2: ::after pseudo-element overlays, .textures-enabled toggle.
+Assets needed (Phase 2): soil, grass, gravel, wood — tiling PNGs.
+
+
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6. FEATURE ROADMAP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+── MVP (v0.1) — WORKING CORE ────────────────────────
+  [x] Drag/drop plant stickers onto canvas
+  [x] Resize plants (Konva Transformer)
+  [x] Season slider — 4 seasons, background palette swap
+  [x] Per-plant season visibility toggle
+  [x] Plant tray with search + recently used (last 5)
+  [x] No canvas labels — plant name only in right info panel
+  [x] Draw garden beds (rounded rectangles, colour choice)
+  [x] Place buildings (resizable rectangle, structural layer)
+  [x] Draw paths
+  [x] Property setup — name + dimensions (ft or m)
+  [x] Grid overlay toggle (3×3 inch cells)
+  [x] Scale bar (updates with zoom)
+  [x] Notes + season checkboxes in info panel
+  [ ] User login (email/password JWT) — next after scaffold
+  [ ] Auto-save (2-second debounce to DB)
+  [ ] Multiple gardens per account
+  [ ] Link out to PlantNet for plant ID
+  [ ] Cloudflare tunnel deploy
+
+
+── V1 — ENRICHED EXPERIENCE ─────────────────────────
+  [ ] Freeform / organic bed shapes (curved paths)
+  [ ] Photo upload per plant
+  [ ] Notes per plant with timestamps
+  [ ] Season archive — view previous years
+  [ ] Ko-fi widget embed
+  [ ] PWA — installable on tablet, offline cache
+  [ ] French language toggle
+  [ ] Downloadable garden map PDF
+  [ ] Expanded plant family catalog
+
+
+── V2 — TEXTURES + MOBILE ───────────────────────────
+  [ ] Texture overlay system (soil, grass, wood, gravel)
+  [ ] Seasonal plant states (tulip looks different per season)
+  [ ] React Native mobile app
+  [ ] $25/year hosted access with passcode
+  [ ] Weather integration
+
+
+── V3 — PLANT DATA + IDENTIFICATION ─────────────────
+  [ ] PlantNet plant ID (embedded)
+  [ ] Optional plant data (Perenual + OpenFarm local import)
+  [ ] Companion planting hints
+  [ ] Succession planting planner
+  [ ] Community sharing
+  [ ] Details TBD
+
+
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7. PROTOTYPE LOG
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+Prototype v1 (May 20, 2026):
+  File: prototype/index.html
+  - Basic drag/drop plants, season slider, info panel
+  - 3 stickers: tree, rose bush, lilac bush
+  - Feedback: labels cluttered; add search + recents; test sizing next
+
+
+Prototype v2 (May 22, 2026):
+  File: prototype/index-v2.html
+  - Removed canvas labels (names only in right panel)
+  - Search bar with fuzzy match (name + family)
+  - Recently used plants (last 5, auto-updating)
+  - Property setup dialog: name + dimensions (ft/m)
+  - Property boundary dashed outline with label + dimensions shown
+  - Draw Bed tool: click+drag, colour selector (5 options), editable label
+  - Building tool: resizable grey structure footprint
+  - Path tool: strip/line shapes
+  - Scale bar updates with zoom level
+  - Grid overlay (3×3 inch cells, toggleable)
+  - Structural layer below plants (proper z-ordering)
+  - All 3 stickers: Tree, Rose Bush, Lilac Bush
+
+
+Status: Testing in progress.
+
+
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+8. STICKER CATALOG
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+Current stickers (by Computer):
+  tree.svg       — Deciduous tree (top-down canopy)
+  rose-bush.svg  — Rose bush (3 blooms + bud, red/pink)
+  lilac-bush.svg — Lilac bush (3 bloom clusters, purple)
+
+
+In prototype v2 catalog (using above stickers as base, varied labels):
+  Deciduous Tree | Apple Tree | Maple Tree | Cedar
+  Rose Bush | Hydrangea | Peony
+  Lilac Bush | Lavender | Hostas
+
+
+Pending (Rob's designs + future batch):
+  [ ] Raspberry cane
+  [ ] Tulip / spring bulb
+  [ ] Sunflower
+  [ ] Vegetable patch (generic)
+  [ ] Fence / hedge strip
+  [ ] Pond / water feature
+  [ ] Raised bed (drawn shape, not sticker)
+
+
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+9. NEXT ACTIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+Immediate:
+  Test prototype v2 — open prototype/index-v2.html in browser.
+  Confirm: Does the property sizing feel right?
+  Confirm: Can you sketch your actual garden accurately?
+  Confirm: Are the bed / building / path tools intuitive?
+
+
+After testing:
+  Step 1: Scaffold real React + FastAPI + PostgreSQL project
+  Step 2: Migrate prototype canvas logic into React components
+  Step 3: Wire up user login + auto-save to DB
+  Step 4: Cloudflare tunnel deploy
+  Step 5: Build out sticker catalog (Rob's designs + more)
+
+
+Project: C:\Users\RG\.openclaw\workspace\projects\garden-planner\
+Resume:  "resume Garden Planner"
+
+
+════════════════════════════════════════════════════════════════════
+  END OF EXPANDED APP PLAN v3
+  Updated by Computer 🔑 | May 22, 2026
+════════════════════════════════════════════════════════════════════
+ROBS V2 Notes:
+I am unable to pan across the background image to see the full size of a large garden. In the case of this garden, I was only able to see the full property size by zooming out. We want to be able to click and drag to pan across the screen or pinch and zoom with touch to do that.
+The reset view is handy, but I still can’t access the bottom right of the garden without zooming out, but it’s took zoomed out to work.
+  
+
+Is this icon supposed to show the size of the the grid at that zoom level? If that’s the case, the grid does not adjust to scale with the zoom level. Let me know what you intended by this, having a sense of scale is useful to create a balanced garden.
+  
+
+I want the ability to toggle transparency with plants when selected in the panel on the right. In the case of a tree it’s very large and the sticker may cover plants that are beneath it. If a plant is toggled transparent, it will become partially transparent. Toggled transparent plants are sent to the back layer beneath other plant stickers, but above flower beds, paths, and buildings. In the case of the image below, this tree is large and is atop the lilac bush and I can’t select the lilac.
+  
+
+
+When you stretch a garden bed, the border distorts. The garden border should stay consistent in width as the shape of the bed changes. It looks like the garden border’s dimensions are locked when the bed is first created, subsequent size changes distort the border.
+Also, I would like garden beds to be able to snap fit to one another, so that they will join to remove the space between beds.
+For beds, let’s make the corners square.
+    
+
+
+Garden beds are not always square. I would like a feature to be able to draw a flowing garden bed.
+* Alternatively, we could use a “pen” to draw the bed and then average the drawing to clean and smoothen up the lines.
+* Or I can place the points on the map and the spline appears when the shape is completed. The texture/colour would also appear when the shape is complete. This is an example I created using the point and spline feature on Onshape.
+  
+Paths are not always straight either, We should be able to have a parallel path that we can distort. Or we have a pen that allows us to draw a path texture. This example below could allow us to draw a straight path and distort it when selecting and dragging an edge. The path edge remains parallel.
+  
+
+When a plant is selected. Can I use hotkeys to copy and paste the plant again? In some cases, I will have to plant many of the same plants. That could be an efficient workflow for computer users. 
+
+We are going to create a Hedge feature, to be able to create a hedge using the same feature as drawing a bed. We’ll add a nice hedge texture later.
+  
+
+Robs V3 Notes:
+
+
+There’s a problem with my last request about using the property lines to complete the free bed creation. 
+When clicking two property lines the bed is presumed to be complete (1st image below) and creates a line from border point to border point, although the shape didn’t incorporate the property border closest to it into the shape of the bed. Do you understand what I am asking for? I would like the bed to include the lines I drew and close the loop using the closest property lines as part of the bed. I would like to be able to edit a bed after it’s been placed: double click or double tap to select the object. This would show the points added, they can be added or removed using a “+ add points” and “- remove points” button that’s available on the panel on the right.
+    
+
+When selecting Bed drawing tab, you should be presented with these options in the panel on the right: 
+  
+These three options will allow us to select the tool that will allow us to draw: a straight line drawing of beds, curved bed drawings (using the tool as we have set up now in the free bed tool), and square beds (as we have now under the bed tool). We can only have the one button now: Beds. And, we can hid
+  
+
+Hedged will use a similar process. You will select what kind of hedge you want from the panel on the right after selecting the hedge tool. That will then give you access to that tool.
+  
+
+
+We’ll want a way to be able to widen or narrow the Path beyond it’s default size. Currently, once placed it can’t be edited, only moved. I would like to be able to select it again with a double click or double tap to be able to edit the position of it’s points, add more points or delete points that were added. Those tools can be added to the panel on the right.
+
+
+
+Rob’s notes:
+*I include a number of screen shots below. Please check those as well.
+
+There’s a limit on the zoom out on the map. For example, a 100x100m property won’t fit in the window when you zoom out to the maximum. Can we extend the zoom capability to fit the garden canvas when zoomed out plus a little space on all sides.
+When you zoom out to the max with the Grid on, as you scroll the grid stops loading and only appears again when you zoom in. I would like to see it populate regardless of your zoom level when on the grid feature.
+  
+
+The Bed/Hedge drawing tool for straight lines defaults to showing curves when you’re drawing (although after you hit enter, the lines become straight), this makes drawing a square bed difficult. However, when editing the bed, you get straight lines by default which is what I would like for drawing and editing a Straight bed.    
+
+
+If you edit the bed you will be able to move it, but the points of the corners do not follow the object when the object is moved. Can you please link the corners so that moving the bed will keep the corners and points of the bed together.
+  
+
+
+We will have to build out sizing classifications in our plant database for stickers: extra small, small, medium, and large plant stickers. This will be the default size that the plant will be when placed on the map. This sizing will be important in our database with the intent of keeping a user from having to resize the plants all the time.
+XS plants = 15 cm
+S Plants = 30 cm
+M Plants = 60 cm
+L Plants = 1m (and its average ft equivalent) of width when placed on the map
+For example: 
+XS plants
+Marigolds
+Mint
+S Plants 
+Parley
+Tulips
+M Plants
+Beebalm
+Roses 
+Hydrangeas
+L Plants 
+Trees
+Ferns
+Liliac
+Copy and pasting a plant will use the currently selected plants size and won’t use the default size. You’ll get the default size when selecting a plant from the plant panel/search.
+
+
+
+
+Can we add a feature that allows users to snap-to-grid their plant stickers, their beds of all shapes, buildings, and objects. The feature would be turned on when you select Grid at the bottom. This will keep the objects organized when selected. If the grid is turned off, then the plant movement is back to the freeform set up that we currently have.
+
+
+I want to add points to beds/hedged/buildings (curved, straight, square) at any point along a line that I have clicked. Presently, you can only add a point near the last point that was added in the object. This does not allow me to expand a garden bed on the opposite side that I finished drawing the bed on. Square shapes, I have the feature to add points, but am unable to.
+-For Square buildings and beds, independent from one another, I want to be able to bring two+ building or bed objects together and have them connect and join into one larger object if they are brought close enough to touch. This joining can be undone through control+Z or an undo joining button that will appear after joining beds or a separate groups of buildings together.
+
+
+Let’s combine hedges and fences into a combines table called: Fences
+Then, on the right panel, we will add another feature called Fence Type that will go beneath the Hedge Type.
+  
+Fence Type
+Straight
+
+We will build an addition to the Paths feature called Gates. Under the Paths feature on the right panel, we’ll add Gates. The gate will be a like the paths tool, only that you’ll be able to add two points. We will add top down fence visuals later. Selecting a gate will be done through icons like below.
+Panel
+🌱 Gate Type
+  
+
+
+
+
+
+Water will be a new tab added to the bottom to the right of Building. It will have a couple categories: Ponds, Fountains and Pools.
+Ponds will be a free form drawing like the Bed Curved tool. The default colour will be blue.
+Fountains will be circular by default and will appear as a Fountain sticker, not as a drawing.
+Pools will be drawn as either a square or circle.
+
+
+Decking will appear in the Building category. You can connect a deck to a house or not using the snap-to feature. Decking will have a selection of textures/colours as those get added. The decking will have the same drawing features as a bed: curved, straight, square.
+
+
+We want the ability to create two different gardens per user. So, we will need a way to access the Create a garden/Switch garden page.
+
+The boundary close does not work as expected. I want to make a curved garden bed on the corner of the property, but have the corner of the bed be square or straight. When the curve tool closes, there’s a curve that appears along the end of the property. The edge of this bed should have a straight line as it will reference the boundary to complete the bed and add the one or two straight lines into the curve, not rounded lines that exceed the boundary line.
+    
+
+
+Yes, the path tool works.
+
+We’ve got a bit list of to do’s please action on these and provide a list of the outstanding action items
+
+
+Rob’s notes:
+
+When joining multiple objects together (whether it’s a Building, Bed, deck or pool), I would like for those objects to be added together into a single object. The joining of two objects works infrequently. Most of the time two objects site side by side touching or overlapping and with the snap to grid, they sit apart a bit, but do not join. Can you look into this and find a way to have two+ of the same objects above joined into a single object when overlapping or touching because of the snap to grids?
+And, when they are joined into a single object, they are expanded to the greatest width and depth. I want them to maintain their current object size, just be connected at their closest touching edges. The example below shows how these two objects, when joined, are incorrectly increased in size.
+Before:
+  
+
+After:
+  
+
+
+Please put a <Back button in the right Panel next to the word Panel (see yellow highlighted spot in image below). This will be for all objects, excluding stickers, to allow users to get back to the main menu for objects.
+Example: after placing a garden bed, the garden beds information panel is opened. You click “Back” and it will take you to the main screen for Beds.
+  
+
+
+I would like to make adjustments to the layout of the page:
+   * Add a rotating banner at the top of the screen. This will show slogans and promotional details.
+Colour: 11502A (if you don’t have this dark green colour let me know what colour code you need: cmyk, rgb, etc). See screen shot below for the width and layout. There will be < > arrows on the far right and left.
+      * Every minute it’ll rotate between catch phrases like:
+<     Never forget where your garden plants are again    >
+<     Create your dream garden in your backyard    >
+<     Tulips done for the year? Change the season and replace them with something new!     >
+<     Download your Garden Mapper to PDF and have an offline copy.    >
+      * Update the backgrounds colour to white for the whole page, with the exception of the garden map area. See screen shot if you have questions.
+      * Add the logo below the rotating banner like the screenshot below. You’ll see the logo that I created in your email in PNG and Jpeg format. See screen shot below for orientation and positioning guides.
+      * Update the search panel and right panel aesthetic to be a white round edged panel with a thin free border with the Colour: 11502A. See screen shot below for positioning. I want it to look like they’re not connected to the edge of the screen and have a buffer from the garden map.
+      * To the left of the logo, I want to move the cell ratio reference and season information. See screen shot for the positioning.
+To the right of the logo, I want move to that area: the name of the garden that we’re working on, the garden dimension, the save button, the Gardens button (you can change the name of the button to “Switch Garden”, a youtube logo (in that same green colour) which will be hyperlinked to a training/intro video, and a user bubble icon (that will save the page and take you to the user information page). See screen shot for the positioning.
+      * The bottom slider panel area will also be in its own panel with round edges and a narrow green trim. The buttons can remain a light green colour in this area.
+
+
+  
+
+
+Bring the cell size and season onto one line. Tighten up the season icon to remove the extra space. Please see screen show below.
+  
+
+Also bring the garden name and size onto one line, side by side.
+  
+
+The search panels scroller is too big to fit in the round panel and covers the trim. Make the scroll bar a bit shorter to fit at the top and the bottom of the panel. See the screenshot and how the scrollbar is covering the corner of the trim in the top right and bottom right.
+  
+Add rounded corners to the garden map. The same sized filleted edges as you have for the panels.
+
+Lower the bottom slider panel to have a similar gap between panels. Presently the garden map and slider panel are touching, we want to have a gap between those two.
+
+
+Have the default starting zoom for the map to make the whole garden visible upon loading. Not just the top left corner, which is what is currently being displayed.
+
+
+When joining beds, after they have been joined, I would like the ability to disconnect them from one another. 
+-Presently, we can only connect two buildings together, I would like to be able to join 4 maximum. 
+-I want to be able to click that newly joined object and in the right panel and have a button there to disconnect the beds. Then if they are again moved next to or overlaying each other again they become connected again. This is for beds, pools, buildings, decks. 
+
+
+I don’t see the banner rotating on a one minute schedule. Please confirm that this was set up.
+
+
+Rob’s notes:
+Do not integrate the notes below into the garden organizer document until we’ve verified each one is complete.
+Please observe screen shots where provided.
+
+
+Something happened to our V6 changes we made yesterday. Some changes have been reverted, while others still remain active. Please create a V7 so we don’t make more mistakes and lose code. Create a system by which you’re keeping notes on what you do internally, revision history so that you can backdate if necessary.  You need to log changes in the future so that you’ll be able to find out why, for example, ½ of the items below were resolved, but now are missing:
+
+
+In the top left, have the “cell size” (ex: 1 cell = 6 in) and Seasons icon side by side.
+Remove the extra space on the right of the “seasons” icon. It should auto adjust to the text in the button. 
+No wrapping. Please see screen shot below, if you are curious what I am referring to:
+  
+
+On the right, bring the name of the garden (ex: my garden) and the garden size indicator onto one line, side by side. Have them expand should the name of either broaden. No wrapping.
+  
+
+
+The search panel’s scroller is too tall and too far to the right to fit in the round edged panel of the search panel. Add the arrows back to the scroller bar and move the scroll bar a bit to the left so it’s not touching the trim around the panel. Make the scroll bar a bit shorter to fit at the top and the bottom of the panel and not touch the edge of the panel. See the screenshot and how the scrollbar is overlapping the trim.
+  
+
+
+
+Have the default starting zoom for the map to make the whole garden visible upon loading. Not just the top left corner, which is what is currently being displayed.
+
+
+When joining beds, after they have been joined, I would like the ability to disconnect them from one another. 
+-Presently, we can only connect two buildings together, I would like to be able to join 4 maximum. 
+-I want to be able to click that newly joined object and in the right panel and have a button there to disconnect the beds into their original sizes. Then if they are again moved next to or overlaying each other again they become connected again. This is for beds, pools, buildings, decks. 
+        
+- I would like to be able to select multiple objects by holding how ctrl or shift. I would like to be able select many objects and have a delete button appear on the panel on the right. This will apply to ALL objects that can be placed in the garden (from flowers to the pool to the path, every object).
+
+
+The user icon in the top right is compressed and no longer round. Find a way to assure it always stay circular.
+
+After creating a curved garden bed that utilizes the edge of the property to finish the shape, the shape loses its curved section and replaces it with straight lines between the points that should have remained curved. Please make sure that curved sections remain curved, when using the edge of the property to complete an object's shape. The edge of the property will remain straight lines, but the curved lines within the garden will stay curved.
+
+
+Yesterday you added several new flowers: I placed these flowers on the garden map, I can't select the flowers to move them after placing them in the garden. Why are these flowers different from your first plan additions and what can you do to remember to not have this happen again in the future?
+
+
+The clear button stopped working. It now does nothing when you click it. Please investigate.
+
+
+I want to add a Square hedge, utilizing the same Square hedge rules as other square objects: joining hedges together, breaking them apart, editing size etc.
+
+I want to be able to enter dimensions into the square objects (beds, hedges, pools). After placing these objects, the right panel will show the “edit points dbl click” button and you will be presented two boxes to enter the length and width. You’ll click “done editing” to save it.
+
+I want to be able to enter dimensions into the circle objects (fountains, round pools). After placing these objects, the right panel shold show the “edit points dbl click” button and you will be presented a diameter box to enter the dimension. You’ll click “done editing” to save it.
+-Fountains do not follow the snap-to-grid requirements. Update them to the standard that “objects, when Grid is turned on, move by snap-to-grid”.
+
+On the right panel, create a Decks Type category and move the deck tools into that category. Like the right panel for Gates, I want the deck tools to be compressed until you select decks and it will expand with all the options.  
+The slider bar shifted position, the seasons don’t line up with the slider bar anymore. Please make sure the seasons are positioned so they are always in line with the position of the slider bar. Consider different screen sizes, devices or browsers to make sure they are always aligned and not offset.
+
+
+Have the default starting zoom for the map start with the whole garden visible upon loading. Not just the top left corner, which is what is currently being displayed.
+
+
+Under the Building section, we’ll add a new category called Underground. You’ll have two options below:
+Electrical
+Plumbing
+Both, by default, are transparent to start. You can turn off transparency in the right panel. Same visual set up as the Tree Stickers for the buttons in the right panel in regards to transparency.
+Set up: electrical and plumbing will be drawn with the same freeform drawing features as Paths tool (drawing, editing, widths etc)
+Electrical will be black as a default colour, but will also have red and yellow as colour options
+Plumbing will be grey, blue, or brown as colour options.
+
+Build a framework for how we will make this app both touch (mobile friendly) and maintain its web browser friendly nature like how it currently is.
+We may have two different screen layouts for phone mobile users versus web/tablet users.
+Controls will be different with fingers versus mouse and touch pad.
+
+There’s lots of features we have yet to start in the Feature Roadmap of this document above. What makes sense to start on the coding front so it makes this process go smoothly as we make sure to have the end goal in mind.
+Additions for you to add to the Feature Roadmap:
+-Gamification of the garden map: Creating a whole module to gain points, count them, get prizes (statues to place in garden) For example, place 10 vegetables you get a prize for casual gardener, 10 flowers beginner florist etc.
+We will have to find a system to count plants that have been placed. A place to grant awards. Number of days logging in will grant points. Also, you’ll be able to submit your garden to compete in the top gardens awards. Sound effects for prizes
+-Subscription model and one time payment integrations.
+-We’ll have to run a test on what kind of files are needed for textures for repeating backgrounds. The file sizes will need to be considered so we don’t slow down the system.
+-I want to make this a mobile app in the google play store, we will have to road map that process.
+-Under the user icon, a user will be able to download their garden to PDF. We will have to test how export will be done: one large canvas probably and let the user figure out how to print it. Watermark in the corner.
+
+V7 update:
+Can’t delete other gardens in the garden switching section. Buttons aren’t working.
+
+
+The Logo in the center should be locked to the center. It’s currently being moved around when the Garen name gets too long.
+
+I want the grid to get no smaller then 1 cell = 6 inches or 1 cell = 15cm. The grid will stop shrinking when you reach that 6 inch limit and keep zooming in.
+
+
+Between saves and refreshes. Some plant positions and sizes are changing. In my garden the curved pool and maple tree shift position and size significantly. What can we do to make sure the position is locked and only the user can change the positions?
+
+Transparent objects are moved to the back, just above pools, beds,
+In the info panel, there should be a button that allows you to move an object backwards or forwards in relation to the plants or an objects that is layered above or below it. Beds, pools, building are always layered behind plant stickers.
+
+The Reset button does not zoom out to show the whole garden. It only shows the top left. Set it so it will zoom out like the default start when the page first loads the garden (centered with buffer).

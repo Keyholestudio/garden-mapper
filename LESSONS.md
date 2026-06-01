@@ -20,6 +20,22 @@ Don't patch from memory. Read the actual file before editing. Reference ARCHITEC
 
 ---
 
+## L014 — Garden Organizer Google Doc
+**Date:** 2026-06-01
+Primary planning doc for this project. Doc ID: `1F3mA5UZw1qo2wxd3pqMuSvyph3L4biChiJ18kbhRf5Q`
+Read it: `gog docs cat 1F3mA5UZw1qo2wxd3pqMuSvyph3L4biChiJ18kbhRf5Q`
+Export it: `gog docs export 1F3mA5UZw1qo2wxd3pqMuSvyph3L4biChiJ18kbhRf5Q --format txt --out projects/garden-planner/garden-organizer-export.txt`
+Also add to TOOLS.md under Google Drive Key Documents.
+
+---
+
+## L013 — Always pin port in vite.config — never let it float
+**Date:** 2026-06-01
+Vite auto-increments port if the target is occupied. Without a fixed port, Garden Mapper steals 5173 from Market Map if started first or if Market Map isn't running. Always set `port: 5200` in vite.config so it never collides.
+**Garden Mapper = 5200. Market Map = 5173. Never swap.**
+
+---
+
 ## L012 — Reference v8 before solving any canvas/visual/coordinate problem
 **Date:** 2026-05-31
 v8 has working Konva math. The React scaffold is a port of v8, not a rewrite. Before writing any positioning, coordinate conversion, drawing, or visual behaviour — read v8 first. If v8 has it, copy it exactly and adapt for React.
