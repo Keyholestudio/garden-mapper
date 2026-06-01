@@ -175,61 +175,56 @@ function ToolMenu({
   // If a tool with items is active, show sub-menu level
   if (currentMode && items.length > 0) {
     return (
-      <div className="panel-content">
+      <div className="panel-content tool-menu">
         <button className="tool-menu-back" onClick={() => { onModeChange('select'); setOpenGroup(null) }}>
           ← Back
         </button>
-        <div className="panel-h2" style={{ marginTop: 2 }}>
+        <div className="panel-h2" style={{ marginTop: 2, flexShrink: 0 }}>
           {TOP_TOOLS.find(t => t.id === currentMode)?.emoji}{' '}
           {TOP_TOOLS.find(t => t.id === currentMode)?.label}
         </div>
-        <div className="panel-sep" />
-        {items.map(item => item.group ? renderGroup(item) : renderItem(item))}
+        <div className="panel-sep" style={{ flexShrink: 0 }} />
+        <div className="tool-menu-items">
+          {items.map(item => item.group ? renderGroup(item) : renderItem(item))}
+        </div>
       </div>
     )
   }
 
   // Default: top-level tool list
   return (
-    <div className="panel-content">
-      <div className="panel-h2" style={{ marginBottom: 2 }}>Tools</div>
-      <div className="panel-sep" />
-      {TOP_TOOLS.map(t => (
-        <button
-          key={t.id}
-          className={`tool-menu-btn${currentMode === t.id ? ' active' : ''}`}
-          onClick={() => { onModeChange(t.id); setOpenGroup(null) }}
-        >
-          <span className="tool-menu-emoji">{t.emoji}</span>
-          <span className="tool-menu-label">{t.label}</span>
-        </button>
-      ))}
-      <div className="panel-sep" style={{ marginTop: 4 }} />
-      {UTILITY_TOOLS.map(t => {
-        if (t.id === 'grid') return (
+    <div className="panel-content tool-menu">
+      <div className="panel-h2" style={{ marginBottom: 2, flexShrink: 0 }}>Tools</div>
+      <div className="tool-menu-items">
+        {TOP_TOOLS.map(t => (
           <button
-            key="grid"
-            className={`tool-menu-btn utility${showGrid ? ' active' : ''}`}
-            onClick={onToggleGrid}
+            key={t.id}
+            className={`tool-menu-btn${currentMode === t.id ? ' active' : ''}`}
+            onClick={() => { onModeChange(t.id); setOpenGroup(null) }}
           >
             <span className="tool-menu-emoji">{t.emoji}</span>
-            <span className="tool-menu-label">Grid {showGrid ? 'On' : 'Off'}</span>
+            <span className="tool-menu-label">{t.label}</span>
           </button>
-        )
-        if (t.id === 'reset') return (
-          <button key="reset" className="tool-menu-btn utility" onClick={onResetView}>
-            <span className="tool-menu-emoji">{t.emoji}</span>
-            <span className="tool-menu-label">Reset View</span>
-          </button>
-        )
-        if (t.id === 'clear') return (
-          <button key="clear" className="tool-menu-btn utility danger" onClick={onClearAll}>
-            <span className="tool-menu-emoji">{t.emoji}</span>
-            <span className="tool-menu-label">Clear All</span>
-          </button>
-        )
-        return null
-      })}
+        ))}
+      </div>
+      <div className="panel-sep menu-sep" />
+      <div className="tool-menu-items">
+        <button
+          className={`tool-menu-btn utility${showGrid ? ' active' : ''}`}
+          onClick={onToggleGrid}
+        >
+          <span className="tool-menu-emoji">⊞</span>
+          <span className="tool-menu-label">Grid {showGrid ? 'On' : 'Off'}</span>
+        </button>
+        <button className="tool-menu-btn utility" onClick={onResetView}>
+          <span className="tool-menu-emoji">⊙</span>
+          <span className="tool-menu-label">Reset View</span>
+        </button>
+        <button className="tool-menu-btn utility danger" onClick={onClearAll}>
+          <span className="tool-menu-emoji">🗑</span>
+          <span className="tool-menu-label">Clear All</span>
+        </button>
+      </div>
     </div>
   )
 }

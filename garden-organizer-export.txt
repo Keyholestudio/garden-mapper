@@ -475,6 +475,11 @@ Moving on the menu (two finger scrolling/pinch and zooming) on the menu will not
 
   
 
+1B)
+-I want you to add a Decks button that sits next to Buildings and Electrical. When you click Decks, the menu will expand to show the three deck types. 
+-I want you to add a Hedges button that sits beneath Gates. When you click Hedged, the menu will expand to show the three hedge types (In this order: Curved Hedges, Square Hedges, Straight Hedges)
+-I want you to add a Pools button that sits beneath Ponds. When you click Pools, the menu will expand to show the two Pool types (In this order: Circular Pool, Square Pool)
+
 
 2) The gate tool will be moved from the Path folder into the Fences folder.
 The Fences folder will be organized top to bottom: Fences, Gates, Hedges
@@ -484,7 +489,13 @@ When clicked, they will all expand to their sub folders.
 
 
 4) Drawing square objects (mobile/tablet): It looks like we don’t have a way to draw those on a mobile/tablet device. I would like to be able to press and drag to set the shape and when releasing the shape is created Also,I would like to be able to tap the screen and have a default square shape 15x15ft or 5x5m appear at the point that was clicked.
-The square drawing set up applies to all square objects (beds, hedges, buildings, decks, pools).
+The square drawing set up applies to all square objects (beds, hedges, buildings, decks, pools).        
+
+
+5) The main menu (from the Beds to Clear buttons) should fit within the info panel and not require scrolling up and down. This one menu should scale to fit the different screen sizes.
+
+
+
 
 Robs reference:
 

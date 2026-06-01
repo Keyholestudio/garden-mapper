@@ -11,9 +11,26 @@
   gap: 8px;
   margin: 10px 8px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+  /* Tool menu: never scroll — compress to fit */
+  min-height: 0;
 }
 
-.panel-content { padding: 12px 10px; display: flex; flex-direction: column; gap: 8px; }
+.panel-content {
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* When used as tool menu, fill the panel and distribute space */
+  flex: 1;
+  min-height: 0;
+}
+
+/* Tool menu idle state: fill panel, buttons share space evenly */
+.panel-content.tool-menu {
+  gap: 0;
+  justify-content: space-between;
+  overflow: hidden;
+}
 .panel-empty   { padding: 12px 10px; display: flex; align-items: center; justify-content: center; height: 100%; }
 .panel-empty p { color: #bbb; font-size: 0.82rem; text-align: center; line-height: 1.6; }
 .panel-h2      { font-size: 13px; font-weight: 700; color: #2a3d1a; }
@@ -86,22 +103,30 @@
 /* ── Tool menu (idle panel state) ── */
 .tool-menu-btn {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 8px;
   width: 100%;
-  padding: 8px 10px;
+  /* Fluid padding: shrinks on short screens */
+  padding: clamp(4px, 1.2vh, 10px) 10px;
   border: 1.5px solid #a5d6a7;
   border-radius: 9px;
   background: #f1f8e9;
   cursor: pointer;
-  font-size: 12px;
+  /* Fluid font: shrinks on short screens */
+  font-size: clamp(10px, 1.4vh, 13px);
   font-weight: 600;
   font-family: inherit;
   color: #2a3d1a;
   text-align: left;
   transition: background .12s;
-  flex-direction: column;
-  align-items: flex-start;
+  /* In tool-menu context, share height equally */
+  flex: 1;
+  min-height: 0;
+  box-sizing: border-box;
+  /* Prevent text overflow */
+  overflow: hidden;
+  white-space: nowrap;
 }
 .tool-menu-btn:hover { background: #dcedc8; }
 .tool-menu-btn.active {
@@ -128,31 +153,44 @@
 
 /* Row layout for emoji + label */
 .tool-menu-btn > * { pointer-events: none; }
-.tool-menu-btn { flex-direction: row; align-items: center; }
-.tool-menu-emoji { font-size: 14px; flex-shrink: 0; }
-.tool-menu-label { font-size: 12px; font-weight: 600; }
-.tool-menu-hint  { font-size: 9px; color: #888; margin-top: 1px; display: block; }
+.tool-menu-emoji { font-size: clamp(11px, 1.4vh, 14px); flex-shrink: 0; }
+.tool-menu-label { font-size: clamp(10px, 1.4vh, 13px); font-weight: 600; overflow: hidden; text-overflow: ellipsis; }
+.tool-menu-hint  { font-size: clamp(8px, 1vh, 9px); color: #888; margin-top: 1px; display: block; }
 .tool-menu-btn.active .tool-menu-hint { color: rgba(255,255,255,0.7); }
+
+/* Separator in tool menu (between tools and utilities) */
+.panel-sep.menu-sep { flex-shrink: 0; margin: clamp(2px, 0.5vh, 6px) 0; }
 
 .tool-menu-back {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 5px 8px;
+  padding: clamp(3px, 0.8vh, 6px) 8px;
   border: 1.5px solid #c8e6c9;
   border-radius: 7px;
   background: #f9fdf9;
   cursor: pointer;
-  font-size: 11px;
+  font-size: clamp(10px, 1.2vh, 12px);
   font-weight: 700;
   font-family: inherit;
   color: #558B2F;
   width: fit-content;
+  flex-shrink: 0;
 }
 .tool-menu-back:hover { background: #e8f5e9; }
 
+/* ── Tool menu item container (distributes buttons evenly) ── */
+.tool-menu-items {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2px, 0.6vh, 6px);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
 /* ── Expandable group (Decks / Hedges / Pools) ── */
-.tool-menu-group { display: flex; flex-direction: column; gap: 3px; }
+.tool-menu-group { display: flex; flex-direction: column; gap: clamp(2px, 0.5vh, 4px); flex: 1; min-height: 0; }
 
 .tool-menu-btn.group-header {
   justify-content: space-between;
