@@ -174,7 +174,7 @@
 /* ── Mobile season cycle button ── */
 .season-cycle-btn {
   position: absolute;
-  right: 12px;
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
   border: none;

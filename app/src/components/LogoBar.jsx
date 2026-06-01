@@ -23,9 +23,7 @@ export default function LogoBar({
     const cycleSeason = () => onSeasonChange?.((currentSeason + 1) % 4)
     return (
       <div className="logo-bar logo-bar-mobile">
-        <div className="logo-center logo-center-mobile">
-          <img src="/stickers/Logo.png" alt="Garden Mapper" className="logo-img logo-img-mobile" />
-        </div>
+        {/* Season cycle — top left */}
         <button
           className={`season-cycle-btn season-cycle-${['spring','summer','fall','winter'][currentSeason]}`}
           onClick={cycleSeason}
@@ -33,6 +31,11 @@ export default function LogoBar({
         >
           {SEASON_NAMES[currentSeason]}
         </button>
+        <div className="logo-center logo-center-mobile">
+          <img src="/stickers/Logo.png" alt="Garden Mapper" className="logo-img logo-img-mobile" />
+        </div>
+        {/* User icon — top right */}
+        <button className="logo-profile-btn logo-profile-mobile" title="Profile">👤</button>
       </div>
     )
   }
