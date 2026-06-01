@@ -82,3 +82,71 @@
 
 .season-checks { display: flex; flex-direction: column; gap: 3px; }
 .season-checks label { font-size: 11px; color: #444; display: flex; align-items: center; gap: 5px; cursor: pointer; }
+
+/* ── Tool menu (idle panel state) ── */
+.tool-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid #a5d6a7;
+  border-radius: 9px;
+  background: #f1f8e9;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  color: #2a3d1a;
+  text-align: left;
+  transition: background .12s;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.tool-menu-btn:hover { background: #dcedc8; }
+.tool-menu-btn.active {
+  background: #11502A;
+  color: #fff;
+  border-color: #11502A;
+}
+.tool-menu-btn.utility {
+  background: #f9fdf9;
+  border-color: #c8e6c9;
+}
+.tool-menu-btn.utility:hover { background: #e8f5e9; }
+.tool-menu-btn.utility.active {
+  background: #558B2F;
+  color: #fff;
+  border-color: #558B2F;
+}
+.tool-menu-btn.danger {
+  border-color: #ef9a9a;
+  background: #fff3f3;
+  color: #c62828;
+}
+.tool-menu-btn.danger:hover { background: #ffebee; }
+
+/* Row layout for emoji + label */
+.tool-menu-btn > * { pointer-events: none; }
+.tool-menu-btn { flex-direction: row; align-items: center; }
+.tool-menu-emoji { font-size: 14px; flex-shrink: 0; }
+.tool-menu-label { font-size: 12px; font-weight: 600; }
+.tool-menu-hint  { font-size: 9px; color: #888; margin-top: 1px; display: block; }
+.tool-menu-btn.active .tool-menu-hint { color: rgba(255,255,255,0.7); }
+
+.tool-menu-back {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 8px;
+  border: 1.5px solid #c8e6c9;
+  border-radius: 7px;
+  background: #f9fdf9;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: inherit;
+  color: #558B2F;
+  width: fit-content;
+}
+.tool-menu-back:hover { background: #e8f5e9; }

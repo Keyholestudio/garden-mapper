@@ -1,5 +1,6 @@
 // RightPanel.jsx — Context-sensitive right panel
 // Phase 4: full properties for plants, structs, edit mode, multi-select
+// Phase 7 (June 1): toolbar integrated into idle panel state
 
 import Konva from 'konva'
 import {
@@ -23,8 +24,158 @@ const TYPE_COLOURS = {
   deck: DECKING_COLOURS,
   'underground-electrical': ELEC_COLOURS, 'underground-plumbing': PLUMB_COLOURS,
 }
-const NO_FILL_TYPES = ['path', 'fence', 'gate', 'underground-electrical', 'underground-plumbing']
 
+// ── Tool menu definition ──────────────────────────────────────────────────────
+const TOP_TOOLS = [
+  { id: 'beds',     label: 'Beds',      emoji: '🌿' },
+  { id: 'building', label: 'Buildings', emoji: '🏠' },
+  { id: 'fences',   label: 'Fences',    emoji: '🪵' },
+  { id: 'paths',    label: 'Paths',     emoji: '〰' },
+  { id: 'water',    label: 'Water',     emoji: '💧' },
+  { id: 'select',   label: 'Select',    emoji: '✋' },
+]
+const UTILITY_TOOLS = [
+  { id: 'grid',  label: 'Grid',  emoji: '⊞', utility: true },
+  { id: 'reset', label: 'Reset', emoji: '⊙', utility: true },
+  { id: 'clear', label: 'Clear', emoji: '🗑', utility: true, danger: true },
+]
+
+const BED_SUBS = [
+  { id: 'curved',   label: 'Curved',   hint: 'Click points · Enter to close' },
+  { id: 'straight', label: 'Straight', hint: 'Click points · angular edges'  },
+  { id: 'square',   label: 'Square',   hint: 'Click + drag rectangle'         },
+]
+const FENCE_SUBS = [
+  { id: 'fence',    label: 'Fence',        hint: 'Open freeform line' },
+  { id: 'gate',     label: 'Gate',         hint: 'Place a gate section' },
+  { id: 'curved',   label: 'Hedge Curved', hint: 'Click points · Enter to close' },
+  { id: 'straight', label: 'Hedge Straight', hint: 'Angular hedge line' },
+  { id: 'square',   label: 'Hedge Square', hint: 'Click + drag hedge rect' },
+]
+const PATH_SUBS = [
+  { id: 'freeform', label: 'Freeform', hint: 'Click points · Enter to finish' },
+]
+const BUILD_SUBS = [
+  { id: 'building',             label: 'Building',    hint: 'Click + drag footprint' },
+  { id: 'deck-curved',          label: 'Deck Curved', hint: 'Click points · Enter to close' },
+  { id: 'deck-straight',        label: 'Deck Straight', hint: 'Angular deck line' },
+  { id: 'deck-square',          label: 'Deck Square', hint: 'Click + drag deck rect' },
+  { id: 'underground-electrical', label: '⚡ Electrical', hint: 'Freeform underground run' },
+  { id: 'underground-plumbing',   label: '🔵 Plumbing',   hint: 'Freeform underground run' },
+]
+const WATER_SUBS = [
+  { id: 'fountain',   label: 'Fountain',   hint: 'Place a fountain' },
+  { id: 'pond',       label: 'Pond',        hint: 'Freeform pond outline' },
+  { id: 'pool-sq',    label: 'Pool Rect',   hint: 'Click + drag rectangular pool' },
+  { id: 'pool-circle',label: 'Pool Circle', hint: 'Click to place circular pool' },
+]
+
+const SUB_MAP = {
+  beds: BED_SUBS, fences: FENCE_SUBS, paths: PATH_SUBS,
+  building: BUILD_SUBS, water: WATER_SUBS,
+}
+
+// ── Idle Tool Menu ────────────────────────────────────────────────────────────
+function ToolMenu({
+  currentMode, onModeChange,
+  bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool,
+  onBedSubTool, onFenceSubTool, onFenceType, onPathSubTool, onBuildingSubTool, onWaterSubTool,
+  showGrid, onToggleGrid, onResetView, onClearAll,
+}) {
+  const subs = SUB_MAP[currentMode] || []
+
+  const activeSub =
+    currentMode === 'beds'     ? bedSubTool :
+    currentMode === 'fences'   ? (fenceType === 'fence' ? 'fence' : fenceType === 'gate' ? 'gate' : fenceSubTool) :
+    currentMode === 'paths'    ? pathSubTool :
+    currentMode === 'building' ? buildingSubTool :
+    currentMode === 'water'    ? waterSubTool : null
+
+  const handleSubChange = (id) => {
+    if (currentMode === 'beds')     { onBedSubTool(id); return }
+    if (currentMode === 'fences')   {
+      if (id === 'fence') { onFenceType('fence'); return }
+      if (id === 'gate')  { onFenceType('gate');  return }
+      onFenceType('hedge'); onFenceSubTool(id); return
+    }
+    if (currentMode === 'paths')    { onPathSubTool(id); return }
+    if (currentMode === 'building') { onBuildingSubTool(id); return }
+    if (currentMode === 'water')    { onWaterSubTool(id); return }
+  }
+
+  // If a tool with subs is active, show sub-menu level
+  if (currentMode && subs.length > 0) {
+    return (
+      <div className="panel-content">
+        <button className="tool-menu-back" onClick={() => onModeChange('select')}>
+          ← Back
+        </button>
+        <div className="panel-h2" style={{ marginTop: 2 }}>
+          {TOP_TOOLS.find(t => t.id === currentMode)?.emoji}{' '}
+          {TOP_TOOLS.find(t => t.id === currentMode)?.label}
+        </div>
+        <div className="panel-sep" />
+        {subs.map(s => (
+          <button
+            key={s.id}
+            className={`tool-menu-btn${activeSub === s.id ? ' active' : ''}`}
+            onClick={() => handleSubChange(s.id)}
+            title={s.hint}
+          >
+            <span className="tool-menu-label">{s.label}</span>
+            {activeSub === s.id && <span className="tool-menu-hint">{s.hint}</span>}
+          </button>
+        ))}
+      </div>
+    )
+  }
+
+  // Default: top-level tool list
+  return (
+    <div className="panel-content">
+      <div className="panel-h2" style={{ marginBottom: 2 }}>Tools</div>
+      <div className="panel-sep" />
+      {TOP_TOOLS.map(t => (
+        <button
+          key={t.id}
+          className={`tool-menu-btn${currentMode === t.id ? ' active' : ''}`}
+          onClick={() => onModeChange(t.id)}
+        >
+          <span className="tool-menu-emoji">{t.emoji}</span>
+          <span className="tool-menu-label">{t.label}</span>
+        </button>
+      ))}
+      <div className="panel-sep" style={{ marginTop: 4 }} />
+      {UTILITY_TOOLS.map(t => {
+        if (t.id === 'grid') return (
+          <button
+            key="grid"
+            className={`tool-menu-btn utility${showGrid ? ' active' : ''}`}
+            onClick={onToggleGrid}
+          >
+            <span className="tool-menu-emoji">{t.emoji}</span>
+            <span className="tool-menu-label">Grid {showGrid ? 'On' : 'Off'}</span>
+          </button>
+        )
+        if (t.id === 'reset') return (
+          <button key="reset" className="tool-menu-btn utility" onClick={onResetView}>
+            <span className="tool-menu-emoji">{t.emoji}</span>
+            <span className="tool-menu-label">Reset View</span>
+          </button>
+        )
+        if (t.id === 'clear') return (
+          <button key="clear" className="tool-menu-btn utility danger" onClick={onClearAll}>
+            <span className="tool-menu-emoji">{t.emoji}</span>
+            <span className="tool-menu-label">Clear All</span>
+          </button>
+        )
+        return null
+      })}
+    </div>
+  )
+}
+
+// ── Main RightPanel export ────────────────────────────────────────────────────
 export default function RightPanel({
   selectedPlant, selectedStruct, multiSelection, editingShapeId,
   plantDataRef, structDataRef,
@@ -39,6 +190,11 @@ export default function RightPanel({
   onSeasonsChange,
   addingPt, onToggleAddPt,
   removingPt, onToggleRemovePt,
+  // Tool menu props
+  currentMode, onModeChange,
+  bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool,
+  onBedSubTool, onFenceSubTool, onFenceType, onPathSubTool, onBuildingSubTool, onWaterSubTool,
+  showGrid, onToggleGrid, onResetView, onClearAll,
 }) {
   const pxPerUnit = UNIT_PX * (gardenUnit === 'm' ? 3.281 : 1)
 
@@ -48,7 +204,7 @@ export default function RightPanel({
     const editShape = layers?.structLayer?.findOne('#' + editingShapeId)
     const isLine = editShape instanceof Konva.Line
     return (
-      <div className="right-panel">
+      <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
         <div className="panel-content">
           <div className="panel-h2">✏️ {d?.label || 'Shape'}</div>
           <div className="panel-sub" style={{fontSize:10,opacity:.65,textAlign:'left'}}>
@@ -81,7 +237,7 @@ export default function RightPanel({
   // ── Multi-select panel ────────────────────────────────────
   if (multiSelection?.length > 1) {
     return (
-      <div className="right-panel">
+      <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
         <div className="panel-content">
           <div className="panel-h2">Multiple Selected</div>
           <div className="panel-sub">{multiSelection.length} objects</div>
@@ -96,7 +252,7 @@ export default function RightPanel({
   if (selectedPlant) {
     const d = plantDataRef?.current[selectedPlant.id] || {}
     return (
-      <div className="right-panel">
+      <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
         <div className="panel-content">
           <div className="panel-h2">{d.label || 'Plant'}</div>
           <div className="panel-sub">{d.family || ''}</div>
@@ -119,7 +275,7 @@ export default function RightPanel({
                   onChange={e => {
                     if (e.target.checked) d.seasons = [...(d.seasons||[]), s]
                     else d.seasons = (d.seasons||[]).filter(x => x !== s)
-                    onSeasonsChange?.()  // re-run visibility immediately
+                    onSeasonsChange?.()
                   }}
                 /> {s.charAt(0).toUpperCase()+s.slice(1)}
               </label>
@@ -148,20 +304,18 @@ export default function RightPanel({
     const showDimCircle = isCircle && ['water-fountain','pool-circle','fountain','pond'].includes(d.type)
 
     return (
-      <div className="right-panel">
+      <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
         <div className="panel-content">
           <div className="panel-h2">{TYPE_NAMES[d.type] || d.type || 'Object'}</div>
-          {/* Label rename — mirrors v8 pnl-struct-label input */}
           <input
             className="struct-label-input"
             type="text"
             defaultValue={d.label || ''}
             placeholder="Label..."
-            key={selectedStruct.id}  // reset when selection changes
+            key={selectedStruct.id}
             onChange={e => { if (d) d.label = e.target.value }}
           />
 
-          {/* Colour swatches */}
           <div className="panel-title">COLOUR</div>
           <div className="colour-row">
             {colours.map(c => (
@@ -175,7 +329,6 @@ export default function RightPanel({
             ))}
           </div>
 
-          {/* Path / gate / underground width */}
           {(isPath || isUG || d.type === 'gate') && (
             <>
               <div className="panel-title">LINE WIDTH</div>
@@ -188,7 +341,6 @@ export default function RightPanel({
             </>
           )}
 
-          {/* Dimension inputs — rect */}
           {showDimRect && (
             <>
               <div className="panel-title">DIMENSIONS ({gardenUnit})</div>
@@ -207,7 +359,6 @@ export default function RightPanel({
             </>
           )}
 
-          {/* Dimension inputs — circle */}
           {showDimCircle && (
             <>
               <div className="panel-title">DIAMETER ({gardenUnit})</div>
@@ -222,18 +373,15 @@ export default function RightPanel({
 
           <div className="panel-sep" />
 
-          {/* Layer order */}
           <div style={{ display:'flex', gap:4 }}>
             <button className="btn-panel" style={{flex:1}} onClick={() => onLayerMove?.('struct','up')}>▲ Forward</button>
             <button className="btn-panel" style={{flex:1}} onClick={() => onLayerMove?.('struct','down')}>▼ Back</button>
           </div>
 
-          {/* Transparency */}
           <button className="btn-panel" onClick={onTransparentStruct}>
             👁 {d.transparent ? 'Restore' : 'Make Transparent'}
           </button>
 
-          {/* Edit / Disconnect — hide for rect types, circles, groups (no point editing needed) */}
           {!isCircle && !isGroup && !isRectType && (
             <button className="btn-panel" onClick={() => onEnterEdit?.(selectedStruct.id)}>✏️ Edit Shape</button>
           )}
@@ -248,12 +396,29 @@ export default function RightPanel({
     )
   }
 
-  // ── Empty panel ───────────────────────────────────────────
+  // ── Idle: tool menu ───────────────────────────────────────
   return (
-    <div className="right-panel">
-      <div className="panel-empty">
-        <p>Select an object<br/>to edit its properties</p>
-      </div>
+    <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
+      <ToolMenu
+        currentMode={currentMode}
+        onModeChange={onModeChange}
+        bedSubTool={bedSubTool}
+        fenceSubTool={fenceSubTool}
+        fenceType={fenceType}
+        pathSubTool={pathSubTool}
+        buildingSubTool={buildingSubTool}
+        waterSubTool={waterSubTool}
+        onBedSubTool={onBedSubTool}
+        onFenceSubTool={onFenceSubTool}
+        onFenceType={onFenceType}
+        onPathSubTool={onPathSubTool}
+        onBuildingSubTool={onBuildingSubTool}
+        onWaterSubTool={onWaterSubTool}
+        showGrid={showGrid}
+        onToggleGrid={onToggleGrid}
+        onResetView={onResetView}
+        onClearAll={onClearAll}
+      />
     </div>
   )
 }

@@ -674,6 +674,16 @@ export default function GardenEditor() {
           structDataRef={state.structDataRef}
           layers={layersRef.current}
           gardenUnit={state.gardenUnit}
+          currentMode={state.currentMode}         onModeChange={state.setCurrentMode}
+          bedSubTool={state.bedSubTool}           onBedSubTool={state.setBedSubTool}
+          fenceSubTool={state.fenceSubTool}       onFenceSubTool={state.setFenceSubTool}
+          fenceType={state.fenceType}             onFenceType={state.setFenceType}
+          pathSubTool={state.pathSubTool}         onPathSubTool={state.setPathSubTool}
+          buildingSubTool={state.buildingSubTool} onBuildingSubTool={state.setBuildingSubTool}
+          waterSubTool={state.waterSubTool}       onWaterSubTool={state.setWaterSubTool}
+          showGrid={state.showGrid}               onToggleGrid={() => state.setShowGrid(v => !v)}
+          onResetView={handleResetView}
+          onClearAll={handleClearAll}
           onDeletePlant={() => { state.selectedPlant?.group.destroy(); delete state.plantDataRef.current[state.selectedPlant?.id]; layersRef.current.plantLayer?.batchDraw(); clearSelection() }}
           onDeleteStruct={() => { state.selectedStruct?.shape.destroy(); delete state.structDataRef.current[state.selectedStruct?.id]; layersRef.current.structLayer?.batchDraw(); clearSelection() }}
           onDeleteMulti={deleteSelected}
@@ -763,17 +773,7 @@ export default function GardenEditor() {
       </div>
 
       <BottomBar
-        currentMode={state.currentMode}         onModeChange={state.setCurrentMode}
-        bedSubTool={state.bedSubTool}           onBedSubTool={state.setBedSubTool}
-        fenceSubTool={state.fenceSubTool}       onFenceSubTool={state.setFenceSubTool}
-        fenceType={state.fenceType}             onFenceType={state.setFenceType}
-        pathSubTool={state.pathSubTool}         onPathSubTool={state.setPathSubTool}
-        buildingSubTool={state.buildingSubTool} onBuildingSubTool={state.setBuildingSubTool}
-        waterSubTool={state.waterSubTool}       onWaterSubTool={state.setWaterSubTool}
         currentSeason={state.currentSeason}     onSeasonChange={state.setCurrentSeason}
-        showGrid={state.showGrid}               onToggleGrid={() => state.setShowGrid(v => !v)}
-        onResetView={handleResetView}
-        onClearAll={handleClearAll}
         isMobile={isMobile}
         loadedImages={loadedImages}
         onPlantClick={handlePlantClick}
