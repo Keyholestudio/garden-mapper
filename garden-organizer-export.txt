@@ -494,6 +494,34 @@ The square drawing set up applies to all square objects (beds, hedges, buildings
 
 5) The main menu (from the Beds to Clear buttons) should fit within the info panel and not require scrolling up and down. This one menu should scale to fit the different screen sizes.
 
+5B) I changed my mind about about #5. I don’t want the buttons to scale on the web or tablet version. The mobile version will need to be able to scale to fit in such a small place. Please revert the button scaling for the tablet and browser versions.
+
+
+6) Make the text for the plant search panel the same size as the menu/info panel text.
+
+7) Logo adjustment:
+Please create a dark green line that separates the top bar from the rest of the tool. You can see that the line flows around the logo. We will have to make sure there’s no overlap of the line and logo when zooming in and out on the page and on different browsers.
+  
+8) Can we allow clicking and dragging plants onto the garden for tablet and web users? In addition to the select and click to place feature.
+
+
+9) Dream garden: The first garden that loads up with each new user is a garden of our own creation. I’ll create a beautiful garden which will be one of the two gardens that a user has on their account. This will let users see what a beautiful garden could look like and they will have the ability to delete it like any other garden. I will create this when we have confirmed #10 is complete. We need a way to assure that the customer data is saved.
+
+10) Super saves: Presently, the save feature does not carry over between the many updates that we have been making. Saving gardens will be the #1 priority for this app. If a garden is lost we will lose a customer. So, we will need a sure fire way to save gardens and keep the data from being lost as we roll out new updates.
+
+
+11) Deferred: Sunny and shady parts of the garden: I’m not sure how this will be represented yet, but I would like a way to draw a shady/sunny part of the garden (perhaps by drawing a gradient darkening filter to parts of the garden. This is to show what parts of the garden are low light vs full sun. Trees may also cast a shadow.
+
+
+12) I’d like to discuss users being able to access their gardens on different devices. This might be a problem as it’ll require us to maintain a server (?) and have a user account be synced between devices... it sounds complicated.
+
+
+13) On the mobile version, the season slider is now just a button in the top right that you can press to change the season and press again to get to the next season. When you’ve pressed through all four seasons, you end up back in the spring season again.
+  
+
+
+14) The mobile version 
+
 
 
 

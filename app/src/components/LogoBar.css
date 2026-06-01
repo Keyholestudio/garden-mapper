@@ -6,7 +6,7 @@
   align-items: center;
   height: 56px;
   background: #ffffff;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 2px solid #11502A;  /* dark green separator */
   flex-shrink: 0;
   z-index: 10;
   padding: 0 10px;
@@ -41,6 +41,11 @@
 .logo-img {
   height: 44px;
   object-fit: contain;
+  /* White bg + bottom padding lets the logo visually bridge the dark green border */
+  background: #fff;
+  padding-bottom: 3px;
+  position: relative;
+  z-index: 11;
 }
 
 /* RIGHT — grows to fill right side, content pushed to end */

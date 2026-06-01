@@ -7,8 +7,37 @@ import { SIZE_MAP } from './useGardenState'
 import { makePlantGroup } from '../utils/plantUtils'
 
 const LS_KEY          = 'gardenData'
+const LS_BACKUP_KEY   = 'gardenData_backup'   // last-known-good snapshot
 const LS_LAST_IDX_KEY = 'gardenLastIndex'
 const MAX_GARDENS     = 2
+const SCHEMA_VERSION  = 2  // increment when save format changes
+
+// ── Schema migration ──────────────────────────────────────────────────────────────────
+function migrateGarden(g) {
+  if (!g || typeof g !== 'object') return null
+  const v = g._schemaVersion || 1
+
+  // v1 → v2: ensure all plant entries have seasons array + transparent flag
+  if (v < 2) {
+    if (Array.isArray(g.plants)) {
+      g.plants = g.plants.map(p => ({
+        ...p,
+        seasons:     p.seasons     || ['spring','summer','fall','winter'],
+        transparent: p.transparent ?? false,
+        notes:       p.notes       || '',
+      }))
+    }
+    if (Array.isArray(g.structs)) {
+      g.structs = g.structs.map(s => ({
+        ...s,
+        transparent: s.transparent ?? false,
+      }))
+    }
+  }
+
+  g._schemaVersion = SCHEMA_VERSION
+  return g
+}
 
 // ── Last-used index helpers ───────────────────────────────────────────────────
 export function readLastGardenIndex() {
@@ -25,12 +54,39 @@ export function writeLastGardenIndex(idx) {
 export function readGardens() {
   try {
     const raw = JSON.parse(localStorage.getItem(LS_KEY) || '[]')
-    // Filter out any null/corrupt entries left from buggy saves
-    return Array.isArray(raw) ? raw.filter(g => g && typeof g === 'object') : []
+    if (!Array.isArray(raw)) return []
+    return raw.map(g => migrateGarden(g)).filter(Boolean)
+  } catch {
+    return readGardensBackup()
+  }
+}
+function readGardensBackup() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(LS_BACKUP_KEY) || '[]')
+    if (!Array.isArray(raw)) return []
+    console.warn('[GardenMapper] Loaded from backup — primary was corrupt')
+    return raw.map(g => migrateGarden(g)).filter(Boolean)
   } catch { return [] }
 }
 function writeGardens(arr) {
-  localStorage.setItem(LS_KEY, JSON.stringify(arr))
+  try {
+    const json = JSON.stringify(arr)
+    const current = localStorage.getItem(LS_KEY)
+    if (current) localStorage.setItem(LS_BACKUP_KEY, current)
+    localStorage.setItem(LS_KEY, json)
+  } catch (e) {
+    console.error('[GardenMapper] Save failed:', e)
+  }
+}
+
+// ── Export gardens as JSON file (user backup) ─────────────────────────────────
+export function exportGardensJSON() {
+  const data = { _schemaVersion: SCHEMA_VERSION, gardens: readGardens(), exportedAt: new Date().toISOString() }
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+  const url  = URL.createObjectURL(blob)
+  const a    = document.createElement('a')
+  a.href = url; a.download = 'garden-mapper-backup.json'
+  a.click(); URL.revokeObjectURL(url)
 }
 
 // ── saveGarden ────────────────────────────────────────────────────────────────
@@ -80,6 +136,7 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
   })
 
   const gardenEntry = {
+    _schemaVersion: SCHEMA_VERSION,
     name:    state.gardenName,
     unit:    state.gardenUnit,
     w:       state.gardenW,
