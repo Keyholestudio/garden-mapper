@@ -1,3 +1,32 @@
+/* ── Desktop/tablet: floating pill anchored to bottom of canvas ── */
+.season-float {
+  position: absolute;
+  /* Bottom offset = labels(18px) + pill-bottom-pad(12px) + margin(12px) = 42px
+     This ensures the whole pill + labels clear editor-layout's overflow:hidden boundary */
+  bottom: 42px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.season-float-pill {
+  pointer-events: all;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(17, 80, 42, 0.25);
+  border-radius: 40px;
+  padding: 8px 24px 8px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+  width: min(560px, 60vw);
+  /* Allow labels to overflow below the pill border */
+  overflow: visible;
+}
+
+/* ── Mobile: bottom sheet (unchanged) ── */
 .bottom-wrap {
   background: transparent;
   display: flex;
@@ -10,7 +39,7 @@
   background: #fff;
   border: 1.5px solid #11502A;
   border-radius: 14px;
-  padding: 7px 14px 18px;  /* extra bottom padding for labels */
+  padding: 7px 14px 18px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,7 +47,7 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.10);
   width: 100%;
   max-width: 900px;
-  overflow: hidden; /* keep labels inside */
+  overflow: hidden;
 }
 
 .toolbar-row {
@@ -86,12 +115,13 @@
   display: flex;
   justify-content: center;
   padding-top: 4px;
-  padding-bottom: 16px; /* room for labels below */
+  padding-bottom: 4px;
 }
 
 .season-slider-wrap {
   position: relative;
-  width: min(420px, 52vw);
+  width: 100%;
+  padding-bottom: 18px; /* space for absolute labels */
 }
 
 .season-slider {
@@ -121,11 +151,12 @@
   left: 0; right: 0;
   top: 20px;
   pointer-events: none;
+  /* Must fit within slider-wrap's padding-bottom area */
 }
 
 .season-lbl {
   position: absolute;
-  transform: translateX(-50%);  /* center label on thumb */
+  transform: translateX(-50%);
   font-size: 10px;
   font-weight: 700;
   color: #558B2F;

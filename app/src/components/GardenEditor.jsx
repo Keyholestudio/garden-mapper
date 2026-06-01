@@ -772,6 +772,7 @@ export default function GardenEditor() {
         />
       </div>
 
+      {/* Season slider: floats over the layout, anchored to editor-layout */}
       <BottomBar
         currentSeason={state.currentSeason}     onSeasonChange={state.setCurrentSeason}
         isMobile={isMobile}

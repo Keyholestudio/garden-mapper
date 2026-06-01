@@ -23,6 +23,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  /* no overflow:hidden — let the floating slider labels breathe */
 }
 
 .draw-hint {
