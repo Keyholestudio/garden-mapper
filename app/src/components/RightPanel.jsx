@@ -142,7 +142,7 @@ export default function RightPanel({
     const colours = TYPE_COLOURS[d.type] || BED_COLOURS
     const isPath  = d.type === 'path'
     const isUG    = d.type?.startsWith('underground')
-    const rectTypes = ['bed-sq', 'building', 'deck', 'deck-sq', 'pool-sq', 'hedge-sq']
+    const rectTypes = ['bed-sq', 'bed-square', 'building', 'deck', 'deck-sq', 'pool-sq', 'hedge-sq']
     const isRectType    = isRect   && rectTypes.includes(d.type)
     const showDimRect   = isRectType
     const showDimCircle = isCircle && ['water-fountain','pool-circle','fountain','pond'].includes(d.type)

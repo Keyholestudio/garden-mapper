@@ -408,7 +408,9 @@ export function useDrawTools({
       if (free && freePtsRef.current.length >= 2) { doClose(); return }
       if (e.target !== stage && !free && !s.editingShapeId) {
         const id = e.target.id?.() || e.target.parent?.id?.()
-        if (id && s.structDataRef.current[id] && onEnterEdit) onEnterEdit(id)
+        // Skip rect/circle types — they have no editable points
+        const noEdit = e.target instanceof Konva.Rect || e.target instanceof Konva.Circle
+        if (id && s.structDataRef.current[id] && onEnterEdit && !noEdit) onEnterEdit(id)
       }
     }
 
