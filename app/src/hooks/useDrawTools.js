@@ -32,7 +32,7 @@ export function useDrawTools({
   function updateHint(pts, currentMode, buildingSubTool, pathSubTool) {
     const n = pts.length
     const isPath = currentMode === 'paths'
-    const isUnderground = currentMode === 'building' && buildingSubTool === 'underground'
+    const isUnderground = (currentMode === 'building' && buildingSubTool === 'underground') || (currentMode === 'water' && s?.waterSubTool === 'underground-plumbing')
     const hintEl = document.getElementById('draw-hint')
     if (!hintEl) return
     if (currentMode === 'paths' && pathSubTool === 'gate') {

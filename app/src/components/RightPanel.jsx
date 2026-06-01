@@ -66,7 +66,7 @@ const PATH_SUBS = [
   { id: 'freeform', label: 'Freeform', hint: 'Click points · Enter to finish' },
 ]
 
-// Buildings: flat items + a Decks group
+// Buildings: Building + Decks + Electrical only (Plumbing moved to Water)
 const BUILD_ITEMS = [
   { id: 'building', label: 'Building', hint: 'Click + drag footprint' },
   {
@@ -78,13 +78,12 @@ const BUILD_ITEMS = [
     ],
   },
   { id: 'underground-electrical', label: '⚡ Electrical', hint: 'Freeform underground run' },
-  { id: 'underground-plumbing',   label: '🔵 Plumbing',   hint: 'Freeform underground run' },
 ]
 
-// Water: flat items + a Pools group
+// Water: Fountain, Plumbing, Pools group, Pond
 const WATER_ITEMS = [
-  { id: 'fountain', label: 'Fountain', hint: 'Place a fountain' },
-  { id: 'pond',     label: 'Pond',     hint: 'Freeform pond outline' },
+  { id: 'fountain',             label: 'Fountain', hint: 'Place a fountain' },
+  { id: 'underground-plumbing', label: '🔵 Plumbing', hint: 'Freeform underground plumbing run' },
   {
     id: '__pools', label: 'Pools', emoji: '🏊', group: true,
     children: [
@@ -92,6 +91,7 @@ const WATER_ITEMS = [
       { id: 'pool-sq',     label: 'Square Pool',   hint: 'Click + drag rectangular pool' },
     ],
   },
+  { id: 'pond', label: 'Pond', hint: 'Freeform pond outline' },
 ]
 
 // ── Idle Tool Menu ────────────────────────────────────────────────────────────

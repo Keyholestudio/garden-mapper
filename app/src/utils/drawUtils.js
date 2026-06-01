@@ -12,6 +12,7 @@ export function isFreeMode(currentMode, bedSubTool, fenceSubTool, fenceType, bui
   if (currentMode === 'paths') return true
   if (currentMode === 'water'    && waterSubTool === 'pond') return true
   if (currentMode === 'building' && (buildingSubTool === 'deck-curved' || buildingSubTool === 'deck-straight' || buildingSubTool === 'underground' || buildingSubTool === 'underground-electrical' || buildingSubTool === 'underground-plumbing')) return true
+  if (currentMode === 'water'    && waterSubTool === 'underground-plumbing') return true
   return false
 }
 
@@ -139,7 +140,8 @@ export function closeFreeShape({
   const isPath       = currentMode === 'paths'
   const isGate       = currentMode === 'paths' && pathSubTool === 'gate'
   const isFenceOpen  = currentMode === 'fences' && fenceType === 'fence'
-  const isUnderground= currentMode === 'building' && (buildingSubTool === 'underground' || buildingSubTool === 'underground-electrical' || buildingSubTool === 'underground-plumbing')
+  const isUnderground= (currentMode === 'building' && (buildingSubTool === 'underground' || buildingSubTool === 'underground-electrical' || buildingSubTool === 'underground-plumbing'))
+                     || (currentMode === 'water' && waterSubTool === 'underground-plumbing')
   const isDeckFree   = currentMode === 'building' && (buildingSubTool === 'deck-curved' || buildingSubTool === 'deck-straight')
   const isWaterPond  = currentMode === 'water'    && waterSubTool === 'pond'
   const closedShape  = !isPath && !isGate && !isFenceOpen && !isUnderground
@@ -159,8 +161,9 @@ export function closeFreeShape({
   if (isGate)        { type = 'gate';                      label = GATE_STYLES[gateType]?.label || 'Gate' }
   else if (isPath)   { type = 'path';                      label = 'Path'      }
   else if (isUnderground) {
-    // buildingSubTool may be 'underground-electrical' or 'underground-plumbing' directly
-    const ugType = buildingSubTool.includes('plumbing') ? 'plumbing' : 'electrical'
+    // Check both building and water modes for plumbing
+    const ugSub = currentMode === 'water' ? waterSubTool : buildingSubTool
+    const ugType = ugSub.includes('plumbing') ? 'plumbing' : 'electrical'
     type = 'underground-' + ugType
     label = ugType === 'electrical' ? 'Electrical' : 'Plumbing'
   }
