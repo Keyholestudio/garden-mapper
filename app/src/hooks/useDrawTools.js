@@ -414,12 +414,121 @@ export function useDrawTools({
       }
     }
 
+    // ── Touch: press-drag for square rect/circle draw modes ──────────────
+    // Mirrors mousedown/mousemove/mouseup but uses Konva touch events.
+    // Only fires in rect/circle draw modes — pinch/pan is handled in GardenCanvas.
+    let touchDrawActive = false
+    let touchStartPos   = null
+
+    const isSquareDrawMode = (s) =>
+      (s.currentMode === 'building' && (s.buildingSubTool === 'building' || s.buildingSubTool === 'deck-square')) ||
+      (s.currentMode === 'beds'     && s.bedSubTool === 'square') ||
+      (s.currentMode === 'water'    && s.waterSubTool === 'pool-sq') ||
+      (s.currentMode === 'fences'   && s.fenceSubTool === 'square')
+
+    const isCircleDrawMode = (s) => s.currentMode === 'water' && s.waterSubTool === 'pool-circle'
+
+    const onTouchStartDraw = (e) => {
+      const s = sRef.current
+      if (e.evt.touches.length !== 1) return  // only single-finger draw
+      if (!isSquareDrawMode(s) && !isCircleDrawMode(s)) return
+      e.evt.preventDefault()
+      touchDrawActive = true
+      touchStartPos = stage.getRelativePointerPosition()
+      // Reuse mousedown logic by firing it synthetically
+      onMouseDown({ target: stage, evt: e.evt })
+    }
+
+    const onTouchMoveDraw = (e) => {
+      if (!touchDrawActive) return
+      e.evt.preventDefault()
+      onMouseMove()
+    }
+
+    const onTouchEndDraw = (e) => {
+      if (!touchDrawActive) return
+      touchDrawActive = false
+      const s = sRef.current
+
+      // If drag was tiny (< 12px screen) → treat as tap-to-place default size
+      const endPos = stage.getRelativePointerPosition()
+      const scale  = stage.scaleX()
+      const screenDist = endPos
+        ? Math.hypot((endPos.x - (touchStartPos?.x || 0)) * scale,
+                     (endPos.y - (touchStartPos?.y || 0)) * scale)
+        : 0
+
+      if (screenDist < 12 && touchStartPos) {
+        // Cancel the preview that mousedown started
+        if (previewRectRef.current) { previewRectRef.current.destroy(); previewRectRef.current = null }
+        if (circlePreviewRef.current) { circlePreviewRef.current.destroy(); circlePreviewRef.current = null }
+        drawStartRef.current = null
+        waterStartRef.current = null
+
+        // Place a default-size shape at tap point
+        const pos = touchStartPos
+        const snap = snapCellRef.current
+        const sx = (s.showGrid && snap) ? Math.round(pos.x / snap) * snap : pos.x
+        const sy = (s.showGrid && snap) ? Math.round(pos.y / snap) * snap : pos.y
+
+        // Default size: 15ft × 15ft (or 5m × 5m)
+        const pxPerFt = 32
+        const pxPerM  = 32 * 3.281
+        const defaultPx = s.gardenUnit === 'm' ? 5 * pxPerM : 15 * pxPerFt
+
+        if (isCircleDrawMode(s)) {
+          const circId = addCircleStruct({
+            cx: sx, cy: sy, radius: defaultPx / 2,
+            structIdCtr: s.structIdCtr, structDataRef: s.structDataRef,
+            snapCell: snap, showGrid: s.showGrid,
+            structLayer, onSelect: onStructSelect, onModeChange, onEnterEdit,
+          })
+          if (circId && onPushUndo) {
+            onPushUndo(() => {
+              const sh = structLayer.findOne('#' + circId)
+              if (sh) { sh.destroy(); delete s.structDataRef.current[circId]; structLayer.batchDraw() }
+            })
+          }
+        } else {
+          let type = 'bed-square'
+          if (s.currentMode === 'building' && s.buildingSubTool === 'deck-square') type = 'deck'
+          else if (s.currentMode === 'building') type = 'building'
+          else if (s.currentMode === 'water'  && s.waterSubTool === 'pool-sq')  type = 'pool-sq'
+          else if (s.currentMode === 'fences' && s.fenceSubTool === 'square')   type = 'hedge-sq'
+
+          const rectId = addRectStruct({
+            type,
+            x: sx - defaultPx / 2, y: sy - defaultPx / 2,
+            w: defaultPx, h: defaultPx,
+            structIdCtr: s.structIdCtr, structDataRef: s.structDataRef,
+            groupIdCtr: s.groupIdCtr,
+            snapCell: snap, showGrid: s.showGrid,
+            structLayer, onSelect: onStructSelect, onModeChange, onEnterEdit,
+          })
+          if (rectId && onPushUndo) {
+            onPushUndo(() => {
+              const sh = structLayer.findOne('#' + rectId)
+              if (sh) { sh.destroy(); delete s.structDataRef.current[rectId]; structLayer.batchDraw() }
+            })
+          }
+        }
+        structLayer.batchDraw()
+      } else {
+        // Real drag — finalise via normal mouseup logic
+        onMouseUp()
+      }
+      touchStartPos = null
+    }
+
     stage.on('mousemove', onMouseMove)
     stage.on('mousedown', onMouseDown)
     stage.on('mouseup',   onMouseUp)
     stage.on('click',     onClick)
     stage.on('dblclick',  onDblClick)
     stage.on('dblclick dbltap', onStageDblClick)
+    stage.on('touchstart', onTouchStartDraw)
+    stage.on('touchmove',  onTouchMoveDraw)
+    stage.on('touchend',   onTouchEndDraw)
     window.addEventListener('keydown', onKeyDown)
 
     return () => {
@@ -429,6 +538,9 @@ export function useDrawTools({
       stage.off('click',     onClick)
       stage.off('dblclick',  onDblClick)
       stage.off('dblclick dbltap', onStageDblClick)
+      stage.off('touchstart', onTouchStartDraw)
+      stage.off('touchmove',  onTouchMoveDraw)
+      stage.off('touchend',   onTouchEndDraw)
       window.removeEventListener('keydown', onKeyDown)
     }
   }, [stage, layers]) // re-register only if stage or layers change
