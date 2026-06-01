@@ -1,0 +1,147 @@
+/* MobileSheet.css — Mobile bottom sheet */
+
+.mobile-sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-top: 1.5px solid #11502A;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.13);
+  /* Smooth expand/collapse */
+  transition: transform 0.25s ease;
+  /* Prevent canvas interaction through sheet */
+  touch-action: pan-y;
+}
+
+/* ── Toggle handle ── */
+.mobile-sheet-handle {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0 2px;
+  flex-shrink: 0;
+}
+
+.mobile-sheet-toggle {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #11502A;
+  cursor: pointer;
+  padding: 4px 24px;
+  line-height: 1;
+  border-radius: 20px;
+  transition: background .12s;
+}
+.mobile-sheet-toggle:hover { background: #e8f5e9; }
+
+/* ── Sheet body ── */
+.mobile-sheet-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 6px 12px 16px;
+  overflow-y: auto;
+  max-height: 55vh; /* cap at ~55% of screen — garden still visible above */
+  overscroll-behavior: contain;
+}
+
+/* ── Plant search ── */
+.mobile-plant-search {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1.5px solid #a5d6a7;
+  border-radius: 20px;
+  background: #f9fbe7;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+.mobile-plant-search:focus { border-color: #558B2F; }
+
+/* ── Plant grid — 2 columns ── */
+.mobile-plant-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  max-height: 160px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(17,80,42,0.3) transparent;
+}
+
+.mobile-plant-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 7px;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background .12s;
+  background: #f9fbe7;
+  border: 1px solid transparent;
+}
+.mobile-plant-item:hover  { background: #dcedc8; border-color: #a5d6a7; }
+.mobile-plant-loading     { opacity: 0.4; cursor: default; }
+.mobile-plant-item img    { width: 36px; height: 36px; object-fit: contain; flex-shrink: 0;
+                            filter: drop-shadow(0 1px 2px rgba(0,0,0,.2)); pointer-events: none; }
+.mobile-plant-item span   { font-size: 12px; font-weight: 600; color: #2a3d1a; line-height: 1.2; }
+.mobile-plant-placeholder { width: 36px; height: 36px; background: #e8f5e9; border-radius: 6px; flex-shrink: 0; }
+.mobile-no-results        { grid-column: 1 / -1; font-size: 12px; color: #aaa; text-align: center; padding: 8px; }
+
+/* ── Divider ── */
+.mobile-sheet-divider {
+  width: 100%;
+  height: 1px;
+  background: #e8f5e9;
+  flex-shrink: 0;
+}
+
+/* ── Tool section ── */
+.mobile-tool-section {
+  flex-shrink: 0;
+}
+
+/* Override panel-content padding for mobile tool menu */
+.mobile-tool-menu {
+  padding: 4px 0 !important;
+  gap: 4px !important;
+}
+
+/* Mobile: top-level tools in 3-column grid */
+.mobile-tool-section .tool-menu-items,
+.mobile-tool-section .panel-content .tool-menu-items {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 5px;
+  flex-direction: unset;
+  flex-wrap: unset;
+}
+.mobile-tool-section .tool-menu-btn {
+  padding: 8px 4px !important;
+  font-size: 11px !important;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+}
+.mobile-tool-section .tool-menu-emoji { font-size: 13px !important; }
+/* Sub-menu: back to single-column vertical list */
+.mobile-tool-section .tool-menu-group,
+.mobile-tool-section .tool-menu-group-children {
+  grid-column: 1 / -1;  /* groups span full width */
+}
+
+/* ── Season slider ── */
+.mobile-season-wrap {
+  position: relative;
+  width: 100%;
+  padding-bottom: 22px;
+  padding-top: 4px;
+  flex-shrink: 0;
+}

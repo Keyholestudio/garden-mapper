@@ -22,6 +22,7 @@ import SetupOverlay  from './SetupOverlay'
 import GardenSwitcher from './GardenSwitcher'
 import PromoBanner from './PromoBanner'
 import ExportModal from './ExportModal'
+import MobileSheet from './MobileSheet'
 import './GardenEditor.css'
 
 export default function GardenEditor() {
@@ -680,8 +681,11 @@ export default function GardenEditor() {
       />
 
       <div className="editor-body">
-        <PlantTray loadedImages={loadedImages} onPlantClick={handlePlantClick}
-          onPlantDragStart={handlePlantDragStart} />
+        {/* Plant tray — desktop/tablet only */}
+        {!isMobile && (
+          <PlantTray loadedImages={loadedImages} onPlantClick={handlePlantClick}
+            onPlantDragStart={handlePlantDragStart} />
+        )}
         <div className="canvas-wrap">
           <GardenCanvas
             gardenName={state.gardenName} gardenW={state.gardenW}
@@ -695,8 +699,25 @@ export default function GardenEditor() {
             onDrop={handleCanvasDrop}
           />
           <div id="draw-hint" className="draw-hint" style={{ display: 'none' }} />
+          {/* Mobile sheet: floats over canvas, anchored to canvas-wrap bottom */}
+          {isMobile && (
+            <MobileSheet
+              loadedImages={loadedImages}       onPlantClick={handlePlantClick}
+              currentSeason={state.currentSeason} onSeasonChange={state.setCurrentSeason}
+              currentMode={state.currentMode}   onModeChange={state.setCurrentMode}
+              bedSubTool={state.bedSubTool}     onBedSubTool={state.setBedSubTool}
+              fenceSubTool={state.fenceSubTool} onFenceSubTool={state.setFenceSubTool}
+              fenceType={state.fenceType}       onFenceType={state.setFenceType}
+              pathSubTool={state.pathSubTool}   onPathSubTool={state.setPathSubTool}
+              buildingSubTool={state.buildingSubTool} onBuildingSubTool={state.setBuildingSubTool}
+              waterSubTool={state.waterSubTool} onWaterSubTool={state.setWaterSubTool}
+              showGrid={state.showGrid}         onToggleGrid={() => state.setShowGrid(v => !v)}
+              onResetView={handleResetView}     onClearAll={handleClearAll}
+            />
+          )}
         </div>
-        <RightPanel
+        {/* Right panel — desktop/tablet only */}
+        {!isMobile && <RightPanel
           selectedPlant={state.selectedPlant}
           selectedStruct={state.selectedStruct}
           multiSelection={state.multiSelection}
@@ -800,16 +821,16 @@ export default function GardenEditor() {
             })
             plantLayer.batchDraw()
           }}
-        />
+        />}
       </div>
 
-      {/* Season slider: floats over the layout, anchored to editor-layout */}
-      <BottomBar
-        currentSeason={state.currentSeason}     onSeasonChange={state.setCurrentSeason}
-        isMobile={isMobile}
-        loadedImages={loadedImages}
-        onPlantClick={handlePlantClick}
-      />
+      {/* Season slider (desktop/tablet only — mobile uses MobileSheet) */}
+      {!isMobile && (
+        <BottomBar
+          currentSeason={state.currentSeason} onSeasonChange={state.setCurrentSeason}
+          isMobile={false}
+        />
+      )}
     </div>
   )
 }
