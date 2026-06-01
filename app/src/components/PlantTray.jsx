@@ -1,11 +1,10 @@
-// PlantTray.jsx — Left sidebar: plant catalog, search, click-to-place
-// Phase 2: full catalog + search + recents + click-to-place
+// PlantTray.jsx — Left sidebar: plant catalog, search, click-to-place, drag-to-place
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { PLANT_CATALOG } from '../hooks/usePlantCatalog'
 import './PlantTray.css'
 
-export default function PlantTray({ loadedImages, onPlantClick }) {
+export default function PlantTray({ loadedImages, onPlantClick, onPlantDragStart, onPlantDragEnd }) {
   const [query, setQuery]   = useState('')
   const [recents, setRecents] = useState([])
 
@@ -21,12 +20,25 @@ export default function PlantTray({ loadedImages, onPlantClick }) {
     const img = loadedImages?.[entry.key]
     if (!img || typeof img === 'string') return
     const enriched = { ...entry, _img: img }
-    // Add to recents
     setRecents(prev => {
       const next = prev.filter(r => r.key !== entry.key)
       return [enriched, ...next].slice(0, 5)
     })
     if (onPlantClick) onPlantClick(enriched)
+  }
+
+  const handleDragStart = (entry, e) => {
+    const img = loadedImages?.[entry.key]
+    if (!img || typeof img === 'string') return
+    const enriched = { ...entry, _img: img }
+    // Store key in dataTransfer so drop handler can identify the plant
+    e.dataTransfer.setData('text/plain', entry.key)
+    e.dataTransfer.effectAllowed = 'copy'
+    // Use the sticker image as drag ghost
+    if (e.dataTransfer.setDragImage && img instanceof HTMLImageElement) {
+      e.dataTransfer.setDragImage(img, img.width / 2, img.height / 2)
+    }
+    if (onPlantDragStart) onPlantDragStart(enriched)
   }
 
   return (
@@ -42,31 +54,33 @@ export default function PlantTray({ loadedImages, onPlantClick }) {
         {recents.length > 0 && !query && (
           <>
             <div className="tray-section-label">Recently Used</div>
-            {recents.map(e => <TrayItem key={e.key + '_r'} entry={e} loadedImages={loadedImages} onClick={handleClick} />)}
+            {recents.map(e => (
+              <TrayItem key={e.key + '_r'} entry={e} loadedImages={loadedImages}
+                onClick={handleClick} onDragStart={handleDragStart} />
+            ))}
             <div className="tray-divider" />
           </>
         )}
-
-        {filtered.length === 0 && (
-          <div className="tray-no-results">No results</div>
-        )}
-
+        {filtered.length === 0 && <div className="tray-no-results">No results</div>}
         {filtered.map(e => (
-          <TrayItem key={e.key} entry={e} loadedImages={loadedImages} onClick={handleClick} />
+          <TrayItem key={e.key} entry={e} loadedImages={loadedImages}
+            onClick={handleClick} onDragStart={handleDragStart} />
         ))}
       </div>
     </div>
   )
 }
 
-function TrayItem({ entry, loadedImages, onClick }) {
+function TrayItem({ entry, loadedImages, onClick, onDragStart }) {
   const img = loadedImages?.[entry.key]
   const loaded = img && typeof img !== 'string'
 
   return (
     <div
       className={`tray-item${loaded ? '' : ' tray-item-loading'}`}
+      draggable={loaded}
       onClick={() => loaded && onClick(entry)}
+      onDragStart={loaded ? (e) => onDragStart(entry, e) : undefined}
       title={`${entry.label} — ${entry.family}`}
     >
       {loaded

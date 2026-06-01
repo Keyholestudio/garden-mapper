@@ -186,10 +186,39 @@ export default function GardenEditor() {
   })
 
   // ── Plant placement ──
-  const pendingPlantRef = useRef(null)
+  const pendingPlantRef  = useRef(null)
+  const draggingPlantRef = useRef(null)  // tracks plant being HTML5 drag-dropped
+
   const handlePlantClick = (enrichedEntry) => {
     pendingPlantRef.current = enrichedEntry
     state.setCurrentMode('select')
+  }
+
+  const handlePlantDragStart = (enrichedEntry) => {
+    draggingPlantRef.current = enrichedEntry
+    // Cancel any pending click-to-place so drag doesn't also trigger a placement
+    pendingPlantRef.current = null
+  }
+
+  const handleCanvasDrop = (worldPos) => {
+    const entry = draggingPlantRef.current
+    draggingPlantRef.current = null
+    if (!entry) return
+    const { plantLayer } = layersRef.current
+    if (!plantLayer || !stageRef.current) return
+    const newId = addPlant({
+      entry, x: worldPos.x, y: worldPos.y,
+      stage: stageRef.current, plantLayer,
+      plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr,
+      showGridRef,
+      onSelect: handlePlantSelect,
+    })
+    if (newId) {
+      state.pushUndo(() => {
+        const g = layersRef.current.plantLayer?.findOne('#' + newId)
+        if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() }
+      })
+    }
   }
   const handleCanvasClick = (worldPos) => {
     const entry = pendingPlantRef.current
@@ -651,7 +680,8 @@ export default function GardenEditor() {
       />
 
       <div className="editor-body">
-        <PlantTray loadedImages={loadedImages} onPlantClick={handlePlantClick} />
+        <PlantTray loadedImages={loadedImages} onPlantClick={handlePlantClick}
+          onPlantDragStart={handlePlantDragStart} />
         <div className="canvas-wrap">
           <GardenCanvas
             gardenName={state.gardenName} gardenW={state.gardenW}
@@ -662,6 +692,7 @@ export default function GardenEditor() {
             onStageReady={handleStageReady}
             onCanvasClick={handleCanvasClick}
             onScaleChange={(stage) => updateScaleLabel(stage, state.gardenUnit)}
+            onDrop={handleCanvasDrop}
           />
           <div id="draw-hint" className="draw-hint" style={{ display: 'none' }} />
         </div>

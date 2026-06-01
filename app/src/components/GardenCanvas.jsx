@@ -27,6 +27,7 @@ export default function GardenCanvas({
   onStageReady,    // callback(stage, layers) — parent gets refs after init
   onCanvasClick,   // callback({x,y}) — world coords of click on empty canvas
   onScaleChange,   // callback(stage) — fired after zoom/pan so parent can update scale label
+  onDrop,          // callback({x,y}) — world coords when a plant is dropped onto canvas
 }) {
   const containerRef  = useRef(null)
   const stageRef      = useRef(null)
@@ -284,11 +285,30 @@ export default function GardenCanvas({
     containerRef.current.style.background = SEASON_BG[season]
   }, [currentSeason])
 
+  // Convert a DOM clientX/Y position to Konva world coords
+  const clientToWorld = (clientX, clientY) => {
+    const stage = stageRef.current
+    if (!stage) return null
+    const rect = containerRef.current.getBoundingClientRect()
+    const sx = stage.scaleX()
+    return {
+      x: (clientX - rect.left - stage.x()) / sx,
+      y: (clientY - rect.top  - stage.y()) / sx,
+    }
+  }
+
   return (
     <div
       className="canvas-container"
       ref={containerRef}
       style={{ background: SEASON_BG[SEASONS[currentSeason]] }}
+      onDragOver={e => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy' }}
+      onDrop={e => {
+        e.preventDefault()
+        if (!onDrop) return
+        const pos = clientToWorld(e.clientX, e.clientY)
+        if (pos) onDrop(pos)
+      }}
     />
   )
 }
