@@ -523,7 +523,7 @@ export function useDrawTools({
     stage.on('mousemove', onMouseMove)
     stage.on('mousedown', onMouseDown)
     stage.on('mouseup',   onMouseUp)
-    stage.on('click',     onClick)
+    stage.on('click tap', onClick)   // tap = mobile touch; both needed for add-point mode
     stage.on('dblclick',  onDblClick)
     stage.on('dblclick dbltap', onStageDblClick)
     stage.on('touchstart', onTouchStartDraw)
@@ -535,7 +535,7 @@ export function useDrawTools({
       stage.off('mousemove', onMouseMove)
       stage.off('mousedown', onMouseDown)
       stage.off('mouseup',   onMouseUp)
-      stage.off('click',     onClick)
+      stage.off('click tap', onClick)
       stage.off('dblclick',  onDblClick)
       stage.off('dblclick dbltap', onStageDblClick)
       stage.off('touchstart', onTouchStartDraw)

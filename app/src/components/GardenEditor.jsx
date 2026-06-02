@@ -704,6 +704,7 @@ export default function GardenEditor() {
             onStageReady={handleStageReady}
             onCanvasClick={handleCanvasClick}
             onScaleChange={(stage) => updateScaleLabel(stage, state.gardenUnit)}
+            editingShapeId={state.editingShapeId}
             onDrop={handleCanvasDrop}
           />
           <div id="draw-hint" className="draw-hint" style={{ display: 'none' }} />

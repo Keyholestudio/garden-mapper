@@ -66,6 +66,9 @@ cd projects/garden-planner/app && npm run dev
 | 21 | Mobile undo button (handle bar, both panels) | `52d3d91` | ✅ |
 | 22 | Mobile plant panel: Copy button | `c06ef28` | ✅ |
 | 23 | Desktop/tablet ← Back button on plant + struct panels | `69b5fe1` | ✅ |
+| 24 | Mobile: Edit Points button for line-based structs (bed, path, fence, etc.) | `cdd92d7` | ✅ |
+| 25 | Mobile: Save button (💾) in top-right of mobile logo bar | `cdd92d7` | ✅ |
+| 26 | Fix: square tap-place now opens shape panel (not main menu) | `cdd92d7` | ✅ |
 
 ### Additional polish (June 1)
 - Season slider → frosted floating pill over canvas (`95583df`)

@@ -28,13 +28,15 @@ export default function GardenCanvas({
   onCanvasClick,   // callback({x,y}) — world coords of click on empty canvas
   onScaleChange,   // callback(stage) — fired after zoom/pan so parent can update scale label
   onDrop,          // callback({x,y}) — world coords when a plant is dropped onto canvas
+  editingShapeId,  // when set, background taps do NOT clear selection (edit-points mode)
 }) {
-  const containerRef  = useRef(null)
-  const stageRef      = useRef(null)
-  const layersRef     = useRef({})
-  const showGridRef   = useRef(showGrid)
-  const seasonRef     = useRef(currentSeason)
-  const gardenUnitRef = useRef(gardenUnit)
+  const containerRef    = useRef(null)
+  const stageRef        = useRef(null)
+  const layersRef       = useRef({})
+  const showGridRef     = useRef(showGrid)
+  const seasonRef       = useRef(currentSeason)
+  const gardenUnitRef   = useRef(gardenUnit)
+  const editingShapeRef = useRef(editingShapeId ?? null) // kept current via effect below
 
   // ── Init Konva stage ──────────────────────────────────
   useEffect(() => {
@@ -230,9 +232,11 @@ export default function GardenCanvas({
     wrap.addEventListener('touchcancel', onTouchEnd)
 
     // ── Canvas click → plant placement or deselect ──
+    // While in edit-points mode (editingShapeRef.current is set), background taps
+    // are used to add points — do NOT propagate to onCanvasClick which would clear selection.
     stage.on('click tap', e => {
       if (e.target === stage) {
-        // Pass world position to parent (plant placement, deselect, etc.)
+        if (editingShapeRef.current) return  // edit-points mode: ignore background tap
         const pos = stage.getRelativePointerPosition()
         if (onCanvasClick) onCanvasClick(pos)
       }
@@ -270,6 +274,7 @@ export default function GardenCanvas({
   useEffect(() => { showGridRef.current = showGrid }, [showGrid])
   useEffect(() => { seasonRef.current = currentSeason }, [currentSeason])
   useEffect(() => { gardenUnitRef.current = gardenUnit }, [gardenUnit])
+  useEffect(() => { editingShapeRef.current = editingShapeId ?? null }, [editingShapeId])
 
   // ── Redraw grid when season or showGrid changes ──
   useEffect(() => {
