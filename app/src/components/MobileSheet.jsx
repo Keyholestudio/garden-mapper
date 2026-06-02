@@ -30,6 +30,8 @@ const TYPE_COLOURS = {
 
 export default function MobileSheet({
   loadedImages, onPlantClick,
+  // Recently used plants
+  recents, onAddRecent, onRemoveRecent, onClearRecents, recentsHidden, onSetRecentsHidden,
   // Selection state
   selectedPlant, selectedStruct,
   plantDataRef, structDataRef,
@@ -173,6 +175,51 @@ export default function MobileSheet({
             onFocus={() => setSearchFocused(true)}
             onBlur={() => setSearchFocused(false)}
           />
+
+          {/* Recently used — horizontal scroll strip, hidden when searching */}
+          {recents?.length > 0 && !query && (
+            <div className="mobile-recents-section">
+              <div className="mobile-recents-header">
+                <span className="mobile-recents-label">Recently Used</span>
+                <div className="mobile-recents-actions">
+                  <button
+                    className="mobile-recents-toggle"
+                    onClick={() => onSetRecentsHidden?.(!recentsHidden)}
+                  >{recentsHidden ? 'Show' : 'Hide'}</button>
+                  {!recentsHidden && (
+                    <button className="mobile-recents-clear" onClick={() => onClearRecents?.()}>Clear</button>
+                  )}
+                </div>
+              </div>
+              {!recentsHidden && (
+                <div className="mobile-recents-row">
+                  {recents.map(entry => {
+                    const img = loadedImages?.[entry.key]
+                    const loaded = img && typeof img === 'object'
+                    return (
+                      <div key={entry.key + '_r'} className="mobile-recent-item">
+                        <div
+                          className={`mobile-recent-thumb${loaded ? '' : ' loading'}`}
+                          onClick={() => loaded && onPlantClick?.({ ...entry, _img: img })}
+                          title={entry.label}
+                        >
+                          {loaded
+                            ? <img src={entry.src} alt={entry.label} draggable={false} />
+                            : <div className="mobile-plant-placeholder" />}
+                        </div>
+                        <button
+                          className="mobile-recent-remove"
+                          onClick={() => onRemoveRecent?.(entry.key)}
+                          title="Remove"
+                        >×</button>
+                        <span className="mobile-recent-label">{entry.label}</span>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Plant grid — expands to full height when search is focused */}
           <div className={`mobile-plant-grid${searchFocused ? ' search-active' : ''}`}>

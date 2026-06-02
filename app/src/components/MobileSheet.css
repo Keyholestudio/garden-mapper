@@ -84,6 +84,115 @@
 }
 .mobile-plant-search:focus { border-color: #558B2F; }
 
+/* ── Recently used strip ── */
+.mobile-recents-section {
+  flex-shrink: 0;
+  margin: 4px 0 2px;
+}
+.mobile-recents-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.mobile-recents-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #2a3d1a;
+  opacity: 0.5;
+  font-weight: 700;
+}
+.mobile-recents-actions {
+  display: flex;
+  gap: 6px;
+}
+.mobile-recents-toggle,
+.mobile-recents-clear {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: inherit;
+  border: none;
+  background: none;
+  color: #558B2F;
+  cursor: pointer;
+  padding: 2px 5px;
+  border-radius: 5px;
+}
+.mobile-recents-toggle:hover,
+.mobile-recents-clear:hover { background: #e8f5e9; }
+
+.mobile-recents-row {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.mobile-recents-row::-webkit-scrollbar { display: none; }
+
+.mobile-recent-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  position: relative;
+  width: 52px;
+}
+.mobile-recent-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: #f1f8e9;
+  border: 1.5px solid #a5d6a7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color .12s, background .12s;
+}
+.mobile-recent-thumb:hover  { border-color: #558B2F; background: #dcedc8; }
+.mobile-recent-thumb.loading { opacity: 0.4; cursor: default; }
+.mobile-recent-thumb img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,.25));
+}
+.mobile-recent-label {
+  font-size: 9px;
+  color: #2a3d1a;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 52px;
+}
+.mobile-recent-remove {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ef9a9a;
+  border: none;
+  font-size: 12px;
+  line-height: 1;
+  color: #b71c1c;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  z-index: 2;
+}
+.mobile-recent-remove:hover { background: #e57373; }
+
 /* ── Plant grid — 2 columns ── */
 .mobile-plant-grid {
   display: grid;

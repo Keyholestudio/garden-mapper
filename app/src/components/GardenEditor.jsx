@@ -13,6 +13,7 @@ import { insertPointNearestSegment } from '../hooks/useSelection'
 import { saveGarden, loadGarden, createNewGarden, readGardens, readLastGardenIndex, writeLastGardenIndex } from '../hooks/useSaveLoad'
 import { addRectStruct } from '../utils/drawUtils'
 import { useBreakpoint } from '../hooks/useBreakpoint'
+import { useRecentPlants } from '../hooks/useRecentPlants'
 import LogoBar        from './LogoBar'
 import BottomBar      from './BottomBar'
 import PlantTray      from './PlantTray'
@@ -28,6 +29,7 @@ import './GardenEditor.css'
 export default function GardenEditor() {
   const state = useGardenState()
   const { isMobile, isTablet, isDesktop, breakpoint } = useBreakpoint()
+  const { recents, addRecent, removeRecent, clearRecents, hidden: recentsHidden, setHidden: setRecentsHidden } = useRecentPlants()
   const stageRef    = useRef(null)
   const layersRef   = useRef({})
   const showGridRef = useRef(state.showGrid) // always-current ref for snap in dragmove closures
@@ -209,6 +211,7 @@ export default function GardenEditor() {
     if (!entry) return
     const { plantLayer } = layersRef.current
     if (!plantLayer || !stageRef.current) return
+    addRecent(entry)  // record drag-drop as recent
     const newId = addPlant({
       entry, x: worldPos.x, y: worldPos.y,
       stage: stageRef.current, plantLayer,
@@ -691,8 +694,17 @@ export default function GardenEditor() {
       <div className="editor-body">
         {/* Plant tray — desktop/tablet only */}
         {!isMobile && (
-          <PlantTray loadedImages={loadedImages} onPlantClick={handlePlantClick}
-            onPlantDragStart={handlePlantDragStart} />
+          <PlantTray
+            loadedImages={loadedImages}
+            onPlantClick={handlePlantClick}
+            onPlantDragStart={handlePlantDragStart}
+            recents={recents}
+            onAddRecent={addRecent}
+            onRemoveRecent={removeRecent}
+            onClearRecents={clearRecents}
+            recentsHidden={recentsHidden}
+            onSetRecentsHidden={setRecentsHidden}
+          />
         )}
         <div className="canvas-wrap">
           <GardenCanvas
@@ -711,7 +723,8 @@ export default function GardenEditor() {
           {/* Mobile sheet: floats over canvas, anchored to canvas-wrap bottom */}
           {isMobile && (
             <MobileSheet
-              loadedImages={loadedImages}       onPlantClick={handlePlantClick}
+              loadedImages={loadedImages}
+              onPlantClick={(entry) => { addRecent(entry); handlePlantClick(entry) }}
               // Selection
               selectedPlant={state.selectedPlant}
               selectedStruct={state.selectedStruct}
@@ -788,6 +801,13 @@ export default function GardenEditor() {
                   if (sh) buildEditHandles(state.editingShapeId, sh)
                 }
               }}
+              // Recently used plants
+              recents={recents}
+              onAddRecent={addRecent}
+              onRemoveRecent={removeRecent}
+              onClearRecents={clearRecents}
+              recentsHidden={recentsHidden}
+              onSetRecentsHidden={setRecentsHidden}
               // Tool menu
               currentMode={state.currentMode}   onModeChange={state.setCurrentMode}
               bedSubTool={state.bedSubTool}     onBedSubTool={state.setBedSubTool}

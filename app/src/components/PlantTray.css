@@ -40,14 +40,40 @@
 .tray-scroll::-webkit-scrollbar-thumb { background: rgba(17,80,42,0.35); border-radius: 4px; border: 2px solid #fff; }
 .tray-scroll::-webkit-scrollbar-thumb:hover { background: rgba(17,80,42,0.6); }
 
+.tray-recents-wrap { margin-bottom: 2px; }
+
+.tray-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 3px 2px 2px;
+}
 .tray-section-label {
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: #2a3d1a;
   opacity: .5;
-  margin: 3px 2px 2px;
 }
+.tray-section-actions {
+  display: flex;
+  gap: 4px;
+}
+.tray-recents-toggle,
+.tray-recents-clear {
+  font-size: 9px;
+  font-weight: 700;
+  font-family: inherit;
+  border: none;
+  background: none;
+  color: #558B2F;
+  cursor: pointer;
+  padding: 1px 3px;
+  border-radius: 4px;
+  opacity: 0.7;
+}
+.tray-recents-toggle:hover,
+.tray-recents-clear:hover { opacity: 1; background: #e8f5e9; }
 
 .tray-item {
   display: flex;
@@ -57,11 +83,34 @@
   padding: 4px 5px;
   border-radius: 7px;
   transition: background .12s;
+  position: relative;
 }
 .tray-item:hover         { background: #dcedc8; }
 .tray-item-loading       { opacity: 0.4; cursor: default; }
 .tray-item img           { width: 34px; height: 34px; pointer-events: none; flex-shrink: 0; filter: drop-shadow(0 1px 3px rgba(0,0,0,.3)); object-fit: contain; }
-.tray-item span          { font-size: 12px; font-weight: 600; color: #2a3d1a; line-height: 1.2; }
+.tray-item span          { font-size: 12px; font-weight: 600; color: #2a3d1a; line-height: 1.2; flex: 1; }
+
+/* Remove button — only visible on hover for recent items */
+.tray-item-removable .tray-item-remove {
+  display: none;
+  position: absolute;
+  right: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #ef9a9a;
+  border: none;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  color: #b71c1c;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.tray-item-removable:hover .tray-item-remove { display: flex; }
 
 .tray-img-placeholder    { width: 34px; height: 34px; background: #e8f5e9; border-radius: 4px; flex-shrink: 0; }
 

@@ -1,12 +1,15 @@
 // PlantTray.jsx — Left sidebar: plant catalog, search, click-to-place, drag-to-place
 
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo } from 'react'
 import { PLANT_CATALOG } from '../hooks/usePlantCatalog'
 import './PlantTray.css'
 
-export default function PlantTray({ loadedImages, onPlantClick, onPlantDragStart, onPlantDragEnd }) {
-  const [query, setQuery]   = useState('')
-  const [recents, setRecents] = useState([])
+export default function PlantTray({
+  loadedImages, onPlantClick, onPlantDragStart, onPlantDragEnd,
+  // Recently used (from useRecentPlants hook in GardenEditor)
+  recents, onAddRecent, onRemoveRecent, onClearRecents, recentsHidden, onSetRecentsHidden,
+}) {
+  const [query, setQuery] = useState('')
 
   const filtered = useMemo(() => {
     if (!query.trim()) return PLANT_CATALOG
@@ -20,10 +23,7 @@ export default function PlantTray({ loadedImages, onPlantClick, onPlantDragStart
     const img = loadedImages?.[entry.key]
     if (!img || typeof img === 'string') return
     const enriched = { ...entry, _img: img }
-    setRecents(prev => {
-      const next = prev.filter(r => r.key !== entry.key)
-      return [enriched, ...next].slice(0, 5)
-    })
+    onAddRecent?.(entry)
     if (onPlantClick) onPlantClick(enriched)
   }
 
@@ -33,8 +33,6 @@ export default function PlantTray({ loadedImages, onPlantClick, onPlantDragStart
     const enriched = { ...entry, _img: img }
     e.dataTransfer.setData('text/plain', entry.key)
     e.dataTransfer.effectAllowed = 'copy'
-    // Draw a small 48×48 ghost onto an offscreen canvas so the drag image
-    // is compact and doesn't blow up to the raw sticker dimensions.
     try {
       const GHOST = 48
       const offscreen = document.createElement('canvas')
@@ -43,17 +41,16 @@ export default function PlantTray({ loadedImages, onPlantClick, onPlantDragStart
       const ctx = offscreen.getContext('2d')
       ctx.globalAlpha = 0.85
       ctx.drawImage(img, 0, 0, GHOST, GHOST)
-      // Position offscreen element so Chrome doesn't complain
       offscreen.style.cssText = 'position:fixed;top:-200px;left:-200px;'
       document.body.appendChild(offscreen)
       e.dataTransfer.setDragImage(offscreen, GHOST / 2, GHOST / 2)
-      // Clean up after the drag starts
       requestAnimationFrame(() => document.body.removeChild(offscreen))
-    } catch (_) {
-      // Fallback: no custom ghost (browser default)
-    }
+    } catch (_) {}
+    onAddRecent?.(entry)
     if (onPlantDragStart) onPlantDragStart(enriched)
   }
+
+  const showRecents = recents?.length > 0 && !query && !recentsHidden
 
   return (
     <div className="plant-tray">
@@ -65,16 +62,52 @@ export default function PlantTray({ loadedImages, onPlantClick, onPlantDragStart
         onChange={e => setQuery(e.target.value)}
       />
       <div className="tray-scroll" id="tray-scroll">
-        {recents.length > 0 && !query && (
-          <>
-            <div className="tray-section-label">Recently Used</div>
-            {recents.map(e => (
-              <TrayItem key={e.key + '_r'} entry={e} loadedImages={loadedImages}
-                onClick={handleClick} onDragStart={handleDragStart} />
-            ))}
-            <div className="tray-divider" />
-          </>
+
+        {/* ── Recently Used section ── */}
+        {recents?.length > 0 && !query && (
+          <div className="tray-recents-wrap">
+            <div className="tray-section-header">
+              <span className="tray-section-label">Recently Used</span>
+              <div className="tray-section-actions">
+                <button
+                  className="tray-recents-toggle"
+                  onClick={() => onSetRecentsHidden?.(!recentsHidden)}
+                  title={recentsHidden ? 'Show recently used' : 'Hide recently used'}
+                >
+                  {recentsHidden ? 'Show' : 'Hide'}
+                </button>
+                {!recentsHidden && (
+                  <button
+                    className="tray-recents-clear"
+                    onClick={() => onClearRecents?.()}
+                    title="Clear all recently used"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {showRecents && (
+              <>
+                {recents.map(entry => (
+                  <TrayItem
+                    key={entry.key + '_r'}
+                    entry={entry}
+                    loadedImages={loadedImages}
+                    onClick={handleClick}
+                    onDragStart={handleDragStart}
+                    onRemove={() => onRemoveRecent?.(entry.key)}
+                    showRemove
+                  />
+                ))}
+                <div className="tray-divider" />
+              </>
+            )}
+          </div>
         )}
+
+        {/* ── No results ── */}
         {filtered.length === 0 && query.trim() && (
           <div className="tray-no-results">
             <div>No results for "{query}"</div>
@@ -86,6 +119,8 @@ export default function PlantTray({ loadedImages, onPlantClick, onPlantDragStart
             >Need a plant? Submit it! ↗</a>
           </div>
         )}
+
+        {/* ── Full catalog ── */}
         {filtered.map(e => (
           <TrayItem key={e.key} entry={e} loadedImages={loadedImages}
             onClick={handleClick} onDragStart={handleDragStart} />
@@ -95,13 +130,13 @@ export default function PlantTray({ loadedImages, onPlantClick, onPlantDragStart
   )
 }
 
-function TrayItem({ entry, loadedImages, onClick, onDragStart }) {
+function TrayItem({ entry, loadedImages, onClick, onDragStart, onRemove, showRemove }) {
   const img = loadedImages?.[entry.key]
-  const loaded = img && typeof img !== 'string'
+  const loaded = img && typeof img === 'object'
 
   return (
     <div
-      className={`tray-item${loaded ? '' : ' tray-item-loading'}`}
+      className={`tray-item${loaded ? '' : ' tray-item-loading'}${showRemove ? ' tray-item-removable' : ''}`}
       draggable={loaded}
       onClick={() => loaded && onClick(entry)}
       onDragStart={loaded ? (e) => onDragStart(entry, e) : undefined}
@@ -112,6 +147,13 @@ function TrayItem({ entry, loadedImages, onClick, onDragStart }) {
         : <div className="tray-img-placeholder" />
       }
       <span>{entry.label}</span>
+      {showRemove && (
+        <button
+          className="tray-item-remove"
+          onClick={e => { e.stopPropagation(); onRemove?.() }}
+          title="Remove from recent"
+        >×</button>
+      )}
     </div>
   )
 }
