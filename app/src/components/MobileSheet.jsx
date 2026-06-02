@@ -120,8 +120,16 @@ export default function MobileSheet({
 
           {/* Plant grid — expands to full height when search is focused */}
           <div className={`mobile-plant-grid${searchFocused ? ' search-active' : ''}`}>
-            {filtered.length === 0 && (
-              <div className="mobile-no-results">No results</div>
+            {filtered.length === 0 && query.trim() && (
+              <div className="mobile-no-results mobile-no-results--submit">
+                <span>No results for "{query}"</span>
+                <a
+                  href="https://docs.google.com/forms/d/e/1FAIpQLScJ5k2ZNqP3SSWe9MwjJQCyIV5TqNDZyUk0Qnch8UjkAQfL8A/viewform"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mobile-submit-plant"
+                >Need a plant? Submit it! ↗</a>
+              </div>
             )}
             {filtered.map(entry => {
               const img = loadedImages?.[entry.key]

@@ -66,4 +66,6 @@
 .tray-img-placeholder    { width: 34px; height: 34px; background: #e8f5e9; border-radius: 4px; flex-shrink: 0; }
 
 .tray-divider            { width: 100%; height: 1px; background: #a5d6a7; margin: 4px 0; }
-.tray-no-results         { font-size: 12px; opacity: .5; text-align: center; padding: 8px 4px; }
+.tray-no-results         { font-size: 12px; color: #888; text-align: center; padding: 8px 4px; display: flex; flex-direction: column; gap: 6px; }
+.tray-submit-plant       { font-size: 12px; font-weight: 600; color: #11502A; text-decoration: none; }
+.tray-submit-plant:hover { text-decoration: underline; }

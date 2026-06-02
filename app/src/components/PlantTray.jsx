@@ -75,7 +75,17 @@ export default function PlantTray({ loadedImages, onPlantClick, onPlantDragStart
             <div className="tray-divider" />
           </>
         )}
-        {filtered.length === 0 && <div className="tray-no-results">No results</div>}
+        {filtered.length === 0 && query.trim() && (
+          <div className="tray-no-results">
+            <div>No results for "{query}"</div>
+            <a
+              className="tray-submit-plant"
+              href="https://docs.google.com/forms/d/e/1FAIpQLScJ5k2ZNqP3SSWe9MwjJQCyIV5TqNDZyUk0Qnch8UjkAQfL8A/viewform"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Need a plant? Submit it! ↗</a>
+          </div>
+        )}
         {filtered.map(e => (
           <TrayItem key={e.key} entry={e} loadedImages={loadedImages}
             onClick={handleClick} onDragStart={handleDragStart} />
