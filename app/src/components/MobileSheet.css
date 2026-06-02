@@ -20,8 +20,10 @@
 
 /* ── Toggle handle ── */
 .mobile-sheet-handle {
+  position: relative;
   display: flex;
   justify-content: center;
+  align-items: center;
   padding: 6px 0 2px;
   flex-shrink: 0;
 }
@@ -38,6 +40,23 @@
   transition: background .12s;
 }
 .mobile-sheet-toggle:hover { background: #e8f5e9; }
+
+.mobile-undo-btn {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #11502A;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+  border-radius: 20px;
+  transition: background .12s;
+}
+.mobile-undo-btn:hover { background: #e8f5e9; }
 
 /* ── Sheet body ── */
 .mobile-sheet-body {

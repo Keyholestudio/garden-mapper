@@ -42,6 +42,7 @@ export default function RightPanel({
   onLayerMove,
   onTransparentStruct, onDisconnect,
   onSeasonsChange,
+  onClearSelection,
   addingPt, onToggleAddPt,
   removingPt, onToggleRemovePt,
   // Tool menu props
@@ -108,6 +109,7 @@ export default function RightPanel({
     return (
       <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
         <div className="panel-content">
+          <button className="panel-back-btn" onClick={() => onClearSelection?.()}>← Back</button>
           <div className="panel-h2">{d.label || 'Plant'}</div>
           <div className="panel-sub">{d.family || ''}</div>
           <div className="panel-sep" />
@@ -160,6 +162,7 @@ export default function RightPanel({
     return (
       <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
         <div className="panel-content">
+          <button className="panel-back-btn" onClick={() => onClearSelection?.()}>← Back</button>
           <div className="panel-h2">{TYPE_NAMES[d.type] || d.type || 'Object'}</div>
           <input
             className="struct-label-input"

@@ -715,6 +715,27 @@ export default function GardenEditor() {
               onDeletePlant={() => { state.selectedPlant?.group.destroy(); delete state.plantDataRef.current[state.selectedPlant?.id]; layersRef.current.plantLayer?.batchDraw(); clearSelection() }}
               onDeleteStruct={() => { state.selectedStruct?.shape.destroy(); delete state.structDataRef.current[state.selectedStruct?.id]; layersRef.current.structLayer?.batchDraw(); clearSelection() }}
               onTransparentPlant={handleTransparentPlant}
+              onCopyPlant={() => {
+                const sel = state.selectedPlant; if (!sel) return
+                const d = state.plantDataRef.current[sel.id]
+                const img = loadedImages[d?.key] || sel.group.findOne('Image')?.image()
+                if (!img) return
+                const scaleX = sel.group.scaleX(); const scaleY = sel.group.scaleY()
+                const srcX = sel.group.x(); const srcY = sel.group.y()
+                const sizeMap = { XS: 24, S: 40, M: 64, L: 96 }
+                const size = sizeMap[d?.size] || 64
+                const entry = { ...d, _img: img, scaleX, scaleY }
+                const { plantLayer } = layersRef.current
+                if (!plantLayer) return
+                const newId = addPlant({ entry, x: srcX + size + 8 + size / 2, y: srcY + size / 2, stage: stageRef.current, plantLayer, plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr, showGridRef, onSelect: handlePlantSelect })
+                if (newId) {
+                  const group = plantLayer.findOne('#' + newId)
+                  if (group) { group.scaleX(scaleX); group.scaleY(scaleY); group.moveToTop() }
+                  plantLayer.batchDraw()
+                  state.pushUndo(() => { const g = layersRef.current.plantLayer?.findOne('#' + newId); if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() } })
+                }
+              }}
+              onUndo={state.undo}
               onColourChange={handleColourChange}
               onPathWidthChange={handlePathWidthChange}
               onDimRectApply={handleDimRectApply}
@@ -853,6 +874,7 @@ export default function GardenEditor() {
             })
             plantLayer.batchDraw()
           }}
+          onClearSelection={clearSelection}
         />}
       </div>
 

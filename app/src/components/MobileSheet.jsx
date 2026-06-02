@@ -201,6 +201,7 @@ export default function MobileSheet({
           <button className="mobile-edit-btn" onClick={() => onLayerMove?.('plant','up')}>▲ Forward</button>
           <button className="mobile-edit-btn" onClick={() => onLayerMove?.('plant','down')}>▼ Back</button>
         </div>
+        <button className="mobile-edit-btn full" onClick={onCopyPlant}>⧮ Copy</button>
         <button className="mobile-edit-btn full" onClick={onTransparentPlant}>
           👁 {d.transparent ? 'Restore Opacity' : 'Make Transparent'}
         </button>

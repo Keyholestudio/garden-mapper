@@ -40,6 +40,20 @@
 }
 .panel-empty   { padding: 12px 10px; display: flex; align-items: center; justify-content: center; height: 100%; }
 .panel-empty p { color: #bbb; font-size: 0.82rem; text-align: center; line-height: 1.6; }
+.panel-back-btn {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: #11502A;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 0 4px;
+  font-family: inherit;
+  margin-bottom: 2px;
+}
+.panel-back-btn:hover { text-decoration: underline; }
+
 .panel-h2      { font-size: 13px; font-weight: 700; color: #2a3d1a; }
 .panel-sub     { font-size: 11px; color: #888; }
 .panel-placeholder { font-size: 11px; color: #bbb; font-style: italic; }
