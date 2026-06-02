@@ -44,6 +44,7 @@ export default function MobileSheet({
   onTransparentStruct,
   onSeasonsChange,
   onClearSelection,
+  onUndo,
   // Tool menu
   currentMode, onModeChange,
   bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool,
@@ -79,7 +80,6 @@ export default function MobileSheet({
             aria-label={expanded ? 'Collapse' : 'Expand'}>
             {expanded ? '↓' : '↑'}
           </button>
-          <button className="mobile-undo-btn" onClick={() => onUndo?.()} aria-label="Undo">↩</button>
         </div>
         {expanded && (
           <div className="mobile-sheet-body mobile-edit-body">
@@ -103,7 +103,6 @@ export default function MobileSheet({
         >
           {expanded ? '↓' : '↑'}
         </button>
-        <button className="mobile-undo-btn" onClick={() => onUndo?.()} aria-label="Undo">↩</button>
       </div>
 
       {/* ── Sheet body ── */}
