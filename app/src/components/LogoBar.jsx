@@ -3,6 +3,8 @@
 // Center: logo (flex:1, centered)
 // Right: garden name/dims + Save + Gardens + YouTube + Profile circle
 
+import { useState } from 'react'
+import { createPortal } from 'react-dom'
 import './LogoBar.css'
 
 const SEASON_NAMES       = ['🌸 Spring', '☀️ Summer', '🍂 Fall', '❄️ Winter']
@@ -19,9 +21,14 @@ export default function LogoBar({
   isMobile,
   onOpenSwitcherMobile,
 }) {
-  // Mobile: logo + season cycle button (top-right)
+  // Hooks must always be called at the top level — never inside conditionals
+  const [menuOpen, setMenuOpen] = useState(false)
+  const closeMenu = () => setMenuOpen(false)
+
+  // Mobile: logo + season cycle button (left) + save + profile menu (right)
   if (isMobile) {
     const cycleSeason = () => onSeasonChange?.((currentSeason + 1) % 4)
+
     return (
       <div className="logo-bar logo-bar-mobile">
         {/* Season cycle — top left */}
@@ -32,9 +39,11 @@ export default function LogoBar({
         >
           {SEASON_NAMES[currentSeason]}
         </button>
+
         <div className="logo-center logo-center-mobile">
           <img src="/stickers/Logo.png" alt="Garden Mapper" className="logo-img logo-img-mobile" />
         </div>
+
         {/* Right group: Save + Profile */}
         <div className="logo-mobile-right">
           <button
@@ -42,8 +51,92 @@ export default function LogoBar({
             onClick={onSave}
             title="Save garden"
           >💾</button>
-          <button className="logo-profile-btn logo-profile-mobile" title="Profile">👤</button>
+
+          <button
+            className={`logo-profile-btn logo-profile-mobile${menuOpen ? ' active' : ''}`}
+            onClick={() => setMenuOpen(v => !v)}
+            title="Menu"
+          >👤</button>
         </div>
+
+        {/* Profile dropdown menu — portalled to document.body so it escapes all stacking contexts */}
+        {menuOpen && createPortal(
+          <>
+            {/* Backdrop — tap outside to close */}
+            <div className="profile-menu-backdrop" onClick={closeMenu} />
+
+            <div className="profile-menu">
+              {/* User info header */}
+              <div className="profile-menu-header">
+                <div className="profile-menu-avatar">👤</div>
+                <div className="profile-menu-info">
+                  <div className="profile-menu-garden">{gardenName || 'My Garden'}</div>
+                  <div className="profile-menu-dims">{gardenW}×{gardenH} {gardenUnit}</div>
+                </div>
+              </div>
+
+              <div className="profile-menu-divider" />
+
+              {/* Garden actions */}
+              <button className="profile-menu-item" onClick={() => { onOpenSwitcher?.(); closeMenu() }}>
+                <span className="profile-menu-icon">🌿</span>
+                <span>Gardens</span>
+                <span className="profile-menu-hint">Switch or create</span>
+              </button>
+
+              <button className="profile-menu-item" onClick={() => { onExport?.(); closeMenu() }}>
+                <span className="profile-menu-icon">🖨</span>
+                <span>Export PDF</span>
+                <span className="profile-menu-hint">Print your plan</span>
+              </button>
+
+              <div className="profile-menu-divider" />
+
+              {/* Plants */}
+              <a
+                className="profile-menu-item"
+                href="https://docs.google.com/forms/d/e/1FAIpQLScJ5k2ZNqP3SSWe9MwjJQCyIV5TqNDZyUk0Qnch8UjkAQfL8A/viewform"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={closeMenu}
+              >
+                <span className="profile-menu-icon">🌱</span>
+                <span>Submit a Plant</span>
+                <span className="profile-menu-hint">Request a new sticker</span>
+              </a>
+
+              <div className="profile-menu-divider" />
+
+              {/* Account */}
+              <button className="profile-menu-item profile-menu-item--soon" disabled>
+                <span className="profile-menu-icon">⚙️</span>
+                <span>Account Settings</span>
+                <span className="profile-menu-badge">Soon</span>
+              </button>
+
+              <button className="profile-menu-item profile-menu-item--soon" disabled>
+                <span className="profile-menu-icon">💳</span>
+                <span>Subscription</span>
+                <span className="profile-menu-badge">Soon</span>
+              </button>
+
+              <div className="profile-menu-divider" />
+
+              {/* Website */}
+              <a
+                className="profile-menu-item"
+                href="https://robs-lab.ca"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={closeMenu}
+              >
+                <span className="profile-menu-icon">🌐</span>
+                <span>Our Website</span>
+                <span className="profile-menu-hint">robs-lab.ca</span>
+              </a>
+            </div>
+          </>
+        , document.body)}
       </div>
     )
   }

@@ -225,3 +225,121 @@
 .season-cycle-summer { background: #8BC34A; color: #1B5E20; }
 .season-cycle-fall   { background: #FFCC80; color: #E65100; }
 .season-cycle-winter { background: #E3F2FD; color: #37474F; }
+
+/* Active state on profile button when menu is open */
+.logo-profile-btn.active { background: #0a3d1e; }
+
+/* ── Profile dropdown menu ── */
+.profile-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+  background: transparent;
+}
+.profile-menu {
+  position: fixed;
+  top: 90px;   /* promo banner ~36px + logo bar 48px + 6px gap */
+  right: 10px;
+  z-index: 1000;
+  background: #fff;
+  border: 1.5px solid #a5d6a7;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  min-width: 240px;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  animation: menuSlideIn 0.15s ease;
+}
+@keyframes menuSlideIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)   scale(1); }
+}
+
+/* Header — garden info */
+.profile-menu-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px 10px;
+  background: #f9fbe7;
+}
+.profile-menu-avatar {
+  font-size: 26px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.profile-menu-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.profile-menu-garden {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a3d1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.profile-menu-dims {
+  font-size: 11px;
+  color: #558B2F;
+  font-weight: 600;
+}
+
+/* Divider */
+.profile-menu-divider {
+  height: 1px;
+  background: #e8f5e9;
+  margin: 2px 0;
+}
+
+/* Menu items */
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a3d1a;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .1s;
+}
+.profile-menu-item:hover:not(:disabled) { background: #f1f8e9; }
+.profile-menu-item:disabled { opacity: 0.5; cursor: default; }
+
+.profile-menu-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+}
+.profile-menu-hint {
+  font-size: 11px;
+  font-weight: 400;
+  color: #888;
+  margin-left: auto;
+  white-space: nowrap;
+}
+.profile-menu-badge {
+  font-size: 9px;
+  font-weight: 700;
+  background: #e8f5e9;
+  color: #558B2F;
+  border-radius: 8px;
+  padding: 2px 7px;
+  margin-left: auto;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Soon items slightly muted */
+.profile-menu-item--soon { color: #666; }
