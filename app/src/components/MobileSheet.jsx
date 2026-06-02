@@ -37,6 +37,7 @@ export default function MobileSheet({
   // Handlers
   onDeletePlant, onDeleteStruct,
   onTransparentPlant,
+  onCopyPlant,
   onColourChange, onPathWidthChange,
   onDimRectApply, onDimCircleApply,
   onLayerMove,
