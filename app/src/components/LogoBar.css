@@ -169,11 +169,37 @@
 .logo-img-mobile {
   height: 36px;
 }
-.logo-profile-mobile {
+.logo-mobile-right {
   position: absolute;
-  right: 12px;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.logo-profile-mobile {
+  /* position managed by parent .logo-mobile-right */
+}
+
+/* Mobile save button */
+.logo-mobile-save {
+  background: #11502A;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.logo-mobile-save:hover { background: #0a3d1e; }
+.logo-mobile-save.flash {
+  animation: savePop 0.4s ease;
 }
 
 /* ── Mobile season cycle button ── */

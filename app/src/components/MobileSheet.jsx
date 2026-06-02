@@ -45,6 +45,12 @@ export default function MobileSheet({
   onSeasonsChange,
   onClearSelection,
   onUndo,
+  // Edit points
+  editingShapeId,
+  onEnterEdit,
+  onExitEdit,
+  addingPt, onToggleAddPt,
+  removingPt, onToggleRemovePt,
   // Tool menu
   currentMode, onModeChange,
   bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool,
@@ -66,6 +72,52 @@ export default function MobileSheet({
       p.label.toLowerCase().includes(q) || p.family.toLowerCase().includes(q)
     )
   }, [query])
+
+  // ── Edit-points panel (line shape in point-edit mode) ────
+  if (editingShapeId) {
+    const d = structDataRef?.current[editingShapeId]
+    const editShape = layers?.structLayer?.findOne('#' + editingShapeId)
+    const isLine = editShape instanceof Konva.Line
+    return (
+      <div className="mobile-sheet mobile-sheet--edit" onPointerDown={e => e.stopPropagation()}>
+        <div className="mobile-sheet-handle mobile-sheet-handle--edit">
+          <button className="mobile-edit-back-inline" onClick={() => onExitEdit?.()}>← Back</button>
+          <button className="mobile-sheet-toggle" onClick={() => setExpanded(v => !v)}
+            aria-label={expanded ? 'Collapse' : 'Expand'}>
+            {expanded ? '↓' : '↑'}
+          </button>
+          <button className="mobile-edit-undo-inline" onClick={() => onUndo?.()}>↩ Undo</button>
+        </div>
+        {expanded && (
+          <div className="mobile-sheet-body mobile-edit-body">
+            <div className="mobile-edit-title">✏️ {d?.label || 'Shape'}</div>
+            <div className="mobile-edit-subtitle" style={{fontSize:10,opacity:.65}}>
+              {isLine ? 'Drag handles to move points. Click near a segment to insert.' : 'Drag corner handles to reshape.'}
+            </div>
+            <div className="mobile-edit-sep" />
+            {isLine && (
+              <button
+                className={`mobile-edit-btn full${addingPt ? ' active' : ''}`}
+                onClick={() => onToggleAddPt?.()}
+              >
+                + Add Point{addingPt ? ' — tap near segment' : ''}
+              </button>
+            )}
+            {isLine && (
+              <button
+                className={`mobile-edit-btn full${removingPt ? ' active' : ''}`}
+                onClick={() => onToggleRemovePt?.()}
+              >
+                − Remove Point{removingPt ? ' — tap a handle' : ''}
+              </button>
+            )}
+            <div className="mobile-edit-sep" />
+            <button className="mobile-edit-btn full active" onClick={() => onExitEdit?.()}>✓ Done Editing</button>
+          </div>
+        )}
+      </div>
+    )
+  }
 
   // ── Edit panel (plant or struct selected) ───────────────
   if (isEditing) {
@@ -229,6 +281,7 @@ export default function MobileSheet({
     const shape   = selectedStruct.shape
     const isRect  = shape instanceof Konva.Rect
     const isCircle= shape instanceof Konva.Circle
+    const isLine  = shape instanceof Konva.Line
     const colours = TYPE_COLOURS[d.type] || BED_COLOURS
     const isPath  = d.type === 'path'
     const isUG    = d.type?.startsWith('underground')
@@ -300,6 +353,13 @@ export default function MobileSheet({
               const dv = parseFloat(document.getElementById('mdim-circle-d')?.value)
               if (dv > 0) onDimCircleApply?.(dv)
             }}>Apply Diameter</button>
+          </>
+        )}
+
+        {isLine && (
+          <>
+            <div className="mobile-edit-sep" />
+            <button className="mobile-edit-btn full" onClick={() => onEnterEdit?.(selectedStruct.id)}>✏️ Edit Points</button>
           </>
         )}
 

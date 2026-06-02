@@ -17,6 +17,7 @@ export default function LogoBar({
   onSave, onOpenSwitcher, onExport, saveFlash,
   scaleLabel,
   isMobile,
+  onOpenSwitcherMobile,
 }) {
   // Mobile: logo + season cycle button (top-right)
   if (isMobile) {
@@ -34,8 +35,15 @@ export default function LogoBar({
         <div className="logo-center logo-center-mobile">
           <img src="/stickers/Logo.png" alt="Garden Mapper" className="logo-img logo-img-mobile" />
         </div>
-        {/* User icon — top right */}
-        <button className="logo-profile-btn logo-profile-mobile" title="Profile">👤</button>
+        {/* Right group: Save + Profile */}
+        <div className="logo-mobile-right">
+          <button
+            className={`logo-mobile-save${saveFlash ? ' flash' : ''}`}
+            onClick={onSave}
+            title="Save garden"
+          >💾</button>
+          <button className="logo-profile-btn logo-profile-mobile" title="Profile">👤</button>
+        </div>
       </div>
     )
   }

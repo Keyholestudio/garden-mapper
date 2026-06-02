@@ -182,6 +182,7 @@ export default function GardenEditor() {
       state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
       state.setSelectedPlant(null)
       state.setEditingShapeId(null)
+      suppressNextClearRef.current = true  // prevent synthesized click from clearing selection
     },
     onModeChange: state.setCurrentMode,
   })
@@ -189,6 +190,7 @@ export default function GardenEditor() {
   // ── Plant placement ──
   const pendingPlantRef  = useRef(null)
   const draggingPlantRef = useRef(null)  // tracks plant being HTML5 drag-dropped
+  const suppressNextClearRef = useRef(false) // set after struct placed via tap, prevents synthesized click from clearing selection
 
   const handlePlantClick = (enrichedEntry) => {
     pendingPlantRef.current = enrichedEntry
@@ -223,7 +225,12 @@ export default function GardenEditor() {
   }
   const handleCanvasClick = (worldPos) => {
     const entry = pendingPlantRef.current
-    if (!entry) { clearSelection(); return }
+    if (!entry) {
+      // After a touch-place of a struct, the browser fires a synthetic click on the stage.
+      // Suppress the clearSelection for that one click so the struct edit panel stays open.
+      if (suppressNextClearRef.current) { suppressNextClearRef.current = false; return }
+      clearSelection(); return
+    }
     pendingPlantRef.current = null
     const { plantLayer } = layersRef.current
     if (!plantLayer || !stageRef.current) return
@@ -756,6 +763,30 @@ export default function GardenEditor() {
                 plantLayer.batchDraw()
               }}
               onClearSelection={clearSelection}
+              // Edit points
+              editingShapeId={state.editingShapeId}
+              onEnterEdit={enterEdit}
+              onExitEdit={exitEdit}
+              addingPt={state.addingPt}
+              onToggleAddPt={() => {
+                const next = !state.addingPt
+                state.setAddingPt(next)
+                if (next) state.setRemovingPt(false)
+                if (state.editingShapeId) {
+                  const sh = layersRef.current.structLayer?.findOne('#' + state.editingShapeId)
+                  if (sh) buildEditHandles(state.editingShapeId, sh)
+                }
+              }}
+              removingPt={state.removingPt}
+              onToggleRemovePt={() => {
+                const next = !state.removingPt
+                state.setRemovingPt(next)
+                if (next) state.setAddingPt(false)
+                if (state.editingShapeId) {
+                  const sh = layersRef.current.structLayer?.findOne('#' + state.editingShapeId)
+                  if (sh) buildEditHandles(state.editingShapeId, sh)
+                }
+              }}
               // Tool menu
               currentMode={state.currentMode}   onModeChange={state.setCurrentMode}
               bedSubTool={state.bedSubTool}     onBedSubTool={state.setBedSubTool}
