@@ -44,6 +44,7 @@ export default function MobileSheet({
   onDimRectApply, onDimCircleApply,
   onLayerMove,
   onTransparentStruct,
+  onDisconnect,
   onSeasonsChange,
   onClearSelection,
   onUndo,
@@ -329,6 +330,7 @@ export default function MobileSheet({
     const isRect  = shape instanceof Konva.Rect
     const isCircle= shape instanceof Konva.Circle
     const isLine  = shape instanceof Konva.Line
+    const isGroup = shape instanceof Konva.Group
     const colours = TYPE_COLOURS[d.type] || BED_COLOURS
     const isPath  = d.type === 'path'
     const isUG    = d.type?.startsWith('underground')
@@ -407,6 +409,13 @@ export default function MobileSheet({
           <>
             <div className="mobile-edit-sep" />
             <button className="mobile-edit-btn full" onClick={() => onEnterEdit?.(selectedStruct.id)}>✏️ Edit Points</button>
+          </>
+        )}
+
+        {isGroup && (
+          <>
+            <div className="mobile-edit-sep" />
+            <button className="mobile-edit-btn full" onClick={onDisconnect}>↥ Disconnect</button>
           </>
         )}
 

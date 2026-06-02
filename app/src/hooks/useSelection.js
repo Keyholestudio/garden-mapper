@@ -24,9 +24,11 @@ export function useSelection({
     const sel = state.selectedStruct
     if (sel && (sel.shape instanceof Konva.Rect || sel.shape instanceof Konva.Group)) {
       tr.keepRatio(false)
+      tr.enabledAnchors(['top-left','top-center','top-right','middle-left','middle-right','bottom-left','bottom-center','bottom-right'])
       tr.nodes([sel.shape])
     } else if (sel && sel.shape instanceof Konva.Circle) {
       tr.keepRatio(true)  // keep circular — equal width/height
+      tr.enabledAnchors(['top-left','top-right','bottom-left','bottom-right'])
       tr.nodes([sel.shape])
     } else {
       tr.nodes([])
@@ -39,6 +41,8 @@ export function useSelection({
     if (!layers?.tr) return
     if (state.selectedPlant) {
       layers.tr.keepRatio(true)
+      // Corners only — no edge anchors (prevents stretching/squishing)
+      layers.tr.enabledAnchors(['top-left', 'top-right', 'bottom-left', 'bottom-right'])
       layers.tr.nodes([state.selectedPlant.group])
     } else if (!state.selectedStruct) {
       layers.tr.nodes([])

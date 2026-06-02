@@ -763,6 +763,7 @@ export default function GardenEditor() {
               onDimCircleApply={handleDimCircleApply}
               onLayerMove={handleLayerMove}
               onTransparentStruct={handleTransparentStruct}
+              onDisconnect={handleDisconnect}
               onSeasonsChange={() => {
                 const { plantLayer } = layersRef.current
                 if (!plantLayer) return
