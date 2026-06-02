@@ -735,7 +735,7 @@ export default function GardenEditor() {
                   state.pushUndo(() => { const g = layersRef.current.plantLayer?.findOne('#' + newId); if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() } })
                 }
               }}
-              onUndo={state.undo}
+              onUndo={() => { state.undo(); layersRef.current.structLayer?.batchDraw(); layersRef.current.plantLayer?.batchDraw() }}
               onColourChange={handleColourChange}
               onPathWidthChange={handlePathWidthChange}
               onDimRectApply={handleDimRectApply}
@@ -875,6 +875,7 @@ export default function GardenEditor() {
             plantLayer.batchDraw()
           }}
           onClearSelection={clearSelection}
+          onUndo={() => { state.undo(); layersRef.current.structLayer?.batchDraw(); layersRef.current.plantLayer?.batchDraw() }}
         />}
       </div>
 

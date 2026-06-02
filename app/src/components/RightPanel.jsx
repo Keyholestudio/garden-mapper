@@ -43,6 +43,7 @@ export default function RightPanel({
   onTransparentStruct, onDisconnect,
   onSeasonsChange,
   onClearSelection,
+  onUndo,
   addingPt, onToggleAddPt,
   removingPt, onToggleRemovePt,
   // Tool menu props
@@ -61,6 +62,10 @@ export default function RightPanel({
     return (
       <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
         <div className="panel-content">
+          <div className="panel-back-row">
+            <button className="panel-back-btn" onClick={() => onExitEdit?.()}>← Back</button>
+            <button className="panel-undo-btn" onClick={() => onUndo?.()}>↩</button>
+          </div>
           <div className="panel-h2">✏️ {d?.label || 'Shape'}</div>
           <div className="panel-sub" style={{fontSize:10,opacity:.65,textAlign:'left'}}>
             {isLine ? 'Drag handles to move points. Click near a segment to insert.' : 'Drag corner handles to reshape.'}
@@ -109,7 +114,10 @@ export default function RightPanel({
     return (
       <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
         <div className="panel-content">
-          <button className="panel-back-btn" onClick={() => onClearSelection?.()}>← Back</button>
+          <div className="panel-back-row">
+            <button className="panel-back-btn" onClick={() => onClearSelection?.()}>← Back</button>
+            <button className="panel-undo-btn" onClick={() => onUndo?.()}>↩</button>
+          </div>
           <div className="panel-h2">{d.label || 'Plant'}</div>
           <div className="panel-sub">{d.family || ''}</div>
           <div className="panel-sep" />
@@ -162,7 +170,10 @@ export default function RightPanel({
     return (
       <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
         <div className="panel-content">
-          <button className="panel-back-btn" onClick={() => onClearSelection?.()}>← Back</button>
+          <div className="panel-back-row">
+            <button className="panel-back-btn" onClick={() => onClearSelection?.()}>← Back</button>
+            <button className="panel-undo-btn" onClick={() => onUndo?.()}>↩</button>
+          </div>
           <div className="panel-h2">{TYPE_NAMES[d.type] || d.type || 'Object'}</div>
           <input
             className="struct-label-input"

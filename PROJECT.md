@@ -1,6 +1,6 @@
 # Garden Mapper — Project Status
 
-_Last updated: 2026-06-01_
+_Last updated: 2026-06-02_
 
 ---
 
@@ -61,7 +61,11 @@ cd projects/garden-planner/app && npm run dev
 | 11 | Sunny/shady garden areas — deferred | — | ⏳ |
 | 12 | Multi-device sync — needs server architecture discussion | — | 🔲 |
 | 13 | Mobile season cycle button (top-left tap-to-advance) | `9dc9365` | ✅ |
-| 14 | (incomplete in doc — awaiting Rob's notes) | — | 🔲 |
+| 14 | “Need a plant? Submit it!” — no-results link to Google Form | `0d5b5b0` | ✅ |
+| 20 | Mobile edit panel (tap object → name/colour/dims/layers/delete) | `6a2efe9` | ✅ |
+| 21 | Mobile undo button (handle bar, both panels) | `52d3d91` | ✅ |
+| 22 | Mobile plant panel: Copy button | `c06ef28` | ✅ |
+| 23 | Desktop/tablet ← Back button on plant + struct panels | `69b5fe1` | ✅ |
 
 ### Additional polish (June 1)
 - Season slider → frosted floating pill over canvas (`95583df`)

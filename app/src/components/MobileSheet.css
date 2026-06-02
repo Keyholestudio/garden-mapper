@@ -185,8 +185,13 @@
   overscroll-behavior: contain;
 }
 
+.mobile-edit-back-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .mobile-edit-back {
-  align-self: flex-start;
   background: none;
   border: none;
   color: #11502A;
@@ -197,6 +202,20 @@
   font-family: inherit;
 }
 .mobile-edit-back:hover { text-decoration: underline; }
+
+.mobile-edit-undo {
+  background: none;
+  border: none;
+  color: #11502A;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-family: inherit;
+  transition: background .12s;
+}
+.mobile-edit-undo:hover { background: #e8f5e9; }
 
 .mobile-edit-title {
   font-size: 20px;

@@ -184,7 +184,10 @@ export default function MobileSheet({
     const d = plantDataRef?.current[selectedPlant.id] || {}
     return (
       <>
-        <button className="mobile-edit-back" onClick={() => onClearSelection?.()}>← Back</button>
+        <div className="mobile-edit-back-row">
+          <button className="mobile-edit-back" onClick={() => onClearSelection?.()}>← Back</button>
+          <button className="mobile-edit-undo" onClick={() => onUndo?.()}>↩ Undo</button>
+        </div>
         <div className="mobile-edit-title">{d.label || 'Plant'}</div>
         {d.family && <div className="mobile-edit-subtitle">{d.family}</div>}
         <div className="mobile-edit-sep" />
@@ -239,7 +242,10 @@ export default function MobileSheet({
 
     return (
       <>
-        <button className="mobile-edit-back" onClick={() => onClearSelection?.()}>← Back</button>
+        <div className="mobile-edit-back-row">
+          <button className="mobile-edit-back" onClick={() => onClearSelection?.()}>← Back</button>
+          <button className="mobile-edit-undo" onClick={() => onUndo?.()}>↩ Undo</button>
+        </div>
         <div className="mobile-edit-title">{TYPE_NAMES[d.type] || d.type || 'Object'}</div>
 
         <input
