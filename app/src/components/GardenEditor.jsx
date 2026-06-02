@@ -704,6 +704,38 @@ export default function GardenEditor() {
           {isMobile && (
             <MobileSheet
               loadedImages={loadedImages}       onPlantClick={handlePlantClick}
+              // Selection
+              selectedPlant={state.selectedPlant}
+              selectedStruct={state.selectedStruct}
+              plantDataRef={state.plantDataRef}
+              structDataRef={state.structDataRef}
+              layers={layersRef.current}
+              gardenUnit={state.gardenUnit}
+              // Edit handlers
+              onDeletePlant={() => { state.selectedPlant?.group.destroy(); delete state.plantDataRef.current[state.selectedPlant?.id]; layersRef.current.plantLayer?.batchDraw(); clearSelection() }}
+              onDeleteStruct={() => { state.selectedStruct?.shape.destroy(); delete state.structDataRef.current[state.selectedStruct?.id]; layersRef.current.structLayer?.batchDraw(); clearSelection() }}
+              onTransparentPlant={handleTransparentPlant}
+              onColourChange={handleColourChange}
+              onPathWidthChange={handlePathWidthChange}
+              onDimRectApply={handleDimRectApply}
+              onDimCircleApply={handleDimCircleApply}
+              onLayerMove={handleLayerMove}
+              onTransparentStruct={handleTransparentStruct}
+              onSeasonsChange={() => {
+                const { plantLayer } = layersRef.current
+                if (!plantLayer) return
+                const SEASON_NAMES = ['spring','summer','fall','winter']
+                const sN = SEASON_NAMES[state.currentSeason]
+                plantLayer.find('Group').forEach(g => {
+                  const d = state.plantDataRef.current[g.id()]
+                  if (!d) return
+                  if (d.transparent) { g.opacity(0.35); return }
+                  g.opacity(d.seasons?.includes(sN) ? 1 : 0.1)
+                })
+                plantLayer.batchDraw()
+              }}
+              onClearSelection={clearSelection}
+              // Tool menu
               currentMode={state.currentMode}   onModeChange={state.setCurrentMode}
               bedSubTool={state.bedSubTool}     onBedSubTool={state.setBedSubTool}
               fenceSubTool={state.fenceSubTool} onFenceSubTool={state.setFenceSubTool}

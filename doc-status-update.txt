@@ -1,0 +1,32 @@
+════════════════════════════════════════════════════════════════════
+  SESSION LOG — June 1, 2026 (Afternoon)
+  All items from Rob's June 1st notes actioned
+════════════════════════════════════════════════════════════════════
+
+STATUS UPDATE — ITEMS COMPLETED TODAY:
+
+1)  ✅ Toolbar integrated into right info panel — two-level menu with ← Back
+1B) ✅ Decks, Hedges, Pools as expandable sub-groups
+2)  ✅ Gate moved to Fences folder (Fence → Gate → Hedges)
+3)  ✅ Plumbing moved to Water (Fountain → Plumbing → Pools → Pond)
+4)  ✅ Touch press-drag + tap-to-place for all square objects on mobile/tablet
+5)  ✅ Tool menu fits in panel without scrolling
+5B) ✅ Reverted scaling for desktop/tablet — buttons fixed size, mobile-only scaling
+6)  ✅ Plant tray text bumped to 12px (matches panel text)
+7)  ✅ Dark green separator line in logo bar (2px #11502A, flows around logo)
+8)  ✅ Drag-and-drop plants from tray onto canvas (mouse + tablet stylus)
+9)  🔲 Dream garden — deferred until Rob creates it (needs #10 confirmed first)
+10) ✅ Super saves — versioned schema, auto-backup slot, migration on load
+11) ⏳ Sunny/shady — deferred per Rob
+12) 🔲 Multi-device sync — needs server/backend discussion
+13) ✅ Mobile season = tap-to-cycle button top-left (Spring→Summer→Fall→Winter→Spring)
+14) 🔲 Incomplete in doc — awaiting Rob's additions
+
+ALSO DONE TODAY (not numbered):
+- Season slider → transparent floating pill over canvas (desktop/tablet)
+- Drag ghost thumbnail 48×48px (no more giant transparent sticker)
+- Mobile bottom sheet redesign: plant grid (2-col) + tool menu + toggle ↑↓
+- Plant grid expands when search focused; tools hide to give keyboard space
+- Season button moved to top-left (user icon stays top-right)
+- Port locked to 5200 — no more Vite port collisions
+

@@ -148,6 +148,161 @@
   grid-column: 1 / -1;  /* groups span full width */
 }
 
+/* ── Edit panel mode ── */
+.mobile-sheet--edit {
+  /* taller default to show edit controls */
+}
+
+.mobile-edit-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 16px 20px;
+  overflow-y: auto;
+  max-height: 70vh;
+  overscroll-behavior: contain;
+}
+
+.mobile-edit-back {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: #11502A;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 0;
+  font-family: inherit;
+}
+.mobile-edit-back:hover { text-decoration: underline; }
+
+.mobile-edit-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a2e0e;
+  margin-top: 2px;
+}
+
+.mobile-edit-subtitle {
+  font-size: 12px;
+  color: #666;
+  margin-top: -6px;
+}
+
+.mobile-edit-name-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #a5d6a7;
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: inherit;
+  background: #fff;
+  outline: none;
+  box-sizing: border-box;
+}
+.mobile-edit-name-input:focus { border-color: #11502A; }
+
+.mobile-edit-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: 0.06em;
+  margin-bottom: -4px;
+}
+
+.mobile-colour-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mobile-colour-swatch {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 2.5px solid transparent;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,.15);
+  transition: transform .1s;
+}
+.mobile-colour-swatch:hover  { transform: scale(1.1); }
+.mobile-colour-swatch.selected {
+  border-color: #11502A;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #11502A;
+}
+
+.mobile-edit-slider {
+  width: 100%;
+  accent-color: #11502A;
+}
+
+.mobile-edit-dims {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobile-edit-dim-input {
+  width: 80px;
+  padding: 8px 10px;
+  border: 1.5px solid #a5d6a7;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  text-align: center;
+  outline: none;
+  box-sizing: border-box;
+}
+.mobile-edit-dim-input:focus { border-color: #11502A; }
+
+.mobile-edit-sep {
+  width: 100%;
+  height: 1px;
+  background: #e8f5e9;
+}
+
+.mobile-edit-row {
+  display: flex;
+  gap: 8px;
+}
+
+.mobile-edit-btn {
+  flex: 1;
+  padding: 11px 8px;
+  border-radius: 10px;
+  border: 1.5px solid #a5d6a7;
+  background: #f9fbe7;
+  color: #1a3d1a;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background .12s;
+}
+.mobile-edit-btn:hover { background: #dcedc8; }
+.mobile-edit-btn.full  { width: 100%; flex: unset; }
+.mobile-edit-btn.danger {
+  background: #fff5f5;
+  border-color: #ffcdd2;
+  color: #c62828;
+}
+.mobile-edit-btn.danger:hover { background: #ffcdd2; }
+
+.mobile-season-checks {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.mobile-season-check {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: #2a3d1a;
+  cursor: pointer;
+}
+
 /* ── Season slider ── */
 .mobile-season-wrap {
   position: relative;
