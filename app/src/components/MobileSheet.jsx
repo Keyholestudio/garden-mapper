@@ -75,11 +75,13 @@ export default function MobileSheet({
 
     return (
       <div className="mobile-sheet mobile-sheet--edit" onPointerDown={e => e.stopPropagation()}>
-        <div className="mobile-sheet-handle">
+        <div className="mobile-sheet-handle mobile-sheet-handle--edit">
+          <button className="mobile-edit-back-inline" onClick={() => onClearSelection?.()}>← Back</button>
           <button className="mobile-sheet-toggle" onClick={() => setExpanded(v => !v)}
             aria-label={expanded ? 'Collapse' : 'Expand'}>
             {expanded ? '↓' : '↑'}
           </button>
+          <button className="mobile-edit-undo-inline" onClick={() => onUndo?.()}>↩ Undo</button>
         </div>
         {expanded && (
           <div className="mobile-sheet-body mobile-edit-body">
@@ -183,10 +185,6 @@ export default function MobileSheet({
     const d = plantDataRef?.current[selectedPlant.id] || {}
     return (
       <>
-        <div className="mobile-edit-back-row">
-          <button className="mobile-edit-back" onClick={() => onClearSelection?.()}>← Back</button>
-          <button className="mobile-edit-undo" onClick={() => onUndo?.()}>↩ Undo</button>
-        </div>
         <div className="mobile-edit-title">{d.label || 'Plant'}</div>
         {d.family && <div className="mobile-edit-subtitle">{d.family}</div>}
         <div className="mobile-edit-sep" />
@@ -241,10 +239,6 @@ export default function MobileSheet({
 
     return (
       <>
-        <div className="mobile-edit-back-row">
-          <button className="mobile-edit-back" onClick={() => onClearSelection?.()}>← Back</button>
-          <button className="mobile-edit-undo" onClick={() => onUndo?.()}>↩ Undo</button>
-        </div>
         <div className="mobile-edit-title">{TYPE_NAMES[d.type] || d.type || 'Object'}</div>
 
         <input
