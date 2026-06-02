@@ -79,6 +79,7 @@ export default function MobileSheet({
             aria-label={expanded ? 'Collapse' : 'Expand'}>
             {expanded ? '↓' : '↑'}
           </button>
+          <button className="mobile-undo-btn" onClick={() => onUndo?.()} aria-label="Undo">↩</button>
         </div>
         {expanded && (
           <div className="mobile-sheet-body mobile-edit-body">
@@ -102,6 +103,7 @@ export default function MobileSheet({
         >
           {expanded ? '↓' : '↑'}
         </button>
+        <button className="mobile-undo-btn" onClick={() => onUndo?.()} aria-label="Undo">↩</button>
       </div>
 
       {/* ── Sheet body ── */}

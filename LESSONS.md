@@ -3,6 +3,14 @@ _L001–L009 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 ---
 
+## L015 — MobileSheet: always destructure new props at the top
+**Date:** 2026-06-02
+MobileSheet uses nested `function renderPlantPanel()` / `renderStructPanel()` — these close over the component's props. Adding a prop reference inside a render function without adding it to the destructuring list at the top causes a silent `undefined` that only crashes at runtime when that panel renders.
+**Rule:** Any time you add a prop to MobileSheet's JSX, immediately add it to the `export default function MobileSheet({...})` destructuring. Check the list before committing.
+**Caught by:** `onCopyPlant is not defined` crash on mobile plant select (commit `c06ef28`).
+
+---
+
 ## L010 — Git commit discipline
 **Date:** 2026-05-29
 Every confirmed working change must be committed immediately — not batched at end of session.
