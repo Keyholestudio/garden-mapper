@@ -1,0 +1,11 @@
+{
+  "_schemaVersion": 2,
+  "_dreamVersion": 1,
+  "_isDreamGarden": true,
+  "name": "🌸 Dream Garden",
+  "width": 40,
+  "height": 30,
+  "unit": "ft",
+  "plants": [],
+  "structs": []
+}

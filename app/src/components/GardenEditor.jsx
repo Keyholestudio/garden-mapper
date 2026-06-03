@@ -11,6 +11,7 @@ import { PLANT_CATALOG }   from '../hooks/usePlantCatalog'
 import { addPlant }        from '../utils/plantUtils'
 import { insertPointNearestSegment } from '../hooks/useSelection'
 import { saveGarden, loadGarden, createNewGarden, readGardens, readLastGardenIndex, writeLastGardenIndex } from '../hooks/useSaveLoad'
+import { seedDreamGarden, fetchDreamGardenUpdate } from '../hooks/useDreamGarden'
 import { addRectStruct } from '../utils/drawUtils'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import { useRecentPlants } from '../hooks/useRecentPlants'
@@ -541,8 +542,10 @@ export default function GardenEditor() {
   const loadedImagesCount = Object.keys(loadedImages).length
   useEffect(() => {
     if (!stageReady || loadedImagesCount === 0) return
+    seedDreamGarden()  // no-op if already seeded; seeds [dreamGarden, blankGarden] on first run
     const gardens = readGardens()
-    if (gardens.length === 0) return  // first run — show setup overlay
+    if (gardens.length === 0) return  // still empty after seed — show setup overlay (shouldn't happen)
+    fetchDreamGardenUpdate()  // silent background fetch — updates dream garden if newer version available
     const lastIdx = Math.min(readLastGardenIndex(), gardens.length - 1)
     loadGarden({
       idx: lastIdx,
