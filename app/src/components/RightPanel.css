@@ -233,8 +233,7 @@
   gap: clamp(2px, 0.6vh, 5px);
 }
 .bp-mobile .tool-menu-group {
-  flex: 1;
-  min-height: 0;
+  flex: none;     /* group itself doesn't stretch — only items inside do */
   gap: clamp(2px, 0.5vh, 4px);
 }
 .bp-mobile .tool-menu-emoji { font-size: clamp(11px, 1.4vh, 14px); }
@@ -256,6 +255,10 @@
 
 .tool-menu-btn.group-header {
   justify-content: space-between;
+}
+/* On mobile, group-header shouldn’t stretch — it’s a normal-height button */
+.bp-mobile .tool-menu-btn.group-header {
+  flex: none;
 }
 .tool-menu-chevron {
   font-size: 10px;
