@@ -289,6 +289,20 @@ export default function GardenEditor() {
     setStageReady(true)
   }
 
+  // ── Undo helper ──
+  // Runs the undo action then checks if the currently selected object still exists.
+  // If it was the undone object, clears selection so the edit panel closes (#35).
+  const handleUndo = () => {
+    const selPlantId  = state.selectedPlant?.id
+    const selStructId = state.selectedStruct?.id
+    state.undo()
+    layersRef.current.structLayer?.batchDraw()
+    layersRef.current.plantLayer?.batchDraw()
+    // If the selected object was just undone (destroyed), clear selection
+    if (selPlantId && !layersRef.current.plantLayer?.findOne('#' + selPlantId)) clearSelection()
+    if (selStructId && !layersRef.current.structLayer?.findOne('#' + selStructId)) clearSelection()
+  }
+
   // ── Copy / Paste ──
   useEffect(() => {
     const onKey = (e) => {
@@ -296,9 +310,7 @@ export default function GardenEditor() {
       if (tag === 'INPUT' || tag === 'TEXTAREA') return
       if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
         e.preventDefault()
-        state.undo()
-        layersRef.current.structLayer?.batchDraw()
-        layersRef.current.plantLayer?.batchDraw()
+        handleUndo()
         return
       }
       if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
@@ -798,7 +810,7 @@ export default function GardenEditor() {
                   state.pushUndo(() => { const g = layersRef.current.plantLayer?.findOne('#' + newId); if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() } })
                 }
               }}
-              onUndo={() => { state.undo(); layersRef.current.structLayer?.batchDraw(); layersRef.current.plantLayer?.batchDraw() }}
+              onUndo={handleUndo}
               onColourChange={handleColourChange}
               onPathWidthChange={handlePathWidthChange}
               onDimRectApply={handleDimRectApply}
@@ -972,7 +984,7 @@ export default function GardenEditor() {
             plantLayer.batchDraw()
           }}
           onClearSelection={clearSelection}
-          onUndo={() => { state.undo(); layersRef.current.structLayer?.batchDraw(); layersRef.current.plantLayer?.batchDraw() }}
+          onUndo={handleUndo}
         />}
       </div>
 
