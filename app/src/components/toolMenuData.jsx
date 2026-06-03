@@ -153,7 +153,7 @@ export function ToolMenu({
           {TOP_TOOLS.find(t => t.id === currentMode)?.label}
         </div>
         <div className="panel-sep" style={{ flexShrink: 0 }} />
-        <div className="tool-menu-items">
+        <div className="tool-menu-items tool-menu-items--sub">
           {items.map(item => item.group ? renderGroup(item) : renderItem(item))}
         </div>
       </div>
