@@ -116,7 +116,6 @@ export function ToolMenu({
       onClick={() => doSubChange(s.id)} title={s.hint}
     >
       <span className="tool-menu-label">{s.label}</span>
-      {activeSub === s.id && <span className="tool-menu-hint">{s.hint}</span>}
     </button>
   )
 
