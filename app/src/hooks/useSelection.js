@@ -22,12 +22,13 @@ export function useSelection({
     if (!layers?.tr) return
     const { tr, structLayer } = layers
     const sel = state.selectedStruct
-    if (sel && (sel.shape instanceof Konva.Rect || sel.shape instanceof Konva.Group)) {
+    const structLocked = sel && state.structDataRef?.current[sel.id]?.locked
+    if (sel && !structLocked && (sel.shape instanceof Konva.Rect || sel.shape instanceof Konva.Group)) {
       tr.keepRatio(false)
       tr.enabledAnchors(['top-left','top-center','top-right','middle-left','middle-right','bottom-left','bottom-center','bottom-right'])
       tr.nodes([sel.shape])
-    } else if (sel && sel.shape instanceof Konva.Circle) {
-      tr.keepRatio(true)  // keep circular — equal width/height
+    } else if (sel && !structLocked && sel.shape instanceof Konva.Circle) {
+      tr.keepRatio(true)
       tr.enabledAnchors(['top-left','top-right','bottom-left','bottom-right'])
       tr.nodes([sel.shape])
     } else {
@@ -39,7 +40,8 @@ export function useSelection({
   // ── Plant transformer ─────────────────────────────────────
   useEffect(() => {
     if (!layers?.tr) return
-    if (state.selectedPlant) {
+    const plantLocked = state.selectedPlant && state.plantDataRef?.current[state.selectedPlant.id]?.locked
+    if (state.selectedPlant && !plantLocked) {
       layers.tr.keepRatio(true)
       // Corners only — no edge anchors (prevents stretching/squishing)
       layers.tr.enabledAnchors(['top-left', 'top-right', 'bottom-left', 'bottom-right'])
@@ -124,6 +126,8 @@ export function useSelection({
     if (!shape) return
     // Rect and Circle shapes have no editable points — block edit mode entirely
     if (shape instanceof Konva.Rect || shape instanceof Konva.Circle) return
+    // Locked shapes cannot be edited
+    if (sRef.current.structDataRef?.current[id]?.locked) return
     if (onExitEditMode) onExitEditMode() // clear any prior edit
     buildEditHandles(id, shape)
     if (onEditMode) onEditMode(id)

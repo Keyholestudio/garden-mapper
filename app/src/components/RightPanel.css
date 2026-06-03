@@ -97,6 +97,12 @@
   color: #fff;
   border-color: #11502A;
 }
+.btn-panel--locked {
+  background: #fff8e1;
+  border-color: #ffe082;
+  color: #e65100;
+}
+.btn-panel--locked:hover { background: #fff3cd; }
 
 .panel-sep   { width: 100%; height: 1px; background: #e8f5e9; margin: 2px 0; }
 

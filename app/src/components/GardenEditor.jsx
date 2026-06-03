@@ -414,6 +414,35 @@ export default function GardenEditor() {
     state.setSelectedStruct({ ...sel })
   }
 
+  const handleLockPlant = () => {
+    const sel = state.selectedPlant; if (!sel) return
+    const d = state.plantDataRef.current[sel.id]
+    d.locked = !d.locked
+    sel.group.draggable(!d.locked)
+    if (d.locked) {
+      // Detach transformer so handles disappear
+      layersRef.current.tr?.nodes([])
+      layersRef.current.uiLayer?.batchDraw()
+    }
+    layersRef.current.plantLayer?.batchDraw()
+    state.setSelectedPlant({ ...sel })
+  }
+
+  const handleLockStruct = () => {
+    const sel = state.selectedStruct; if (!sel) return
+    const d = state.structDataRef.current[sel.id]
+    d.locked = !d.locked
+    sel.shape.draggable(!d.locked)
+    if (d.locked) {
+      // Detach transformer and exit any active edit mode
+      layersRef.current.tr?.nodes([])
+      layersRef.current.uiLayer?.batchDraw()
+      if (state.editingShapeId === sel.id) exitEdit()
+    }
+    layersRef.current.structLayer?.batchDraw()
+    state.setSelectedStruct({ ...sel })
+  }
+
   const handleDisconnect = () => {
     const sel = state.selectedStruct
     if (!sel || !(sel.shape instanceof Konva.Group)) return
@@ -736,6 +765,8 @@ export default function GardenEditor() {
               onDeletePlant={() => { state.selectedPlant?.group.destroy(); delete state.plantDataRef.current[state.selectedPlant?.id]; layersRef.current.plantLayer?.batchDraw(); clearSelection() }}
               onDeleteStruct={() => { state.selectedStruct?.shape.destroy(); delete state.structDataRef.current[state.selectedStruct?.id]; layersRef.current.structLayer?.batchDraw(); clearSelection() }}
               onTransparentPlant={handleTransparentPlant}
+              onLockPlant={handleLockPlant}
+              onLockStruct={handleLockStruct}
               onCopyPlant={() => {
                 const sel = state.selectedPlant; if (!sel) return
                 const d = state.plantDataRef.current[sel.id]
@@ -846,6 +877,8 @@ export default function GardenEditor() {
           onDeleteStruct={() => { state.selectedStruct?.shape.destroy(); delete state.structDataRef.current[state.selectedStruct?.id]; layersRef.current.structLayer?.batchDraw(); clearSelection() }}
           onDeleteMulti={deleteSelected}
           onTransparentPlant={handleTransparentPlant}
+          onLockPlant={handleLockPlant}
+          onLockStruct={handleLockStruct}
           onCopyPlant={() => {
             const sel = state.selectedPlant; if (!sel) return
             const d = state.plantDataRef.current[sel.id]

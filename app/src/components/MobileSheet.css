@@ -435,6 +435,12 @@
   color: #1b5e20;
 }
 .mobile-edit-btn.active:hover { background: #a5d6a7; }
+.mobile-edit-btn--locked {
+  background: #fff8e1;
+  border-color: #ffe082;
+  color: #e65100;
+}
+.mobile-edit-btn--locked:hover { background: #fff3cd; }
 
 .mobile-season-checks {
   display: flex;

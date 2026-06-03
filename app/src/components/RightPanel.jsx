@@ -36,6 +36,7 @@ export default function RightPanel({
   layers, gardenUnit,
   onDeletePlant, onDeleteStruct, onDeleteMulti,
   onTransparentPlant, onCopyPlant,
+  onLockPlant, onLockStruct,
   onColourChange, onPathWidthChange,
   onEnterEdit, onExitEdit,
   onDimRectApply, onDimCircleApply,
@@ -121,10 +122,17 @@ export default function RightPanel({
           <div className="panel-h2">{d.label || 'Plant'}</div>
           <div className="panel-sub">{d.family || ''}</div>
           <div className="panel-sep" />
+          <div style={{ display: 'flex', gap: 4 }}>
+            <button className="btn-panel" style={{ flex: 1 }} onClick={onCopyPlant}>⧉ Copy</button>
+            <button
+              className={`btn-panel${d.locked ? ' btn-panel--locked' : ''}`}
+              style={{ flex: 1 }}
+              onClick={onLockPlant}
+            >{d.locked ? '🔒 Locked' : '🔓 Unlocked'}</button>
+          </div>
           <button className="btn-panel" onClick={onTransparentPlant}>
             👁 {d.transparent ? 'Restore Opacity' : 'Make Transparent'}
           </button>
-          <button className="btn-panel" onClick={onCopyPlant}>⧉ Copy</button>
           <div style={{ display: 'flex', gap: 4 }}>
             <button className="btn-panel" style={{ flex: 1 }} onClick={() => onLayerMove?.('plant', 'up')}>▲ Forward</button>
             <button className="btn-panel" style={{ flex: 1 }} onClick={() => onLayerMove?.('plant', 'down')}>▼ Back</button>
@@ -246,11 +254,16 @@ export default function RightPanel({
             <button className="btn-panel" style={{flex:1}} onClick={() => onLayerMove?.('struct','down')}>▼ Back</button>
           </div>
 
+          <button
+            className={`btn-panel${d.locked ? ' btn-panel--locked' : ''}`}
+            onClick={onLockStruct}
+          >{d.locked ? '🔒 Locked' : '🔓 Unlocked'}</button>
+
           <button className="btn-panel" onClick={onTransparentStruct}>
             👁 {d.transparent ? 'Restore' : 'Make Transparent'}
           </button>
 
-          {!isCircle && !isGroup && !isRectType && (
+          {!isCircle && !isGroup && !isRectType && !d.locked && (
             <button className="btn-panel" onClick={() => onEnterEdit?.(selectedStruct.id)}>✏️ Edit Shape</button>
           )}
           {isGroup && (

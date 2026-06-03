@@ -106,7 +106,7 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
       id: g.id(), x: g.x(), y: g.y(),
       scaleX: g.scaleX(), scaleY: g.scaleY(),
       label: d.label, family: d.family, key: d.key, size: d.size,
-      notes: d.notes, seasons: d.seasons, transparent: d.transparent,
+      notes: d.notes, seasons: d.seasons, transparent: d.transparent, locked: d.locked || false,
     })
   })
 
@@ -120,6 +120,7 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
       id, type: d.type, colour: d.colour, label: d.label,
       pathWidth: d.pathWidth, tension: d.tension,
       transparent: d.transparent || false,
+      locked: d.locked || false,
       zIndex: s.getZIndex(),
     }
     if (s instanceof Konva.Rect) {
@@ -232,6 +233,7 @@ export function loadGarden({
       type: entry.type, colour: entry.colour, label: entry.label,
       pathWidth: entry.pathWidth, tension: entry.tension,
       transparent: entry.transparent || false,
+      locked: entry.locked || false,
     }
 
     let shape
@@ -309,6 +311,7 @@ export function loadGarden({
       notes: entry.notes || '',
       seasons: entry.seasons || ['spring', 'summer', 'fall', 'winter'],
       transparent: entry.transparent || false,
+      locked: entry.locked || false,
       size: entry.size, key: entry.key,
     }
 
@@ -322,6 +325,7 @@ export function loadGarden({
     const group = makePlantGroup(entry.id, img, size, entry.x + dX, entry.y + dY)
     if (entry.scaleX) group.scaleX(entry.scaleX)
     if (entry.scaleY) group.scaleY(entry.scaleY)
+    if (entry.locked) group.draggable(false)  // restore locked state
     group.on('click tap', () => onSelectPlant(entry.id, group))
     plantLayer?.add(group)
   })
@@ -330,7 +334,7 @@ export function loadGarden({
   state.structIdCtr.current = maxSId
   state.plantIdCtr.current  = maxPId
 
-  // ── Restore transparency + z-order (same as v8) ──
+  // ── Restore transparency, lock, + z-order (same as v8) ──
   ;(g.structs || []).forEach(entry => {
     const shape = structLayer?.findOne('#' + entry.id)
     if (!shape) return
@@ -340,6 +344,7 @@ export function loadGarden({
     } else if (entry.zIndex !== undefined) {
       try { shape.zIndex(entry.zIndex) } catch {}
     }
+    if (entry.locked) shape.draggable(false)  // restore locked state
   })
 
   structLayer?.batchDraw()
