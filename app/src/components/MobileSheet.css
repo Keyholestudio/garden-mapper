@@ -1,4 +1,4 @@
-/* MobileSheet.css — Mobile bottom sheet */
+/* MobileSheet.css - Mobile bottom sheet */
 
 .mobile-sheet {
   position: absolute;
@@ -193,7 +193,7 @@
 }
 .mobile-recent-remove:hover { background: #e57373; }
 
-/* ── Plant grid — 2 columns ── */
+/* ── Plant grid - 2 columns ── */
 .mobile-plant-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -246,7 +246,7 @@
   flex-shrink: 0;
 }
 
-/* Hide the "Tools" header label on mobile — saves space */
+/* Hide the "Tools" header label on mobile - saves space */
 .mobile-tool-section .panel-h2 {
   display: none;
 }
@@ -278,7 +278,7 @@
 }
 .mobile-tool-section .tool-menu-emoji { font-size: 13px !important; }
 
-/* Sub-menu: 3-column grid — same as top-level, but groups stay in-flow */
+/* Sub-menu: 3-column grid - same as top-level, but groups stay in-flow */
 .mobile-tool-section .tool-menu-items--sub {
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
@@ -294,30 +294,28 @@
   flex: none !important;
   width: 100%;
 }
-/* Group wrapper spans full width so header + children can both be laid out cleanly */
+/* Group wrapper: use display:contents so header + children slots flow into the parent grid */
 .mobile-tool-section .tool-menu-items--sub .tool-menu-group {
-  grid-column: 1 / -1 !important;  /* full row */
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+  display: contents !important;
 }
-/* Group header: fit-content width, sits in its own row */
+/* Group header: one grid cell, same size as sibling buttons */
 .mobile-tool-section .tool-menu-items--sub .tool-menu-btn.group-header {
   flex: none !important;
-  width: fit-content;
-  min-width: 30%;     /* at least one column’s worth */
+  width: 100%;
   justify-content: center;
   text-align: center;
   white-space: nowrap;
-  padding: 8px 12px !important;
+  padding: 8px 4px !important;
+  font-size: 11px !important;
 }
-/* Children: 3-column grid beneath the header */
+/* Children container: span all 3 columns, then sub-grid inside */
 .mobile-tool-section .tool-menu-items--sub .tool-menu-group-children {
+  grid-column: 1 / -1;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 5px;
-  padding-left: 0;   /* override the desktop indent */
-  border-left: none; /* override the desktop left-border */
+  padding-left: 0;
+  border-left: none;
   margin-left: 0;
 }
 .mobile-tool-section .tool-menu-items--sub .tool-menu-group-children .tool-menu-btn {
@@ -327,7 +325,7 @@
   text-align: center;
   flex: none !important;
   width: 100%;
-  white-space: normal;  /* allow wrap so labels aren’t clipped */
+  white-space: normal;
   line-height: 1.2;
 }
 
@@ -346,7 +344,7 @@
   overscroll-behavior: contain;
 }
 
-/* Edit handle — Back · ↓ · Undo in one row */
+/* Edit handle - Back · ↓ · Undo in one row */
 .mobile-sheet-handle--edit {
   display: flex;
   align-items: center;
