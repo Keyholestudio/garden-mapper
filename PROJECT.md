@@ -1,6 +1,6 @@
 # Garden Mapper — Project Status
 
-_Last updated: 2026-06-02_
+_Last updated: 2026-06-03_
 
 ---
 
@@ -69,6 +69,18 @@ cd projects/garden-planner/app && npm run dev
 | 24 | Mobile: Edit Points button for line-based structs (bed, path, fence, etc.) | `cdd92d7` | ✅ |
 | 25 | Mobile: Save button (💾) in top-right of mobile logo bar | `cdd92d7` | ✅ |
 | 26 | Fix: square tap-place now opens shape panel (not main menu) | `cdd92d7` | ✅ |
+| 27 | Recently Used plants — persistent, all 3 surfaces, hide/clear/remove | `6c495f1` | ✅ |
+| 28 | Mobile profile 👤 menu — Gardens, Export, Submit Plant, Settings (soon), Subscription (soon), Website | `928b573` | ✅ |
+| 29 | Disconnect available on mobile struct panel | `e27e8ba` | ✅ |
+| 30 | Plant corners-only transformer; structs keep full 8 anchors | `e27e8ba` | ✅ |
+| 31 | Double-tap debounce 350ms on freeform point placement | `ae2e775` | ✅ |
+| 32 | No default sub-tool — user picks explicitly each time | `ae2e775` | ✅ |
+| 33 | Min point guards before shape closes; red corners fix | `ae2e775` | ✅ |
+| 34 | No-flip on plant resize (boundBoxFunc) | `ae2e775` | ✅ |
+| 35 | Undo/delete return to main menu (handleUndo + clearSelection) | `040aa58` | ✅ |
+| 36 | Mobile sheet spacing tightened | `bc6d417` | ✅ |
+| Lock | 🔓/🔒 Lock button on plants + structs — all surfaces, persists save/load | `0a0ef83` | ✅ |
+| Tool hint | Removed alternate hint text from active tool buttons | `880a07a` | ✅ |
 
 ### Additional polish (June 1)
 - Season slider → frosted floating pill over canvas (`95583df`)
@@ -117,8 +129,11 @@ cd projects/garden-planner/app && npm run dev
 ## Open Items
 - **#9** Dream garden — Rob creates when ready; needs a finalized garden first
 - **#12** Multi-device — deferred; needs backend + user accounts
-- **#14** Incomplete in doc — awaiting Rob's additions
+- **#9** Dream garden — Rob creates when ready
+- **#12** Multi-device — deferred; needs backend + user accounts
 - **Phase 8** Textures — planned next major phase
+- **Items 16–19** SM campaign, robs-lab.ca, gamification, pricing
+- **Plant submission cron** — scan form → Gemini sticker → approval email
 - **Capacitor.js** wrapper — deferred (needs Android Studio or Mac)
 
 ---
