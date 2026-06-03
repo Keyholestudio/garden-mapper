@@ -24,17 +24,17 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 6px 0 2px;
+  padding: 3px 0 1px;
   flex-shrink: 0;
 }
 
 .mobile-sheet-toggle {
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 18px;
   color: #11502A;
   cursor: pointer;
-  padding: 4px 24px;
+  padding: 2px 20px;
   line-height: 1;
   border-radius: 20px;
   transition: background .12s;
@@ -62,8 +62,8 @@
 .mobile-sheet-body {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 6px 12px 16px;
+  gap: 5px;
+  padding: 4px 12px 12px;
   overflow-y: auto;
   max-height: 65vh; /* expands to ~65% when keyboard + search active */
   overscroll-behavior: contain;
@@ -87,13 +87,13 @@
 /* ── Recently used strip ── */
 .mobile-recents-section {
   flex-shrink: 0;
-  margin: 4px 0 2px;
+  margin: 2px 0 0;
 }
 .mobile-recents-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 .mobile-recents-label {
   font-size: 9px;
@@ -238,6 +238,7 @@
   height: 1px;
   background: #e8f5e9;
   flex-shrink: 0;
+  margin: 1px 0;
 }
 
 /* ── Tool section ── */
@@ -299,7 +300,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 16px 2px;
+  padding: 3px 16px 1px;
 }
 
 .mobile-edit-back-inline,
@@ -307,10 +308,10 @@
   background: none;
   border: none;
   color: #11502A;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  padding: 4px 2px;
+  padding: 2px 2px;
   font-family: inherit;
   line-height: 1;
   white-space: nowrap;
