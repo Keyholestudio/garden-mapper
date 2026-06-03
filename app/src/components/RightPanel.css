@@ -255,6 +255,27 @@
 
 .tool-menu-btn.group-header {
   justify-content: space-between;
+  background: #ede7f6;
+  border-color: #9575cd;
+  color: #311b92;
+}
+.tool-menu-btn.group-header:hover { background: #d1c4e9; }
+.tool-menu-btn.group-header.active {
+  background: #6a1b9a;
+  border-color: #6a1b9a;
+  color: #fff;
+}
+
+.tool-menu-group-children .tool-menu-btn {
+  background: #f3e5f5;
+  border-color: #ce93d8;
+  color: #4a148c;
+}
+.tool-menu-group-children .tool-menu-btn:hover { background: #e1bee7; }
+.tool-menu-group-children .tool-menu-btn.active {
+  background: #7b1fa2;
+  border-color: #7b1fa2;
+  color: #fff;
 }
 /* On mobile, group-header shouldn’t stretch — it’s a normal-height button */
 .bp-mobile .tool-menu-btn.group-header {
