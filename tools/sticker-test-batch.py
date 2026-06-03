@@ -229,6 +229,8 @@ def run_pipeline(raw_path):
 
     # Pipeline saves as <name>_raw_nobg.png — move to processed folder with clean name
     if os.path.exists(tmp_nobg):
+        if os.path.exists(clean_path):
+            os.remove(clean_path)
         os.rename(tmp_nobg, clean_path)
         p(f"  CLEAN saved: {clean_name}")
         return clean_path
@@ -248,7 +250,7 @@ def main():
     # Verify Brave/Gemini tab reachable before starting
     try:
         get_gemini_tab()
-        p("✓ Gemini tab found in Brave\n")
+        p("[OK] Gemini tab found in Brave\n")
     except RuntimeError as e:
         p(f"✗ {e}")
         p("Start Brave with: brave.exe --remote-debugging-port=9222")
@@ -275,7 +277,7 @@ def main():
 
         # Pause between prompts (skip after last one)
         if i < len(TEST_PLANTS) - 1:
-            p(f"\n  ⏸  Waiting {INTER_PROMPT_DELAY}s before next prompt...")
+            p(f"\n  [PAUSE] Waiting {INTER_PROMPT_DELAY}s before next prompt...")
             time.sleep(INTER_PROMPT_DELAY)
 
     p("\n" + "=" * 60)
