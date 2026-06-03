@@ -186,7 +186,18 @@ export default function GardenEditor() {
       state.setEditingShapeId(null)
       suppressNextClearRef.current = true  // prevent synthesized click from clearing selection
     },
-    onModeChange: state.setCurrentMode,
+    onModeChange: (mode) => {
+      state.setCurrentMode(mode)
+      // Reset all sub-tools to null when returning to select so no tool is pre-selected next visit
+      if (mode === 'select') {
+        state.setBedSubTool(null)
+        state.setFenceSubTool(null)
+        state.setFenceType(null)
+        state.setPathSubTool(null)
+        state.setBuildingSubTool(null)
+        state.setWaterSubTool(null)
+      }
+    },
   })
 
   // ── Plant placement ──

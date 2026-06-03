@@ -45,8 +45,16 @@ export function useSelection({
       layers.tr.keepRatio(true)
       // Corners only — no edge anchors (prevents stretching/squishing)
       layers.tr.enabledAnchors(['top-left', 'top-right', 'bottom-left', 'bottom-right'])
+      // No-flip guard: reject any resize that would invert or shrink below minimum
+      layers.tr.boundBoxFunc((oldBox, newBox) => {
+        if (newBox.width < 5 || newBox.height < 5) return oldBox
+        // Prevent flip: reject if width or height sign would change (negative = mirrored)
+        if (newBox.width <= 0 || newBox.height <= 0) return oldBox
+        return newBox
+      })
       layers.tr.nodes([state.selectedPlant.group])
     } else if (!state.selectedStruct) {
+      layers.tr.boundBoxFunc(null)  // clear for structs
       layers.tr.nodes([])
     }
     layers.uiLayer?.batchDraw()

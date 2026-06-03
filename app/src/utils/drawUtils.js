@@ -7,11 +7,12 @@ import {
 
 // ── isFreeMode ────────────────────────────────────────────
 export function isFreeMode(currentMode, bedSubTool, fenceSubTool, fenceType, buildingSubTool, waterSubTool, pathSubTool) {
-  if (currentMode === 'beds'     && bedSubTool !== 'square') return true
-  if (currentMode === 'fences'   && fenceSubTool !== 'square') return true
-  if (currentMode === 'paths') return true
+  // null sub-tool = no tool selected yet, never freeform
+  if (currentMode === 'beds'     && bedSubTool && bedSubTool !== 'square') return true
+  if (currentMode === 'fences'   && fenceSubTool && fenceSubTool !== 'square') return true
+  if (currentMode === 'paths'    && pathSubTool) return true
   if (currentMode === 'water'    && waterSubTool === 'pond') return true
-  if (currentMode === 'building' && (buildingSubTool === 'deck-curved' || buildingSubTool === 'deck-straight' || buildingSubTool === 'underground' || buildingSubTool === 'underground-electrical' || buildingSubTool === 'underground-plumbing')) return true
+  if (currentMode === 'building' && (buildingSubTool === 'deck-curved' || buildingSubTool === 'deck-straight' || buildingSubTool === 'underground-electrical' || buildingSubTool === 'underground-plumbing')) return true
   if (currentMode === 'water'    && waterSubTool === 'underground-plumbing') return true
   return false
 }

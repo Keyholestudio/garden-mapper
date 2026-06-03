@@ -27,6 +27,7 @@ export function useDrawTools({
   const waterStartRef  = useRef(null)
   const circlePreviewRef = useRef(null)
   const snapCellRef    = useRef(8) // updated reactively below
+  const lastFreeClickRef = useRef(0) // timestamp of last freeform point — debounce double-tap
 
   // ── Hint bar (floating hint over canvas) ──────────────────
   function updateHint(pts, currentMode, buildingSubTool, pathSubTool) {
@@ -58,12 +59,18 @@ export function useDrawTools({
     freeDotsRef.current.forEach(d => d.destroy())
     freeDotsRef.current = []
     if (freePreviewRef.current) { freePreviewRef.current.destroy(); freePreviewRef.current = null }
+    lastFreeClickRef.current = 0  // reset debounce so next shape can start immediately
     hideHint()
     if (uiLayer) uiLayer.batchDraw()
   }
 
   // ── Handle freeform click ─────────────────────────────────
   function handleFreeClick(pos, uiLayerArg) {
+    // Debounce: ignore taps within 350ms of the previous point (prevents accidental double-tap on mobile)
+    const now = Date.now()
+    if (now - lastFreeClickRef.current < 350) return
+    lastFreeClickRef.current = now
+
     const s = sRef.current
     const { uiLayer } = layers || {}
     const ul = uiLayerArg || uiLayer
@@ -109,6 +116,19 @@ export function useDrawTools({
     const { structLayer, uiLayer } = layers || {}
     if (!structLayer) return
 
+    // ── Minimum point guards (#33) ──
+    const pts = freePtsRef.current
+    const isPath = s.currentMode === 'paths'
+    const isUG   = (s.currentMode === 'building' && (s.buildingSubTool === 'underground-electrical' || s.buildingSubTool === 'underground-plumbing')) ||
+                   (s.currentMode === 'water' && s.waterSubTool === 'underground-plumbing')
+    const isFenceOrGate = s.currentMode === 'fences' && (s.fenceType === 'fence' || s.fenceType === 'gate')
+    const minPts = (isPath || isUG || isFenceOrGate) ? 2 : 3
+    if (pts.length < minPts) {
+      // Not enough points — show hint but don't close
+      updateHint(pts, s.currentMode, s.buildingSubTool, s.pathSubTool)
+      return
+    }
+
     const closedId = closeFreeShape({
       freePts:         freePtsRef.current,
       currentMode:     s.currentMode,
@@ -141,6 +161,10 @@ export function useDrawTools({
         if (sh) { sh.destroy(); delete s.structDataRef.current[closedId]; structLayer.batchDraw() }
       })
     }
+
+    // Reset add/remove-point mode so handles don't appear red after shape creation (#33)
+    s.setAddingPt?.(false)
+    s.setRemovingPt?.(false)
 
     cancelFree(uiLayer)
   }
@@ -228,7 +252,7 @@ export function useDrawTools({
       }
 
       const isRectMode =
-        (s.currentMode === 'building' && (s.buildingSubTool === 'building' || s.buildingSubTool === 'deck-square')) ||
+        (s.currentMode === 'building' && s.buildingSubTool && (s.buildingSubTool === 'building' || s.buildingSubTool === 'deck-square')) ||
         (s.currentMode === 'beds'     && s.bedSubTool === 'square') ||
         (s.currentMode === 'water'    && s.waterSubTool === 'pool-sq') ||
         (s.currentMode === 'fences'   && s.fenceSubTool === 'square')
@@ -421,7 +445,7 @@ export function useDrawTools({
     let touchStartPos   = null
 
     const isSquareDrawMode = (s) =>
-      (s.currentMode === 'building' && (s.buildingSubTool === 'building' || s.buildingSubTool === 'deck-square')) ||
+      (s.currentMode === 'building' && s.buildingSubTool && (s.buildingSubTool === 'building' || s.buildingSubTool === 'deck-square')) ||
       (s.currentMode === 'beds'     && s.bedSubTool === 'square') ||
       (s.currentMode === 'water'    && s.waterSubTool === 'pool-sq') ||
       (s.currentMode === 'fences'   && s.fenceSubTool === 'square')

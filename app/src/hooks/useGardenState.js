@@ -45,13 +45,13 @@ export function useGardenState() {
 
   // Tool state
   const [currentMode, setCurrentMode]         = useState('select')
-  const [bedSubTool, setBedSubTool]           = useState('curved')
-  const [fenceSubTool, setFenceSubTool]       = useState('curved')
-  const [fenceType, setFenceType]             = useState('hedge')
-  const [pathSubTool, setPathSubTool]         = useState('freeform')
+  const [bedSubTool, setBedSubTool]           = useState(null)  // null = no default; user picks
+  const [fenceSubTool, setFenceSubTool]       = useState(null)
+  const [fenceType, setFenceType]             = useState(null)
+  const [pathSubTool, setPathSubTool]         = useState(null)
   const [gateType, setGateType]               = useState('wood')
-  const [buildingSubTool, setBuildingSubTool] = useState('building')
-  const [waterSubTool, setWaterSubTool]       = useState('pond')
+  const [buildingSubTool, setBuildingSubTool] = useState(null)
+  const [waterSubTool, setWaterSubTool]       = useState(null)
   const [undergroundType, setUndergroundType] = useState('electrical')
   const [undergroundColour, setUndergroundColour] = useState('#111111')
   const [undergroundWidth, setUndergroundWidth]   = useState(4)
