@@ -1,103 +1,259 @@
 # Garden Mapper — Sticker Prompt Guide
-## Adobe Firefly Edition (≤ 1000 characters per prompt)
+_Last updated: 2026-06-03 — Rob's master edition_
 
 ---
 
-## 1. Master Style Prefixes
+## 1. Prompt Templates by Plant Type
 
-Two templates — one for plants, one for trees. Use the correct one.
-
-### For Plants
-```
-Slight angled top-down aerial view. Art style: Plants vs. Zombies meets watercolor painting — simplified representation of this plant, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. Transparent background. Centered, 75% canvas fill. Vibrant and iconic.
-```
-
-### For Trees
-```
-Top-down aerial view, looking straight down. Art style: Plants vs. Zombies meets watercolor painting — simplified representation of this plant, focusing on a primary characteristics of the plant, leafy with central limbs, no trunk, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. Transparent background. Centered, 75% canvas fill. Vibrant and iconic.
-```
-
-### Root Vegetables
-```
-Slight angled top-down aerial view. Art style: Plants vs. Zombies meets watercolor painting — simplified representation of this plant, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. Transparent background. Centered, 75% canvas fill. Vibrant and iconic.
-
+Use the correct template for the plant type. Rob's wording is intentional — do not modify prompts without his approval.
 
 ---
 
-	
+### Pines
 
-Copy the right template, fill in the variables, paste into Firefly. Keep total under 1000 chars.
-
-### Plants
 ```
-[PLANT MASTER PREFIX]
+Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2–3px. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
+
+Subject: [PLANT NAME], stubby [TYPE OF PLANT], no trunk.
+Canvas: [SIZE]px square.
+Colours: [4-5 colours or hex codes], flat chroma-key green background (#00FF00)
+Shape: Correct proportions.
+```
+
+---
+
+### Plants (herbs, flowers, shrubs, perennials)
+
+```
+Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: [PLANT NAME], [TYPE OF PLANT].
 Canvas: [SIZE]px square.
-Colours: [4-5 colours or hex codes].
-Shape: [Primary characteristics], stems at bottom and leafy florals at the top.
+Colours: [4-5 colours or hex codes], flat chroma-key green background (#00FF00)
+Shape: [Primary characteristics], stems at bottom and leafy florals at the top. Only a few leaves and flowers, small plant. Correct proportions.
 ```
 
-### Trees
-```
-[TREE MASTER PREFIX]
-
-Subject: [PLANT NAME], [BASIC DESCRIPTION], aerial top-down, no trunk.
-Canvas: 512px square.
-Colours: [4-5 colours or hex codes]
-Shape: [Primary characteristics], Spacious leafy canopy, sweeping central limbs. [If fruit tree: Minimal fruit, only as accent.][If pine tree: re
-```
+---
 
 ### Root Vegetables
+
 ```
-[ROOT VEGETABLE MASTER PREFIX]
+Side aerial view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: [PLANT NAME], [TYPE OF PLANT].
 Canvas: [SIZE]px square.
-Colours: [4-5 colours or hex codes — exclude soil colours].
-Shape: [PLANT NAME] and tops peeking from a plant wide soil line. Only show the top of the root/plant above the minimal soil line. [Basic plant description], root at bottom and leafy florals at the top.
+Colours: [4-5 colours or hex codes], flat chroma-key green background (#00FF00)
+Shape: [PLANT NAME] and tops peeking from a plant wide soil line. Only show the top of the root/plant above the minimal soil line. [Basic plant description] shoulders visible above the soil, root at bottom and leafy tops. Natural proportions.
 ```
+
+---
+
+### Deciduous Trees
+
+```
+Side aerial view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, leafy, Dark outline 2–3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+
+Subject: [PLANT NAME], [BASIC DESCRIPTION], No trunk.
+Canvas: [SIZE]px square.
+Colours: [4-5 colours or hex codes], flat chroma-key green background (#00FF00)
+Shape: Natural [Leaf type: Leafy, palm] canopy. [If fruit tree: Minimal fruit, only as accent.]
+```
+
+---
+
+## 2. Variable Reference
 
 | Variable | Notes |
 |---|---|
 | `[PLANT NAME]` | Common name, e.g. "English Lavender" |
 | `[TYPE]` | e.g. "perennial herb", "compact annual", "tall biennial" |
-| `[SIZE]` | Generate at 4× final: XS=96, S=160, M=256, L=384, XL=512 |
-| `[COLOURS]` | 4-5 values — base fill, outline, limbs, accent, bloom |
+| `[SIZE]` | Generate at 4× final display size — see size table below |
+| `[COLOURS]` | 4–5 values — base fill, outline, limbs, accent, bloom |
 | `[SHAPE]` | Primary visual characteristic only. Avoid "radiating" or "centered". |
 
+### Size Tiers (generate at 4× final display size)
+
+| Tier | Generate at | Final display size | Use for |
+|---|---|---|---|
+| XS | 96px | 24px | Tiny herbs, small ground covers |
+| S | 160px | 40px | Small flowers, compact annuals |
+| M | 256px | 64px | Mid-size shrubs, most perennials |
+| L | 384px | 96px | Large shrubs, tall perennials |
+| XL | 512px | 128px | Trees |
+
 ---
 
-## 3. Worked Examples — Ready to Copy-Paste into Firefly
+## 3. Batch Generation Workflow
 
-Two prompt templates: one for **plants**, one for **trees**. Each example is under 800 chars.
+**Step 1 — Prep the additions list, reference the plant database**
+Update the "plant generated" column in the plant database before opening the generation tool.
 
----
+**Step 2 — Group by sticker type**
+Generate all `flower-daisy` plants back-to-back, then all `herb-small`, etc. Keeps the style consistent and you only tune once per type.
 
-### XS — Thyme (`herb-small`) — PLANT
-*Final: 24px · Generate at: 96px*
+**Step 3 — Generate one image per plant**
+Generate 2–3 variants per plant. Reject anything with:
+- Side-view drift (not aerial/side as specified)
+- Gradients or heavy shading
+- Unrecognisable shape at small size (squint test — hold at arm's length)
+- Green bleed into the subject (indicates background tolerance issue)
+
+**Step 4 — Name files consistently**
 
 ```
-Slight angled top-down aerial view. Art style: Plants vs. Zombies meets watercolor painting — simplified representation of this plant, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. Transparent background. Centered, 75% canvas fill. Vibrant and iconic.
-
-Subject: Common Thyme herb, small woody herb.
-Canvas: 96px square.
-Colours: sage green #7B9E4E, dark olive #3D5A1A, pale lavender #C8A8D8, warm brown stems #7A5C3A.
-Shape: Tiny dense mat of small oval grey-green leaves, scattered with pale lavender-pink flower clusters, stems at bottom and leafy florals at the top.
+{sticker-id}_{plant}_{color}_{size}.png
 ```
 
+Examples:
+- `flower-daisy_marigold_orange_s.png`
+- `tree-fruit_apple_green_XL.png`
+- `tree-conifer_spruce_M_CA-US.png`
+
+Full naming convention (for catalog/CDN):
+```
+{category}_{plant-name}_{size-tier}_{regions}.png
+```
+
+| Part | Values | Example |
+|---|---|---|
+| category | `flower-cluster`, `flower-daisy`, `tree-conifer`, `shrub`, `vegetable`, `herb`, etc. | `tree-conifer` |
+| plant-name | lowercase, hyphenated | `spruce` |
+| size-tier | `XS`, `S`, `M`, `L`, `XL` | `M` |
+| regions | ISO codes joined by `-` (optional, omit if universal) | `CA-US-GB` |
+
 ---
+
+## 4. Background Removal (Chroma Key Pipeline)
+
+All images are generated with a flat chroma-key green background (`#00FF00`) for clean automated removal.
+
+### Processing script
+```powershell
+$python = "C:\Users\RG\AppData\Local\Python\bin\python3.exe"
+& $python projects\garden-planner\tools\sticker-pipeline.py image1.png image2.png
+```
+
+### What the pipeline does (v4 — confirmed working 2026-05-31)
+
+| Step | What happens |
+|---|---|
+| 1. Chroma key removal | Removes `#00FF00` background. Tolerance: 80 (Euclidean RGB). Soft transition zone: 40px for anti-aliased edges. |
+| 2. Green spill suppression | Semi-transparent edge pixels only. If green > avg(R+B) by more than 15 → pulls green down. Never touches opaque subject pixels. |
+| 3. Watermark erasure | Bottom-right 13% × 13% region → alpha = 0. Safe zone — no plant occupies this corner. |
+| 4. Crop to content | `Image.getbbox()` trims transparent border on all 4 sides. |
+| 5. Resize to 512×512 | `thumbnail(512, 512, LANCZOS)` → centred on transparent canvas with letterbox/pillarbox if needed. |
+
+Output: `<filename>_nobg.png` alongside each input.
+
+### Manual background removal (if pipeline unavailable)
+- **remove.bg** — web UI, fast, 1 image at a time
+- **Photoshop / GIMP** — Select by color (#00FF00) → delete → export PNG with alpha
+
+### PNG output checklist
+- [ ] Transparent background (no green or white remaining)
+- [ ] File size < 50 KB (PNG at 512×512)
+- [ ] No green fringe around subject edges
+- [ ] Subject centred and fills ~75% of canvas
+- [ ] Tested visually at 24–128px display sizes
+
+---
+
+## 5. Output Destination & App Integration
+
+### File location
+```
+projects/garden-planner/stickers/<filename>.png
+```
+Also copies to:
+```
+projects/garden-planner/app/public/stickers/<filename>.png
+```
+
+### Wiring into the app
+After adding the PNG file, update `app/src/hooks/usePlantCatalog.js` to add the new plant entry:
+
+```js
+{
+  id: 'flower-daisy_marigold',
+  label: 'Marigold',
+  family: 'flower-daisy',
+  key: 'flower-daisy_marigold_orange_s',   // matches filename (no .png)
+  size: 'S',
+  seasons: ['spring', 'summer'],
+  regions: ['CA', 'US', 'GB'],
+  notes: 'French Marigold, compact annual'
+}
+```
+
+The `key` field maps directly to the sticker filename. The image loader resolves it as:
+```
+/stickers/{key}.png
+```
+
+### Size at which stickers render on canvas
+
+| Tier | PNG file size | Rendered on canvas |
+|---|---|---|
+| XS | 96px | 24px |
+| S | 160px | 40px |
+| M | 256px | 64px |
+| L | 384px | 96px |
+| XL | 512px | 128px |
+
+Stickers are rendered as `Konva.Image` inside a `Konva.Group`. The hit rect is a transparent `Konva.Rect` overlaid on top (transparent PNGs don't register Konva clicks without it). See `plantUtils.js` → `makePlantGroup()`.
+
+---
+
+## 6. Cron / Automated Generation Reference
+
+When the automated sticker generation cron runs, it needs to:
+
+1. **Pull pending requests** from `sticker_requests` DB table (status = `pending`)
+2. **Build the prompt** using the correct template above (match `sticker_id` prefix to template type: `tree-conifer` → Pine, `tree-deciduous`/`tree-fruit` → Deciduous Tree, `vegetable-root` → Root Veggie, everything else → Plants)
+3. **Fill all variables** — `[PLANT NAME]`, `[TYPE]`, `[SIZE]` (default `M`/256px unless specified), `[COLOURS]` (derive from plant type or use defaults), `[SHAPE]` (from request or plant DB lookup)
+4. **Generate image** via AI provider (Gemini image gen / DALL-E 3 / Recraft.ai)
+5. **Run chroma key pipeline** — script at `projects/garden-planner/tools/sticker-pipeline.py`
+6. **Name the output file** using `{sticker-id}_{plant}_{color}_{size}.png` convention
+7. **Move to** `app/public/stickers/` and `stickers/`
+8. **Update DB status** → `review` and queue for Rob's approval
+9. **Do NOT wire into `usePlantCatalog.js` automatically** — Rob approves before it goes live
+
+### Prompt type routing (for cron use)
+
+| sticker_id prefix | Template to use |
+|---|---|
+| `tree-conifer` | Pines |
+| `tree-deciduous`, `tree-fruit`, `tree-willow` | Deciduous Trees |
+| `vegetable-root` | Root Vegetables |
+| Everything else | Plants |
+
+### Default colour palettes by type (if not specified in request)
+
+| Type | Default palette |
+|---|---|
+| `herb-small` | sage green, dark olive, pale lavender, warm brown stems |
+| `flower-daisy` | bright colour of bloom, golden yellow, dark centre, mid-green, deep green |
+| `shrub-round` | mid-green, deep green, grey-green, dark outline, warm brown stems |
+| `tree-deciduous` | mid-green, deep green, warm brown limbs, pale yellow-green accents |
+| `tree-fruit` | mid-green, deep green, fruit colour, warm brown limbs, pale yellow-green |
+| `tree-conifer` | deep forest green, mid-green, blue-green, dark outline, pale silver-green |
+| `vegetable-root` | root colour, bright green tops, mid-green, pale green stem |
+| `vegetable-leafy` | mid-green, deep green, pale centre, olive, warm stems |
+
+---
+
+## 7. Worked Examples
 
 ### S — Marigold (`flower-daisy`) — PLANT
 *Final: 40px · Generate at: 160px*
 
 ```
-Slight angled top-down aerial view. Art style: Plants vs. Zombies meets watercolor painting — simplified representation of this plant, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. Transparent background. Centered, 75% canvas fill. Vibrant and iconic.
+Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: French Marigold flower, compact annual.
 Canvas: 160px square.
-Colours: bright orange #FF8C00, golden yellow #FFD700, dark brown centre #8B3A00, mid-green #4A7C2F, deep green stems #2A5010.
-Shape: Bold layered bloom of orange-yellow petals around a dark warm centre disk, stems at bottom and leafy florals at the top.
+Colours: bright orange #FF8C00, golden yellow #FFD700, dark brown centre #8B3A00, mid-green #4A7C2F, deep green stems #2A5010, flat chroma-key green background (#00FF00)
+Shape: Bold layered bloom of orange-yellow petals around a dark warm centre disk, stems at bottom and leafy florals at the top. Only a few leaves and flowers, small plant. Correct proportions.
 ```
 
 ---
@@ -106,68 +262,12 @@ Shape: Bold layered bloom of orange-yellow petals around a dark warm centre disk
 *Final: 64px · Generate at: 256px*
 
 ```
-Slight angled top-down aerial view. Art style: Plants vs. Zombies meets watercolor painting — simplified representation of this plant, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. Transparent background. Centered, 75% canvas fill. Vibrant and iconic.
+Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: English Lavender shrub, perennial herb.
 Canvas: 256px square.
-Colours: purple #7B5EA7, silver-grey foliage #8FAF82, pale lavender #C4A8E0, dark outline #2D1A4A, warm grey stems #A09070.
-Shape: Upright silver-grey stems topped with dense purple flower spikes, stems at bottom and leafy florals at the top.
-```
-
----
-
-### L — Foxglove (`flower-spike`) — PLANT
-*Final: 96px · Generate at: 384px*
-
-```
-Slight angled top-down aerial view. Art style: Plants vs. Zombies meets watercolor painting — simplified representation of this plant, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. Transparent background. Centered, 75% canvas fill. Vibrant and iconic.
-
-Subject: Foxglove in full bloom, tall biennial.
-Canvas: 384px square.
-Colours: deep magenta #D63F6C, cream #FFF5E0, forest green #2D6A2A, dark outline #1A2E1A, mid-green stems #4A7A3A.
-Shape: Tall central spike of stacked magenta bell-shaped blooms with cream-spotted interiors, broad lance-shaped green leaves, stems at bottom and leafy florals at the top.
-```
-
----
-
-### XL — Apple Tree (`tree-fruit`) — TREE
-*Final: 128px · Generate at: 512px*
-
-```
-Top-down aerial view, looking straight down. Art style: Plants vs. Zombies meets watercolor painting — simplified representation of this plant, focusing on a primary characteristics of the plant, leafy with central limbs, no trunk, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. Transparent background. Centered, 75% canvas fill. Vibrant and iconic.
-
-Subject: Apple tree in fruit, round deciduous tree, aerial top-down, no trunk.
-Canvas: 512px square.
-Colours: mid-green #4E8C3A, deep green #2A5C1A, bright red apples #D42B2B, warm brown limbs #6B3A2A, pale yellow-green accents #B8D474.
-Shape: Spacious leafy canopy, sweeping central limbs. Minimal fruit, only as accent.
-```
-
----
-
-### M — Saskatoon Berry Bush (`shrub-flowering`) — PLANT
-*Final: 64px · Generate at: 256px*
-
-```
-Slight angled top-down aerial view. Art style: Plants vs. Zombies meets watercolor painting — simplified representation of this plant, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. Transparent background. Centered, 75% canvas fill. Vibrant and iconic.
-
-Subject: Saskatoon Berry bush, fruiting deciduous shrub.
-Canvas: 256px square.
-Colours: deep purple-blue berries #4A2080, mid-green leaves #4A7C2F, grey-green foliage #8FAF82, warm brown stems #6B3A2A, pale white blossom #F5F0E8.
-Shape: Rounded shrub with clusters of deep purple-blue berries nestled among oval green leaves, stems at bottom and leafy florals at the top.
-```
-
----
-
-### M — Blueberry Bush (`shrub-flowering`) — PLANT
-*Final: 64px · Generate at: 256px*
-
-```
-Slight angled top-down aerial view. Art style: Plants vs. Zombies meets watercolor painting — simplified representation of this plant, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. Transparent background. Centered, 75% canvas fill. Vibrant and iconic.
-
-Subject: Blueberry bush, compact fruiting shrub.
-Canvas: 256px square.
-Colours: bright blue berries #5B8DD9, dusty blue-grey #8BAAC8, mid-green leaves #4A7C2F, deep green #2A5010, warm brown stems #6B3A2A.
-Shape: Low compact shrub covered in round bright blue berry clusters among small oval leaves, stems at bottom and leafy florals at the top.
+Colours: purple #7B5EA7, silver-grey foliage #8FAF82, pale lavender #C4A8E0, dark outline #2D1A4A, warm grey stems #A09070, flat chroma-key green background (#00FF00)
+Shape: Upright silver-grey stems topped with dense purple flower spikes, stems at bottom and leafy florals at the top. Only a few leaves and flowers, small plant. Correct proportions.
 ```
 
 ---
@@ -176,95 +276,55 @@ Shape: Low compact shrub covered in round bright blue berry clusters among small
 *Final: 24px · Generate at: 96px*
 
 ```
-Slight angled top-down aerial view. Art style: Plants vs. Zombies meets watercolor painting — simplified representation of this plant, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. Transparent background. Centered, 75% canvas fill. Vibrant and iconic.
+Side aerial view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: Carrot, root vegetable.
 Canvas: 96px square.
-Colours: bright orange #FF6B1A, deep orange #CC4A00, bright green tops #4AAF2F, mid-green #2A7010, pale green stem #8FBF6A.
-Shape: Carrots and tops peeking from a plant wide soil line. Only show the top of the root/plant above the minimal soil line. Bold orange carrot shoulders visible above the soil, feathery bright green ferny foliage, root at bottom and leafy florals at the top.
+Colours: bright orange #FF6B1A, deep orange #CC4A00, bright green tops #4AAF2F, mid-green #2A7010, pale green stem #8FBF6A, flat chroma-key green background (#00FF00)
+Shape: Carrots and tops peeking from a plant wide soil line. Only show the top of the root/plant above the minimal soil line. Bold orange carrot shoulders visible above the soil, root at bottom and leafy tops. Natural proportions.
 ```
 
 ---
 
-### XL — Pine Tree (`tree-conifer`) — TREE
+### XL — Apple Tree (`tree-fruit`) — DECIDUOUS TREE
 *Final: 128px · Generate at: 512px*
 
 ```
-Top-down aerial view, looking straight down. Art style: Plants vs. Zombies meets watercolor painting — simplified representation of this plant, focusing on a primary characteristics of the plant, leafy with central limbs, no trunk, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. Transparent background. Centered, 75% canvas fill. Vibrant and iconic.
+Side aerial view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, leafy, Dark outline 2–3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
 
-Subject: Pine tree, tall evergreen conifer, aerial top-down, no trunk.
+Subject: Apple tree in fruit, round deciduous tree, No trunk.
 Canvas: 512px square.
-Colours: deep forest green #1A5C2A, mid-green #2E7A3A, blue-green #4A8C6A, dark outline #0A2A10, pale silver-green #8AAF8A.
-Shape: Spacious star-shaped needle canopy, sweeping central limbs radiating outward in layered spoke pattern.
+Colours: mid-green #4E8C3A, deep green #2A5C1A, bright red apples #D42B2B, warm brown limbs #6B3A2A, pale yellow-green accents #B8D474, flat chroma-key green background (#00FF00)
+Shape: Natural leafy canopy. Minimal fruit, only as accent.
 ```
 
 ---
 
-### S — Phlox (`flower-cluster`) — PLANT
-*Final: 40px · Generate at: 160px*
+### XL — Pine Tree (`tree-conifer`) — PINE
+*Final: 128px · Generate at: 512px*
 
 ```
-Slight angled top-down aerial view. Art style: Plants vs. Zombies meets watercolor painting — simplified representation of this plant, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. Transparent background. Centered, 75% canvas fill. Vibrant and iconic.
+Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2–3px. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
 
-Subject: Phlox, low spreading perennial flower.
-Canvas: 160px square.
-Colours: hot pink #E8407A, pale pink #F5AACB, bright white #FFFFFF, mid-green #4A7C2F, deep green stems #2A5010.
-Shape: Dense flat mat of small five-petalled pink and white flowers packed tightly together, stems at bottom and leafy florals at the top.
-```
-
----
-
-### M — Hostas (`ground-cover`) — PLANT
-*Final: 64px · Generate at: 256px*
-
-```
-Slight angled top-down aerial view. Art style: Plants vs. Zombies meets watercolor painting — simplified representation of this plant, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. Transparent background. Centered, 75% canvas fill. Vibrant and iconic.
-
-Subject: Hostas, shade perennial with large leaves.
-Canvas: 256px square.
-Colours: blue-green #5A8A6A, pale green-white variegation #D4E8C8, deep green #2A5A3A, olive green #6B7A3A, warm brown stems #7A5C3A.
-Shape: Bold overlapping large heart-shaped ribbed leaves fanning outward, variegated pale centres with deep green edges, stems at bottom and leafy florals at the top.
+Subject: Pine tree, stubby evergreen conifer, no trunk.
+Canvas: 512px square.
+Colours: deep forest green #1A5C2A, mid-green #2E7A3A, blue-green #4A8C6A, dark outline #0A2A10, pale silver-green #8AAF8A, flat chroma-key green background (#00FF00)
+Shape: Correct proportions.
 ```
 
 ---
 
-## 4. Batch Generation Workflow
+## 8. Quality Gates (before any sticker goes live)
 
-**Step 1 — Prep your list first**
-Write all plants in a spreadsheet before opening Firefly: `Plant | Sticker ID | Size | Colours | Shape hint`
-
-**Step 2 — Group by sticker type**
-Generate all `flower-daisy` plants back-to-back, then all `herb-small`, etc. Keeps the style consistent and you only tune once per type.
-
-**Step 3 — Generate 2–3 variants per plant**
-Pick the best. Reject anything with:
-- Side-view drift (not truly top-down)
-- Gradients or shading
-- Unrecognisable shape at small size (squint test)
-
-**Step 4 — Name files consistently**
-Pattern: `{sticker-id}_{plant}.svg`
-Examples: `flower-daisy_marigold.svg`, `tree-fruit_apple.svg`
+- [ ] Background fully removed — no green pixels remaining
+- [ ] Subject clearly recognisable at 24px (squint test)
+- [ ] No white halo or dark fringe around edges
+- [ ] File named correctly per convention
+- [ ] PNG placed in `app/public/stickers/` and `stickers/`
+- [ ] `usePlantCatalog.js` entry added (Rob approves before this step for cron-generated stickers)
+- [ ] Dev server tested — sticker appears in catalog and places correctly on canvas
+- [ ] Committed to git
 
 ---
 
-## 5. PNG → SVG Conversion (if Firefly outputs raster)
-
-| Tool | Best for |
-|---|---|
-| **Vectorizer.ai** | Fast, free tier, "flat design" mode. Best starting point. |
-| **Adobe Illustrator** | Image Trace → 16 Colours preset → expand → export SVG |
-| **Inkscape (free)** | Path → Trace Bitmap → Colours, 8–12 passes |
-| **SVGO CLI** | Final cleanup after any conversion: `npx svgo input.svg -o output.svg --multipass` |
-
-**SVG Checklist:**
-- [ ] Transparent background (no hidden white rect)
-- [ ] File size < 10 KB (target < 6 KB)
-- [ ] No embedded base64 raster data
-- [ ] `viewBox="0 0 64 64"` set correctly
-- [ ] No hardcoded `width`/`height` (let CSS control size)
-- [ ] Tested at actual display size
-
----
-
-*Updated: 2026-05-27 — Firefly 1024-char edition*
+*Wording of all prompts is Rob's. Do not modify without his approval.*
