@@ -258,6 +258,26 @@ export default function GardenEditor() {
     'decor-arch-metal':   { key: 'decor_arch-metal_L_CA-US-FR-GB-AU',   label: 'Metal Arch',      family: 'Decor', size: 'L',  src: '/stickers/decor_arch-metal_L_CA-US-FR-GB-AU.png'   },
   }
 
+  // Fountain sticker: intercept waterSubTool='fountain' and route through sticker placement
+  // This replaces the old circle-struct fountain with the new PNG sticker.
+  useEffect(() => {
+    if (state.waterSubTool !== 'fountain') return
+    const entry = {
+      key: 'water-feature_fountain_L_CA-US-FR-GB-AU',
+      label: 'Fountain', family: 'Water Feature', size: 'L',
+      src: '/stickers/water-feature_fountain_L_CA-US-FR-GB-AU.png',
+    }
+    const img = new Image()
+    img.onload = () => {
+      pendingPlantRef.current = { ...entry, _img: img }
+      state.setWaterSubTool(null)   // prevent circle-struct draw path from firing
+      state.setCurrentMode('select')
+    }
+    img.onerror = () => console.warn('Fountain sticker not found')
+    img.src = entry.src
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.waterSubTool])
+
   // When a decor sub-tool is clicked, load the image and queue it for placement (same as plant click-to-place)
   useEffect(() => {
     const id = state.decorSubTool
