@@ -3,6 +3,23 @@ _L001–L009 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 ---
 
+## L016 — Gemini CDP sticker generation: Rob's account uses lh3 URLs, not blob:
+**Date:** 2026-06-03
+The OpenClaw Google account (used in earlier sessions) serves Gemini-generated images as `blob:` URLs. Rob's personal Gemini account serves them as `https://lh3.googleusercontent.com/...` URLs. The canvas `drawImage()` grab fails on lh3 due to CORS. Fix: detect lh3 URL, return `"URL:" + src`, then download via Python `urllib.request` instead of canvas capture.
+**Rule:** Always check both URL types in CDP image detection. `blob:` = canvas grab. `lh3.googleusercontent.com` = direct download.
+
+## L017 — CDP WebSocket target goes stale after long navigation loops
+**Date:** 2026-06-03
+On long batch runs (20+ prompts), reusing the same `ws_url` from the start of the session causes `WebSocketBadStatusException: 500 No such target id` after Brave reassigns the tab's CDP target. Fix: call `get_gemini_tab()` fresh at the start of every single prompt to get a current `ws_url`. Never cache it across prompts.
+**Rule:** Always re-fetch ws_url from `/json` endpoint per prompt. Never reuse across navigations.
+
+## L018 — Navigate to fresh Gemini `/app` before each prompt, grab image BEFORE navigating away
+**Date:** 2026-06-03
+Gemini's previous conversation history pollutes the blob/lh3 baseline check. Fix: navigate to `gemini.google.com/app` (fresh chat) before each prompt, wait for `contenteditable` to be ready (up to 30s), then send. Wait for new image to appear BEFORE any further navigation. If you navigate away before grabbing, the image is gone.
+**Rule:** navigate → wait for input → baseline → send → wait for image → grab → THEN pause/navigate.
+
+---
+
 ## L015 — MobileSheet: always destructure new props at the top
 **Date:** 2026-06-02
 MobileSheet uses nested `function renderPlantPanel()` / `renderStructPanel()` — these close over the component's props. Adding a prop reference inside a render function without adding it to the destructuring list at the top causes a silent `undefined` that only crashes at runtime when that panel renders.
