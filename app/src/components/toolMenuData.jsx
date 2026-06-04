@@ -9,7 +9,8 @@ export const TOP_TOOLS = [
   { id: 'fences',   label: 'Fences',    emoji: '🪵' },
   { id: 'paths',    label: 'Paths',     emoji: '〰' },
   { id: 'water',    label: 'Water',     emoji: '💧' },
-  { id: 'select',   label: 'Select',    emoji: '✋' },
+  { id: 'decor',    label: 'Decor',     emoji: '🪴' },
+  // Select is always active by default — button hidden, mode persists
 ]
 
 export const BED_SUBS = [
@@ -61,22 +62,74 @@ export const WATER_ITEMS = [
   { id: 'pond', label: 'Pond', hint: 'Freeform pond outline' },
 ]
 
+export const DECOR_ITEMS = [
+  {
+    id: '__rocks', label: 'Rocks', emoji: '🪨', group: true,
+    children: [
+      { id: 'decor-rock-small',  label: 'Small Stone',  hint: 'Tap to place small stone' },
+      { id: 'decor-rock-medium', label: 'Medium Stone', hint: 'Tap to place medium stone' },
+      { id: 'decor-rock-large',  label: 'Large Stone',  hint: 'Tap to place large stone' },
+    ],
+  },
+  {
+    id: '__gazebo', label: 'Gazebo', emoji: '🗻', group: true,
+    children: [
+      { id: 'decor-gazebo-square', label: 'Square Gazebo',   hint: 'Tap to place square gazebo' },
+      { id: 'decor-gazebo-oct',    label: 'Octagon Gazebo',  hint: 'Tap to place octagonal gazebo' },
+    ],
+  },
+  {
+    id: '__seating', label: 'Seating', emoji: '🪑', group: true,
+    children: [
+      { id: 'decor-lounge-modern', label: 'Modern Loungers', hint: 'Tap to place modern lounge chairs' },
+      { id: 'decor-lounge-wood',   label: 'Wood Loungers',   hint: 'Tap to place wooden lounge chairs' },
+      { id: 'decor-patio-table',   label: 'Patio Table',     hint: 'Tap to place patio table + chairs' },
+    ],
+  },
+  { id: 'decor-umbrella', label: 'Beach Umbrella', emoji: '⛱', hint: 'Tap to place beach umbrella' },
+  {
+    id: '__pots', label: 'Flower Pots', emoji: '🪴', group: true,
+    children: [
+      { id: 'decor-pot-s', label: 'Small Pot',  hint: 'Tap to place small terracotta pot' },
+      { id: 'decor-pot-m', label: 'Medium Pot', hint: 'Tap to place medium terracotta pot' },
+      { id: 'decor-pot-l', label: 'Large Pot',  hint: 'Tap to place large terracotta pot' },
+    ],
+  },
+  {
+    id: '__stairs', label: 'Stairs', emoji: '🚶', group: true,
+    children: [
+      { id: 'decor-stairs-wood',    label: 'Wood Stairs',    hint: 'Tap to place wood stairs' },
+      { id: 'decor-stairs-stone',   label: 'Stone Stairs',   hint: 'Tap to place stone stairs' },
+      { id: 'decor-stairs-brick',   label: 'Brick Stairs',   hint: 'Tap to place brick stairs' },
+      { id: 'decor-stairs-cement',  label: 'Cement Stairs',  hint: 'Tap to place cement stairs' },
+    ],
+  },
+  {
+    id: '__arch', label: 'Arch', emoji: '🌼', group: true,
+    children: [
+      { id: 'decor-arch-wood',  label: 'Wood Arch',  hint: 'Tap to place wooden arch' },
+      { id: 'decor-arch-metal', label: 'Metal Arch', hint: 'Tap to place metal arch' },
+    ],
+  },
+]
+
 export const ITEMS_MAP = {
   beds: BED_SUBS, fences: FENCE_ITEMS, paths: PATH_SUBS,
-  building: BUILD_ITEMS, water: WATER_ITEMS,
+  building: BUILD_ITEMS, water: WATER_ITEMS, decor: DECOR_ITEMS,
 }
 
 // Helpers
-export function getActiveSub(currentMode, bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool) {
+export function getActiveSub(currentMode, bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool, decorSubTool) {
   if (currentMode === 'beds')     return bedSubTool
   if (currentMode === 'fences')   return fenceType === 'fence' ? 'fence' : fenceType === 'gate' ? 'gate' : fenceSubTool
   if (currentMode === 'paths')    return pathSubTool
   if (currentMode === 'building') return buildingSubTool
   if (currentMode === 'water')    return waterSubTool
+  if (currentMode === 'decor')    return decorSubTool
   return null
 }
 
-export function handleSubChange(id, currentMode, { onBedSubTool, onFenceType, onFenceSubTool, onPathSubTool, onBuildingSubTool, onWaterSubTool }) {
+export function handleSubChange(id, currentMode, { onBedSubTool, onFenceType, onFenceSubTool, onPathSubTool, onBuildingSubTool, onWaterSubTool, onDecorSubTool }) {
   if (currentMode === 'beds')     { onBedSubTool(id); return }
   if (currentMode === 'fences')   {
     if (id === 'fence') { onFenceType('fence'); return }
@@ -86,6 +139,7 @@ export function handleSubChange(id, currentMode, { onBedSubTool, onFenceType, on
   if (currentMode === 'paths')    { onPathSubTool(id); return }
   if (currentMode === 'building') { onBuildingSubTool(id); return }
   if (currentMode === 'water')    { onWaterSubTool(id); return }
+  if (currentMode === 'decor')    { onDecorSubTool(id); return }
 }
 
 // ── Shared ToolMenu component ─────────────────────────────────────────────────
@@ -93,17 +147,17 @@ export function handleSubChange(id, currentMode, { onBedSubTool, onFenceType, on
 // extraClass: optional CSS class added to the root panel-content div
 export function ToolMenu({
   currentMode, onModeChange,
-  bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool,
-  onBedSubTool, onFenceSubTool, onFenceType, onPathSubTool, onBuildingSubTool, onWaterSubTool,
+  bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool, decorSubTool,
+  onBedSubTool, onFenceSubTool, onFenceType, onPathSubTool, onBuildingSubTool, onWaterSubTool, onDecorSubTool,
   showGrid, onToggleGrid, onResetView, onClearAll,
   extraClass = '',
 }) {
   const [openGroup, setOpenGroup] = useState(null)
-  const activeSub = getActiveSub(currentMode, bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool)
+  const activeSub = getActiveSub(currentMode, bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool, decorSubTool)
   const items = ITEMS_MAP[currentMode] || []
 
   const doSubChange = (id) => handleSubChange(id, currentMode, {
-    onBedSubTool, onFenceType, onFenceSubTool, onPathSubTool, onBuildingSubTool, onWaterSubTool,
+    onBedSubTool, onFenceType, onFenceSubTool, onPathSubTool, onBuildingSubTool, onWaterSubTool, onDecorSubTool,
   })
 
   const groupHasActive = (g) =>

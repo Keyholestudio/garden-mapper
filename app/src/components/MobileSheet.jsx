@@ -58,8 +58,8 @@ export default function MobileSheet({
   removingPt, onToggleRemovePt,
   // Tool menu
   currentMode, onModeChange,
-  bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool,
-  onBedSubTool, onFenceSubTool, onFenceType, onPathSubTool, onBuildingSubTool, onWaterSubTool,
+  bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool, decorSubTool,
+  onBedSubTool, onFenceSubTool, onFenceType, onPathSubTool, onBuildingSubTool, onWaterSubTool, onDecorSubTool,
   showGrid, onToggleGrid, onResetView, onClearAll,
 }) {
   const pxPerUnit = UNIT_PX * (gardenUnit === 'm' ? 3.281 : 1)
@@ -269,6 +269,7 @@ export default function MobileSheet({
                   pathSubTool={pathSubTool}         onPathSubTool={onPathSubTool}
                   buildingSubTool={buildingSubTool} onBuildingSubTool={onBuildingSubTool}
                   waterSubTool={waterSubTool}       onWaterSubTool={onWaterSubTool}
+                  decorSubTool={decorSubTool}       onDecorSubTool={onDecorSubTool}
                   showGrid={showGrid}               onToggleGrid={onToggleGrid}
                   onResetView={onResetView}         onClearAll={onClearAll}
                   extraClass="mobile-tool-menu"

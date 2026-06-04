@@ -228,10 +228,51 @@ export default function GardenEditor() {
         state.setPathSubTool(null)
         state.setBuildingSubTool(null)
         state.setWaterSubTool(null)
+        state.setDecorSubTool(null)
         triggerAutoSave()  // struct/shape just placed
       }
     },
   })
+
+  // ── Decor placement ──
+  // Decor items are oversized stickers placed via the same click-to-place flow as plants.
+  // DECOR_CATALOG entries match the plant entry shape so addPlant() can be reused.
+  const DECOR_CATALOG = {
+    'decor-rock-small':   { key: 'decor_rock-small_M_CA-US-FR-GB-AU',   label: 'Small Stone',     family: 'Decor', size: 'M',  src: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png'   },
+    'decor-rock-medium':  { key: 'decor_rock-medium_L_CA-US-FR-GB-AU',  label: 'Medium Stone',    family: 'Decor', size: 'L',  src: '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png'  },
+    'decor-rock-large':   { key: 'decor_rock-large_XL_CA-US-FR-GB-AU',  label: 'Large Stone',     family: 'Decor', size: 'XL', src: '/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png'  },
+    'decor-gazebo-square':{ key: 'decor_gazebo-square_XL_CA-US-FR-GB-AU',label: 'Square Gazebo',  family: 'Decor', size: 'XL', src: '/stickers/decor_gazebo-square_XL_CA-US-FR-GB-AU.png'},
+    'decor-gazebo-oct':   { key: 'decor_gazebo-oct_XL_CA-US-FR-GB-AU',  label: 'Octagon Gazebo',  family: 'Decor', size: 'XL', src: '/stickers/decor_gazebo-oct_XL_CA-US-FR-GB-AU.png'  },
+    'decor-lounge-modern':{ key: 'decor_lounge-modern_L_CA-US-FR-GB-AU', label: 'Modern Loungers', family: 'Decor', size: 'L',  src: '/stickers/decor_lounge-modern_L_CA-US-FR-GB-AU.png' },
+    'decor-lounge-wood':  { key: 'decor_lounge-wood_L_CA-US-FR-GB-AU',  label: 'Wood Loungers',   family: 'Decor', size: 'L',  src: '/stickers/decor_lounge-wood_L_CA-US-FR-GB-AU.png'  },
+    'decor-patio-table':  { key: 'decor_patio-table_L_CA-US-FR-GB-AU',  label: 'Patio Table',     family: 'Decor', size: 'L',  src: '/stickers/decor_patio-table_L_CA-US-FR-GB-AU.png'  },
+    'decor-umbrella':     { key: 'decor_umbrella_L_CA-US-FR-GB-AU',     label: 'Beach Umbrella',  family: 'Decor', size: 'L',  src: '/stickers/decor_umbrella_L_CA-US-FR-GB-AU.png'     },
+    'decor-pot-s':        { key: 'decor_pot-s_S_CA-US-FR-GB-AU',        label: 'Small Pot',       family: 'Decor', size: 'S',  src: '/stickers/decor_pot-s_S_CA-US-FR-GB-AU.png'        },
+    'decor-pot-m':        { key: 'decor_pot-m_M_CA-US-FR-GB-AU',        label: 'Medium Pot',      family: 'Decor', size: 'M',  src: '/stickers/decor_pot-m_M_CA-US-FR-GB-AU.png'        },
+    'decor-pot-l':        { key: 'decor_pot-l_L_CA-US-FR-GB-AU',        label: 'Large Pot',       family: 'Decor', size: 'L',  src: '/stickers/decor_pot-l_L_CA-US-FR-GB-AU.png'        },
+    'decor-stairs-wood':  { key: 'decor_stairs-wood_M_CA-US-FR-GB-AU',  label: 'Wood Stairs',     family: 'Decor', size: 'M',  src: '/stickers/decor_stairs-wood_M_CA-US-FR-GB-AU.png'  },
+    'decor-stairs-stone': { key: 'decor_stairs-stone_M_CA-US-FR-GB-AU', label: 'Stone Stairs',    family: 'Decor', size: 'M',  src: '/stickers/decor_stairs-stone_M_CA-US-FR-GB-AU.png' },
+    'decor-stairs-brick': { key: 'decor_stairs-brick_M_CA-US-FR-GB-AU', label: 'Brick Stairs',    family: 'Decor', size: 'M',  src: '/stickers/decor_stairs-brick_M_CA-US-FR-GB-AU.png' },
+    'decor-stairs-cement':{ key: 'decor_stairs-cement_M_CA-US-FR-GB-AU',label: 'Cement Stairs',   family: 'Decor', size: 'M',  src: '/stickers/decor_stairs-cement_M_CA-US-FR-GB-AU.png'},
+    'decor-arch-wood':    { key: 'decor_arch-wood_L_CA-US-FR-GB-AU',    label: 'Wood Arch',       family: 'Decor', size: 'L',  src: '/stickers/decor_arch-wood_L_CA-US-FR-GB-AU.png'    },
+    'decor-arch-metal':   { key: 'decor_arch-metal_L_CA-US-FR-GB-AU',   label: 'Metal Arch',      family: 'Decor', size: 'L',  src: '/stickers/decor_arch-metal_L_CA-US-FR-GB-AU.png'   },
+  }
+
+  // When a decor sub-tool is clicked, load the image and queue it for placement (same as plant click-to-place)
+  useEffect(() => {
+    const id = state.decorSubTool
+    if (!id || state.currentMode !== 'decor') return
+    const entry = DECOR_CATALOG[id]
+    if (!entry) return
+    const img = new Image()
+    img.onload = () => {
+      pendingPlantRef.current = { ...entry, _img: img }
+      state.setCurrentMode('select')
+    }
+    img.onerror = () => console.warn('Decor sticker not found:', entry.src)
+    img.src = entry.src
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.decorSubTool, state.currentMode])
 
   // ── Plant placement ──
   const pendingPlantRef  = useRef(null)
@@ -939,6 +980,7 @@ export default function GardenEditor() {
               pathSubTool={state.pathSubTool}   onPathSubTool={state.setPathSubTool}
               buildingSubTool={state.buildingSubTool} onBuildingSubTool={state.setBuildingSubTool}
               waterSubTool={state.waterSubTool} onWaterSubTool={state.setWaterSubTool}
+              decorSubTool={state.decorSubTool} onDecorSubTool={state.setDecorSubTool}
               showGrid={state.showGrid}         onToggleGrid={() => state.setShowGrid(v => !v)}
               onResetView={handleResetView}     onClearAll={handleClearAll}
             />
@@ -961,6 +1003,7 @@ export default function GardenEditor() {
           pathSubTool={state.pathSubTool}         onPathSubTool={state.setPathSubTool}
           buildingSubTool={state.buildingSubTool} onBuildingSubTool={state.setBuildingSubTool}
           waterSubTool={state.waterSubTool}       onWaterSubTool={state.setWaterSubTool}
+          decorSubTool={state.decorSubTool}       onDecorSubTool={state.setDecorSubTool}
           showGrid={state.showGrid}               onToggleGrid={() => state.setShowGrid(v => !v)}
           onResetView={handleResetView}
           onClearAll={handleClearAll}

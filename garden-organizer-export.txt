@@ -1,104 +1,4 @@
-﻿Garden App Plan
-https://docs.google.com/document/d/1F3mA5UZw1qo2wxd3pqMuSvyph3L4biChiJ18kbhRf5Q/edit?usp=sharing
-
-Garden Planning Tool:
-
-
-Before we action anything, I’ve added the ‘Expanded app plan” tab to this document. That’s where we will be working and expand on what I have written below. We will build out a plan for the app, add inspiration graphics, and highlight areas that we need to focus on before acting on them. Please read the plan below, create a project plan for this, use subagents to research the tools needed for tool building (create a framework of what’s needed for now and future uses -- I want to build with the future in mind but keep costs to a minimum till we have a workable tool). A subagent to research garden planning tools that already exist like this, read the reviews of these tools and find common complaints and preferred features by the users that we should consider when building out the plan. Please also research the process of creating a cohesive theme for an app that includes things like creating textures for apps, etc.
-
-
-The goal is to create an interactive gardening web based tool that’s accessible on a tablet/webpage and, in the future, a mobile phone compatible app. Webpage compatibility with kofi.
-We, for now, can self-host and use the trycloudflare link as the tunnel that will provide the URL (Like we have set up on our marketmap tool)
-I want to be able to show a drawing of my garden/property. I want to be able to drag and drop “stickers” and/or a label of the flower/plants in my yard.
-
-This app will allow me to:
-Set the time of the year (Spring, summer, fall, and winter) as a slider at the bottom of the screen.
-* When changing seasons, plants like tulips will be selected for spring and summer and I can toggle them off for fall and (by default) winter. 
-* The colour of the landscape/background colour will change a bit in each season. Spring green, summer dark green, fall oranges, winter white or beige.
-We will create a catalog of graphical images of plants using image generation software.
-We will create the ability to draw flower beds, decks, pools, buildings, fences and decor in the yard. These shapes will not be on the same layer of drag and drop as the plants, they will be in a sub layer beneath the plants and will be accessible in the “draw my property” section.
-Scrape plant information: when to plant, when to harvest, what the soil ph should be, light conditions required.
-Provide a link to a plant identification tool so people can figure out what their plants are.
-
-
-Tools we will lean heavily on:
-Image generation software to create images of the plants and trees.
-* We will work to create a cohesive theme.
-* We will use flat colours to start, but we will have to build a system where the flat colours are replaced by textures and images of plants that we have on file and have created together. 
-* The stylistic choices are not yet confirmed, so we will have to use basic colours and shapes for now, but we will have to be able to replace those shapes with created images.
-   * I like the esthetic of stardew valley, however gardens are not always so heavily gridded. I would like a flowier version.
-
-
-Example workflow:
-Open the app
-Log in
-Select your garden (you may have different properties and want to select one or the other: Cottage or Home for example)
-If you haven’t created a garden yet, you create one:
-* Enter the name of the garden
-* Then draw out the dimensions. The base layer utilizes snap to dimensions where you can draw out lines of the property on a grid. The flowerbeds can be rounded or square. You will draw in the garden beds and the can be coloured according to a drop down of colour options (browns, greys, tans). We will build out textures for that.
-Adding plants: Then when the garden is created, you have a search bar for the plants and after you select one from the quicklist/most recently used list, you click and drag it from the list to its position in the garden.
-* You can pinch and zoom or use the mouse zoom to map the garden larger or smaller and you can make the plant bigger or smaller as well.
-* After you place the plant, you can select it to be given a list of options: delete, copy, create a range of this plant using points and lines (This will allow you to mark a border of a plant but now be required to copy, paste and move dozens of plants), add photo of the flower from your camera (upload from PC or accessible through the images on the phone, a notes section, a wikipedia scraped information secion that displays the plants basic information, and decide what seasons this plant should appear in.
-* Change season on the slider at the bottom. Allowing you to access different seasons and see the garden in that season: a tulip sticker in spring can be a different size then the tulip in summer. And, may be not visible in fall and winter.
-Everything is saved automatically.
-
-
-────────────────────────────────────────────────────
-PROTOTYPE v2 FEEDBACK (May 24, 2026) — integrated into v3
-────────────────────────────────────────────────────
-✅ Panning: click+drag on empty canvas now pans in select mode
-✅ Adaptive grid: cells always readable at any zoom level; scale label updates
-✅ Stroke width fix: strokeScaleEnabled:false + transformend normalization
-   (border stays consistent when resizing a bed)
-✅ Square corners on beds (cornerRadius: 0)
-✅ Plant transparency toggle: button in right panel makes plant semi-transparent (0.35 opacity)
-   and sends it behind other plants (still above structures)
-✅ Copy/paste plants: Ctrl+C / Ctrl+V with offset placement
-✅ Freeform Bed tool: click to place points, smooth spline on double-click or click near start
-✅ Freeform Path tool: same mechanic, open shape with thick stroke
-✅ Hedge tool: same as freeform bed, green colour palette
-DEFERRED to v4:
-   - Snap-fit beds (edge proximity + magnetic snap)
-   - Moving individual spline control points after placement
-   - Parallel-edge path distortion════════════════════════════════════════════════════════════════════
-  SESSION LOG — June 1, 2026 (Afternoon)
-  All items from Rob's June 1st notes actioned
-════════════════════════════════════════════════════════════════════
-
-
-STATUS UPDATE — ITEMS COMPLETED TODAY:
-
-
-1)  ✅ Toolbar integrated into right info panel — two-level menu with ← Back
-1B) ✅ Decks, Hedges, Pools as expandable sub-groups
-2)  ✅ Gate moved to Fences folder (Fence → Gate → Hedges)
-3)  ✅ Plumbing moved to Water (Fountain → Plumbing → Pools → Pond)
-4)  ✅ Touch press-drag + tap-to-place for all square objects on mobile/tablet
-5)  ✅ Tool menu fits in panel without scrolling
-5B) ✅ Reverted scaling for desktop/tablet — buttons fixed size, mobile-only scaling
-6)  ✅ Plant tray text bumped to 12px (matches panel text)
-7)  ✅ Dark green separator line in logo bar (2px #11502A, flows around logo)
-8)  ✅ Drag-and-drop plants from tray onto canvas (mouse + tablet stylus)
-9)  🔲 Dream garden — deferred until Rob creates it (needs #10 confirmed first)
-10) ✅ Super saves — versioned schema, auto-backup slot, migration on load
-11) ⏳ Sunny/shady — deferred per Rob
-12) 🔲 Multi-device sync — needs server/backend discussion
-13) ✅ Mobile season = tap-to-cycle button top-left (Spring→Summer→Fall→Winter→Spring)
-14) 🔲 Incomplete in doc — awaiting Rob's additions
-
-
-ALSO DONE TODAY (not numbered):
-- Season slider → transparent floating pill over canvas (desktop/tablet)
-- Drag ghost thumbnail 48×48px (no more giant transparent sticker)
-- Mobile bottom sheet redesign: plant grid (2-col) + tool menu + toggle ↑↓
-- Plant grid expands when search focused; tools hide to give keyboard space
-- Season button moved to top-left (user icon stays top-right)
-- Port locked to 5200 — no more Vite port collisions
-
-
-
-
-Expanded App Plan
+﻿Expanded App Plan
 ════════════════════════════════════════════════════════════════════
   EXPANDED APP PLAN — GARDEN PLANNING TOOL
   v7 — V7 prototype complete | May 28, 2026
@@ -492,48 +392,8 @@ Resume:  "resume Garden Planner"
 ════════════════════════════════════════════════════════════════════
 
 
-Rob’s sticker notes:
-I was looking for a way to generate true PNG with transparent backgrounds in Gemini. The backgrounds in the last round of plants were fake transparent backgrounds. So, I went to find another option. Rob’s plan is to add to the prompt language: sharp, crisp edges, flat chroma-key green background (#00FF00). We tested the removal of the chroma green with success and will be automating the removal.
-
-Garden Issues: 
-
-June 1st Updates:
-1) I would like to integrate the toolbar into the info panel. The several buttons will be added to the right. See the the screen shot below for what will be seen when first loading up the web and tablet version
-We will keep the slider centered at the bottom of the screen hovering over the bottom of the garden.
-
-All menu interactions for these tools will be contained within the info panel (menu panel).
-For example, when you click Build, in the info panel you’ll get the list of building tools: Buildings, Decks, and Electrical. If you click Decks, the menu will expand to show the three deck types. At the top, you’ll have the <Back button to return one level up the menu.
-
-Additional details:
-Once a drawing is complete. The object menu appears with the current set up.
-At any point, clicking on the background of the garden will set the menu back to the first level with all the tool options.
-Moving on the menu (two finger scrolling/pinch and zooming) on the menu will not reset the menu back to the first level.
-
-  
-
-1B)
--I want you to add a Decks button that sits next to Buildings and Electrical. When you click Decks, the menu will expand to show the three deck types. 
--I want you to add a Hedges button that sits beneath Gates. When you click Hedged, the menu will expand to show the three hedge types (In this order: Curved Hedges, Square Hedges, Straight Hedges)
--I want you to add a Pools button that sits beneath Ponds. When you click Pools, the menu will expand to show the two Pool types (In this order: Circular Pool, Square Pool)
 
 
-2) The gate tool will be moved from the Path folder into the Fences folder.
-The Fences folder will be organized top to bottom: Fences, Gates, Hedges
-When clicked, they will all expand to their sub folders.
-
-3) Water: We will move plumbing under the Water button. From top to bottom, we will have Fountain, Plumbing, Pools, Ponds. The menu will expand when clicked.
-
-
-4) Drawing square objects (mobile/tablet): It looks like we don’t have a way to draw those on a mobile/tablet device. I would like to be able to press and drag to set the shape and when releasing the shape is created Also,I would like to be able to tap the screen and have a default square shape 15x15ft or 5x5m appear at the point that was clicked.
-The square drawing set up applies to all square objects (beds, hedges, buildings, decks, pools).        
-
-
-5) The main menu (from the Beds to Clear buttons) should fit within the info panel and not require scrolling up and down. This one menu should scale to fit the different screen sizes.
-
-5B) I changed my mind about about #5. I don’t want the buttons to scale on the web or tablet version. The mobile version will need to be able to scale to fit in such a small place. Please revert the button scaling for the tablet and browser versions.
-
-
-6) Make the text for the plant search panel the same size as the menu/info panel text.
 
 7) Logo adjustment:
 Please create a dark green line that separates the top bar from the rest of the tool. You can see that the line flows around the logo. We will have to make sure there’s no overlap of the line and logo when zooming in and out on the page and on different browsers.
@@ -542,21 +402,14 @@ Please create a dark green line that separates the top bar from the rest of the 
 
 
 9) Dream garden: The first garden that loads up with each new user is a garden of our own creation. I’ll create a beautiful garden which will be one of the two gardens that a user has on their account. This will let users see what a beautiful garden could look like and they will have the ability to delete it like any other garden. I will create this when we have confirmed #10 is complete. We need a way to assure that the customer data is saved.
-
-10) Super saves: Presently, the save feature does not carry over between the many updates that we have been making. Saving gardens will be the #1 priority for this app. If a garden is lost we will lose a customer. So, we will need a sure fire way to save gardens and keep the data from being lost as we roll out new updates.
-
+-How do I create the master dream garden that will be available for all users when they access the app? It will be a locked garden that they can’t edit. I will need to create that somewhere and have you upload that so that it’s present on each version of the app.
 
 11) Deferred: Sunny and shady parts of the garden: I’m not sure how this will be represented yet, but I would like a way to draw a shady/sunny part of the garden (perhaps by drawing a gradient darkening filter to parts of the garden. This is to show what parts of the garden are low light vs full sun. Trees may also cast a shadow.
+-We’ll create sticker of a full sun, partial sun, or no sun image. These when placed will add editable bounding box and cast a radial gradient that darks an area or partially darkens an area. The full sun won’t change the colour of an area.
+-The object can only be selected by clicking the sun icon, not the surrounding bounding box.
 
 
 12) I’d like to discuss users being able to access their gardens on different devices. This might be a problem as it’ll require us to maintain a server (?) and have a user account be synced between devices... it sounds complicated.
-
-
-13) On the mobile version, the season slider is now just a button in the top right that you can press to change the season and press again to get to the next season. When you’ve pressed through all four seasons, you end up back in the spring season again.
-  
-
-
-14) When typing a plant name in the search, if a plant name does not come up, I would like this to be shown: “Need a plant? Submit it!” If that’s clicked, it’ll open a url that a user can submit their plant suggestion, email, and colour of the plant. We’ll build an automated cron job to scan the inbox for this. The email will be scrapped, gemini will create the sticker using our plant templates, the picture will be edited (cropped, background removed), approval will be sent to me with the sticker. I’ll approve or not and we’ll get it added to the site. The user will get an email telling them it’s been added.
 
 
 15) We’ll have to discuss payment set up for google’s play store, apple store. Will payments be done via bank account? 
@@ -579,14 +432,263 @@ Plant x number of plants and get a little digital gardener who will walk around 
 Do a market/app research for fair pricing for a tool like this or in a related category. You’d done market research earlier about the pro’s and con’s of tools like this. One of the concerns was a subscription based option. Maybe having 
 Free for 1 garden. Two+ gardens: pricing to be 1$/month of 10$ for a one time flat fee.
 
-20) There’s currently no way to edit objects after they have been placed. The edit panel (for naming, editing, changing colour etc) is missing. When clicking on an object, like the web/tablet version, the info should appear. In the case of the mobile user, it should appear in the bottom panel (please see attached image to get an idea of the look). There will be a back button that will take users back to the main menu mode.
+28) Do we have a way for users' gardens to be shared between different devices? Should they switch from mobile to web or tablet? I would consider this as a deferred task.
 
-21) We’ll need an edit undo arrow on the mobile version. Without a keyboard, there’s no way to ctrl-z as a user. Put it to the right of the up/down arrow for the mobile menu.
-  
 
-22) When a plant is selected on the mobile app, the Copy button is missing. Please add it.
+30) Deferred (but, let’s discuss) Can we have automatic saves? Saving the current instance, every time a movement happens, resizing, or placement occurs. I would consider this more efficient than having to push the save button. If I were to close my phone and come back to it after several minutes, the page will refresh automatically and I would lose what I added (even if I didn’t navigate away from the page). Also, as we’re making updates, the updates force a refresh and I lose what I have added. Unless I push the save button preemptively.
 
-23) When editing a plant on the web/tablet app, the back button is missing from the info panel. Please add that.
+
+32) We want the ability for web users to be able to use the zoom feature (ctrl+ctrl-) and have the screen adjust to the new size. At the moment, if you zoom in, the info panel moves outside of the screen. A refresh will bring the screen back into normal viewing proportions.
+
+
+Please hide the select button on the main menu. It's active by default and can't be turned off, correct? I see it's always highlighted. If it's always active I would like to hide the button it to make place for a new category: Decor
+
+
+Decor category additions: using our plant prompt for stylistic direction (plant vs zombies, 2-3px trim, etc.) create:
+
+
+Prompt base, please use for prompt generation below:
+Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified \_[NAME] with crisp edges, bold flat icon. Dark outline 2–3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Subject: \[NAME]
+Canvas: \[SIZE]px square.
+Colours: \[3-4 colours or hex codes], flat chroma-key green background (#00FF00)
+Shape: Correct proportions.
+
+
+Decor additions (generate, edit, and add to the Decor button as sub menus.
+Rocks: small, medium and large decorative garden stones (tan, grey, moss covered) When placed, using the colour picker to choose which stone colour to use.
+A square and octagonal gazebo for the garden. With cedar shingles.
+Two lounge chair sitting next to on another. Have different colour options that switch between white modern lounge chair and wooden slat lounge chair.
+A beach umbrella with decorative tassels, light blue with white trim, Stylish octagonal umbrella
+A wooden outdoor patio table with chairs
+terracotta flower pots s, m, l in size.
+Stairs: create a set of wood, stone, brick, and cement stair options and add them as different colour options. Have at least 4 stairs per image.
+Decorative arch without plants. One made of wood and another made of metal. 
+The above items will go into a new category on the main menu called Decor.
+
+
+Update the fountain image:
+Generate a 1 level water fountain without birds, and replace the shape in the garden mapper with it.
+
+
+Repeating images:
+-Repeating images for Deck planking: This will be repeating so we can add it to the Decks tool (a medium brown colour, dark brown, and cedar). Please add these to the decking colour options.
+-Cedar roofing, asphalt shingles, terracotta tiles: please generate these and add them to the building colour options. 
+
+
+Garden bed repeating images:
+Using a hybrid prompt between lawn and decor prompt, create 5 different colour soils that you can generate in gemini and add to the bed colour options. 
+-Terms like: light, red, or dark brown mulch, cedar mulch, brown soil, hay
+
+
+Paths:
+Please create stepping stones using a repeating pattern in the garden path tool. Add a few different style of Paths to the paths colour option. Try to design stepping stones that have transparent gaps so you can see the lawn between the space.
+
+
+
+
+
+
+
+════════════════════════════════════════════════════════════════════
+  ADDENDUM — Dream Garden Architecture & Remote Sticker Pipeline
+  Added by Computer 🔑 | June 3, 2026
+════════════════════════════════════════════════════════════════════
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DREAM GARDEN — HYBRID ARCHITECTURE (IMPLEMENTED)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+Status: ✅ Seeding + background fetch wired into GardenEditor (commit TBD)
+
+
+How it works:
+  - Brand-new users get 2 gardens auto-seeded on first launch:
+      [0] Dream Garden  (locked, read-only, _isDreamGarden: true)
+      [1] My Garden     (blank, fully editable)
+  - Dream Garden ships BAKED INTO the app bundle (src/data/dreamGarden.json)
+    → zero wait, works offline, instant on first open
+  - On every launch, app silently fetches remote dreamGarden.json in background
+    → if _dreamVersion is higher than stored → replaces slot [0] silently
+    → user sees updated dream garden next time they open that garden
+  - Remote URL: GitHub raw file (to be configured when repo goes public)
+
+
+To update the Dream Garden:
+  1. Design it in the web app
+  2. Export the garden JSON (via Export button or dev tool)
+  3. Send JSON to Computer
+  4. Computer updates src/data/dreamGarden.json + remote URL file
+  5. Existing users get it silently on next app open — NO app store update needed
+
+
+Key files:
+  src/data/dreamGarden.json         — baked-in fallback (shipped with app)
+  src/hooks/useDreamGarden.js       — seed + fetch logic
+  DREAM_GARDEN_URL in useDreamGarden.js — update when GitHub repo is public
+
+
+Dream Garden rules:
+  - Always at garden index [0]
+  - locked: true → no drag, resize, edit allowed
+  - User CAN delete it (treated like any other garden)
+  - _dreamVersion stamp controls silent update logic
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+REMOTE STICKER PIPELINE — RESEARCH & ROADMAP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+Status: 🔲 Planned — research complete, implementation deferred
+
+
+APPLE APP STORE RULING (guideline 2.5.2):
+  ✅ Fetching remote JSON data          — fully allowed
+  ✅ Fetching remote images (PNG/SVG)   — ALLOWED (data, not code)
+  ❌ Fetching remote JavaScript/code    — REJECTED
+
+
+  Key distinction: Apple blocks remotely EXECUTED code, not remotely fetched assets.
+  Dynamically downloading new plant sticker images (PNG/WebP) is the same as
+  a news app loading article images — no different from any CDN. This is NOT a grey area
+  when the images are purely visual assets with no executable component.
+
+
+  Risk factor: LOW. Thousands of apps (games, design tools, content apps) ship
+  with remotely-fetched image packs. Apple does not flag this.
+
+
+GOOGLE PLAY STORE:
+  ✅ No restrictions on fetching remote images or JSON data.
+
+
+PLANT SUBMISSION → REMOTE STICKER PIPELINE (planned flow):
+
+
+  1. User submits plant via Google Form (link already in app)
+  2. Cron job scans form responses (already planned)
+  3. Gemini generates sticker PNG (transparent background, consistent style)
+  4. Computer emails Rob for approval with preview image
+  5. Rob approves → Computer uploads PNG to CDN/GitHub
+  6. sticker-manifest.json updated with new entry (_manifestVersion bumped)
+  7. App fetches sticker-manifest.json on launch (same pattern as dream garden)
+  8. New stickers downloaded and cached locally
+  9. Plant catalog updated from manifest — user sees new plant in tray
+
+
+  On first launch: ships with baked-in sticker set (all current plants)
+  On subsequent launches: silent fetch checks for manifest updates → downloads deltas only
+
+
+Key files to create (when building this):
+  public/sticker-manifest.json      — list of all stickers + CDN URLs + _manifestVersion
+  src/hooks/useStickerManifest.js   — fetch + cache + delta download logic
+  src/hooks/usePlantCatalog.js      — extend to merge baked-in + remote stickers
+
+
+
+
+Garden App Plan
+https://docs.google.com/document/d/1F3mA5UZw1qo2wxd3pqMuSvyph3L4biChiJ18kbhRf5Q/edit?usp=sharing
+
+Garden Planning Tool:
+
+
+Before we action anything, I’ve added the ‘Expanded app plan” tab to this document. That’s where we will be working and expand on what I have written below. We will build out a plan for the app, add inspiration graphics, and highlight areas that we need to focus on before acting on them. Please read the plan below, create a project plan for this, use subagents to research the tools needed for tool building (create a framework of what’s needed for now and future uses -- I want to build with the future in mind but keep costs to a minimum till we have a workable tool). A subagent to research garden planning tools that already exist like this, read the reviews of these tools and find common complaints and preferred features by the users that we should consider when building out the plan. Please also research the process of creating a cohesive theme for an app that includes things like creating textures for apps, etc.
+
+
+The goal is to create an interactive gardening web based tool that’s accessible on a tablet/webpage and, in the future, a mobile phone compatible app. Webpage compatibility with kofi.
+We, for now, can self-host and use the trycloudflare link as the tunnel that will provide the URL (Like we have set up on our marketmap tool)
+I want to be able to show a drawing of my garden/property. I want to be able to drag and drop “stickers” and/or a label of the flower/plants in my yard.
+
+This app will allow me to:
+Set the time of the year (Spring, summer, fall, and winter) as a slider at the bottom of the screen.
+* When changing seasons, plants like tulips will be selected for spring and summer and I can toggle them off for fall and (by default) winter. 
+* The colour of the landscape/background colour will change a bit in each season. Spring green, summer dark green, fall oranges, winter white or beige.
+We will create a catalog of graphical images of plants using image generation software.
+We will create the ability to draw flower beds, decks, pools, buildings, fences and decor in the yard. These shapes will not be on the same layer of drag and drop as the plants, they will be in a sub layer beneath the plants and will be accessible in the “draw my property” section.
+Scrape plant information: when to plant, when to harvest, what the soil ph should be, light conditions required.
+Provide a link to a plant identification tool so people can figure out what their plants are.
+
+
+Tools we will lean heavily on:
+Image generation software to create images of the plants and trees.
+* We will work to create a cohesive theme.
+* We will use flat colours to start, but we will have to build a system where the flat colours are replaced by textures and images of plants that we have on file and have created together. 
+* The stylistic choices are not yet confirmed, so we will have to use basic colours and shapes for now, but we will have to be able to replace those shapes with created images.
+   * I like the esthetic of stardew valley, however gardens are not always so heavily gridded. I would like a flowier version.
+
+
+Example workflow:
+Open the app
+Log in
+Select your garden (you may have different properties and want to select one or the other: Cottage or Home for example)
+If you haven’t created a garden yet, you create one:
+* Enter the name of the garden
+* Then draw out the dimensions. The base layer utilizes snap to dimensions where you can draw out lines of the property on a grid. The flowerbeds can be rounded or square. You will draw in the garden beds and the can be coloured according to a drop down of colour options (browns, greys, tans). We will build out textures for that.
+Adding plants: Then when the garden is created, you have a search bar for the plants and after you select one from the quicklist/most recently used list, you click and drag it from the list to its position in the garden.
+* You can pinch and zoom or use the mouse zoom to map the garden larger or smaller and you can make the plant bigger or smaller as well.
+* After you place the plant, you can select it to be given a list of options: delete, copy, create a range of this plant using points and lines (This will allow you to mark a border of a plant but now be required to copy, paste and move dozens of plants), add photo of the flower from your camera (upload from PC or accessible through the images on the phone, a notes section, a wikipedia scraped information secion that displays the plants basic information, and decide what seasons this plant should appear in.
+* Change season on the slider at the bottom. Allowing you to access different seasons and see the garden in that season: a tulip sticker in spring can be a different size then the tulip in summer. And, may be not visible in fall and winter.
+Everything is saved automatically.
+
+
+────────────────────────────────────────────────────
+PROTOTYPE v2 FEEDBACK (May 24, 2026) — integrated into v3
+────────────────────────────────────────────────────
+✅ Panning: click+drag on empty canvas now pans in select mode
+✅ Adaptive grid: cells always readable at any zoom level; scale label updates
+✅ Stroke width fix: strokeScaleEnabled:false + transformend normalization
+   (border stays consistent when resizing a bed)
+✅ Square corners on beds (cornerRadius: 0)
+✅ Plant transparency toggle: button in right panel makes plant semi-transparent (0.35 opacity)
+   and sends it behind other plants (still above structures)
+✅ Copy/paste plants: Ctrl+C / Ctrl+V with offset placement
+✅ Freeform Bed tool: click to place points, smooth spline on double-click or click near start
+✅ Freeform Path tool: same mechanic, open shape with thick stroke
+✅ Hedge tool: same as freeform bed, green colour palette
+DEFERRED to v4:
+   - Snap-fit beds (edge proximity + magnetic snap)
+   - Moving individual spline control points after placement
+   - Parallel-edge path distortion════════════════════════════════════════════════════════════════════
+  SESSION LOG — June 1, 2026 (Afternoon)
+  All items from Rob's June 1st notes actioned
+════════════════════════════════════════════════════════════════════
+
+
+STATUS UPDATE — ITEMS COMPLETED TODAY:
+
+
+1)  ✅ Toolbar integrated into right info panel — two-level menu with ← Back
+1B) ✅ Decks, Hedges, Pools as expandable sub-groups
+2)  ✅ Gate moved to Fences folder (Fence → Gate → Hedges)
+3)  ✅ Plumbing moved to Water (Fountain → Plumbing → Pools → Pond)
+4)  ✅ Touch press-drag + tap-to-place for all square objects on mobile/tablet
+5)  ✅ Tool menu fits in panel without scrolling
+5B) ✅ Reverted scaling for desktop/tablet — buttons fixed size, mobile-only scaling
+6)  ✅ Plant tray text bumped to 12px (matches panel text)
+7)  ✅ Dark green separator line in logo bar (2px #11502A, flows around logo)
+8)  ✅ Drag-and-drop plants from tray onto canvas (mouse + tablet stylus)
+9)  🔲 Dream garden — deferred until Rob creates it (needs #10 confirmed first)
+10) ✅ Super saves — versioned schema, auto-backup slot, migration on load
+11) ⏳ Sunny/shady — deferred per Rob
+12) 🔲 Multi-device sync — needs server/backend discussion
+13) ✅ Mobile season = tap-to-cycle button top-left (Spring→Summer→Fall→Winter→Spring)
+14) 🔲 Incomplete in doc — awaiting Rob's additions
+
+
+ALSO DONE TODAY (not numbered):
+- Season slider → transparent floating pill over canvas (desktop/tablet)
+- Drag ghost thumbnail 48×48px (no more giant transparent sticker)
+- Mobile bottom sheet redesign: plant grid (2-col) + tool menu + toggle ↑↓
+- Plant grid expands when search focused; tools hide to give keyboard space
+- Season button moved to top-left (user icon stays top-right)
+- Port locked to 5200 — no more Vite port collisions
+
+
 
 
 Robs reference:
@@ -1298,4 +1400,116 @@ Please create a dark green line that separates the top bar from the rest of the 
 
 
 
-14) The mobile version
+Rob’s sticker notes:
+I was looking for a way to generate true PNG with transparent backgrounds in Gemini. The backgrounds in the last round of plants were fake transparent backgrounds. So, I went to find another option. Rob’s plan is to add to the prompt language: sharp, crisp edges, flat chroma-key green background (#00FF00). We tested the removal of the chroma green with success and will be automating the removal.
+
+Garden Issues: 
+
+June 1st Updates:
+1) I would like to integrate the toolbar into the info panel. The several buttons will be added to the right. See the the screen shot below for what will be seen when first loading up the web and tablet version
+We will keep the slider centered at the bottom of the screen hovering over the bottom of the garden.
+
+All menu interactions for these tools will be contained within the info panel (menu panel).
+For example, when you click Build, in the info panel you’ll get the list of building tools: Buildings, Decks, and Electrical. If you click Decks, the menu will expand to show the three deck types. At the top, you’ll have the <Back button to return one level up the menu.
+
+Additional details:
+Once a drawing is complete. The object menu appears with the current set up.
+At any point, clicking on the background of the garden will set the menu back to the first level with all the tool options.
+Moving on the menu (two finger scrolling/pinch and zooming) on the menu will not reset the menu back to the first level.
+
+  
+
+1B)
+-I want you to add a Decks button that sits next to Buildings and Electrical. When you click Decks, the menu will expand to show the three deck types. 
+-I want you to add a Hedges button that sits beneath Gates. When you click Hedged, the menu will expand to show the three hedge types (In this order: Curved Hedges, Square Hedges, Straight Hedges)
+-I want you to add a Pools button that sits beneath Ponds. When you click Pools, the menu will expand to show the two Pool types (In this order: Circular Pool, Square Pool)
+
+
+2) The gate tool will be moved from the Path folder into the Fences folder.
+The Fences folder will be organized top to bottom: Fences, Gates, Hedges
+When clicked, they will all expand to their sub folders.
+
+3) Water: We will move plumbing under the Water button. From top to bottom, we will have Fountain, Plumbing, Pools, Ponds. The menu will expand when clicked.
+
+
+4) Drawing square objects (mobile/tablet): It looks like we don’t have a way to draw those on a mobile/tablet device. I would like to be able to press and drag to set the shape and when releasing the shape is created Also,I would like to be able to tap the screen and have a default square shape 15x15ft or 5x5m appear at the point that was clicked.
+The square drawing set up applies to all square objects (beds, hedges, buildings, decks, pools).        
+
+
+5) The main menu (from the Beds to Clear buttons) should fit within the info panel and not require scrolling up and down. This one menu should scale to fit the different screen sizes.
+
+5B) I changed my mind about about #5. I don’t want the buttons to scale on the web or tablet version. The mobile version will need to be able to scale to fit in such a small place. Please revert the button scaling for the tablet and browser versions.
+
+
+6) Make the text for the plant search panel the same size as the menu/info panel text.
+
+
+10) Super saves: Presently, the save feature does not carry over between the many updates that we have been making. Saving gardens will be the #1 priority for this app. If a garden is lost we will lose a customer. So, we will need a sure fire way to save gardens and keep the data from being lost as we roll out new updates.
+
+
+13) On the mobile version, the season slider is now just a button in the top right that you can press to change the season and press again to get to the next season. When you’ve pressed through all four seasons, you end up back in the spring season again.
+  
+
+
+14) When typing a plant name in the search, if a plant name does not come up, I would like this to be shown: “Need a plant? Submit it!” If that’s clicked, it’ll open a url that a user can submit their plant suggestion, email, and colour of the plant. We’ll build an automated cron job to scan the inbox for this. The email will be scrapped, gemini will create the sticker using our plant templates, the picture will be edited (cropped, background removed), approval will be sent to me with the sticker. I’ll approve or not and we’ll get it added to the site. The user will get an email telling them it’s been added.         
+-The form can be updated with text fields for the following three queries:
+Plant name (common or latin):
+Preferred color:
+Email:
+  
+
+
+
+21) We’ll need an edit undo arrow on the mobile version. Without a keyboard, there’s no way to ctrl-z as a user. Put it to the right of the up/down arrow for the mobile menu.
+  
+
+
+
+24) On the mobile version, the edit button to allow the addition and removal of points does not appear when clicking or double clicking on an object. Can you please add those. This is the case for all line based drawings (straight, curved, electrical, plumbing etc). Double click shows the points, but doesn’t give you access to the add/remove points menu that typical appears for the web/tablet versions.
+
+
+25) The save button is missing in the mobile version. Please add that to the left of the user icon in the top right of the mobile version.
+
+
+26) When you place any square object, the main menu appears immediately. I want the shape menu to open. All other object by default open their shape menu upon being placed. Please update this inconsistency.
+
+
+27) In the mobile versions, web, and tablet versions, after placing a plant that plant should appear at the top of the “recently used” plants in the search tool. Make sure this is applied to the mobile version as well, which currently does not use the “recently used’ feature.
+
+22) When a plant is selected on the mobile app, the Copy button is missing. Please add it.
+
+23) When editing a plant on the web/tablet app, the back button is missing from the info panel. Please add that.
+
+
+20) There’s currently no way to edit objects after they have been placed. The edit panel (for naming, editing, changing colour etc) is missing. When clicking on an object, like the web/tablet version, the info should appear. In the case of the mobile user, it should appear in the bottom panel (please see attached image to get an idea of the look). There will be a back button that will take users back to the main menu mode.
+
+
+
+
+29) We need a “lock” movement button for plants. For plants in the mobile/web/tablet version it can sit next to the copy button, just above the Make Transparent button. In the case of objects (like buildings, deck etc), the lock button can sit just above the Make Transparent button.
+The lock button will be pressed to turn on or off. Once the lock button is on, the object can't be moved, resized, or edited (for movement, point additions or removals).
+When clicked it will show: 🔒Locked 🔓Unlocked
+
+
+31) All curved and straight line objects in the mobile app are placing two points immediately when you touch the screen. These two points are placed very close together. The touch sensitivity of placing points may be too sensitive for mobile users at the moment or a delay of 1 second between placing points may be needed. What would you suggest to reduce double tapping the screen accidentally? Please investigate.
+
+32) When opening tool menus, I don’t want a tool selected by default. Currently, one item within the tool menu is always selected by default. I would like to give users the ability to choose their tool. This applies to mobile/tablet/and web browser versions.
+
+33) This applies to mobile/tablet/and web browser versions:
+Curved shapes, ponds, require 3 points minimum to save as an object 
+Straight Shapes required 3 points minimum to save as an object
+Electrical, plumbing, fences, gates, paths require 2 points minimum to save as an object.
+Circular pools, square objects are fine the way they are. No change required for them.
+After a shape has been created, the corner points sometimes appear red. What is that for?
+
+
+34) I do not want the ability to flip stickers upside down by dragging the bounding box of an object down over the other bounding box line. Stickers should always be in their upright position. This applies to mobile/tablet/and web browser versions.
+
+
+35) When I place a shape and immediately click undo. That object, which no longer exists now, still has a menu that’s open that you can interact with. Is there a way that if an object when placed, if immediately removed through undo, it will be considered deleted and the object menu will close and you’ll return to the main menu. When you click the delete button, the menu also returns to the main menu.
+
+
+36) For the mobile menu, can we please tighten up the spaces between the groups. I have highlighted in red the areas to focus on. I still want a buffer, but the area between the Search bar and plans can be made smaller. The area between the plants and the tools can be made smaller. The area with the undo/back/arrows can be tightened a bit.
+
+
+31) The “recently used” X button icon is cut off at the top of the circle that surrounds the x. The top part of the bubble is not showing. Please allow a roll over or shift the dimensions slightly.

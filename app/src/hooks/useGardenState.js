@@ -52,6 +52,7 @@ export function useGardenState() {
   const [gateType, setGateType]               = useState('wood')
   const [buildingSubTool, setBuildingSubTool] = useState(null)
   const [waterSubTool, setWaterSubTool]       = useState(null)
+  const [decorSubTool, setDecorSubTool]       = useState(null)
   const [undergroundType, setUndergroundType] = useState('electrical')
   const [undergroundColour, setUndergroundColour] = useState('#111111')
   const [undergroundWidth, setUndergroundWidth]   = useState(4)
@@ -116,6 +117,7 @@ export function useGardenState() {
     gateType, setGateType,
     buildingSubTool, setBuildingSubTool,
     waterSubTool, setWaterSubTool,
+    decorSubTool, setDecorSubTool,
     undergroundType, setUndergroundType,
     undergroundColour, setUndergroundColour,
     undergroundWidth, setUndergroundWidth,

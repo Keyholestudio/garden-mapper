@@ -49,8 +49,8 @@ export default function RightPanel({
   removingPt, onToggleRemovePt,
   // Tool menu props
   currentMode, onModeChange,
-  bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool,
-  onBedSubTool, onFenceSubTool, onFenceType, onPathSubTool, onBuildingSubTool, onWaterSubTool,
+  bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool, decorSubTool,
+  onBedSubTool, onFenceSubTool, onFenceType, onPathSubTool, onBuildingSubTool, onWaterSubTool, onDecorSubTool,
   showGrid, onToggleGrid, onResetView, onClearAll,
 }) {
   const pxPerUnit = UNIT_PX * (gardenUnit === 'm' ? 3.281 : 1)
@@ -302,12 +302,14 @@ export default function RightPanel({
         pathSubTool={pathSubTool}
         buildingSubTool={buildingSubTool}
         waterSubTool={waterSubTool}
+        decorSubTool={decorSubTool}
         onBedSubTool={onBedSubTool}
         onFenceSubTool={onFenceSubTool}
         onFenceType={onFenceType}
         onPathSubTool={onPathSubTool}
         onBuildingSubTool={onBuildingSubTool}
         onWaterSubTool={onWaterSubTool}
+        onDecorSubTool={onDecorSubTool}
         showGrid={showGrid}
         onToggleGrid={onToggleGrid}
         onResetView={onResetView}
