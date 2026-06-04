@@ -5,7 +5,7 @@ _Last updated: 2026-06-03_
 ---
 
 ## What It Is
-A web-based garden planner with a Konva canvas, 104 plant stickers, freeform + rect draw tools, save/load, and season theming. Built as a React + Vite + Konva scaffold ported from a working vanilla JS prototype (index-v8.html).
+A web-based garden planner with a Konva canvas, 131 plant stickers, freeform + rect draw tools, save/load, and season theming. Built as a React + Vite + Konva scaffold ported from a working vanilla JS prototype (index-v8.html).
 
 ---
 
@@ -84,7 +84,8 @@ cd projects/garden-planner/app && npm run dev
 | Mobile sub-menu widths | Group buttons (Decks/Hedges/Pools + children) fixed - 3-col grid, display:contents, no full-width stretch | `50bd5ce` | ✅ |
 | Sub-menu colours | Group-header lavender, children lighter lavender/purple trim | `4340340` | ✅ |
 | Dream Garden hybrid | `useDreamGarden.js` - baked-in seed + silent remote fetch. `src/data/dreamGarden.json` placeholder. | `25fd4ea` | ✅ |
-| **Sticker catalog** | 104 transparent PNGs generated via Gemini CDP batch scripts. All wired into `usePlantCatalog.js`. Old checkerboard PNGs removed. | `405a3a8` | ✅ |
+| **Sticker catalog** | 131 transparent PNGs. Tier 1+2+#36. All wired into `usePlantCatalog.js`. | `56b3dca` | ✅ |
+| **#31–36** | Recently-used X fix, XL size map, Logo restored, plant notes, Gladiolus BG removed, flower analysis + 27 new stickers | `edbe230`-`56b3dca` | ✅ |
 
 ### Additional polish (June 1)
 - Season slider → frosted floating pill over canvas (`95583df`)
