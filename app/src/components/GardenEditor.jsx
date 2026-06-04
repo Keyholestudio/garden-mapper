@@ -12,7 +12,7 @@ import { addPlant }        from '../utils/plantUtils'
 import { insertPointNearestSegment } from '../hooks/useSelection'
 import { saveGarden, loadGarden, createNewGarden, readGardens, readLastGardenIndex, writeLastGardenIndex } from '../hooks/useSaveLoad'
 import { seedDreamGarden, fetchDreamGardenUpdate } from '../hooks/useDreamGarden'
-import { addRectStruct } from '../utils/drawUtils'
+import { addRectStruct, isFreeMode } from '../utils/drawUtils'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import { useRecentPlants } from '../hooks/useRecentPlants'
 import LogoBar        from './LogoBar'
@@ -124,12 +124,20 @@ export default function GardenEditor() {
   }
 
   // ── Plant selection handler (shared) — handles Ctrl+click multi-select ──
-  // Returns true if a draw/place tool is currently active (not idle select)
+  // Returns true if any draw/place tool is currently active (not idle select)
   const isDrawToolActive = () =>
     state.currentMode !== 'select' || pendingPlantRef.current !== null
 
+  // Returns true specifically when freeform drawing is active (bed, path, fence, hedge, etc.)
+  // In this case, clicks on plants/structs should be silently swallowed — draw tool handles them.
+  const isFreeToolActive = () =>
+    isFreeMode(state.currentMode, state.bedSubTool, state.fenceSubTool, state.fenceType,
+               state.buildingSubTool, state.waterSubTool, state.pathSubTool)
+
   const handlePlantSelect = (id, group, evt) => {
-    // If a draw tool is active, redirect click to canvas handler (place shape at this world pos)
+    // Freeform drawing active: swallow click silently — useDrawTools onClick places the point
+    if (isFreeToolActive()) return
+    // Other draw tool active (tap-to-place rect/circle, pending plant): redirect to canvas handler
     if (isDrawToolActive()) {
       if (stageRef.current) handleCanvasClick(stageRef.current.getRelativePointerPosition())
       return
@@ -158,6 +166,7 @@ export default function GardenEditor() {
     state,
     onSelectPlant:    handlePlantSelect,
     onSelectStruct:   (id, shape) => {
+      if (isFreeToolActive()) return
       if (isDrawToolActive()) {
         if (stageRef.current) handleCanvasClick(stageRef.current.getRelativePointerPosition())
         return
@@ -183,6 +192,7 @@ export default function GardenEditor() {
       state.setAddingPt(false)
     },
     onStructSelect: (id, shape, evt) => {
+      if (isFreeToolActive()) return
       if (isDrawToolActive()) {
         if (stageRef.current) handleCanvasClick(stageRef.current.getRelativePointerPosition())
         return
@@ -575,6 +585,7 @@ export default function GardenEditor() {
       showGridRef,
       onSelectPlant: handlePlantSelect,
       onSelectStruct: (id, shape) => {
+        if (isFreeToolActive()) return
         if (isDrawToolActive()) {
           if (stageRef.current) handleCanvasClick(stageRef.current.getRelativePointerPosition())
           return
@@ -621,6 +632,7 @@ export default function GardenEditor() {
       showGridRef,
       onSelectPlant: handlePlantSelect,
       onSelectStruct: (id, shape) => {
+        if (isFreeToolActive()) return
         if (isDrawToolActive()) {
           if (stageRef.current) handleCanvasClick(stageRef.current.getRelativePointerPosition())
           return

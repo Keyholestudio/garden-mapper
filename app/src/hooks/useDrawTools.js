@@ -375,6 +375,14 @@ export function useDrawTools({
         return
       }
 
+      // Freeform in progress: place point regardless of what was clicked (plant/struct beneath is irrelevant)
+      const freeActive = isFreeMode(s.currentMode, s.bedSubTool, s.fenceSubTool, s.fenceType, s.buildingSubTool, s.waterSubTool, s.pathSubTool)
+      if (freeActive) {
+        const pos = stage.getRelativePointerPosition()
+        handleFreeClick(pos)
+        return
+      }
+
       if (e.target !== stage) return
 
       // Fountain — click to place
@@ -397,10 +405,6 @@ export function useDrawTools({
         return
       }
 
-      const free = isFreeMode(s.currentMode, s.bedSubTool, s.fenceSubTool, s.fenceType, s.buildingSubTool, s.waterSubTool, s.pathSubTool)
-      if (!free) return
-      const pos = stage.getRelativePointerPosition()
-      handleFreeClick(pos)
     }
 
     // ── Double-click: close freeform ──
