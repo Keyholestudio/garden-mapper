@@ -3,6 +3,65 @@ _L001–L009 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 ---
 
+## L019 — How to add a repeating texture to a season
+**Date:** 2026-06-04
+
+### Overview
+Textures are 256×256 JPGs stored in `app/public/textures/`. They are applied as a `fillPatternImage` on the `__propBounds` Konva rect (the property boundary). They swap automatically when the user cycles the season.
+
+### Step 1 — Get the image from Rob
+Rob sends a raw Gemini-generated JPG via Telegram. Download it from `C:\Users\RG\.openclaw\media\inbound\` — use the latest `file_NNN---*.jpg` matching the send time.
+
+### Step 2 — Process it
+Resize to 256×256 and optionally apply a white fade for subtlety:
+```python
+from PIL import Image
+img = Image.open(src).convert('RGBA').resize((256, 256), Image.LANCZOS)
+white = Image.new('RGBA', img.size, (255, 255, 255, 255))
+blended = Image.blend(img, white, alpha=0.30)  # 0.30 = 30% fade toward white
+blended.convert('RGB').save(dst, 'JPEG', quality=85, optimize=True)
+```
+**Always process from the original source file** — never re-fade an already-faded file or the effect stacks.
+
+Fade levels used so far:
+- Spring: 30% | Summer: 20% | Fall: 10% | Winter: 50%
+
+### Step 3 — Save to textures folder
+```
+app/public/textures/lawn-<season>.jpg
+```
+Current files: `lawn-spring.jpg`, `lawn-summer.jpg`, `lawn-fall-early.jpg`, `lawn-winter.jpg`
+
+### Step 4 — Wire into the season map (3 places)
+All three must match or a season will show the wrong texture:
+
+**a) `app/src/components/GardenCanvas.jsx`** — `LAWN_TEXTURES` constant near top of file:
+```js
+const LAWN_TEXTURES = {
+  spring: '/textures/lawn-spring.jpg',
+  summer: '/textures/lawn-summer.jpg',
+  fall:   '/textures/lawn-fall-early.jpg',
+  winter: '/textures/lawn-winter.jpg',
+}
+```
+
+**b) `app/src/hooks/useSaveLoad.js`** — same `LAWN_TEXTURES` constant near top of file.
+
+**c) `app/src/components/GardenEditor.jsx`** — inline object in the `onStart` handler (SetupOverlay callback), search for `LAWN_TEXTURES` — one line.
+
+### Step 5 — Commit
+```
+git add -A && git commit -m "Textures: update <season> lawn texture"
+```
+
+### Adding a NEW season key
+The season cycle is driven by `currentSeason` (0=spring, 1=summer, 2=fall, 3=winter). If a new season slot is ever added, update `SEASON_NAMES` arrays everywhere and add the new key to all three `LAWN_TEXTURES` maps.
+
+### The flash-then-disappear bug (already fixed — do not regress)
+If a texture ever shows briefly on load then disappears: `loadGarden()` is recreating `__propBounds` without reapplying the texture. The fix is `applyLawnTexture()` called after the rect is added in `useSaveLoad.js`. Do not remove that call.
+
+---
+
 ## L016 — Gemini CDP sticker generation: Rob's account uses lh3 URLs, not blob:
 **Date:** 2026-06-03
 The OpenClaw Google account (used in earlier sessions) serves Gemini-generated images as `blob:` URLs. Rob's personal Gemini account serves them as `https://lh3.googleusercontent.com/...` URLs. The canvas `drawImage()` grab fails on lh3 due to CORS. Fix: detect lh3 URL, return `"URL:" + src`, then download via Python `urllib.request` instead of canvas capture.
