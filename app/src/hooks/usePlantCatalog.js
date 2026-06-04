@@ -186,6 +186,9 @@ export const PLANT_CATALOG = [
   { key:'vine-leaf_virginia-creeper',      label:'Virginia Creeper',    family:'Climber',              src:'/stickers/vine-leaf_virginia-creeper_L_CA-US-FR-GB-AU.png',       size:'L' },
   { key:'vine-leaf_wisteria',              label:'Wisteria',            family:'Climber',              src:'/stickers/vine-leaf_wisteria_XL_US-FR-GB-AU.png',                 size:'XL' },
 
+  // ── New additions
+  { key:'herb-small_thyme_S_CA-US-FR-GB-AU', label:'Thyme', family:'Herb', src:'/stickers/herb-small_thyme_S_CA-US-FR-GB-AU.png', size:'S' },
+
   // ── Reference entry (kept for catalog structure reference only) ───────────────
   // { key:'tree-svg-ref', label:'Apple Tree (SVG ref)', family:'Fruit Tree', src:'/stickers/tree.svg', size:'L' },
 ]
