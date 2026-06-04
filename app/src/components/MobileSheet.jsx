@@ -327,6 +327,19 @@ export default function MobileSheet({
 
         <div className="mobile-edit-sep" />
         <button className="mobile-edit-btn danger full" onClick={onDeletePlant}>🗑 Delete</button>
+        {/* #34: Notes section */}
+        <div className="mobile-edit-sep" />
+        <div className="mobile-edit-label">NOTES</div>
+        <textarea
+          className="plant-notes-input plant-notes-mobile"
+          placeholder="Add notes about this plant..."
+          defaultValue={d.notes || ''}
+          onChange={e => {
+            d.notes = e.target.value
+            onSeasonsChange?.()
+          }}
+          rows={2}
+        />
       </>
     )
   }

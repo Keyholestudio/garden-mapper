@@ -9,7 +9,7 @@ export const SEASON_NAMES = ['🌸 Spring', '☀️ Summer', '🍂 Fall', '❄�
 export const UNIT_PX = 32
 export const CELL_IN = 3
 export const CELL_PX = 8
-export const SIZE_MAP = { XS: 24, S: 40, M: 64, L: 96 }
+export const SIZE_MAP = { XS: 24, S: 40, M: 64, L: 96, XL: 128 } // #32: added XL for trees
 
 export const BED_COLOURS     = ['#8B6340','#6D4C1F','#C8A96A','#9E9E9E','#BDBDBD','#78909C']
 export const BUILDING_COLOURS= ['#90A4AE','#BCAAA4','#78909C','#A1887F']

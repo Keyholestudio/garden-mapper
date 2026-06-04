@@ -155,6 +155,19 @@ export default function RightPanel({
           </div>
           <div className="panel-sep" />
           <button className="btn-panel danger" onClick={onDeletePlant}>🗑 Remove Plant</button>
+          {/* #34: Notes section — compact, auto-expands with content */}
+          <div className="panel-sep" />
+          <div className="panel-title">NOTES</div>
+          <textarea
+            className="plant-notes-input"
+            placeholder="Add notes about this plant..."
+            defaultValue={d.notes || ''}
+            onChange={e => {
+              d.notes = e.target.value
+              onSeasonsChange?.() // reuse dirty-flag callback to trigger save awareness
+            }}
+            rows={2}
+          />
         </div>
       </div>
     )

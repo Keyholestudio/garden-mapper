@@ -140,6 +140,7 @@
   flex-shrink: 0;
   position: relative;
   width: 52px;
+  padding-top: 6px; /* #31: give the × badge room above the thumb so it's never clipped */
 }
 .mobile-recent-thumb {
   width: 48px;
@@ -174,7 +175,7 @@
 }
 .mobile-recent-remove {
   position: absolute;
-  top: -4px;
+  top: 0px;   /* #31: was -4px — now flush with padded top so badge is never clipped */
   right: -4px;
   width: 18px;
   height: 18px;

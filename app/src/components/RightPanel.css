@@ -145,6 +145,32 @@
 .season-checks { display: flex; flex-direction: column; gap: 3px; }
 .season-checks label { font-size: 11px; color: #444; display: flex; align-items: center; gap: 5px; cursor: pointer; }
 
+/* #34: Plant notes textarea */
+.plant-notes-input {
+  width: 100%;
+  min-height: 44px;
+  max-height: 160px;
+  resize: vertical;
+  border: 1.5px solid #a5d6a7;
+  border-radius: 8px;
+  padding: 7px 9px;
+  font-size: 11px;
+  font-family: inherit;
+  color: #2a3d1a;
+  background: #f9fbe7;
+  line-height: 1.4;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color .12s;
+  field-sizing: content; /* auto-expand in browsers that support it */
+}
+.plant-notes-input:focus { border-color: #558B2F; }
+.plant-notes-input::placeholder { color: #aaa; font-style: italic; }
+.plant-notes-mobile {
+  font-size: 12px;
+  min-height: 48px;
+}
+
 /* ── Tool menu (idle panel state) ── */
 .tool-menu-btn {
   display: flex;
