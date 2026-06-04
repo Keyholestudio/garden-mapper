@@ -45,6 +45,14 @@
 | Dill | Carrot | CA US FR GB | M | vegetable-tall | seasonal, feathery upright |
 | Fennel | Carrot | US FR GB AU | M | vegetable-tall | perennial, upright feathery |
 | Rhubarb | Knotweed | CA US FR GB AU | L | vegetable-leafy | perennial, large bold leaves |
+| Beans / Bush Bean | Legume | CA US FR GB AU | S | vegetable-tall | seasonal, compact bush |
+| Brussels Sprouts | Mustard | CA US FR GB AU | M | vegetable-leafy | seasonal, tall stalk with buds |
+| Celery | Carrot | CA US FR GB AU | M | vegetable-tall | seasonal, upright ribbed stalks |
+| Edamame / Soybean | Legume | CA US FR GB AU | S | vegetable-tall | seasonal, fuzzy pods on bush |
+| Kohlrabi | Mustard | CA US FR GB AU | S | vegetable-root | seasonal, swollen stem base |
+| Okra | Mallow | US FR AU | M | vegetable-tall | seasonal, tropical, tall upright |
+| Parsnip | Carrot | CA US FR GB | S | vegetable-root | seasonal, cream tapered root |
+| Rutabaga / Swede | Mustard | CA US FR GB | S | vegetable-root | seasonal, purple-yellow round root |
 
 ---
 
@@ -230,5 +238,5 @@
 
 ---
 
-*Total entries: 107 plants across all categories.*
-*Last updated: 2026-05-26*
+*Total entries: 139 plants across all categories.*
+*Last updated: 2026-06-04 — added 8 veg (#32/#35 fix batch), updated sticker count to 140*

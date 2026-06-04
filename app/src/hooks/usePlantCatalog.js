@@ -1,10 +1,20 @@
-// usePlantCatalog.js — Full plant catalog (131 stickers, updated 2026-06-04)
+// usePlantCatalog.js — Full plant catalog (140 stickers, updated 2026-06-04)
 // src paths are relative to the public/ folder (Vite serves them as static assets)
 // Last updated: 2026-06-04 — Item #36: 27 new flowers + veg added
 
 export const PLANT_CATALOG = [
 
   // ── Item #36 additions (2026-06-04) ─────────────────────────────────────────
+  // #32/#35 fix + missing veg (2026-06-04)
+  { key:'vegetable-tall_beans',             label:'Bush Beans',          family:'Vegetable',            src:'/stickers/vegetable-tall_beans_S_CA-US-FR-GB-AU.png',               size:'S'  },
+  { key:'vegetable-leafy_brussels-sprouts', label:'Brussels Sprouts',    family:'Vegetable',            src:'/stickers/vegetable-leafy_brussels-sprouts_M_CA-US-FR-GB-AU.png',   size:'M'  },
+  { key:'vegetable-tall_celery',            label:'Celery',              family:'Vegetable',            src:'/stickers/vegetable-tall_celery_M_CA-US-FR-GB-AU.png',              size:'M'  },
+  { key:'vegetable-tall_edamame',           label:'Edamame',             family:'Vegetable',            src:'/stickers/vegetable-tall_edamame_S_CA-US-FR-GB-AU.png',             size:'S'  },
+  { key:'vegetable-root_kohlrabi',          label:'Kohlrabi',            family:'Root Vegetable',       src:'/stickers/vegetable-root_kohlrabi_S_CA-US-FR-GB-AU.png',            size:'S'  },
+  { key:'vegetable-tall_okra',              label:'Okra',                family:'Vegetable',            src:'/stickers/vegetable-tall_okra_M_US-FR-AU.png',                      size:'M'  },
+  { key:'vegetable-root_parsnip',           label:'Parsnip',             family:'Root Vegetable',       src:'/stickers/vegetable-root_parsnip_S_CA-US-FR-GB.png',                size:'S'  },
+  { key:'vegetable-root_rutabaga',          label:'Rutabaga',            family:'Root Vegetable',       src:'/stickers/vegetable-root_rutabaga_S_CA-US-FR-GB.png',               size:'S'  },
+
   // Rob's picks
   { key:'herb-small_catnip',               label:'Catnip',              family:'Herb',                 src:'/stickers/herb-small_catnip_S_CA-US-FR-GB-AU.png',                 size:'S'  },
   { key:'shrub-flowering_raspberry',        label:'Raspberry',           family:'Shrub / Fruit',        src:'/stickers/shrub-flowering_raspberry_M_CA-US-FR-GB-AU.png',          size:'M'  },
