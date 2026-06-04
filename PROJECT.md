@@ -5,7 +5,7 @@ _Last updated: 2026-06-03_
 ---
 
 ## What It Is
-A web-based garden planner with a Konva canvas, 131 plant stickers, freeform + rect draw tools, save/load, and season theming. Built as a React + Vite + Konva scaffold ported from a working vanilla JS prototype (index-v8.html).
+A web-based garden planner with a Konva canvas, 141 plant stickers, freeform + rect draw tools, save/load, and season theming. Built as a React + Vite + Konva scaffold ported from a working vanilla JS prototype (index-v8.html).
 
 ---
 
