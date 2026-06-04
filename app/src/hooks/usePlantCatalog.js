@@ -195,6 +195,42 @@ export const PLANT_CATALOG = [
   // ── Reference entry (kept for catalog structure reference only) ───────────────
   // { key:'tree-svg-ref', label:'Apple Tree (SVG ref)', family:'Fruit Tree', src:'/stickers/tree.svg', size:'L' },
   { key:'plant-fern_fern_L_CA-US-FR-GB-AU', label:'Fern', family:'Fern / Groundcover', src:'/stickers/plant-fern_fern_L_CA-US-FR-GB-AU.png', size:'L' },
+  { key:'decor_rock-small_M_CA-US-FR-GB-AU', label:'Small Garden Stone', family:'Decor', src:'/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png', size:'M' },
+
+  { key:'decor_rock-medium_L_CA-US-FR-GB-AU', label:'Medium Garden Stone', family:'Decor', src:'/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png', size:'L' },
+
+  { key:'decor_rock-large_XL_CA-US-FR-GB-AU', label:'Large Garden Stone', family:'Decor', src:'/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png', size:'XL' },
+
+  { key:'decor_gazebo-square_XL_CA-US-FR-GB-AU', label:'Square Gazebo', family:'Decor', src:'/stickers/decor_gazebo-square_XL_CA-US-FR-GB-AU.png', size:'XL' },
+
+  { key:'decor_gazebo-oct_XL_CA-US-FR-GB-AU', label:'Octagonal Gazebo', family:'Decor', src:'/stickers/decor_gazebo-oct_XL_CA-US-FR-GB-AU.png', size:'XL' },
+
+  { key:'decor_lounge-modern_L_CA-US-FR-GB-AU', label:'Modern Lounge Chairs', family:'Decor', src:'/stickers/decor_lounge-modern_L_CA-US-FR-GB-AU.png', size:'L' },
+
+  { key:'decor_lounge-wood_L_CA-US-FR-GB-AU', label:'Wood Lounge Chairs', family:'Decor', src:'/stickers/decor_lounge-wood_L_CA-US-FR-GB-AU.png', size:'L' },
+
+  { key:'decor_patio-table_L_CA-US-FR-GB-AU', label:'Patio Table & Chairs', family:'Decor', src:'/stickers/decor_patio-table_L_CA-US-FR-GB-AU.png', size:'L' },
+
+  { key:'decor_umbrella_L_CA-US-FR-GB-AU', label:'Beach Umbrella', family:'Decor', src:'/stickers/decor_umbrella_L_CA-US-FR-GB-AU.png', size:'L' },
+
+  { key:'decor_pot-s_S_CA-US-FR-GB-AU', label:'Small Terracotta Pot', family:'Decor', src:'/stickers/decor_pot-s_S_CA-US-FR-GB-AU.png', size:'S' },
+
+  { key:'decor_pot-m_M_CA-US-FR-GB-AU', label:'Medium Terracotta Pot', family:'Decor', src:'/stickers/decor_pot-m_M_CA-US-FR-GB-AU.png', size:'M' },
+
+  { key:'decor_pot-l_L_CA-US-FR-GB-AU', label:'Large Terracotta Pot', family:'Decor', src:'/stickers/decor_pot-l_L_CA-US-FR-GB-AU.png', size:'L' },
+
+  { key:'decor_stairs-wood_M_CA-US-FR-GB-AU', label:'Wood Stairs', family:'Decor', src:'/stickers/decor_stairs-wood_M_CA-US-FR-GB-AU.png', size:'M' },
+
+  { key:'decor_stairs-stone_M_CA-US-FR-GB-AU', label:'Stone Stairs', family:'Decor', src:'/stickers/decor_stairs-stone_M_CA-US-FR-GB-AU.png', size:'M' },
+
+  { key:'decor_stairs-brick_M_CA-US-FR-GB-AU', label:'Brick Stairs', family:'Decor', src:'/stickers/decor_stairs-brick_M_CA-US-FR-GB-AU.png', size:'M' },
+
+  { key:'decor_stairs-cement_M_CA-US-FR-GB-AU', label:'Cement Stairs', family:'Decor', src:'/stickers/decor_stairs-cement_M_CA-US-FR-GB-AU.png', size:'M' },
+
+  { key:'decor_arch-wood_L_CA-US-FR-GB-AU', label:'Wood Garden Arch', family:'Decor', src:'/stickers/decor_arch-wood_L_CA-US-FR-GB-AU.png', size:'L' },
+
+  { key:'decor_arch-metal_L_CA-US-FR-GB-AU', label:'Metal Garden Arch', family:'Decor', src:'/stickers/decor_arch-metal_L_CA-US-FR-GB-AU.png', size:'L' },
+
 ]
 
 // Group catalog by family for tray sections
