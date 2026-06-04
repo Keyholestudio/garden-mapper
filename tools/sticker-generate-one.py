@@ -326,7 +326,7 @@ def main():
     ws_url = tab["webSocketDebuggerUrl"]
     time.sleep(3)
 
-    # ── Verify Rob's account ─────────────────────────────────
+    # ── Verify Rob's account (before navigation) ───────────────
     p("Verifying account...")
     if not verify_account(ws_url):
         p("ERROR: Rob's account (contactsunsetpoetvintage@gmail.com) is NOT signed in.")
@@ -338,6 +338,15 @@ def main():
     # ── Navigate to fresh chat ────────────────────────────────
     p("Navigating to fresh chat...")
     ws_url = navigate_fresh(ws_url)
+
+    # ── Re-verify account AFTER navigation (page reload can switch accounts) ──
+    p("Re-verifying account after navigation...")
+    if not verify_account(ws_url):
+        p("ERROR: Account switched during navigation — Google reloaded with a different account.")
+        p("Please ensure contactsunsetpoetvintage@gmail.com is the DEFAULT account in Brave for Gemini.")
+        p("Tip: In Gemini, click your profile icon and switch to contactsunsetpoetvintage before running.")
+        sys.exit(1)
+    p("[OK] Account still confirmed after navigation.")
 
     img_js = 'var i=Array.from(document.querySelectorAll("img")).filter(x=>(x.src.startsWith("blob:")||x.src.includes("lh3.googleusercontent"))&&x.naturalWidth>100); i.length?i[i.length-1].src:""'
     src_before = cdp(ws_url, img_js) or ""
