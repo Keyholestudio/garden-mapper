@@ -7,10 +7,10 @@ import { UNIT_PX, CELL_PX, CELL_IN } from '../hooks/useGardenState'
 import './GardenCanvas.css'
 
 const SEASON_BG = {
-  spring: '#C8E6C9',
-  summer: '#8BC34A',
-  fall:   '#FFCC80',
-  winter: '#F5F0E0',
+  spring: '#C8E7BA',
+  summer: '#B2D798',
+  fall:   '#C6D5AE',
+  winter: '#F0E4CD',
 }
 const SEASON_GRID = {
   spring: 'rgba(56,142,60,0.25)',
