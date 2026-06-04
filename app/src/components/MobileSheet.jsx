@@ -9,7 +9,7 @@ import { ToolMenu } from './toolMenuData.jsx'
 import {
   BED_COLOURS, BUILDING_COLOURS, FENCE_COLOURS, HEDGE_COLOURS,
   PATH_COLOURS, WATER_COLOURS, DECKING_COLOURS, ELEC_COLOURS, PLUMB_COLOURS,
-  UNIT_PX,
+  UNIT_PX, TEXTURE_MAP,
 } from '../hooks/useGardenState'
 import './MobileSheet.css'
 
@@ -376,14 +376,26 @@ export default function MobileSheet({
 
         <div className="mobile-edit-label">COLOUR</div>
         <div className="mobile-colour-row">
-          {colours.map(c => (
-            <div
-              key={c}
-              className={`mobile-colour-swatch${d.colour === c ? ' selected' : ''}`}
-              style={{ background: c }}
-              onClick={() => onColourChange?.(c)}
-            />
-          ))}
+          {colours.map(c => {
+            const isTx = c.startsWith('#TX:')
+            const txInfo = isTx ? TEXTURE_MAP[c] : null
+            return isTx ? (
+              <div
+                key={c}
+                className={`mobile-colour-swatch texture-swatch${d.colour === c ? ' selected' : ''}`}
+                title={txInfo?.label || c}
+                onClick={() => onColourChange?.(c)}
+                style={{ backgroundImage: txInfo ? `url(${txInfo.src})` : 'none', backgroundSize: 'cover' }}
+              />
+            ) : (
+              <div
+                key={c}
+                className={`mobile-colour-swatch${d.colour === c ? ' selected' : ''}`}
+                style={{ background: c }}
+                onClick={() => onColourChange?.(c)}
+              />
+            )
+          })}
         </div>
 
         {(isPath || isUG || d.type === 'gate') && (

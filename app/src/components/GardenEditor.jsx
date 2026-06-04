@@ -4,7 +4,7 @@
 
 import { useRef, useState, useEffect } from 'react'
 import Konva from 'konva'
-import { useGardenState }  from '../hooks/useGardenState'
+import { useGardenState, TEXTURE_MAP }  from '../hooks/useGardenState'
 import { useDrawTools }    from '../hooks/useDrawTools'
 import { useSelection }    from '../hooks/useSelection'
 import { PLANT_CATALOG }   from '../hooks/usePlantCatalog'
@@ -12,7 +12,7 @@ import { addPlant }        from '../utils/plantUtils'
 import { insertPointNearestSegment } from '../hooks/useSelection'
 import { saveGarden, loadGarden, createNewGarden, readGardens, readLastGardenIndex, writeLastGardenIndex } from '../hooks/useSaveLoad'
 import { seedDreamGarden, fetchDreamGardenUpdate } from '../hooks/useDreamGarden'
-import { addRectStruct, isFreeMode } from '../utils/drawUtils'
+import { addRectStruct, isFreeMode, applyColourOrTexture } from '../utils/drawUtils'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import { useRecentPlants } from '../hooks/useRecentPlants'
 import LogoBar        from './LogoBar'
@@ -477,9 +477,13 @@ export default function GardenEditor() {
     d.colour = colour
     const shape = sel.shape
     const noFill = ['path','fence','gate','underground-electrical','underground-plumbing'].includes(d.type)
-    if (shape instanceof Konva.Rect)        { shape.fill(colour + 'CC') }
-    else if (shape instanceof Konva.Circle) { shape.fill(colour + 'CC'); shape.stroke(colour) }
-    else { shape.fill(noFill ? 'transparent' : colour + 'CC'); if (noFill) shape.stroke(colour) }
+    const isTexture = colour?.startsWith('#TX:')
+    if (isTexture) {
+      // Texture fill — works on any shape type
+      applyColourOrTexture(shape, colour, layersRef.current.structLayer, TEXTURE_MAP)
+    } else if (shape instanceof Konva.Rect)        { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(colour + 'CC') }
+    else if (shape instanceof Konva.Circle) { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(colour + 'CC'); shape.stroke(colour) }
+    else { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(noFill ? 'transparent' : colour + 'CC'); if (noFill) shape.stroke(colour) }
     layersRef.current.structLayer?.batchDraw()
     state.setSelectedStruct({ ...sel, colour })
   }

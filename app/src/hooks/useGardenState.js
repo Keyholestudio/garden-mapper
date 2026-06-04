@@ -11,13 +11,35 @@ export const CELL_IN = 3
 export const CELL_PX = 8
 export const SIZE_MAP = { XS: 24, S: 40, M: 64, L: 96, XL: 128 } // #32: added XL for trees
 
-export const BED_COLOURS     = ['#8B6340','#6D4C1F','#C8A96A','#9E9E9E','#BDBDBD','#78909C']
-export const BUILDING_COLOURS= ['#90A4AE','#BCAAA4','#78909C','#A1887F']
+export const BED_COLOURS     = ['#8B6340','#6D4C1F','#C8A96A','#9E9E9E','#BDBDBD','#78909C',
+  '#TX:soil-brown','#TX:soil-dark-brown','#TX:soil-red-mulch','#TX:soil-cedar-mulch','#TX:soil-hay']
+export const BUILDING_COLOURS= ['#90A4AE','#BCAAA4','#78909C','#A1887F',
+  '#TX:roof-cedar-shingles','#TX:roof-asphalt','#TX:roof-terracotta']
 export const FENCE_COLOURS   = ['#795548','#6D4C41','#4E342E','#BCAAA4','#90A4AE']
 export const HEDGE_COLOURS   = ['#388E3C','#2E7D32','#1B5E20','#558B2F']
-export const PATH_COLOURS    = ['#D7CCC8','#BCAAA4','#9E9E9E','#5D4037']
+export const PATH_COLOURS    = ['#D7CCC8','#BCAAA4','#9E9E9E','#5D4037',
+  '#TX:path-stepping-round','#TX:path-stepping-square','#TX:path-flagstone']
 export const WATER_COLOURS   = ['#64B5F6','#42A5F5','#1E88E5','#90CAF9','#B3E5FC']
-export const DECKING_COLOURS = ['#C8A96A','#A0785A','#8B6340','#D4A96A','#6D4C41']
+export const DECKING_COLOURS = ['#C8A96A','#A0785A','#8B6340','#D4A96A','#6D4C41',
+  '#TX:deck-medium-brown','#TX:deck-dark-brown','#TX:deck-cedar']
+
+// Texture map: colour token -> texture file path + display label
+export const TEXTURE_MAP = {
+  '#TX:soil-brown':          { src: '/textures/soil-brown.jpg',          label: 'Brown Soil' },
+  '#TX:soil-dark-brown':     { src: '/textures/soil-dark-brown.jpg',     label: 'Dark Soil' },
+  '#TX:soil-red-mulch':      { src: '/textures/soil-red-mulch.jpg',      label: 'Red Mulch' },
+  '#TX:soil-cedar-mulch':    { src: '/textures/soil-cedar-mulch.jpg',    label: 'Cedar Mulch' },
+  '#TX:soil-hay':            { src: '/textures/soil-hay.jpg',            label: 'Hay' },
+  '#TX:roof-cedar-shingles': { src: '/textures/roof-cedar-shingles.jpg', label: 'Cedar Shingles' },
+  '#TX:roof-asphalt':        { src: '/textures/roof-asphalt.jpg',        label: 'Asphalt Shingles' },
+  '#TX:roof-terracotta':     { src: '/textures/roof-terracotta.jpg',     label: 'Terracotta Tiles' },
+  '#TX:path-stepping-round': { src: '/textures/path-stepping-round.jpg', label: 'Round Stepping Stones' },
+  '#TX:path-stepping-square':{ src: '/textures/path-stepping-square.jpg',label: 'Square Pavers' },
+  '#TX:path-flagstone':      { src: '/textures/path-flagstone.jpg',      label: 'Flagstone' },
+  '#TX:deck-medium-brown':   { src: '/textures/deck-medium-brown.jpg',   label: 'Medium Brown Planks' },
+  '#TX:deck-dark-brown':     { src: '/textures/deck-dark-brown.jpg',     label: 'Dark Brown Planks' },
+  '#TX:deck-cedar':          { src: '/textures/deck-cedar.jpg',          label: 'Cedar Planks' },
+}
 export const ELEC_COLOURS    = ['#111111','#E53935','#FDD835']
 export const PLUMB_COLOURS   = ['#757575','#1976D2','#6D4C41']
 

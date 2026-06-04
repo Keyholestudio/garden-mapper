@@ -3,8 +3,9 @@
 // Designed to run synchronously against Konva layer refs (no React state async issues)
 
 import Konva from 'konva'
-import { SIZE_MAP } from './useGardenState'
+import { SIZE_MAP, TEXTURE_MAP } from './useGardenState'
 import { makePlantGroup } from '../utils/plantUtils'
+import { applyColourOrTexture } from '../utils/drawUtils'
 
 const LAWN_TEXTURES = {
   spring: '/textures/lawn-spring.jpg',
@@ -297,13 +298,14 @@ export function loadGarden({
       const isPath     = entry.type === 'path'
       const isFenceType = entry.type === 'fence' || entry.type === 'gate'
       const cl = !isPath && !isFenceType
+      const isTxLine = entry.colour?.startsWith('#TX:')
       shape = new Konva.Line({
         id: entry.id,
         points: entry.points,
         x: (entry.lx || 0) + dX, y: (entry.ly || 0) + dY,
         tension: entry.tension || 0,
         closed: cl,
-        fill: (isPath || isFenceType) ? 'transparent' : entry.colour + 'CC',
+        fill: (isPath || isFenceType) ? 'transparent' : isTxLine ? 'transparent' : entry.colour + 'CC',
         stroke: (isPath || isFenceType) ? entry.colour : '#3A2A10',
         strokeWidth: isPath ? (entry.pathWidth || 18) : isFenceType ? 6 : 2,
         strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round', draggable: true,
@@ -313,11 +315,12 @@ export function loadGarden({
 
     } else if (entry.rx !== undefined) {
       const cornerR = entry.type === 'building' ? 3 : 0
+      const isTxRect = entry.colour?.startsWith('#TX:')
       shape = new Konva.Rect({
         id: entry.id,
         x: entry.rx + dX, y: entry.ry + dY,
         width: entry.rw, height: entry.rh,
-        fill: entry.colour + 'CC', stroke: '#3A2A10', strokeWidth: 2,
+        fill: isTxRect ? 'transparent' : entry.colour + 'CC', stroke: '#3A2A10', strokeWidth: 2,
         cornerRadius: cornerR, draggable: true, strokeScaleEnabled: false,
       })
       shape.on('transformend', () => {
@@ -342,6 +345,8 @@ export function loadGarden({
     if (shape) {
       structLayer?.add(shape)
       if (entry.type === 'hedge' || entry.type === 'hedge-sq') applyHedgeTexture(shape, structLayer)
+      // Restore texture fills (colours stored as '#TX:...' tokens)
+      if (entry.colour?.startsWith('#TX:')) applyColourOrTexture(shape, entry.colour, structLayer, TEXTURE_MAP)
     }
   })
 

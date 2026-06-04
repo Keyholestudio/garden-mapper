@@ -6,6 +6,27 @@ import {
 } from '../hooks/useGardenState'
 
 // ── Texture helper ─────────────────────────────────────────
+// Apply a repeating texture (or solid fill) to any Konva shape based on colour token.
+// If colour starts with '#TX:' it loads the texture and tiles it; otherwise uses solid fill.
+export function applyColourOrTexture(shape, colour, layer, TEXTURE_MAP) {
+  if (colour && colour.startsWith('#TX:') && TEXTURE_MAP && TEXTURE_MAP[colour]) {
+    const img = new window.Image()
+    img.onload = () => {
+      shape.fill(null)
+      shape.fillPriority('pattern')
+      shape.fillPatternImage(img)
+      shape.fillPatternRepeat('repeat')
+      layer?.batchDraw()
+    }
+    img.src = TEXTURE_MAP[colour].src
+  } else {
+    shape.fillPriority('color')
+    shape.fillPatternImage(null)
+    shape.fill((colour || '#8B6340') + 'CC')
+    layer?.batchDraw()
+  }
+}
+
 function applyHedgeTexture(shape, layer) {
   const img = new window.Image()
   img.onload = () => {
