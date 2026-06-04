@@ -17,3 +17,7 @@ Thumbs.db
 
 app/node_modules/
 app/dist/
+
+# Sticker generation working files
+stickers/generated/
+app/public/stickers/generated/
