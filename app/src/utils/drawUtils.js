@@ -5,6 +5,18 @@ import {
   PATH_COLOURS, WATER_COLOURS, DECKING_COLOURS, GATE_STYLES,
 } from '../hooks/useGardenState'
 
+// ── Texture helper ─────────────────────────────────────────
+function applyHedgeTexture(shape, layer) {
+  const img = new window.Image()
+  img.onload = () => {
+    shape.fillPriority('pattern')
+    shape.fillPatternImage(img)
+    shape.fillPatternRepeat('repeat')
+    layer?.batchDraw()
+  }
+  img.src = '/textures/hedge.jpg'
+}
+
 // ── isFreeMode ────────────────────────────────────────────
 export function isFreeMode(currentMode, bedSubTool, fenceSubTool, fenceType, buildingSubTool, waterSubTool, pathSubTool) {
   // null sub-tool = no tool selected yet, never freeform
@@ -218,6 +230,7 @@ export function closeFreeShape({
 
   if (opacity < 1) shape.opacity(opacity)
   structLayer.add(shape)
+  if (type === 'hedge') applyHedgeTexture(shape, structLayer)
   structLayer.batchDraw()
 
   if (onSelect) onSelect(id, shape)
@@ -353,6 +366,7 @@ export function addRectStruct({
   })
 
   structLayer.add(rect)
+  if (type === 'hedge-sq') applyHedgeTexture(rect, structLayer)
   structLayer.batchDraw()
   if (onSelect) onSelect(id, rect)
   if (onModeChange) onModeChange('select')

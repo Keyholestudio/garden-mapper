@@ -20,6 +20,17 @@ const LAWN_OPACITY = {
 }
 const SEASON_NAMES = ['spring', 'summer', 'fall', 'winter']
 
+function applyHedgeTexture(shape, layer) {
+  const img = new window.Image()
+  img.onload = () => {
+    shape.fillPriority('pattern')
+    shape.fillPatternImage(img)
+    shape.fillPatternRepeat('repeat')
+    layer?.batchDraw()
+  }
+  img.src = '/textures/hedge.jpg'
+}
+
 function applyLawnTexture(boundsRect, currentSeason, structLayer) {
   const season = SEASON_NAMES[currentSeason] || 'spring'
   const img = new window.Image()
@@ -327,7 +338,10 @@ export function loadGarden({
       shape.on('click tap', e => { if (!state.editingShapeIdRef?.current) onSelectStruct(entry.id, shape, e) })
     }
 
-    if (shape) structLayer?.add(shape)
+    if (shape) {
+      structLayer?.add(shape)
+      if (entry.type === 'hedge' || entry.type === 'hedge-sq') applyHedgeTexture(shape, structLayer)
+    }
   })
 
   // ── Restore plants (mirrors v8 exactly) ──
