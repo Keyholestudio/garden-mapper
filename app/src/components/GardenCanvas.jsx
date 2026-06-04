@@ -10,7 +10,7 @@ const SEASON_BG = {
   spring: '#C8E6C9',
   summer: '#8BC34A',
   fall:   '#FFCC80',
-  winter: '#E3F2FD',
+  winter: '#F5F0E0',
 }
 const SEASON_GRID = {
   spring: 'rgba(56,142,60,0.25)',
@@ -19,6 +19,22 @@ const SEASON_GRID = {
   winter: 'rgba(70,110,130,0.18)',
 }
 const SEASONS = ['spring','summer','fall','winter']
+
+const LAWN_TEXTURES = {
+  spring: '/textures/lawn-spring.jpg',
+  summer: '/textures/lawn-summer.jpg',
+  fall:   '/textures/lawn-fall-early.jpg',
+  winter: '/textures/lawn-winter.jpg',
+}
+
+function loadTexture(src) {
+  return new Promise((resolve) => {
+    const img = new window.Image()
+    img.onload = () => resolve(img)
+    img.onerror = () => resolve(null)
+    img.src = src
+  })
+}
 
 export default function GardenCanvas({
   gardenName, gardenW, gardenH, gardenUnit,
@@ -79,13 +95,25 @@ export default function GardenCanvas({
     const oy = Math.max(16, (H - ph) / 2)
     propBoundsRef.current = { x: ox, y: oy, w: pw, h: ph }
 
-    structLayer.add(new Konva.Rect({
+    const boundsRect = new Konva.Rect({
       x: ox, y: oy, width: pw, height: ph,
       stroke: '#558B2F', strokeWidth: 2,
       dash: [10, 5], fill: 'transparent',
       listening: false, strokeScaleEnabled: false,
       id: '__propBounds',
-    }))
+    })
+    structLayer.add(boundsRect)
+
+    // Load lawn texture for current season
+    const seasonName = SEASONS[currentSeason] || 'spring'
+    loadTexture(LAWN_TEXTURES[seasonName]).then((texImg) => {
+      if (texImg) {
+        boundsRect.fillPriority('pattern')
+        boundsRect.fillPatternImage(texImg)
+        boundsRect.fillPatternRepeat('repeat')
+        structLayer.batchDraw()
+      }
+    })
     structLayer.add(new Konva.Text({
       x: ox + 6, y: oy + 5,
       text: `${gardenName}  ${gardenW}×${gardenH} ${gardenUnit}`,
@@ -288,6 +316,23 @@ export default function GardenCanvas({
     if (!containerRef.current) return
     const season = SEASONS[currentSeason] || 'spring'
     containerRef.current.style.background = SEASON_BG[season]
+  }, [currentSeason])
+
+  // ── Swap lawn texture on season change ──
+  useEffect(() => {
+    const { structLayer } = layersRef.current
+    if (!structLayer) return
+    const rect = structLayer.findOne('#__propBounds')
+    if (!rect) return
+    const season = SEASONS[currentSeason] || 'spring'
+    loadTexture(LAWN_TEXTURES[season]).then((texImg) => {
+      if (texImg) {
+        rect.fillPriority('pattern')
+        rect.fillPatternImage(texImg)
+        rect.fillPatternRepeat('repeat')
+        structLayer.batchDraw()
+      }
+    })
   }, [currentSeason])
 
   // Convert a DOM clientX/Y position to Konva world coords

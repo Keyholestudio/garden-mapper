@@ -6,6 +6,26 @@ import Konva from 'konva'
 import { SIZE_MAP } from './useGardenState'
 import { makePlantGroup } from '../utils/plantUtils'
 
+const LAWN_TEXTURES = {
+  spring: '/textures/lawn-spring.jpg',
+  summer: '/textures/lawn-summer.jpg',
+  fall:   '/textures/lawn-fall-early.jpg',
+  winter: '/textures/lawn-winter.jpg',
+}
+const SEASON_NAMES = ['spring', 'summer', 'fall', 'winter']
+
+function applyLawnTexture(boundsRect, currentSeason, structLayer) {
+  const season = SEASON_NAMES[currentSeason] || 'spring'
+  const img = new window.Image()
+  img.onload = () => {
+    boundsRect.fillPriority('pattern')
+    boundsRect.fillPatternImage(img)
+    boundsRect.fillPatternRepeat('repeat')
+    structLayer?.batchDraw()
+  }
+  img.src = LAWN_TEXTURES[season]
+}
+
 const LS_KEY          = 'gardenData'
 const LS_BACKUP_KEY   = 'gardenData_backup'   // last-known-good snapshot
 const LS_LAST_IDX_KEY = 'gardenLastIndex'
@@ -202,12 +222,14 @@ export function loadGarden({
   state.propBoundsRef.current = { x: ox, y: oy, w: pw, h: ph }
 
   // Re-draw boundary (same as v8)
-  structLayer?.add(new Konva.Rect({
+  const boundsRect = new Konva.Rect({
     id: '__propBounds',
     x: ox, y: oy, width: pw, height: ph,
     stroke: '#558B2F', strokeWidth: 2, dash: [10, 5],
     fill: 'transparent', listening: false, strokeScaleEnabled: false,
-  }))
+  })
+  structLayer?.add(boundsRect)
+  applyLawnTexture(boundsRect, state.currentSeason ?? 0, structLayer)
   structLayer?.add(new Konva.Text({
     id: '__propLabel',
     x: ox + 6, y: oy + 5,

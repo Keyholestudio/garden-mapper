@@ -671,17 +671,25 @@ export default function GardenEditor() {
               const ox = Math.max(16, (stage.width() - pw) / 2)
               const oy = Math.max(16, (stage.height() - ph) / 2)
               state.propBoundsRef.current = { x: ox, y: oy, w: pw, h: ph }
-              structLayer.add(new Konva.Rect({
+              const LAWN_TEXTURES = { spring: '/textures/lawn-spring.jpg', summer: '/textures/lawn-summer.jpg', fall: '/textures/lawn-fall-early.jpg', winter: '/textures/lawn-winter.jpg' }
+              const SEASON_NAMES  = ['spring','summer','fall','winter']
+              const boundsRect = new Konva.Rect({
                 id: '__propBounds', x: ox, y: oy, width: pw, height: ph,
                 stroke: '#558B2F', strokeWidth: 2, dash: [10, 5],
                 fill: 'transparent', listening: false, strokeScaleEnabled: false,
-              }))
+              })
+              structLayer.add(boundsRect)
               structLayer.add(new Konva.Text({
                 id: '__propLabel', x: ox + 6, y: oy + 5,
                 text: `${name}  ${w}x${h} ${unit}`,
                 fontSize: 11, fontStyle: 'bold', fill: '#558B2F', opacity: 0.65, listening: false,
               }))
               structLayer.batchDraw()
+              // Apply lawn texture
+              const sName = SEASON_NAMES[state.currentSeason] || 'spring'
+              const texImg = new window.Image()
+              texImg.onload = () => { boundsRect.fillPriority('pattern'); boundsRect.fillPatternImage(texImg); boundsRect.fillPatternRepeat('repeat'); structLayer.batchDraw() }
+              texImg.src = LAWN_TEXTURES[sName]
               handleResetView()
             }
             state.setIsSetup(true)
