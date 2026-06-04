@@ -12,6 +12,12 @@ const LAWN_TEXTURES = {
   fall:   '/textures/lawn-fall-early.jpg',
   winter: '/textures/lawn-winter.jpg',
 }
+const LAWN_OPACITY = {
+  spring: 1.0,
+  summer: 1.0,
+  fall:   0.7,
+  winter: 1.0,
+}
 const SEASON_NAMES = ['spring', 'summer', 'fall', 'winter']
 
 function applyLawnTexture(boundsRect, currentSeason, structLayer) {
@@ -21,6 +27,7 @@ function applyLawnTexture(boundsRect, currentSeason, structLayer) {
     boundsRect.fillPriority('pattern')
     boundsRect.fillPatternImage(img)
     boundsRect.fillPatternRepeat('repeat')
+    boundsRect.opacity(LAWN_OPACITY[season] ?? 1.0)
     structLayer?.batchDraw()
   }
   img.src = LAWN_TEXTURES[season]

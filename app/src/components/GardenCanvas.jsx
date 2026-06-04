@@ -9,7 +9,7 @@ import './GardenCanvas.css'
 const SEASON_BG = {
   spring: '#C8E7BA',
   summer: '#B2D798',
-  fall:   '#C6D5AE',
+  fall:   '#ADB681',
   winter: '#F0E4CD',
 }
 const SEASON_GRID = {
@@ -25,6 +25,12 @@ const LAWN_TEXTURES = {
   summer: '/textures/lawn-summer.jpg',
   fall:   '/textures/lawn-fall-early.jpg',
   winter: '/textures/lawn-winter.jpg',
+}
+const LAWN_OPACITY = {
+  spring: 1.0,
+  summer: 1.0,
+  fall:   0.7,
+  winter: 1.0,
 }
 
 function loadTexture(src) {
@@ -111,6 +117,7 @@ export default function GardenCanvas({
         boundsRect.fillPriority('pattern')
         boundsRect.fillPatternImage(texImg)
         boundsRect.fillPatternRepeat('repeat')
+        boundsRect.opacity(LAWN_OPACITY[seasonName] ?? 1.0)
         structLayer.batchDraw()
       }
     })
@@ -330,6 +337,7 @@ export default function GardenCanvas({
         rect.fillPriority('pattern')
         rect.fillPatternImage(texImg)
         rect.fillPatternRepeat('repeat')
+        rect.opacity(LAWN_OPACITY[season] ?? 1.0)
         structLayer.batchDraw()
       }
     })

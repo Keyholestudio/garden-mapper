@@ -672,6 +672,7 @@ export default function GardenEditor() {
               const oy = Math.max(16, (stage.height() - ph) / 2)
               state.propBoundsRef.current = { x: ox, y: oy, w: pw, h: ph }
               const LAWN_TEXTURES = { spring: '/textures/lawn-spring.jpg', summer: '/textures/lawn-summer.jpg', fall: '/textures/lawn-fall-early.jpg', winter: '/textures/lawn-winter.jpg' }
+              const LAWN_OPACITY  = { spring: 1.0, summer: 1.0, fall: 0.7, winter: 1.0 }
               const SEASON_NAMES  = ['spring','summer','fall','winter']
               const boundsRect = new Konva.Rect({
                 id: '__propBounds', x: ox, y: oy, width: pw, height: ph,
@@ -688,7 +689,7 @@ export default function GardenEditor() {
               // Apply lawn texture
               const sName = SEASON_NAMES[state.currentSeason] || 'spring'
               const texImg = new window.Image()
-              texImg.onload = () => { boundsRect.fillPriority('pattern'); boundsRect.fillPatternImage(texImg); boundsRect.fillPatternRepeat('repeat'); structLayer.batchDraw() }
+              texImg.onload = () => { boundsRect.fillPriority('pattern'); boundsRect.fillPatternImage(texImg); boundsRect.fillPatternRepeat('repeat'); boundsRect.opacity(LAWN_OPACITY[sName] ?? 1.0); structLayer.batchDraw() }
               texImg.src = LAWN_TEXTURES[sName]
               handleResetView()
             }
