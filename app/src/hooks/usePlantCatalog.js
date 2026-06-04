@@ -192,6 +192,9 @@ export const PLANT_CATALOG = [
   // ── New additions
   { key:'flower-cluster_phlox_M_CA-US-FR-GB-AU', label:'Phlox', family:'Perennial Flower', src:'/stickers/flower-cluster_phlox_M_CA-US-FR-GB-AU.png', size:'M' },
 
+  // ── New additions
+  { key:'water-feature_fountain_L_CA-US-FR-GB-AU', label:'Fountain', family:'Water Feature', src:'/stickers/water-feature_fountain_L_CA-US-FR-GB-AU.png', size:'L' },
+
   // ── Reference entry (kept for catalog structure reference only) ───────────────
   // { key:'tree-svg-ref', label:'Apple Tree (SVG ref)', family:'Fruit Tree', src:'/stickers/tree.svg', size:'L' },
   { key:'plant-fern_fern_L_CA-US-FR-GB-AU', label:'Fern', family:'Fern / Groundcover', src:'/stickers/plant-fern_fern_L_CA-US-FR-GB-AU.png', size:'L' },
