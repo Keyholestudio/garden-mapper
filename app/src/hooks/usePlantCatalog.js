@@ -131,6 +131,7 @@ export const PLANT_CATALOG = [
   { key:'tree-conifer_pine',               label:'Pine Tree',           family:'Conifer Tree',         src:'/stickers/tree-conifer_pine_XL_CA-US-FR-GB-AU.png',               size:'XL' },
 
   // ── Deciduous Trees ───────────────────────────────────────────────────────────
+  { key:'tree-deciduous_maple',             label:'Maple Tree',          family:'Deciduous Tree',       src:'/stickers/tree-deciduous_maple_XL_CA-US-FR-GB-AU.png',              size:'XL' },
   { key:'tree-deciduous_japanese-maple',   label:'Japanese Maple',      family:'Deciduous Tree',       src:'/stickers/tree-deciduous_japanese-maple_XL_CA-US-FR-GB-AU.png',   size:'XL' },
   { key:'tree-deciduous_magnolia',         label:'Magnolia',            family:'Deciduous Tree',       src:'/stickers/tree-deciduous_magnolia_XL_CA-US-FR-GB-AU.png',         size:'XL' },
   { key:'tree-deciduous_oak',              label:'Oak Tree',            family:'Deciduous Tree',       src:'/stickers/tree-deciduous_oak_XL_CA-US-FR-GB-AU.png',              size:'XL' },
