@@ -1,4 +1,32 @@
-# Garden Mapper — User-Submitted Sticker Request Feature
+# Garden Mapper — Sticker Roadmap
+
+---
+
+## Structural Stickers — Planned (2026-06-03)
+
+Structural PNGs to supplement the existing tool-drawn shapes. Same generation pipeline (Gemini CDP + chroma key removal). These give users a visual vocabulary for garden structures beyond the freeform/rect draw tools.
+
+| Sticker ID | Label | Notes |
+|---|---|---|
+| `structure_raised-bed` | Raised Bed | Top-down rectangular wooden raised bed |
+| `structure_cold-frame` | Cold Frame | Hinged glass/plastic lid, wooden box |
+| `structure_trellis` | Trellis | Upright lattice panel |
+| `structure_arch` | Garden Arch | Arched trellis/pergola entrance |
+| `structure_greenhouse` | Greenhouse | Small lean-to or freestanding glasshouse |
+| `structure_compost-bin` | Compost Bin | Slatted wooden or plastic bin |
+| `structure_water-butt` | Water Butt | Barrel/tank for rainwater |
+| `structure_garden-shed` | Garden Shed | Small timber shed |
+
+**Status:** Added to roadmap 2026-06-03. Review prompt approach tomorrow — may need a different template since these are structures not plants.
+
+---
+
+## Tier 3 Stickers — Deferred
+Regional/specialty plants (AU natives, FR specialty, CA/GB endemic, rare edibles, exotic trees). Deferred until Tier 1/2 review complete and structural stickers done.
+
+---
+
+## User-Submitted Sticker Request Feature
 ## Roadmap Document
 
 ---

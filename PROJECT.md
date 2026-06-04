@@ -132,7 +132,8 @@ cd projects/garden-planner/app && npm run dev
 
 ## Open Items
 - **Sticker review** — Rob to review 104 stickers live in app; flag any needing regeneration
-- **Tier 3 stickers** — regional/specialty (~20), ready to run when Rob approves
+- **Structural stickers** — Raised bed outline, Cold frame, Trellis/arch, Greenhouse — PNG format, same pipeline. Review tomorrow.
+- **Tier 3 stickers** — regional/specialty (~20), deferred indefinitely
 - **#9** Dream garden — system built; Rob designs garden when ready, exports JSON, sends to Computer
   - `DREAM_GARDEN_URL` in `useDreamGarden.js` = placeholder until GitHub repo is public
 - **Deploy** — leaf-courag URL deploy method unknown (Netlify? Vercel?). Ask Rob.
