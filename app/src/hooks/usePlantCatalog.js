@@ -189,6 +189,9 @@ export const PLANT_CATALOG = [
   // ── New additions
   { key:'herb-small_thyme_S_CA-US-FR-GB-AU', label:'Thyme', family:'Herb', src:'/stickers/herb-small_thyme_S_CA-US-FR-GB-AU.png', size:'S' },
 
+  // ── New additions
+  { key:'flower-cluster_phlox_M_CA-US-FR-GB-AU', label:'Phlox', family:'Perennial Flower', src:'/stickers/flower-cluster_phlox_M_CA-US-FR-GB-AU.png', size:'M' },
+
   // ── Reference entry (kept for catalog structure reference only) ───────────────
   // { key:'tree-svg-ref', label:'Apple Tree (SVG ref)', family:'Fruit Tree', src:'/stickers/tree.svg', size:'L' },
 ]
