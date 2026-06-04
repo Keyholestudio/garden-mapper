@@ -124,7 +124,16 @@ export default function GardenEditor() {
   }
 
   // ── Plant selection handler (shared) — handles Ctrl+click multi-select ──
+  // Returns true if a draw/place tool is currently active (not idle select)
+  const isDrawToolActive = () =>
+    state.currentMode !== 'select' || pendingPlantRef.current !== null
+
   const handlePlantSelect = (id, group, evt) => {
+    // If a draw tool is active, redirect click to canvas handler (place shape at this world pos)
+    if (isDrawToolActive()) {
+      if (stageRef.current) handleCanvasClick(stageRef.current.getRelativePointerPosition())
+      return
+    }
     const ne = evt?.evt || evt
     if (ne && (ne.ctrlKey || ne.metaKey || ne.shiftKey)) {
       state.setSelectedPlant(null)
@@ -148,7 +157,13 @@ export default function GardenEditor() {
     layers: stageReady ? layersRef.current : null,
     state,
     onSelectPlant:    handlePlantSelect,
-    onSelectStruct:   (id, shape) => { state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] }); state.setSelectedPlant(null) },
+    onSelectStruct:   (id, shape) => {
+      if (isDrawToolActive()) {
+        if (stageRef.current) handleCanvasClick(stageRef.current.getRelativePointerPosition())
+        return
+      }
+      state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] }); state.setSelectedPlant(null)
+    },
     onClearSelection: clearSelection,
     onEditMode:       state.setEditingShapeId,
     onExitEditMode:   () => { state.setEditingShapeId(null); state.setAddingPt(false); state.setRemovingPt(false) },
@@ -168,6 +183,10 @@ export default function GardenEditor() {
       state.setAddingPt(false)
     },
     onStructSelect: (id, shape, evt) => {
+      if (isDrawToolActive()) {
+        if (stageRef.current) handleCanvasClick(stageRef.current.getRelativePointerPosition())
+        return
+      }
       const ne = evt?.evt || evt
       if (ne && (ne.ctrlKey || ne.metaKey || ne.shiftKey)) {
         // Multi-select: add/remove from multiSelection
@@ -556,6 +575,10 @@ export default function GardenEditor() {
       showGridRef,
       onSelectPlant: handlePlantSelect,
       onSelectStruct: (id, shape) => {
+        if (isDrawToolActive()) {
+          if (stageRef.current) handleCanvasClick(stageRef.current.getRelativePointerPosition())
+          return
+        }
         state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
         state.setSelectedPlant(null)
       },
@@ -598,6 +621,10 @@ export default function GardenEditor() {
       showGridRef,
       onSelectPlant: handlePlantSelect,
       onSelectStruct: (id, shape) => {
+        if (isDrawToolActive()) {
+          if (stageRef.current) handleCanvasClick(stageRef.current.getRelativePointerPosition())
+          return
+        }
         state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
         state.setSelectedPlant(null)
       },
