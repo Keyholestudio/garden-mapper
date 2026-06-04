@@ -44,6 +44,8 @@ export default function GardenEditor() {
   const [saveFlash, setSaveFlash] = useState(false)
   // Ref so save always reads the latest index without stale closures
   const currentGardenIndexRef = useRef(0)
+  // Auto-save: debounced timer ref — fires 1.5s after last placement/change
+  const autoSaveTimerRef = useRef(null)
 
   // ── Image loading ──
   const [loadedImages, setLoadedImages] = useState({})
@@ -226,6 +228,7 @@ export default function GardenEditor() {
         state.setPathSubTool(null)
         state.setBuildingSubTool(null)
         state.setWaterSubTool(null)
+        triggerAutoSave()  // struct/shape just placed
       }
     },
   })
@@ -265,6 +268,7 @@ export default function GardenEditor() {
         const g = layersRef.current.plantLayer?.findOne('#' + newId)
         if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() }
       })
+      triggerAutoSave()
     }
   }
   const handleCanvasClick = (worldPos) => {
@@ -291,6 +295,7 @@ export default function GardenEditor() {
         const g = layersRef.current.plantLayer?.findOne('#' + newId)
         if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() }
       })
+      triggerAutoSave()
     }
   }
 
@@ -331,6 +336,7 @@ export default function GardenEditor() {
     // If the selected object was just undone (destroyed), clear selection
     if (selPlantId && !layersRef.current.plantLayer?.findOne('#' + selPlantId)) clearSelection()
     if (selStructId && !layersRef.current.structLayer?.findOne('#' + selStructId)) clearSelection()
+    triggerAutoSave()
   }
 
   // ── Copy / Paste ──
@@ -394,6 +400,7 @@ export default function GardenEditor() {
             const g = layersRef.current.plantLayer?.findOne('#' + newId)
             if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() }
           })
+          triggerAutoSave()
         }
       }
     }
@@ -620,6 +627,16 @@ export default function GardenEditor() {
     setTimeout(() => setSaveFlash(false), 500)
   }
 
+  // Auto-save: debounced 1.5s after any placement or structural change.
+  // Reuses handleSave so the flash indicator fires too.
+  const triggerAutoSave = () => {
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current)
+    autoSaveTimerRef.current = setTimeout(() => {
+      handleSave()
+      autoSaveTimerRef.current = null
+    }, 1500)
+  }
+
   // ── Phase 5: Load ──
   const handleLoad = (idx) => {
     if (!stageRef.current) return
@@ -836,8 +853,8 @@ export default function GardenEditor() {
               layers={layersRef.current}
               gardenUnit={state.gardenUnit}
               // Edit handlers
-              onDeletePlant={() => { state.selectedPlant?.group.destroy(); delete state.plantDataRef.current[state.selectedPlant?.id]; layersRef.current.plantLayer?.batchDraw(); clearSelection() }}
-              onDeleteStruct={() => { state.selectedStruct?.shape.destroy(); delete state.structDataRef.current[state.selectedStruct?.id]; layersRef.current.structLayer?.batchDraw(); clearSelection() }}
+              onDeletePlant={() => { state.selectedPlant?.group.destroy(); delete state.plantDataRef.current[state.selectedPlant?.id]; layersRef.current.plantLayer?.batchDraw(); clearSelection(); triggerAutoSave() }}
+              onDeleteStruct={() => { state.selectedStruct?.shape.destroy(); delete state.structDataRef.current[state.selectedStruct?.id]; layersRef.current.structLayer?.batchDraw(); clearSelection(); triggerAutoSave() }}
               onTransparentPlant={handleTransparentPlant}
               onLockPlant={handleLockPlant}
               onLockStruct={handleLockStruct}
@@ -947,8 +964,8 @@ export default function GardenEditor() {
           showGrid={state.showGrid}               onToggleGrid={() => state.setShowGrid(v => !v)}
           onResetView={handleResetView}
           onClearAll={handleClearAll}
-          onDeletePlant={() => { state.selectedPlant?.group.destroy(); delete state.plantDataRef.current[state.selectedPlant?.id]; layersRef.current.plantLayer?.batchDraw(); clearSelection() }}
-          onDeleteStruct={() => { state.selectedStruct?.shape.destroy(); delete state.structDataRef.current[state.selectedStruct?.id]; layersRef.current.structLayer?.batchDraw(); clearSelection() }}
+          onDeletePlant={() => { state.selectedPlant?.group.destroy(); delete state.plantDataRef.current[state.selectedPlant?.id]; layersRef.current.plantLayer?.batchDraw(); clearSelection(); triggerAutoSave() }}
+          onDeleteStruct={() => { state.selectedStruct?.shape.destroy(); delete state.structDataRef.current[state.selectedStruct?.id]; layersRef.current.structLayer?.batchDraw(); clearSelection(); triggerAutoSave() }}
           onDeleteMulti={deleteSelected}
           onTransparentPlant={handleTransparentPlant}
           onLockPlant={handleLockPlant}
