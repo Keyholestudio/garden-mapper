@@ -1,8 +1,41 @@
-// usePlantCatalog.js — Full plant catalog (104 stickers, generated 2026-06-03)
+// usePlantCatalog.js — Full plant catalog (131 stickers, updated 2026-06-04)
 // src paths are relative to the public/ folder (Vite serves them as static assets)
-// Last updated: 2026-06-03 — Tier 1 + Tier 2 complete
+// Last updated: 2026-06-04 — Item #36: 27 new flowers + veg added
 
 export const PLANT_CATALOG = [
+
+  // ── Item #36 additions (2026-06-04) ─────────────────────────────────────────
+  // Rob's picks
+  { key:'herb-small_catnip',               label:'Catnip',              family:'Herb',                 src:'/stickers/herb-small_catnip_S_CA-US-FR-GB-AU.png',                 size:'S'  },
+  { key:'shrub-flowering_raspberry',        label:'Raspberry',           family:'Shrub / Fruit',        src:'/stickers/shrub-flowering_raspberry_M_CA-US-FR-GB-AU.png',          size:'M'  },
+  { key:'flower-daisy_poppy',               label:'Poppy',               family:'Annual Flower',        src:'/stickers/flower-daisy_poppy_M_CA-US-FR-GB-AU.png',                size:'M'  },
+  // Missing bulbs
+  { key:'bulb-spring_crocus',               label:'Crocus',              family:'Bulb',                 src:'/stickers/bulb-spring_crocus_XS_CA-US-FR-GB-AU.png',               size:'XS' },
+  { key:'flower-spike_lily',                label:'Oriental Lily',       family:'Bulb',                 src:'/stickers/flower-spike_lily_L_CA-US-FR-GB-AU.png',                 size:'L'  },
+  { key:'bulb-spring_muscari',              label:'Grape Hyacinth',      family:'Bulb',                 src:'/stickers/bulb-spring_muscari_XS_CA-US-FR-GB-AU.png',               size:'XS' },
+  // New flowers
+  { key:'flower-spike_bleeding-heart',      label:'Bleeding Heart',      family:'Perennial',            src:'/stickers/flower-spike_bleeding-heart_M_CA-US-FR-GB.png',           size:'M'  },
+  { key:'flower-daisy_columbine',           label:'Columbine',           family:'Perennial',            src:'/stickers/flower-daisy_columbine_M_CA-US-FR-GB-AU.png',             size:'M'  },
+  { key:'flower-daisy_primrose',            label:'Primrose',            family:'Perennial',            src:'/stickers/flower-daisy_primrose_S_CA-US-FR-GB-AU.png',              size:'S'  },
+  { key:'flower-rose_ranunculus',           label:'Ranunculus',          family:'Bulb / Annual',        src:'/stickers/flower-rose_ranunculus_S_CA-US-FR-GB-AU.png',             size:'S'  },
+  { key:'flower-daisy_anemone',             label:'Anemone',             family:'Bulb / Perennial',     src:'/stickers/flower-daisy_anemone_S_CA-US-FR-GB-AU.png',               size:'S'  },
+  { key:'flower-daisy_dianthus',            label:'Dianthus',            family:'Perennial',            src:'/stickers/flower-daisy_dianthus_S_CA-US-FR-GB-AU.png',              size:'S'  },
+  { key:'flower-spike_fuchsia',             label:'Fuchsia',             family:'Shrub / Annual',       src:'/stickers/flower-spike_fuchsia_M_CA-US-FR-GB-AU.png',               size:'M'  },
+  { key:'flower-spike_astilbe',             label:'Astilbe',             family:'Perennial',            src:'/stickers/flower-spike_astilbe_M_CA-US-FR-GB-AU.png',               size:'M'  },
+  { key:'ground-cover_heuchera',            label:'Heuchera',            family:'Ground Cover',         src:'/stickers/ground-cover_heuchera_S_CA-US-FR-GB-AU.png',              size:'S'  },
+  { key:'flower-cluster_verbena',           label:'Verbena',             family:'Annual Flower',        src:'/stickers/flower-cluster_verbena_S_CA-US-FR-GB-AU.png',             size:'S'  },
+  { key:'flower-cluster_agapanthus',        label:'Agapanthus',          family:'Bulb / Perennial',     src:'/stickers/flower-cluster_agapanthus_L_CA-US-FR-GB-AU.png',          size:'L'  },
+  { key:'flower-spike_liatris',             label:'Liatris',             family:'Perennial',            src:'/stickers/flower-spike_liatris_M_CA-US-FR-GB-AU.png',               size:'M'  },
+  { key:'flower-spike_hollyhock',           label:'Hollyhock',           family:'Biennial',             src:'/stickers/flower-spike_hollyhock_XL_CA-US-FR-GB-AU.png',            size:'XL' },
+  // New vegetables
+  { key:'vegetable-leafy_cauliflower',      label:'Cauliflower',         family:'Vegetable',            src:'/stickers/vegetable-leafy_cauliflower_M_CA-US-FR-GB-AU.png',        size:'M'  },
+  { key:'vegetable-tall_asparagus',         label:'Asparagus',           family:'Vegetable',            src:'/stickers/vegetable-tall_asparagus_L_CA-US-FR-GB-AU.png',           size:'L'  },
+  { key:'vine-leaf_peas',                   label:'Peas',                family:'Vegetable / Climber',  src:'/stickers/vine-leaf_peas_M_CA-US-FR-GB-AU.png',                     size:'M'  },
+  { key:'vegetable-leafy_pumpkin',          label:'Pumpkin',             family:'Vegetable',            src:'/stickers/vegetable-leafy_pumpkin_L_CA-US-FR-GB-AU.png',            size:'L'  },
+  { key:'vegetable-leafy_squash',           label:'Squash',              family:'Vegetable',            src:'/stickers/vegetable-leafy_squash_M_CA-US-FR-GB-AU.png',             size:'M'  },
+  { key:'vegetable-leafy_swiss-chard',      label:'Swiss Chard',         family:'Vegetable',            src:'/stickers/vegetable-leafy_swiss-chard_M_CA-US-FR-GB-AU.png',        size:'M'  },
+  { key:'vegetable-leafy_sweet-potato',     label:'Sweet Potato',        family:'Vegetable',            src:'/stickers/vegetable-leafy_sweet-potato_M_CA-US-FR-GB-AU.png',       size:'M'  },
+  { key:'vegetable-root_onion',             label:'Onion',               family:'Root Vegetable',       src:'/stickers/vegetable-root_onion_S_CA-US-FR-GB-AU.png',               size:'S'  },
 
   // ── Aquatic ──────────────────────────────────────────────────────────────────
   { key:'aquatic_water-lily',              label:'Water Lily',          family:'Aquatic',              src:'/stickers/aquatic_water-lily_M_CA-US-FR-GB-AU.png',               size:'M' },
