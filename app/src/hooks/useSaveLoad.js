@@ -145,6 +145,7 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
       scaleX: g.scaleX(), scaleY: g.scaleY(),
       label: d.label, family: d.family, key: d.key, size: d.size,
       notes: d.notes, seasons: d.seasons, transparent: d.transparent, locked: d.locked || false,
+      zIndex: g.zIndex(),
     })
   })
 
@@ -369,6 +370,12 @@ export function loadGarden({
     if (entry.scaleX) group.scaleX(entry.scaleX)
     if (entry.scaleY) group.scaleY(entry.scaleY)
     if (entry.locked) group.draggable(false)  // restore locked state
+    if (entry.transparent) {
+      group.opacity(0.35)   // restore visual transparency (flag is in plantDataRef, opacity must be set on group)
+      try { group.zIndex(Math.max(0, entry.zIndex || 0)) } catch {}
+    } else if (entry.zIndex !== undefined) {
+      try { group.zIndex(entry.zIndex) } catch {}
+    }
     group.on('click tap', () => onSelectPlant(entry.id, group))
     plantLayer?.add(group)
   })
