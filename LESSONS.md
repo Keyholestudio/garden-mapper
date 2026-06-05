@@ -3,6 +3,20 @@ _L001–L009 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 ---
 
+## L020 — CDP sticker generation: navigate_fresh() causes account switching
+**Date:** 2026-06-04
+`navigate_fresh()` calls `window.location.href = GEMINI_URL` which forces a full page reload. On machines with multiple Google accounts, this lets Google re-evaluate which account is "active" and switches users mid-run.
+**Fix:** Check if `[contenteditable=true]` is already present before navigating. If the input is ready, skip the navigation entirely — reuse the existing chat state.
+```python
+already_ready = cdp(ws_url, 'document.querySelector("[contenteditable=true]")!==null')
+if already_ready:
+    return ws_url  # skip navigation
+```
+**Also:** Always re-verify account AFTER any navigation (added double-check in sticker-generate-one.py).
+**Rule:** Never unconditionally reload the Gemini page between prompts on a multi-account machine.
+
+---
+
 ## L019 — How to add a repeating texture to a season
 **Date:** 2026-06-04
 

@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-06-03_
+_Last updated: 2026-06-05_
 
 ---
 
@@ -86,6 +86,15 @@ cd projects/garden-planner/app && npm run dev
 | Dream Garden hybrid | `useDreamGarden.js` - baked-in seed + silent remote fetch. `src/data/dreamGarden.json` placeholder. | `25fd4ea` | ✅ |
 | **Sticker catalog** | 131 transparent PNGs. Tier 1+2+#36. All wired into `usePlantCatalog.js`. | `56b3dca` | ✅ |
 | **#31–36** | Recently-used X fix, XL size map, Logo restored, plant notes, Gladiolus BG removed, flower analysis + 27 new stickers | `edbe230`-`56b3dca` | ✅ |
+| **June 4 — New stickers** | Thyme, Phlox, Fern added | `4a28e4b`–`0ed2eee` | ✅ |
+| **Decor category** | Select hidden; 18 decor stickers; Decor menu (Rocks/Gazebo/Seating/Umbrella/Pots/Stairs/Arches); decorSubTool state | `c1344cc`, `632cb40` | ✅ |
+| **Fountain sticker** | Architectural PNG replaces old circle struct; waterSubTool intercept | `e07840c` | ✅ |
+| **Season BG + fall texture** | New palette, Rob's fall texture, LAWN_OPACITY per-season | `c8d2674`, `91cf3e3` | ✅ |
+| **Hedge texture** | Wired into draw + load | `25ade59` | ✅ |
+| **Texture system** | 14 textures (deck/roof/soil/path); `#TX:` token; thumbnail swatches in pickers; applyColourOrTexture helper | `86cc5d6`, `98a18e6` | ✅ |
+| **Auto-save** | 1.5s debounce on placement/delete/undo/paste | `613bba1` | ✅ |
+| **Draw tool passthrough** | Clicks on objects during freeform draw don’t interrupt tool | `a0a9b9e` | ✅ |
+| **Transparency load fix** | Plant opacity restored on garden load | `97b6aa9` | ✅ |
 
 ### Additional polish (June 1)
 - Season slider → frosted floating pill over canvas (`95583df`)
