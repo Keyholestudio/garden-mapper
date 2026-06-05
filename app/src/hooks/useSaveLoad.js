@@ -74,6 +74,13 @@ function migrateGarden(g) {
     }
   }
 
+  // Backfill missing w/h with safe defaults (should never be undefined in a real save)
+  if (!g.w || !g.h) {
+    g.w = g.w || 60
+    g.h = g.h || 40
+    console.warn('[GardenMapper] migrateGarden: missing w/h on garden "' + g.name + '", defaulted to ' + g.w + 'x' + g.h)
+  }
+
   // Backfill lockedDimensions for any existing save that doesn't have it
   if (g.lockedDimensions === undefined && g.w && g.h) {
     g.lockedDimensions = true
@@ -428,9 +435,9 @@ export function loadGarden({
 
   // ── Update React state AFTER all Konva work (avoid async races) ──
   setGardenName(g.name)
-  setGardenUnit(g.unit)
-  setGardenW(g.w)
-  setGardenH(g.h)
+  setGardenUnit(g.unit || 'ft')
+  setGardenW(g.w || 60)   // safe fallback — undefined would render as 'undefinedxundefined'
+  setGardenH(g.h || 40)
   setIsSetup(true)
 
   // Zoom to fit (same as v8 — called last)
