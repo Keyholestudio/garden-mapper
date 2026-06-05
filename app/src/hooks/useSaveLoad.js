@@ -74,6 +74,11 @@ function migrateGarden(g) {
     }
   }
 
+  // Backfill lockedDimensions for any existing save that doesn't have it
+  if (g.lockedDimensions === undefined && g.w && g.h) {
+    g.lockedDimensions = true
+  }
+
   g._schemaVersion = SCHEMA_VERSION
   return g
 }
@@ -176,12 +181,28 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
     structs.push(entry)
   })
 
+  // Dimension lock: preserve w/h from the existing saved record if lockedDimensions is set.
+  // This prevents a botched state read (e.g. stale React state during startup) from
+  // silently overwriting the user's actual garden size.
+  const existingGardens = readGardens()
+  const existing = existingGardens[currentGardenIndex]
+  const lockedW = (existing?.lockedDimensions && existing?.w) ? existing.w : state.gardenW
+  const lockedH = (existing?.lockedDimensions && existing?.h) ? existing.h : state.gardenH
+
+  if (existing?.lockedDimensions && (existing.w !== state.gardenW || existing.h !== state.gardenH)) {
+    console.warn(
+      `[GardenMapper] Dimension lock: ignoring incoming ${state.gardenW}x${state.gardenH}, ` +
+      `preserving saved ${existing.w}x${existing.h}`
+    )
+  }
+
   const gardenEntry = {
     _schemaVersion: SCHEMA_VERSION,
+    lockedDimensions: true,
     name:    state.gardenName,
     unit:    state.gardenUnit,
-    w:       state.gardenW,
-    h:       state.gardenH,
+    w:       lockedW,
+    h:       lockedH,
     originX: propBounds?.x ?? 0,
     originY: propBounds?.y ?? 0,
     plants,
@@ -428,7 +449,8 @@ export function createNewGarden({ currentGardenIndex, stage, layers, state }) {
   saveGarden({ stage, layers, state, currentGardenIndex })
 
   const updated = readGardens()
-  updated.push({ name: 'New Garden', unit: 'ft', w: 60, h: 40, plants: [], structs: [] })
+  // New gardens start unlocked — dimensions set via SetupOverlay, then locked on first save
+  updated.push({ name: 'New Garden', unit: 'ft', w: 60, h: 40, lockedDimensions: false, plants: [], structs: [] })
   writeGardens(updated)
   return { newIndex: updated.length - 1, limitReached: false }
 }
