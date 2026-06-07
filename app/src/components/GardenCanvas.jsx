@@ -190,6 +190,7 @@ export default function GardenCanvas({
     let lastTouchDist  = null  // distance between two fingers (pinch)
     let lastTouchMid   = null  // midpoint between two fingers (pinch pivot)
     let touchPanStart  = null  // single-finger pan origin
+    let isPinching     = false // true while 2+ fingers are on screen — blocks object interaction
 
     function getTouchDist(t1, t2) {
       const dx = t1.clientX - t2.clientX
@@ -207,12 +208,21 @@ export default function GardenCanvas({
       if (e.touches.length === 2) {
         // Pinch start — record initial distance and midpoint
         e.preventDefault()
+        isPinching = true
         const rect = wrap.getBoundingClientRect()
         lastTouchDist = getTouchDist(e.touches[0], e.touches[1])
         lastTouchMid  = getTouchMid(e.touches[0], e.touches[1], rect)
         touchPanStart = null
+        // Disable interaction on plant/struct layers so Konva doesn't fire
+        // tap/click on objects that happen to be under a pinch finger.
+        // Also detach transformer so it can't resize anything during pinch.
+        const { plantLayer, structLayer, tr } = layersRef.current
+        if (plantLayer)  plantLayer.listening(false)
+        if (structLayer) structLayer.listening(false)
+        if (tr) { tr.nodes([]); tr.getLayer()?.batchDraw() }
       } else if (e.touches.length === 1) {
         // Single finger — pan start (only in select mode; draw tools handle their own touch)
+        isPinching = false
         touchPanStart = { x: e.touches[0].clientX, y: e.touches[0].clientY }
         lastTouchDist = null
       }
@@ -258,7 +268,17 @@ export default function GardenCanvas({
 
     function onTouchEnd(e) {
       if (e.touches.length < 2) { lastTouchDist = null; lastTouchMid = null }
-      if (e.touches.length === 0) { touchPanStart = null }
+      if (e.touches.length === 0) {
+        touchPanStart = null
+        // Re-enable layer interaction after a short delay so the post-pinch
+        // finger-lift tap doesn't immediately select whatever was underneath.
+        setTimeout(() => {
+          isPinching = false
+          const { plantLayer, structLayer } = layersRef.current
+          if (plantLayer)  plantLayer.listening(true)
+          if (structLayer) structLayer.listening(true)
+        }, 120)
+      }
     }
 
     wrap.addEventListener('touchstart',  onTouchStart, { passive: false })
@@ -269,7 +289,9 @@ export default function GardenCanvas({
     // ── Canvas click → plant placement or deselect ──
     // While in edit-points mode (editingShapeRef.current is set), background taps
     // are used to add points — do NOT propagate to onCanvasClick which would clear selection.
+    // During pinch-to-zoom, suppress all tap/click so objects aren't selected or moved.
     stage.on('click tap', e => {
+      if (isPinching) return  // pinch in progress — ignore all taps
       if (e.target === stage) {
         if (editingShapeRef.current) return  // edit-points mode: ignore background tap
         const pos = stage.getRelativePointerPosition()
