@@ -262,6 +262,8 @@ export default function GardenEditor() {
   // This replaces the old circle-struct fountain with the new PNG sticker.
   useEffect(() => {
     if (state.waterSubTool !== 'fountain') return
+    // Clear waterSubTool immediately so re-entering water mode later doesn't re-fire this effect
+    state.setWaterSubTool(null)
     const entry = {
       key: 'water-feature_fountain_L_CA-US-FR-GB-AU',
       label: 'Fountain', family: 'Water Feature', size: 'L',
@@ -270,7 +272,6 @@ export default function GardenEditor() {
     const img = new Image()
     img.onload = () => {
       pendingPlantRef.current = { ...entry, _img: img }
-      state.setWaterSubTool(null)   // prevent circle-struct draw path from firing
       state.setCurrentMode('select')
     }
     img.onerror = () => console.warn('Fountain sticker not found')
