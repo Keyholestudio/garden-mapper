@@ -284,6 +284,8 @@ export default function GardenEditor() {
     if (!id || state.currentMode !== 'decor') return
     const entry = DECOR_CATALOG[id]
     if (!entry) return
+    // Clear decorSubTool immediately so re-entering decor mode later doesn't re-fire this effect
+    state.setDecorSubTool(null)
     const img = new Image()
     img.onload = () => {
       pendingPlantRef.current = { ...entry, _img: img }
