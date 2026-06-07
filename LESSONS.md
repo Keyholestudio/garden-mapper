@@ -3,6 +3,33 @@ _L001–L009 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 ---
 
+## L021 — Pinch-to-zoom: disable draggable on shapes, not just layer listening
+**Date:** 2026-06-07
+
+### The problem
+During a pinch-to-zoom gesture, if a finger lands on a Konva draggable object, the object moves or resizes even though no transformer handles are visible. The Konva Transformer (`transformstart`/`stopTransform`) is NOT involved — this is Konva's internal drag handler latching onto the shape from the first finger touch.
+
+### What doesn't work
+- `layer.listening(false)` — blocks new events but doesn't interrupt a drag already in progress from finger 1
+- `tr.nodes([])` at pinch start — only affects transformer resize, not plain dragging
+- `capture: true` on the canvas element — fires before Konva but breaks Vite's HMR and Konva's own touch move processing, killing pinch zoom entirely
+- `transformstart` + `stopTransform()` — correct API but only fires for transformer anchor drags, not free dragging
+
+### What works
+In `onTouchStart` when `e.touches.length === 2`:
+1. Call `Konva.DD?.reset()` to cancel any in-progress drag
+2. Call `n.draggable(false)` on every shape in plant and struct layers
+3. On pinch end (after 120ms delay): restore `draggable(true)` on all shapes, then call `onPinchEnd` callback so parent can re-apply locked state for any locked objects
+
+### Key insight
+Vite hot-reload pushes changes to Cloudflare tunnel immediately — if a fix appears not to work on device, the issue is the fix itself, not the delivery. Don't restart the tunnel or dev server to debug; look at the logic instead.
+
+### Files changed
+- `GardenCanvas.jsx` — pinch start/end touch handlers
+- `GardenEditor.jsx` — `onPinchEnd` callback re-applies lock state; `transformstart` guard using `e.evt.touches.length >= 2`
+
+---
+
 ## L020 — CDP sticker generation: navigate_fresh() causes account switching
 **Date:** 2026-06-04
 `navigate_fresh()` calls `window.location.href = GEMINI_URL` which forces a full page reload. On machines with multiple Google accounts, this lets Google re-evaluate which account is "active" and switches users mid-run.
