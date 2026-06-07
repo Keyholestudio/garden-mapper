@@ -920,6 +920,18 @@ export default function GardenEditor() {
             editingShapeId={state.editingShapeId}
             onDrop={handleCanvasDrop}
             isPinchingRef={isPinchingRef}
+            onPinchEnd={() => {
+              // Re-apply locked state after pinch ends (draggable was blanket-reset to true)
+              const { plantLayer, structLayer } = layersRef.current
+              plantLayer?.find('Group').forEach(n => {
+                const d = state.plantDataRef.current[n.id()]
+                if (d?.locked) n.draggable(false)
+              })
+              structLayer?.find('Line,Rect,Circle,Path').forEach(n => {
+                const d = state.structDataRef.current[n.id()]
+                if (d?.locked) n.draggable(false)
+              })
+            }}
           />
           <div id="draw-hint" className="draw-hint" style={{ display: 'none' }} />
           {/* Mobile sheet: floats over canvas, anchored to canvas-wrap bottom */}

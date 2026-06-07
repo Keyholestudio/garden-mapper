@@ -52,6 +52,7 @@ export default function GardenCanvas({
   onDrop,          // callback({x,y}) — world coords when a plant is dropped onto canvas
   editingShapeId,  // when set, background taps do NOT clear selection (edit-points mode)
   isPinchingRef,   // shared ref — set true while 2 fingers on screen, read by transformer to abort
+  onPinchEnd,      // callback — fired after pinch ends so parent can re-apply lock/draggable state
 }) {
   const containerRef    = useRef(null)
   const stageRef        = useRef(null)
@@ -215,10 +216,17 @@ export default function GardenCanvas({
         lastTouchDist = getTouchDist(e.touches[0], e.touches[1])
         lastTouchMid  = getTouchMid(e.touches[0], e.touches[1], rect)
         touchPanStart = null
-        // Disable interaction on plant/struct layers so Konva doesn't fire
-        // tap/click on objects that happen to be under a pinch finger.
-        // Also detach transformer so it can't resize anything during pinch.
+        // Stop any in-progress drag and disable draggable on all shapes.
+        // layer.listening(false) blocks new events but doesn't interrupt an
+        // already-latched drag from the first finger — draggable(false) does.
         const { plantLayer, structLayer, tr } = layersRef.current
+        // Cancel any active Konva drag immediately
+        if (Konva.DD?.isDragging) Konva.DD.reset()
+        // Disable draggable on every shape in both layers
+        plantLayer?.find('Group').forEach(n => n.draggable(false))
+        structLayer?.find('Line,Rect,Circle,Path').forEach(n => {
+          if (n.id() !== '__propBounds') n.draggable(false)
+        })
         if (plantLayer)  plantLayer.listening(false)
         if (structLayer) structLayer.listening(false)
         if (tr) { tr.nodes([]); tr.getLayer()?.batchDraw() }
@@ -279,8 +287,14 @@ export default function GardenCanvas({
           isPinching = false
           if (isPinchingRef) isPinchingRef.current = false
           const { plantLayer, structLayer } = layersRef.current
+          // Re-enable draggable on all shapes (lock state re-applied by onPinchEnd in parent)
+          plantLayer?.find('Group').forEach(n => n.draggable(true))
+          structLayer?.find('Line,Rect,Circle,Path').forEach(n => {
+            if (n.id() !== '__propBounds') n.draggable(true)
+          })
           if (plantLayer)  plantLayer.listening(true)
           if (structLayer) structLayer.listening(true)
+          onPinchEnd?.()  // parent re-applies locked state
         }, 120)
       }
     }
