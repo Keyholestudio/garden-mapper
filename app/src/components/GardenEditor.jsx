@@ -647,7 +647,14 @@ export default function GardenEditor() {
     const propBounds = state.propBoundsRef.current
     if (!stage || !propBounds) return
     const W = stage.width(), H = stage.height(), pad = 20
-    const scale = Math.min((W-pad*2)/propBounds.w, (H-pad*2)/propBounds.h, 2)
+    let scale
+    if (isMobile) {
+      // Mobile: fit to height so the full garden fills the screen top-to-bottom
+      scale = Math.min((H - pad * 2) / propBounds.h, 2)
+    } else {
+      // Desktop/tablet: fit the smaller dimension (original behaviour)
+      scale = Math.min((W - pad * 2) / propBounds.w, (H - pad * 2) / propBounds.h, 2)
+    }
     stage.scale({ x: scale, y: scale })
     stage.x(W/2 - (propBounds.x + propBounds.w/2) * scale)
     stage.y(H/2 - (propBounds.y + propBounds.h/2) * scale)
