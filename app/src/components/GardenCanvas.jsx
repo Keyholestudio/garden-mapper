@@ -53,6 +53,7 @@ export default function GardenCanvas({
   editingShapeId,  // when set, background taps do NOT clear selection (edit-points mode)
   isPinchingRef,   // shared ref — set true while 2 fingers on screen, read by transformer to abort
   onPinchEnd,      // callback — fired after pinch ends so parent can re-apply lock/draggable state
+  isMobile,        // true on mobile — changes initial zoom to fit height instead of smaller dimension
 }) {
   const containerRef    = useRef(null)
   const stageRef        = useRef(null)
@@ -60,6 +61,7 @@ export default function GardenCanvas({
   const showGridRef     = useRef(showGrid)
   const seasonRef       = useRef(currentSeason)
   const gardenUnitRef   = useRef(gardenUnit)
+  const isMobileRef     = useRef(isMobile)
   const editingShapeRef = useRef(editingShapeId ?? null) // kept current via effect below
 
   // ── Init Konva stage ──────────────────────────────────
@@ -318,7 +320,7 @@ export default function GardenCanvas({
     })
 
     // Initial zoom-to-fit + draw (20px padding matches v8)
-    zoomToFit(stage, propBoundsRef.current, 20)
+    zoomToFit(stage, propBoundsRef.current, 20, isMobileRef.current)
     drawGrid(stage, gridLayer, showGrid, gardenUnit, currentSeason)
 
     // Resize observer
@@ -413,13 +415,13 @@ export default function GardenCanvas({
 
 // ── Helpers (pure, no React state) ────────────────────────
 
-export function zoomToFit(stage, propBounds, padding = 80) {
+export function zoomToFit(stage, propBounds, padding = 80, isMobile = false) {
   if (!stage || !propBounds) return
   const W = stage.width()
   const H = stage.height()
-  const scaleX = (W - padding * 2) / propBounds.w
-  const scaleY = (H - padding * 2) / propBounds.h
-  const scale  = Math.min(scaleX, scaleY, 2) // cap at 2×
+  const scale = isMobile
+    ? Math.min((H - padding * 2) / propBounds.h, 2)   // mobile: fit height
+    : Math.min((W - padding * 2) / propBounds.w, (H - padding * 2) / propBounds.h, 2) // desktop: fit smaller dim
   stage.scale({ x: scale, y: scale })
   stage.x(W / 2 - (propBounds.x + propBounds.w / 2) * scale)
   stage.y(H / 2 - (propBounds.y + propBounds.h / 2) * scale)

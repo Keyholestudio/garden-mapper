@@ -926,6 +926,7 @@ export default function GardenEditor() {
             onScaleChange={(stage) => updateScaleLabel(stage, state.gardenUnit)}
             editingShapeId={state.editingShapeId}
             onDrop={handleCanvasDrop}
+            isMobile={isMobile}
             isPinchingRef={isPinchingRef}
             onPinchEnd={() => {
               // Re-apply locked state after pinch ends (draggable was blanket-reset to true)
