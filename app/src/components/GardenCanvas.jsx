@@ -51,6 +51,7 @@ export default function GardenCanvas({
   onScaleChange,   // callback(stage) — fired after zoom/pan so parent can update scale label
   onDrop,          // callback({x,y}) — world coords when a plant is dropped onto canvas
   editingShapeId,  // when set, background taps do NOT clear selection (edit-points mode)
+  isPinchingRef,   // shared ref — set true while 2 fingers on screen, read by transformer to abort
 }) {
   const containerRef    = useRef(null)
   const stageRef        = useRef(null)
@@ -209,6 +210,7 @@ export default function GardenCanvas({
         // Pinch start — record initial distance and midpoint
         e.preventDefault()
         isPinching = true
+        if (isPinchingRef) isPinchingRef.current = true  // shared with transformer abort
         const rect = wrap.getBoundingClientRect()
         lastTouchDist = getTouchDist(e.touches[0], e.touches[1])
         lastTouchMid  = getTouchMid(e.touches[0], e.touches[1], rect)
@@ -223,6 +225,7 @@ export default function GardenCanvas({
       } else if (e.touches.length === 1) {
         // Single finger — pan start (only in select mode; draw tools handle their own touch)
         isPinching = false
+        if (isPinchingRef) isPinchingRef.current = false
         touchPanStart = { x: e.touches[0].clientX, y: e.touches[0].clientY }
         lastTouchDist = null
       }
@@ -274,6 +277,7 @@ export default function GardenCanvas({
         // finger-lift tap doesn't immediately select whatever was underneath.
         setTimeout(() => {
           isPinching = false
+          if (isPinchingRef) isPinchingRef.current = false
           const { plantLayer, structLayer } = layersRef.current
           if (plantLayer)  plantLayer.listening(true)
           if (structLayer) structLayer.listening(true)

@@ -382,9 +382,22 @@ export default function GardenEditor() {
     setScaleLabel(lbl)
   }
 
+  // Shared pinch flag — set by GardenCanvas touch handlers, read by transformer
+  const isPinchingRef = useRef(false)
+
   const handleStageReady = (stage, layers) => {
     stageRef.current  = stage
     layersRef.current = layers
+    // Block transformer from starting a resize/scale during pinch-to-zoom.
+    // The second finger landing triggers Konva's transform before our DOM handler;
+    // this catches it at the Konva event level and aborts immediately.
+    if (layers.tr) {
+      layers.tr.on('transformstart', () => {
+        if (isPinchingRef.current) {
+          layers.tr.stopTransform()
+        }
+      })
+    }
     setStageReady(true)
   }
 
@@ -906,6 +919,7 @@ export default function GardenEditor() {
             onScaleChange={(stage) => updateScaleLabel(stage, state.gardenUnit)}
             editingShapeId={state.editingShapeId}
             onDrop={handleCanvasDrop}
+            isPinchingRef={isPinchingRef}
           />
           <div id="draw-hint" className="draw-hint" style={{ display: 'none' }} />
           {/* Mobile sheet: floats over canvas, anchored to canvas-wrap bottom */}
