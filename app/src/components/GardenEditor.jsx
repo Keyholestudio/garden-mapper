@@ -389,11 +389,11 @@ export default function GardenEditor() {
     stageRef.current  = stage
     layersRef.current = layers
     // Block transformer from starting a resize/scale during pinch-to-zoom.
-    // The second finger landing triggers Konva's transform before our DOM handler;
-    // this catches it at the Konva event level and aborts immediately.
+    // Check the raw touch event directly — if 2+ fingers are present when
+    // transformstart fires, it's a pinch not a deliberate resize, so abort it.
     if (layers.tr) {
-      layers.tr.on('transformstart', () => {
-        if (isPinchingRef.current) {
+      layers.tr.on('transformstart', (e) => {
+        if (e.evt?.touches?.length >= 2) {
           layers.tr.stopTransform()
         }
       })

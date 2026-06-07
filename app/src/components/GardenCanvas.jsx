@@ -285,14 +285,10 @@ export default function GardenCanvas({
       }
     }
 
-    // Attach to the Konva canvas element with capture:true so our handlers
-    // fire BEFORE Konva's own touchstart listeners — this is the only way to
-    // set isPinching and detach the transformer before Konva begins a transform.
-    const canvasEl = wrap.querySelector('canvas') || wrap
-    canvasEl.addEventListener('touchstart',  onTouchStart, { passive: false, capture: true })
-    canvasEl.addEventListener('touchmove',   onTouchMove,  { passive: false, capture: true })
-    canvasEl.addEventListener('touchend',    onTouchEnd,   { capture: true })
-    canvasEl.addEventListener('touchcancel', onTouchEnd,   { capture: true })
+    wrap.addEventListener('touchstart',  onTouchStart, { passive: false })
+    wrap.addEventListener('touchmove',   onTouchMove,  { passive: false })
+    wrap.addEventListener('touchend',    onTouchEnd)
+    wrap.addEventListener('touchcancel', onTouchEnd)
 
     // ── Canvas click → plant placement or deselect ──
     // While in edit-points mode (editingShapeRef.current is set), background taps
@@ -326,11 +322,10 @@ export default function GardenCanvas({
 
     return () => {
       ro.disconnect()
-      const canvasEl = wrap.querySelector('canvas') || wrap
-      canvasEl.removeEventListener('touchstart',  onTouchStart, { capture: true })
-      canvasEl.removeEventListener('touchmove',   onTouchMove,  { capture: true })
-      canvasEl.removeEventListener('touchend',    onTouchEnd,   { capture: true })
-      canvasEl.removeEventListener('touchcancel', onTouchEnd,   { capture: true })
+      wrap.removeEventListener('touchstart',  onTouchStart)
+      wrap.removeEventListener('touchmove',   onTouchMove)
+      wrap.removeEventListener('touchend',    onTouchEnd)
+      wrap.removeEventListener('touchcancel', onTouchEnd)
       stage.destroy()
       stageRef.current = null
     }
