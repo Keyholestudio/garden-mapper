@@ -1173,7 +1173,7 @@ export default function GardenEditor() {
             triggerAutoSave()
           }}
           onClearSelection={clearSelection}
-          onUndo={handleUndo
+          onUndo={handleUndo}
         />}
       </div>
 
