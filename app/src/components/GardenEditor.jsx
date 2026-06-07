@@ -398,6 +398,9 @@ export default function GardenEditor() {
         }
       })
     }
+    // Auto-save on any drag or resize completing — catches all shapes without per-shape wiring
+    stage.on('dragend', () => triggerAutoSave())
+    stage.on('transformend', () => triggerAutoSave())
     setStageReady(true)
   }
 
@@ -502,6 +505,7 @@ export default function GardenEditor() {
     else { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(noFill ? 'transparent' : colour + 'CC'); if (noFill) shape.stroke(colour) }
     layersRef.current.structLayer?.batchDraw()
     state.setSelectedStruct({ ...sel, colour })
+    triggerAutoSave()
   }
 
   const handlePathWidthChange = (w) => {
@@ -509,6 +513,7 @@ export default function GardenEditor() {
     state.structDataRef.current[sel.id].pathWidth = w
     sel.shape.strokeWidth(w)
     layersRef.current.structLayer?.batchDraw()
+    triggerAutoSave()
   }
 
   const handleDimRectApply = (w, h) => {
@@ -518,6 +523,7 @@ export default function GardenEditor() {
     sel.shape.width(w * px); sel.shape.height(h * px)
     sel.shape.scaleX(1); sel.shape.scaleY(1)
     layersRef.current.structLayer?.batchDraw()
+    triggerAutoSave()
   }
 
   const handleDimCircleApply = (d) => {
@@ -525,6 +531,7 @@ export default function GardenEditor() {
     if (!sel || !(sel.shape instanceof Konva.Circle)) return
     sel.shape.radius((d / 2) * 32 * (state.gardenUnit === 'm' ? 3.281 : 1))
     layersRef.current.structLayer?.batchDraw()
+    triggerAutoSave()
   }
 
   const handleLayerMove = (kind, dir) => {
@@ -535,6 +542,7 @@ export default function GardenEditor() {
       dir === 'up' ? state.selectedStruct.shape.moveUp() : state.selectedStruct.shape.moveDown()
       layersRef.current.structLayer?.batchDraw()
     }
+    triggerAutoSave()
   }
 
   const handleTransparentPlant = () => {
@@ -544,6 +552,7 @@ export default function GardenEditor() {
     d.transparent ? (sel.group.opacity(0.35), sel.group.moveToBottom()) : (sel.group.opacity(1), sel.group.moveToTop())
     layersRef.current.plantLayer?.batchDraw()
     state.setSelectedPlant({ ...sel })
+    triggerAutoSave()
   }
 
   const handleTransparentStruct = () => {
@@ -553,6 +562,7 @@ export default function GardenEditor() {
     d.transparent ? (sel.shape.opacity(0.35), sel.shape.moveToBottom()) : (sel.shape.opacity(1), sel.shape.moveToTop())
     layersRef.current.structLayer?.batchDraw()
     state.setSelectedStruct({ ...sel })
+    triggerAutoSave()
   }
 
   const handleLockPlant = () => {
@@ -567,6 +577,7 @@ export default function GardenEditor() {
     }
     layersRef.current.plantLayer?.batchDraw()
     state.setSelectedPlant({ ...sel })
+    triggerAutoSave()
   }
 
   const handleLockStruct = () => {
@@ -582,6 +593,7 @@ export default function GardenEditor() {
     }
     layersRef.current.structLayer?.batchDraw()
     state.setSelectedStruct({ ...sel })
+    triggerAutoSave()
   }
 
   const handleDisconnect = () => {
@@ -614,6 +626,7 @@ export default function GardenEditor() {
       })
     })
     structLayer?.batchDraw()
+    triggerAutoSave()
   }
 
   const handleRemoveLastPt = () => {
@@ -978,6 +991,7 @@ export default function GardenEditor() {
                   if (group) { group.scaleX(scaleX); group.scaleY(scaleY); group.moveToTop() }
                   plantLayer.batchDraw()
                   state.pushUndo(() => { const g = layersRef.current.plantLayer?.findOne('#' + newId); if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() } })
+                  triggerAutoSave()
                 }
               }}
               onUndo={handleUndo}
@@ -1000,6 +1014,7 @@ export default function GardenEditor() {
                   g.opacity(d.seasons?.includes(sN) ? 1 : 0.1)
                 })
                 plantLayer.batchDraw()
+                triggerAutoSave()
               }}
               onClearSelection={clearSelection}
               // Edit points
@@ -1109,6 +1124,7 @@ export default function GardenEditor() {
                 const g = layersRef.current.plantLayer?.findOne('#' + newId)
                 if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() }
               })
+              triggerAutoSave()
             }
             // Advance srcX so next tap steps one more plant to the right
             state.setClipboard({ kind: 'plant', entry, srcX: srcX + size + 8, srcY })
@@ -1154,9 +1170,10 @@ export default function GardenEditor() {
               g.opacity(d.seasons?.includes(sN) ? 1 : 0.1)
             })
             plantLayer.batchDraw()
+            triggerAutoSave()
           }}
           onClearSelection={clearSelection}
-          onUndo={handleUndo}
+          onUndo={handleUndo
         />}
       </div>
 
