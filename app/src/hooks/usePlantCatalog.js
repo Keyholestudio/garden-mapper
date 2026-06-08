@@ -75,7 +75,7 @@ export const PLANT_CATALOG = [
   { key:'flower-daisy_zinnia',             label:'Zinnia',              family:'Annual Flower',        src:'/stickers/flower-daisy_zinnia_S_CA-US-FR-AU.png',                 size:'S' },
 
   // ── Rose-type Flowers ─────────────────────────────────────────────────────────
-  { key:'flower-rose_climbing-rose',       label:'Climbing Rose',       family:'Shrub / Rose',         src:'/stickers/flower-rose_climbing-rose_XL_CA-US-FR-GB-AU.png',       size:'XL' },
+  { key:'flower-rose_climbing-rose',       label:'Climbing Rose',       family:'Shrub / Rose',         src:'/stickers/flower-rose_climbing-rose_M_CA-US-FR-GB-AU.png',        size:'M'  },
   { key:'flower-rose_peony',               label:'Peony',               family:'Perennial',            src:'/stickers/flower-rose_peony_M_CA-US-FR-GB.png',                   size:'M' },
   { key:'flower-rose_rose',                label:'Rose',                family:'Shrub / Rose',         src:'/stickers/flower-rose_rose_M_CA-US-FR-GB-AU.png',                 size:'M' },
 
