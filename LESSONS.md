@@ -3,6 +3,14 @@ _L001–L009 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 ---
 
+## L022 — Decor items must never appear in the plant tray
+**Date:** 2026-06-08
+**Rule:** Any new item added to the Decor menu (tables, stones, fountains, loungers, arches, etc.) must have `family: 'Decor'` (or `'Water Feature'` for water items). These families are filtered out of the plant tray via `PLANT_CATALOG_TRAY` in `usePlantCatalog.js`.
+**Do not** use a plant-style family (e.g. `'Perennial'`, `'Shrub'`) for decor items — it will make them show up in the plant list.
+**Filter lives in:** `usePlantCatalog.js` → `DECOR_FAMILIES` set. If adding a new non-plant family, add it to that set too.
+
+---
+
 ## L021 — Pinch-to-zoom: disable draggable on shapes, not just layer listening
 **Date:** 2026-06-07
 
