@@ -39,7 +39,7 @@ export const PLANT_CATALOG = [
   { key:'flower-spike_hollyhock',           label:'Hollyhock',           family:'Biennial',             src:'/stickers/flower-spike_hollyhock_XL_CA-US-FR-GB-AU.png',            size:'XL' },
   // New vegetables
   { key:'vegetable-leafy_cauliflower',      label:'Cauliflower',         family:'Vegetable',            src:'/stickers/vegetable-leafy_cauliflower_M_CA-US-FR-GB-AU.png',        size:'M'  },
-  { key:'vegetable-tall_asparagus',         label:'Asparagus',           family:'Vegetable',            src:'/stickers/vegetable-tall_asparagus_L_CA-US-FR-GB-AU.png',           size:'L'  },
+  { key:'vegetable-tall_asparagus',         label:'Asparagus',           family:'Vegetable',            src:'/stickers/vegetable-tall_asparagus_M_CA-US-FR-GB-AU.png',           size:'M'  },
   { key:'vine-leaf_peas',                   label:'Peas',                family:'Vegetable / Climber',  src:'/stickers/vine-leaf_peas_M_CA-US-FR-GB-AU.png',                     size:'M'  },
   { key:'vegetable-leafy_pumpkin',          label:'Pumpkin',             family:'Vegetable',            src:'/stickers/vegetable-leafy_pumpkin_L_CA-US-FR-GB-AU.png',            size:'L'  },
   { key:'vegetable-leafy_squash',           label:'Squash',              family:'Vegetable',            src:'/stickers/vegetable-leafy_squash_M_CA-US-FR-GB-AU.png',             size:'M'  },
