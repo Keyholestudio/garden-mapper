@@ -261,23 +261,23 @@ export default function GardenEditor() {
     'decor-arch-metal':   { key: 'decor_arch-metal_L_CA-US-FR-GB-AU',   label: 'Metal Arch',      family: 'Decor', size: 'L',  src: '/stickers/decor_arch-metal_L_CA-US-FR-GB-AU.png'   },
   }
 
-  // Fountain sticker: intercept waterSubTool='fountain' and route through sticker placement
-  // This replaces the old circle-struct fountain with the new PNG sticker.
+  // Fountain stickers: intercept waterSubTool='fountain-sm/md/lg' and route through sticker placement
+  const FOUNTAIN_CATALOG = {
+    'fountain-sm': { key: 'water-feature_fountain-sm_L_CA-US-FR-GB-AU', label: 'Fountain',        family: 'Water Feature', size: 'L', src: '/stickers/water-feature_fountain-sm_L_CA-US-FR-GB-AU.png' },
+    'fountain-md': { key: 'water-feature_fountain-md_L_CA-US-FR-GB-AU', label: 'Medium Fountain', family: 'Water Feature', size: 'L', src: '/stickers/water-feature_fountain-md_L_CA-US-FR-GB-AU.png' },
+    'fountain-lg': { key: 'water-feature_fountain-lg_L_CA-US-FR-GB-AU', label: 'Large Fountain',  family: 'Water Feature', size: 'L', src: '/stickers/water-feature_fountain-lg_L_CA-US-FR-GB-AU.png' },
+  }
   useEffect(() => {
-    if (state.waterSubTool !== 'fountain') return
-    // Clear waterSubTool immediately so re-entering water mode later doesn't re-fire this effect
+    const id = state.waterSubTool
+    if (!FOUNTAIN_CATALOG[id]) return
     state.setWaterSubTool(null)
-    const entry = {
-      key: 'water-feature_fountain_L_CA-US-FR-GB-AU',
-      label: 'Fountain', family: 'Water Feature', size: 'L',
-      src: '/stickers/water-feature_fountain_L_CA-US-FR-GB-AU.png',
-    }
+    const entry = FOUNTAIN_CATALOG[id]
     const img = new Image()
     img.onload = () => {
       pendingPlantRef.current = { ...entry, _img: img }
       state.setCurrentMode('select')
     }
-    img.onerror = () => console.warn('Fountain sticker not found')
+    img.onerror = () => console.warn('Fountain sticker not found:', entry.src)
     img.src = entry.src
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.waterSubTool])
