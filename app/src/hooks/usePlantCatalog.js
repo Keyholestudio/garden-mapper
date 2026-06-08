@@ -126,26 +126,26 @@ export const PLANT_CATALOG = [
   { key:'shrub-round_boxwood',             label:'Boxwood',             family:'Shrub',                src:'/stickers/shrub-round_boxwood_L_CA-US-FR-GB-AU.png',              size:'L' },
 
   // ── Conifer Trees ─────────────────────────────────────────────────────────────
-  { key:'tree-conifer_blue-spruce',        label:'Blue Spruce',         family:'Conifer Tree',         src:'/stickers/tree-conifer_blue-spruce_XL_CA-US-FR-GB.png',           size:'XL' },
-  { key:'tree-conifer_leylandii',          label:'Leylandii Cypress',   family:'Conifer Tree',         src:'/stickers/tree-conifer_leylandii_XL_CA-US-FR-GB.png',             size:'XL' },
-  { key:'tree-conifer_pine',               label:'Pine Tree',           family:'Conifer Tree',         src:'/stickers/tree-conifer_pine_XL_CA-US-FR-GB-AU.png',               size:'XL' },
+  { key:'tree-conifer_blue-spruce',        label:'Blue Spruce',         family:'Conifer Tree',         src:'/stickers/tree-conifer_blue-spruce_XXL_CA-US-FR-GB.png',           size:'XXL' },
+  { key:'tree-conifer_leylandii',          label:'Leylandii Cypress',   family:'Conifer Tree',         src:'/stickers/tree-conifer_leylandii_XXL_CA-US-FR-GB.png',             size:'XXL' },
+  { key:'tree-conifer_pine',               label:'Pine Tree',           family:'Conifer Tree',         src:'/stickers/tree-conifer_pine_XXL_CA-US-FR-GB-AU.png',               size:'XXL' },
 
   // ── Deciduous Trees ───────────────────────────────────────────────────────────
-  { key:'tree-deciduous_maple',             label:'Maple Tree',          family:'Deciduous Tree',       src:'/stickers/tree-deciduous_maple_XL_CA-US-FR-GB-AU.png',              size:'XL' },
-  { key:'tree-deciduous_japanese-maple',   label:'Japanese Maple',      family:'Deciduous Tree',       src:'/stickers/tree-deciduous_japanese-maple_XL_CA-US-FR-GB-AU.png',   size:'XL' },
-  { key:'tree-deciduous_magnolia',         label:'Magnolia',            family:'Deciduous Tree',       src:'/stickers/tree-deciduous_magnolia_XL_CA-US-FR-GB-AU.png',         size:'XL' },
-  { key:'tree-deciduous_oak',              label:'Oak Tree',            family:'Deciduous Tree',       src:'/stickers/tree-deciduous_oak_XL_CA-US-FR-GB-AU.png',              size:'XL' },
-  { key:'tree-deciduous_ornamental-cherry',label:'Ornamental Cherry',   family:'Deciduous Tree',       src:'/stickers/tree-deciduous_ornamental-cherry_XL_CA-US-FR-GB-AU.png',size:'XL' },
-  { key:'tree-deciduous_silver-birch',     label:'Silver Birch',        family:'Deciduous Tree',       src:'/stickers/tree-deciduous_silver-birch_XL_CA-US-FR-GB.png',        size:'XL' },
-  { key:'tree-deciduous_weeping-willow',   label:'Weeping Willow',      family:'Deciduous Tree',       src:'/stickers/tree-deciduous_weeping-willow_XL_CA-US-FR-GB-AU.png',   size:'XL' },
+  { key:'tree-deciduous_maple',             label:'Maple Tree',          family:'Deciduous Tree',       src:'/stickers/tree-deciduous_maple_XXL_CA-US-FR-GB-AU.png',              size:'XXL' },
+  { key:'tree-deciduous_japanese-maple',   label:'Japanese Maple',      family:'Deciduous Tree',       src:'/stickers/tree-deciduous_japanese-maple_XXL_CA-US-FR-GB-AU.png',   size:'XXL' },
+  { key:'tree-deciduous_magnolia',         label:'Magnolia',            family:'Deciduous Tree',       src:'/stickers/tree-deciduous_magnolia_XXL_CA-US-FR-GB-AU.png',         size:'XXL' },
+  { key:'tree-deciduous_oak',              label:'Oak Tree',            family:'Deciduous Tree',       src:'/stickers/tree-deciduous_oak_XXL_CA-US-FR-GB-AU.png',              size:'XXL' },
+  { key:'tree-deciduous_ornamental-cherry',label:'Ornamental Cherry',   family:'Deciduous Tree',       src:'/stickers/tree-deciduous_ornamental-cherry_XXL_CA-US-FR-GB-AU.png',size:'XXL' },
+  { key:'tree-deciduous_silver-birch',     label:'Silver Birch',        family:'Deciduous Tree',       src:'/stickers/tree-deciduous_silver-birch_XXL_CA-US-FR-GB.png',        size:'XXL' },
+  { key:'tree-deciduous_weeping-willow',   label:'Weeping Willow',      family:'Deciduous Tree',       src:'/stickers/tree-deciduous_weeping-willow_XXL_CA-US-FR-GB-AU.png',   size:'XXL' },
 
   // ── Fruit Trees ───────────────────────────────────────────────────────────────
-  { key:'tree-fruit_apple',                label:'Apple Tree',          family:'Fruit Tree',           src:'/stickers/tree-fruit_apple_XL_CA-US-FR-GB-AU.png',                size:'XL' },
-  { key:'tree-fruit_cherry',               label:'Cherry Tree',         family:'Fruit Tree',           src:'/stickers/tree-fruit_cherry_XL_CA-US-FR-GB-AU.png',               size:'XL' },
-  { key:'tree-fruit_lemon',                label:'Lemon Tree',          family:'Fruit Tree',           src:'/stickers/tree-fruit_lemon_XL_US-FR-AU.png',                      size:'XL' },
-  { key:'tree-fruit_peach',                label:'Peach Tree',          family:'Fruit Tree',           src:'/stickers/tree-fruit_peach_XL_CA-US-FR-AU.png',                   size:'XL' },
-  { key:'tree-fruit_pear',                 label:'Pear Tree',           family:'Fruit Tree',           src:'/stickers/tree-fruit_pear_XL_CA-US-FR-GB-AU.png',                 size:'XL' },
-  { key:'tree-fruit_plum',                 label:'Plum Tree',           family:'Fruit Tree',           src:'/stickers/tree-fruit_plum_XL_CA-US-FR-GB-AU.png',                 size:'XL' },
+  { key:'tree-fruit_apple',                label:'Apple Tree',          family:'Fruit Tree',           src:'/stickers/tree-fruit_apple_XXL_CA-US-FR-GB-AU.png',                size:'XXL' },
+  { key:'tree-fruit_cherry',               label:'Cherry Tree',         family:'Fruit Tree',           src:'/stickers/tree-fruit_cherry_XXL_CA-US-FR-GB-AU.png',               size:'XXL' },
+  { key:'tree-fruit_lemon',                label:'Lemon Tree',          family:'Fruit Tree',           src:'/stickers/tree-fruit_lemon_XXL_US-FR-AU.png',                      size:'XXL' },
+  { key:'tree-fruit_peach',                label:'Peach Tree',          family:'Fruit Tree',           src:'/stickers/tree-fruit_peach_XXL_CA-US-FR-AU.png',                   size:'XXL' },
+  { key:'tree-fruit_pear',                 label:'Pear Tree',           family:'Fruit Tree',           src:'/stickers/tree-fruit_pear_XXL_CA-US-FR-GB-AU.png',                 size:'XXL' },
+  { key:'tree-fruit_plum',                 label:'Plum Tree',           family:'Fruit Tree',           src:'/stickers/tree-fruit_plum_XXL_CA-US-FR-GB-AU.png',                 size:'XXL' },
 
   // ── Leafy Vegetables ──────────────────────────────────────────────────────────
   { key:'vegetable-leafy_cabbage',         label:'Cabbage',             family:'Vegetable',            src:'/stickers/vegetable-leafy_cabbage_M_CA-US-FR-GB-AU.png',          size:'M' },
@@ -206,18 +206,18 @@ export const PLANT_CATALOG = [
 
   { key:'decor_rock-large_XL_CA-US-FR-GB-AU', label:'Large Garden Stone', family:'Decor', src:'/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
-  { key:'decor_gazebo-square_XL_CA-US-FR-GB-AU', label:'Square Gazebo', family:'Decor', src:'/stickers/decor_gazebo-square_XL_CA-US-FR-GB-AU.png', size:'XL' },
+  { key:'decor_gazebo-square_XXL_CA-US-FR-GB-AU', label:'Square Gazebo', family:'Decor', src:'/stickers/decor_gazebo-square_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
 
-  { key:'decor_gazebo-oct_XL_CA-US-FR-GB-AU', label:'Octagonal Gazebo', family:'Decor', src:'/stickers/decor_gazebo-oct_XL_CA-US-FR-GB-AU.png', size:'XL' },
+  { key:'decor_gazebo-oct_XXL_CA-US-FR-GB-AU', label:'Octagonal Gazebo', family:'Decor', src:'/stickers/decor_gazebo-oct_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
 
   { key:'decor_lounge-modern_XL_CA-US-FR-GB-AU', label:'Plastic Loungers', family:'Decor', src:'/stickers/decor_lounge-modern_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
   { key:'decor_lounge-wood_XL_CA-US-FR-GB-AU', label:'Wood Loungers', family:'Decor', src:'/stickers/decor_lounge-wood_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
-  { key:'decor_table-pine_XL_CA-US-FR-GB-AU',    label:'Pine Table',     family:'Decor', src:'/stickers/decor_table-pine_XL_CA-US-FR-GB-AU.png',    size:'XL' },
-  { key:'decor_table-stained_XL_CA-US-FR-GB-AU',  label:'Stained Table',  family:'Decor', src:'/stickers/decor_table-stained_XL_CA-US-FR-GB-AU.png',  size:'XL' },
-  { key:'decor_table-enameled_XL_CA-US-FR-GB-AU', label:'Enameled Table', family:'Decor', src:'/stickers/decor_table-enameled_XL_CA-US-FR-GB-AU.png', size:'XL' },
-  { key:'decor_table-bronzed_XL_CA-US-FR-GB-AU',  label:'Bronzed Table',  family:'Decor', src:'/stickers/decor_table-bronzed_XL_CA-US-FR-GB-AU.png',  size:'XL' },
+  { key:'decor_table-pine_XXL_CA-US-FR-GB-AU',    label:'Pine Table',     family:'Decor', src:'/stickers/decor_table-pine_XXL_CA-US-FR-GB-AU.png',    size:'XXL' },
+  { key:'decor_table-stained_XXL_CA-US-FR-GB-AU',  label:'Stained Table',  family:'Decor', src:'/stickers/decor_table-stained_XXL_CA-US-FR-GB-AU.png',  size:'XXL' },
+  { key:'decor_table-enameled_XXL_CA-US-FR-GB-AU', label:'Enameled Table', family:'Decor', src:'/stickers/decor_table-enameled_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
+  { key:'decor_table-bronzed_XXL_CA-US-FR-GB-AU',  label:'Bronzed Table',  family:'Decor', src:'/stickers/decor_table-bronzed_XXL_CA-US-FR-GB-AU.png',  size:'XXL' },
 
   { key:'decor_umbrella_L_CA-US-FR-GB-AU', label:'Beach Umbrella', family:'Decor', src:'/stickers/decor_umbrella_L_CA-US-FR-GB-AU.png', size:'L' },
 
