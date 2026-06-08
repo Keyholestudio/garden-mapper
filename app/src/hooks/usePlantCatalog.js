@@ -58,7 +58,6 @@ export const PLANT_CATALOG = [
   // ── Flower Clusters ───────────────────────────────────────────────────────────
   { key:'flower-cluster_allium',           label:'Allium',              family:'Ornamental Bulb',      src:'/stickers/flower-cluster_allium_M_CA-US-FR-GB-AU.png',            size:'M' },
   { key:'flower-cluster_hydrangea',        label:'Hydrangea',           family:'Shrub',                src:'/stickers/flower-cluster_hydrangea_M_CA-US-FR-GB-AU.png', size:'M' },
-  { key:'flower-cluster_phlox',            label:'Phlox',               family:'Perennial',            src:'/stickers/flower-cluster_phlox_S_CA-US-FR-GB-AU.png',             size:'S' },
 
   // ── Daisy-type Flowers ────────────────────────────────────────────────────────
   { key:'flower-daisy_black-eyed-susan',   label:'Black-eyed Susan',    family:'Perennial',            src:'/stickers/flower-daisy_black-eyed-susan_M_CA-US.png',             size:'M' },
@@ -171,7 +170,7 @@ export const PLANT_CATALOG = [
   { key:'vegetable-tall_eggplant',         label:'Eggplant',            family:'Vegetable',            src:'/stickers/vegetable-tall_eggplant_M_CA-US-FR-GB-AU.png',          size:'M' },
   { key:'vegetable-tall_french-bean',      label:'French Bean',         family:'Vegetable',            src:'/stickers/vegetable-tall_french-bean_S_CA-US-FR-GB-AU.png',       size:'S' },
   { key:'vegetable-tall_leek',             label:'Leek',                family:'Vegetable',            src:'/stickers/vegetable-tall_leek_M_CA-US-FR-GB-AU.png',              size:'M' },
-  { key:'vegetable-tall_sunflower',        label:'Sunflower',           family:'Annual Flower',        src:'/stickers/vegetable-tall_sunflower_L_CA-US-FR-GB-AU.png',         size:'L'  },
+  { key:'vegetable-tall_sunflower',        label:'Sunflower',           family:'Annual Flower',        src:'/stickers/vegetable-tall_sunflower_M_CA-US-FR-GB-AU.png',         size:'M'  },
   { key:'vegetable-tall_sweet-pepper',     label:'Sweet Pepper',        family:'Vegetable',            src:'/stickers/vegetable-tall_sweet-pepper_M_CA-US-FR-GB-AU.png',      size:'M' },
   { key:'vegetable-tall_tomato',           label:'Tomato',              family:'Vegetable',            src:'/stickers/vegetable-tall_tomato_M_CA-US-FR-GB-AU.png',            size:'M' },
 
@@ -190,7 +189,7 @@ export const PLANT_CATALOG = [
   { key:'herb-small_thyme_S_CA-US-FR-GB-AU', label:'Thyme', family:'Herb', src:'/stickers/herb-small_thyme_S_CA-US-FR-GB-AU.png', size:'S' },
 
   // ── New additions
-  { key:'flower-cluster_phlox_M_CA-US-FR-GB-AU', label:'Phlox', family:'Perennial Flower', src:'/stickers/flower-cluster_phlox_M_CA-US-FR-GB-AU.png', size:'M' },
+  { key:'flower-cluster_phlox_S_CA-US-FR-GB-AU', label:'Phlox', family:'Perennial Flower', src:'/stickers/flower-cluster_phlox_S_CA-US-FR-GB-AU.png', size:'S' },
 
   // ── New additions
   { key:'water-feature_fountain-sm_S_CA-US-FR-GB-AU', label:'Small Fountain',  family:'Water Feature', src:'/stickers/water-feature_fountain-sm_S_CA-US-FR-GB-AU.png', size:'S' },
