@@ -4,7 +4,7 @@
 
 import { useState, useMemo } from 'react'
 import Konva from 'konva'
-import { PLANT_CATALOG } from '../hooks/usePlantCatalog'
+import { PLANT_CATALOG_TRAY as PLANT_CATALOG } from '../hooks/usePlantCatalog'
 import { ToolMenu } from './toolMenuData.jsx'
 import {
   BED_COLOURS, BUILDING_COLOURS, FENCE_COLOURS, HEDGE_COLOURS,

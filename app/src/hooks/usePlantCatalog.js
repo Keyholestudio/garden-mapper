@@ -239,7 +239,11 @@ export const PLANT_CATALOG = [
 
 ]
 
-// Group catalog by family for tray sections
+// Families that are placed via the Decor/Water menus — exclude from plant tray
+export const DECOR_FAMILIES = new Set(['Decor', 'Water Feature', 'Fern / Groundcover'])
+export const PLANT_CATALOG_TRAY = PLANT_CATALOG.filter(e => !DECOR_FAMILIES.has(e.family))
+
+// Group catalog by family for tray sections (excludes decor/non-plant entries)
 export function groupCatalog(catalog) {
   const groups = {}
   catalog.forEach(entry => {

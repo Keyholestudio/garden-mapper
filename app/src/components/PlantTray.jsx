@@ -1,7 +1,7 @@
 // PlantTray.jsx — Left sidebar: plant catalog, search, click-to-place, drag-to-place
 
 import { useState, useMemo } from 'react'
-import { PLANT_CATALOG } from '../hooks/usePlantCatalog'
+import { PLANT_CATALOG_TRAY as PLANT_CATALOG } from '../hooks/usePlantCatalog'
 import './PlantTray.css'
 
 export default function PlantTray({
