@@ -21,7 +21,7 @@ export const PLANT_CATALOG = [
   { key:'flower-daisy_poppy',               label:'Poppy',               family:'Annual Flower',        src:'/stickers/flower-daisy_poppy_M_CA-US-FR-GB-AU.png',                size:'M'  },
   // Missing bulbs
   { key:'bulb-spring_crocus',               label:'Crocus',              family:'Bulb',                 src:'/stickers/bulb-spring_crocus_XS_CA-US-FR-GB-AU.png',               size:'XS' },
-  { key:'flower-spike_lily',                label:'Oriental Lily',       family:'Bulb',                 src:'/stickers/flower-spike_lily_L_CA-US-FR-GB-AU.png',                 size:'L'  },
+  { key:'flower-spike_lily',                label:'Oriental Lily',       family:'Bulb',                 src:'/stickers/flower-spike_lily_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'bulb-spring_muscari',              label:'Grape Hyacinth',      family:'Bulb',                 src:'/stickers/bulb-spring_muscari_XS_CA-US-FR-GB-AU.png',               size:'XS' },
   // New flowers
   { key:'flower-spike_bleeding-heart',      label:'Bleeding Heart',      family:'Perennial',            src:'/stickers/flower-spike_bleeding-heart_M_CA-US-FR-GB.png',           size:'M'  },
@@ -34,14 +34,14 @@ export const PLANT_CATALOG = [
   { key:'flower-spike_astilbe',             label:'Astilbe',             family:'Perennial',            src:'/stickers/flower-spike_astilbe_M_CA-US-FR-GB-AU.png',               size:'M'  },
   { key:'ground-cover_heuchera',            label:'Heuchera',            family:'Ground Cover',         src:'/stickers/ground-cover_heuchera_S_CA-US-FR-GB-AU.png',              size:'S'  },
   { key:'flower-cluster_verbena',           label:'Verbena',             family:'Annual Flower',        src:'/stickers/flower-cluster_verbena_S_CA-US-FR-GB-AU.png',             size:'S'  },
-  { key:'flower-cluster_agapanthus',        label:'Agapanthus',          family:'Bulb / Perennial',     src:'/stickers/flower-cluster_agapanthus_L_CA-US-FR-GB-AU.png',          size:'L'  },
+  { key:'flower-cluster_agapanthus',        label:'Agapanthus',          family:'Bulb / Perennial',     src:'/stickers/flower-cluster_agapanthus_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'flower-spike_liatris',             label:'Liatris',             family:'Perennial',            src:'/stickers/flower-spike_liatris_M_CA-US-FR-GB-AU.png',               size:'M'  },
   { key:'flower-spike_hollyhock',           label:'Hollyhock',           family:'Biennial',             src:'/stickers/flower-spike_hollyhock_XL_CA-US-FR-GB-AU.png',            size:'XL' },
   // New vegetables
   { key:'vegetable-leafy_cauliflower',      label:'Cauliflower',         family:'Vegetable',            src:'/stickers/vegetable-leafy_cauliflower_M_CA-US-FR-GB-AU.png',        size:'M'  },
   { key:'vegetable-tall_asparagus',         label:'Asparagus',           family:'Vegetable',            src:'/stickers/vegetable-tall_asparagus_M_CA-US-FR-GB-AU.png',           size:'M'  },
   { key:'vine-leaf_peas',                   label:'Peas',                family:'Vegetable / Climber',  src:'/stickers/vine-leaf_peas_M_CA-US-FR-GB-AU.png',                     size:'M'  },
-  { key:'vegetable-leafy_pumpkin',          label:'Pumpkin',             family:'Vegetable',            src:'/stickers/vegetable-leafy_pumpkin_L_CA-US-FR-GB-AU.png',            size:'L'  },
+  { key:'vegetable-leafy_pumpkin',          label:'Pumpkin',             family:'Vegetable',            src:'/stickers/vegetable-leafy_pumpkin_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'vegetable-leafy_squash',           label:'Squash',              family:'Vegetable',            src:'/stickers/vegetable-leafy_squash_M_CA-US-FR-GB-AU.png',             size:'M'  },
   { key:'vegetable-leafy_swiss-chard',      label:'Swiss Chard',         family:'Vegetable',            src:'/stickers/vegetable-leafy_swiss-chard_M_CA-US-FR-GB-AU.png',        size:'M'  },
   { key:'vegetable-leafy_sweet-potato',     label:'Sweet Potato',        family:'Vegetable',            src:'/stickers/vegetable-leafy_sweet-potato_M_CA-US-FR-GB-AU.png',       size:'M'  },
@@ -57,7 +57,7 @@ export const PLANT_CATALOG = [
 
   // ── Flower Clusters ───────────────────────────────────────────────────────────
   { key:'flower-cluster_allium',           label:'Allium',              family:'Ornamental Bulb',      src:'/stickers/flower-cluster_allium_M_CA-US-FR-GB-AU.png',            size:'M' },
-  { key:'flower-cluster_hydrangea',        label:'Hydrangea',           family:'Shrub',                src:'/stickers/flower-cluster_hydrangea_L_CA-US-FR-GB-AU.png',         size:'L' },
+  { key:'flower-cluster_hydrangea',        label:'Hydrangea',           family:'Shrub',                src:'/stickers/flower-cluster_hydrangea_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'flower-cluster_phlox',            label:'Phlox',               family:'Perennial',            src:'/stickers/flower-cluster_phlox_S_CA-US-FR-GB-AU.png',             size:'S' },
 
   // ── Daisy-type Flowers ────────────────────────────────────────────────────────
@@ -80,19 +80,19 @@ export const PLANT_CATALOG = [
   { key:'flower-rose_rose',                label:'Rose',                family:'Shrub / Rose',         src:'/stickers/flower-rose_rose_M_CA-US-FR-GB-AU.png',                 size:'M' },
 
   // ── Spike Flowers ─────────────────────────────────────────────────────────────
-  { key:'flower-spike_delphinium',         label:'Delphinium',          family:'Perennial',            src:'/stickers/flower-spike_delphinium_L_CA-US-FR-GB.png',             size:'L' },
-  { key:'flower-spike_foxglove',           label:'Foxglove',            family:'Biennial',             src:'/stickers/flower-spike_foxglove_L_CA-US-FR-GB.png',               size:'L' },
+  { key:'flower-spike_delphinium',         label:'Delphinium',          family:'Perennial',            src:'/stickers/flower-spike_delphinium_M_CA-US-FR-GB.png', size:'M' },
+  { key:'flower-spike_foxglove',           label:'Foxglove',            family:'Biennial',             src:'/stickers/flower-spike_foxglove_M_CA-US-FR-GB.png', size:'M' },
   { key:'flower-spike_gladiolus',          label:'Gladiolus',           family:'Bulb',                 src:'/stickers/flower-spike_gladiolus_M_CA-US-FR-GB-AU.png',           size:'M' },
   { key:'flower-spike_iris',               label:'Iris',                family:'Perennial',            src:'/stickers/flower-spike_iris_M_CA-US-FR-GB-AU.png',                size:'M' },
-  { key:'flower-spike_lupin',              label:'Lupin',               family:'Perennial',            src:'/stickers/flower-spike_lupin_L_CA-US-FR-GB-AU.png',               size:'L' },
+  { key:'flower-spike_lupin',              label:'Lupin',               family:'Perennial',            src:'/stickers/flower-spike_lupin_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'flower-spike_salvia',             label:'Salvia',              family:'Perennial / Annual',   src:'/stickers/flower-spike_salvia_M_CA-US-FR-GB-AU.png',              size:'M' },
   { key:'flower-spike_snapdragon',         label:'Snapdragon',          family:'Annual Flower',        src:'/stickers/flower-spike_snapdragon_M_CA-US-FR-GB.png',             size:'M' },
 
   // ── Grasses ───────────────────────────────────────────────────────────────────
   { key:'grass-clump_blue-oat-grass',      label:'Blue Oat Grass',      family:'Ornamental Grass',     src:'/stickers/grass-clump_blue-oat-grass_M_CA-US-FR-GB-AU.png',       size:'M' },
-  { key:'grass-clump_cattail',             label:'Cattail',             family:'Aquatic / Grass',      src:'/stickers/grass-clump_cattail_L_CA-US-FR-GB-AU.png',              size:'L' },
-  { key:'grass-clump_feather-grass',       label:'Feather Grass',       family:'Ornamental Grass',     src:'/stickers/grass-clump_feather-grass_L_CA-US-FR-GB-AU.png',        size:'L' },
-  { key:'grass-clump_ornamental-grass',    label:'Ornamental Grass',    family:'Ornamental Grass',     src:'/stickers/grass-clump_ornamental-grass_L_CA-US-FR-GB-AU.png',     size:'L' },
+  { key:'grass-clump_cattail',             label:'Cattail',             family:'Aquatic / Grass',      src:'/stickers/grass-clump_cattail_M_CA-US-FR-GB-AU.png', size:'M' },
+  { key:'grass-clump_feather-grass',       label:'Feather Grass',       family:'Ornamental Grass',     src:'/stickers/grass-clump_feather-grass_M_CA-US-FR-GB-AU.png', size:'M' },
+  { key:'grass-clump_ornamental-grass',    label:'Ornamental Grass',    family:'Ornamental Grass',     src:'/stickers/grass-clump_ornamental-grass_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'grass-clump_pampas-grass',        label:'Pampas Grass',        family:'Ornamental Grass',     src:'/stickers/grass-clump_pampas-grass_XL_US-FR-GB-AU.png',           size:'XL' },
 
   // ── Ground Cover ──────────────────────────────────────────────────────────────
@@ -113,17 +113,17 @@ export const PLANT_CATALOG = [
   { key:'herb-small_sage',                 label:'Sage',                family:'Herb',                 src:'/stickers/herb-small_sage_S_CA-US-FR-GB-AU.png',                  size:'S' },
 
   // ── Shrubs ────────────────────────────────────────────────────────────────────
-  { key:'shrub-flowering_azalea',          label:'Azalea',              family:'Shrub',                src:'/stickers/shrub-flowering_azalea_L_CA-US-FR-GB-AU.png',           size:'L' },
+  { key:'shrub-flowering_azalea',          label:'Azalea',              family:'Shrub',                src:'/stickers/shrub-flowering_azalea_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'shrub-flowering_blueberry',       label:'Blueberry Bush',      family:'Shrub / Fruit',        src:'/stickers/shrub-flowering_blueberry_M_CA-US-FR-GB-AU.png',        size:'M' },
-  { key:'shrub-flowering_buddleia',        label:'Buddleia',            family:'Shrub',                src:'/stickers/shrub-flowering_buddleia_L_CA-US-FR-GB-AU.png',         size:'L' },
-  { key:'shrub-flowering_forsythia',       label:'Forsythia',           family:'Shrub',                src:'/stickers/shrub-flowering_forsythia_L_CA-US-FR-GB.png',           size:'L' },
-  { key:'shrub-flowering_lilac',           label:'Lilac',               family:'Shrub',                src:'/stickers/shrub-flowering_lilac_L_CA-US-FR-GB.png',               size:'L' },
-  { key:'shrub-flowering_rhododendron',    label:'Rhododendron',        family:'Shrub',                src:'/stickers/shrub-flowering_rhododendron_L_CA-US-FR-GB-AU.png',     size:'L' },
+  { key:'shrub-flowering_buddleia',        label:'Buddleia',            family:'Shrub',                src:'/stickers/shrub-flowering_buddleia_M_CA-US-FR-GB-AU.png', size:'M' },
+  { key:'shrub-flowering_forsythia',       label:'Forsythia',           family:'Shrub',                src:'/stickers/shrub-flowering_forsythia_M_CA-US-FR-GB.png', size:'M' },
+  { key:'shrub-flowering_lilac',           label:'Lilac',               family:'Shrub',                src:'/stickers/shrub-flowering_lilac_M_CA-US-FR-GB.png', size:'M' },
+  { key:'shrub-flowering_rhododendron',    label:'Rhododendron',        family:'Shrub',                src:'/stickers/shrub-flowering_rhododendron_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'shrub-flowering_saskatoon',       label:'Saskatoon Berry',     family:'Shrub / Fruit',        src:'/stickers/shrub-flowering_saskatoon_M_CA-US.png',                 size:'M' },
-  { key:'shrub-flowering_spiraea',         label:'Spiraea',             family:'Shrub',                src:'/stickers/shrub-flowering_spiraea_L_CA-US-FR-GB.png',             size:'L' },
-  { key:'shrub-flowering_weigela',         label:'Weigela',             family:'Shrub',                src:'/stickers/shrub-flowering_weigela_L_CA-US-FR-GB.png',             size:'L' },
+  { key:'shrub-flowering_spiraea',         label:'Spiraea',             family:'Shrub',                src:'/stickers/shrub-flowering_spiraea_M_CA-US-FR-GB.png', size:'M' },
+  { key:'shrub-flowering_weigela',         label:'Weigela',             family:'Shrub',                src:'/stickers/shrub-flowering_weigela_M_CA-US-FR-GB.png', size:'M' },
   { key:'shrub-lavender_lavender',         label:'Lavender',            family:'Herb / Perennial',     src:'/stickers/shrub-lavender_lavender_M_CA-US-FR-GB-AU.png',          size:'M' },
-  { key:'shrub-round_boxwood',             label:'Boxwood',             family:'Shrub',                src:'/stickers/shrub-round_boxwood_L_CA-US-FR-GB-AU.png',              size:'L' },
+  { key:'shrub-round_boxwood',             label:'Boxwood',             family:'Shrub',                src:'/stickers/shrub-round_boxwood_M_CA-US-FR-GB-AU.png', size:'M' },
 
   // ── Conifer Trees ─────────────────────────────────────────────────────────────
   { key:'tree-conifer_blue-spruce',        label:'Blue Spruce',         family:'Conifer Tree',         src:'/stickers/tree-conifer_blue-spruce_XXL_CA-US-FR-GB.png',           size:'XXL' },
@@ -152,7 +152,7 @@ export const PLANT_CATALOG = [
   { key:'vegetable-leafy_kale',            label:'Kale',                family:'Vegetable',            src:'/stickers/vegetable-leafy_kale_M_CA-US-FR-GB-AU.png',             size:'M' },
   { key:'vegetable-leafy_lettuce',         label:'Lettuce',             family:'Vegetable',            src:'/stickers/vegetable-leafy_lettuce_M_CA-US-FR-GB-AU.png',          size:'M' },
   { key:'vegetable-leafy_potato',          label:'Potato',              family:'Vegetable',            src:'/stickers/vegetable-leafy_potato_M_CA-US-FR-GB-AU.png',           size:'M' },
-  { key:'vegetable-leafy_rhubarb',         label:'Rhubarb',             family:'Vegetable / Perennial',src:'/stickers/vegetable-leafy_rhubarb_L_CA-US-FR-GB-AU.png',          size:'L' },
+  { key:'vegetable-leafy_rhubarb',         label:'Rhubarb',             family:'Vegetable / Perennial',src:'/stickers/vegetable-leafy_rhubarb_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'vegetable-leafy_spinach',         label:'Spinach',             family:'Vegetable',            src:'/stickers/vegetable-leafy_spinach_S_CA-US-FR-GB-AU.png',          size:'S' },
   { key:'vegetable-leafy_zucchini',        label:'Zucchini',            family:'Vegetable',            src:'/stickers/vegetable-leafy_zucchini_M_CA-US-FR-GB-AU.png',         size:'M' },
 
@@ -176,14 +176,14 @@ export const PLANT_CATALOG = [
   { key:'vegetable-tall_tomato',           label:'Tomato',              family:'Vegetable',            src:'/stickers/vegetable-tall_tomato_M_CA-US-FR-GB-AU.png',            size:'M' },
 
   // ── Vines & Climbers ──────────────────────────────────────────────────────────
-  { key:'vine-leaf_clematis',              label:'Clematis',            family:'Climber',              src:'/stickers/vine-leaf_clematis_L_CA-US-FR-GB-AU.png',               size:'L' },
+  { key:'vine-leaf_clematis',              label:'Clematis',            family:'Climber',              src:'/stickers/vine-leaf_clematis_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'vine-leaf_cucumber',              label:'Cucumber',            family:'Vegetable / Climber',  src:'/stickers/vine-leaf_cucumber_M_CA-US-FR-GB-AU.png',               size:'M' },
-  { key:'vine-leaf_honeysuckle',           label:'Honeysuckle',         family:'Climber',              src:'/stickers/vine-leaf_honeysuckle_L_CA-US-FR-GB-AU.png',            size:'L' },
+  { key:'vine-leaf_honeysuckle',           label:'Honeysuckle',         family:'Climber',              src:'/stickers/vine-leaf_honeysuckle_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'vine-leaf_jasmine',               label:'Jasmine',             family:'Climber',              src:'/stickers/vine-leaf_jasmine_M_CA-US-FR-GB-AU.png',                size:'M' },
-  { key:'vine-leaf_passion-flower',        label:'Passion Flower',      family:'Climber',              src:'/stickers/vine-leaf_passion-flower_L_CA-US-FR-GB-AU.png',         size:'L' },
+  { key:'vine-leaf_passion-flower',        label:'Passion Flower',      family:'Climber',              src:'/stickers/vine-leaf_passion-flower_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'vine-leaf_runner-bean',           label:'Runner Bean',         family:'Vegetable / Climber',  src:'/stickers/vine-leaf_runner-bean_M_CA-US-FR-GB-AU.png',            size:'M' },
   { key:'vine-leaf_sweet-pea',             label:'Sweet Pea',           family:'Annual Flower',        src:'/stickers/vine-leaf_sweet-pea_S_CA-US-FR-GB-AU.png',              size:'S' },
-  { key:'vine-leaf_virginia-creeper',      label:'Virginia Creeper',    family:'Climber',              src:'/stickers/vine-leaf_virginia-creeper_L_CA-US-FR-GB-AU.png',       size:'L' },
+  { key:'vine-leaf_virginia-creeper',      label:'Virginia Creeper',    family:'Climber',              src:'/stickers/vine-leaf_virginia-creeper_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'vine-leaf_wisteria',              label:'Wisteria',            family:'Climber',              src:'/stickers/vine-leaf_wisteria_XL_US-FR-GB-AU.png',                 size:'XL' },
 
   // ── New additions
@@ -195,14 +195,14 @@ export const PLANT_CATALOG = [
   // ── New additions
   { key:'water-feature_fountain-sm_S_CA-US-FR-GB-AU', label:'Small Fountain',  family:'Water Feature', src:'/stickers/water-feature_fountain-sm_S_CA-US-FR-GB-AU.png', size:'S' },
   { key:'water-feature_fountain-md_M_CA-US-FR-GB-AU', label:'Medium Fountain', family:'Water Feature', src:'/stickers/water-feature_fountain-md_M_CA-US-FR-GB-AU.png', size:'M' },
-  { key:'water-feature_fountain-lg_L_CA-US-FR-GB-AU', label:'Large Fountain',  family:'Water Feature', src:'/stickers/water-feature_fountain-lg_L_CA-US-FR-GB-AU.png', size:'L' },
+  { key:'water-feature_fountain-lg_L_CA-US-FR-GB-AU', label:'Large Fountain',  family:'Water Feature', src:'/stickers/water-feature_fountain-lg_M_CA-US-FR-GB-AU.png', size:'M' },
 
   // ── Reference entry (kept for catalog structure reference only) ───────────────
   // { key:'tree-svg-ref', label:'Apple Tree (SVG ref)', family:'Fruit Tree', src:'/stickers/tree.svg', size:'L' },
-  { key:'plant-fern_fern_L_CA-US-FR-GB-AU', label:'Fern', family:'Fern / Groundcover', src:'/stickers/plant-fern_fern_L_CA-US-FR-GB-AU.png', size:'L' },
+  { key:'plant-fern_fern_L_CA-US-FR-GB-AU', label:'Fern', family:'Fern / Groundcover', src:'/stickers/plant-fern_fern_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'decor_rock-small_M_CA-US-FR-GB-AU', label:'Small Garden Stone', family:'Decor', src:'/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png', size:'M' },
 
-  { key:'decor_rock-medium_L_CA-US-FR-GB-AU', label:'Medium Garden Stone', family:'Decor', src:'/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png', size:'L' },
+  { key:'decor_rock-medium_L_CA-US-FR-GB-AU', label:'Medium Garden Stone', family:'Decor', src:'/stickers/decor_rock-medium_M_CA-US-FR-GB-AU.png', size:'M' },
 
   { key:'decor_rock-large_XL_CA-US-FR-GB-AU', label:'Large Garden Stone', family:'Decor', src:'/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
@@ -219,13 +219,13 @@ export const PLANT_CATALOG = [
   { key:'decor_table-enameled_XXL_CA-US-FR-GB-AU', label:'Enameled Table', family:'Decor', src:'/stickers/decor_table-enameled_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
   { key:'decor_table-bronzed_XXL_CA-US-FR-GB-AU',  label:'Bronzed Table',  family:'Decor', src:'/stickers/decor_table-bronzed_XXL_CA-US-FR-GB-AU.png',  size:'XXL' },
 
-  { key:'decor_umbrella_L_CA-US-FR-GB-AU', label:'Beach Umbrella', family:'Decor', src:'/stickers/decor_umbrella_L_CA-US-FR-GB-AU.png', size:'L' },
+  { key:'decor_umbrella_L_CA-US-FR-GB-AU', label:'Beach Umbrella', family:'Decor', src:'/stickers/decor_umbrella_M_CA-US-FR-GB-AU.png', size:'M' },
 
   { key:'decor_pot-s_S_CA-US-FR-GB-AU', label:'Small Terracotta Pot', family:'Decor', src:'/stickers/decor_pot-s_S_CA-US-FR-GB-AU.png', size:'S' },
 
   { key:'decor_pot-m_M_CA-US-FR-GB-AU', label:'Medium Terracotta Pot', family:'Decor', src:'/stickers/decor_pot-m_M_CA-US-FR-GB-AU.png', size:'M' },
 
-  { key:'decor_pot-l_L_CA-US-FR-GB-AU', label:'Large Terracotta Pot', family:'Decor', src:'/stickers/decor_pot-l_L_CA-US-FR-GB-AU.png', size:'L' },
+  { key:'decor_pot-l_L_CA-US-FR-GB-AU', label:'Large Terracotta Pot', family:'Decor', src:'/stickers/decor_pot-l_M_CA-US-FR-GB-AU.png', size:'M' },
 
   { key:'decor_stairs-wood_M_CA-US-FR-GB-AU', label:'Wood Stairs', family:'Decor', src:'/stickers/decor_stairs-wood_M_CA-US-FR-GB-AU.png', size:'M' },
 
