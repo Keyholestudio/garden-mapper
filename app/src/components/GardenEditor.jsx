@@ -263,8 +263,8 @@ export default function GardenEditor() {
 
   // Fountain stickers: intercept waterSubTool='fountain-sm/md/lg' and route through sticker placement
   const FOUNTAIN_CATALOG = {
-    'fountain-sm': { key: 'water-feature_fountain-sm_L_CA-US-FR-GB-AU', label: 'Fountain',        family: 'Water Feature', size: 'L', src: '/stickers/water-feature_fountain-sm_L_CA-US-FR-GB-AU.png' },
-    'fountain-md': { key: 'water-feature_fountain-md_L_CA-US-FR-GB-AU', label: 'Medium Fountain', family: 'Water Feature', size: 'L', src: '/stickers/water-feature_fountain-md_L_CA-US-FR-GB-AU.png' },
+    'fountain-sm': { key: 'water-feature_fountain-sm_S_CA-US-FR-GB-AU', label: 'Small Fountain',  family: 'Water Feature', size: 'S', src: '/stickers/water-feature_fountain-sm_S_CA-US-FR-GB-AU.png' },
+    'fountain-md': { key: 'water-feature_fountain-md_M_CA-US-FR-GB-AU', label: 'Medium Fountain', family: 'Water Feature', size: 'M', src: '/stickers/water-feature_fountain-md_M_CA-US-FR-GB-AU.png' },
     'fountain-lg': { key: 'water-feature_fountain-lg_L_CA-US-FR-GB-AU', label: 'Large Fountain',  family: 'Water Feature', size: 'L', src: '/stickers/water-feature_fountain-lg_L_CA-US-FR-GB-AU.png' },
   }
   useEffect(() => {

@@ -53,7 +53,7 @@ export const WATER_ITEMS = [
   {
     id: '__fountains', label: 'Fountains', emoji: '⛲', group: true,
     children: [
-      { id: 'fountain-sm', label: 'Fountain',        hint: 'Tap to place a fountain' },
+      { id: 'fountain-sm', label: 'Small Fountain',  hint: 'Tap to place a small fountain' },
       { id: 'fountain-md', label: 'Medium Fountain', hint: 'Tap to place a medium fountain' },
       { id: 'fountain-lg', label: 'Large Fountain',  hint: 'Tap to place a large fountain' },
     ],
