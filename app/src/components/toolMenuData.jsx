@@ -81,8 +81,8 @@ export const DECOR_ITEMS = [
   {
     id: '__seating', label: 'Seating', emoji: '🪑', group: true,
     children: [
-      { id: 'decor-lounge-modern', label: 'Modern Loungers', hint: 'Tap to place modern lounge chairs' },
-      { id: 'decor-lounge-wood',   label: 'Wood Loungers',   hint: 'Tap to place wooden lounge chairs' },
+      { id: 'decor-lounge-wood',    label: 'Wood Loungers',    hint: 'Tap to place wooden lounge chairs' },
+      { id: 'decor-lounge-modern',  label: 'Plastic Loungers', hint: 'Tap to place plastic lounge chairs' },
       { id: 'decor-patio-table',   label: 'Patio Table',     hint: 'Tap to place patio table + chairs' },
     ],
   },
