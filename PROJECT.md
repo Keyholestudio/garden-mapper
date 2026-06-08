@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-06-05_
+_Last updated: 2026-06-07_
 
 ---
 
@@ -141,19 +141,17 @@ cd projects/garden-planner/app && npm run dev
 ---
 
 ## Open Items
-- **Sticker review** — Rob to review 104 stickers live in app; flag any needing regeneration
-- **Structural stickers** — Raised bed outline, Cold frame, Trellis/arch, Greenhouse — PNG format, same pipeline. Review tomorrow.
-- **Tier 3 stickers** — regional/specialty (~20), deferred indefinitely
-- **#9** Dream garden — system built; Rob designs garden when ready, exports JSON, sends to Computer
-  - `DREAM_GARDEN_URL` in `useDreamGarden.js` = placeholder until GitHub repo is public
-- **Deploy** — leaf-courag URL deploy method unknown (Netlify? Vercel?). Ask Rob.
-- **GitHub remote** — not yet set up. Need this before updating dream garden remote URL.
+- **Sticker review** — Rob to review stickers live in app; flag any needing regeneration
+- **#9** Dream garden — `useDreamGarden.js` built; Rob designs when ready, exports JSON
+  - `DREAM_GARDEN_URL` = placeholder until GitHub repo is public
+- **Deploy** — method unknown (Netlify? Vercel?). Ask Rob.
+- **GitHub remote** — not yet set up
 - **#12** Multi-device — deferred; needs backend + user accounts
 - **Phase 8** Textures — planned next major phase
 - **Items 16–19** SM campaign, robs-lab.ca, gamification, pricing
-- **Plant submission cron** — form → Gemini sticker → Rob approval → CDN → sticker-manifest.json fetch. Apple-compliant.
+- **Plant submission cron** — form → Gemini sticker → Rob approval → CDN → manifest fetch
 - **Capacitor.js** wrapper — deferred (needs Android Studio or Mac)
-- **TS build error** — pre-existing in main.tsx (doesn't affect dev server; fix before Capacitor)
+- **TS build error** — pre-existing in main.tsx (doesn't affect dev; fix before Capacitor)
 
 ---
 
