@@ -171,7 +171,7 @@ export const PLANT_CATALOG = [
   { key:'vegetable-tall_eggplant',         label:'Eggplant',            family:'Vegetable',            src:'/stickers/vegetable-tall_eggplant_M_CA-US-FR-GB-AU.png',          size:'M' },
   { key:'vegetable-tall_french-bean',      label:'French Bean',         family:'Vegetable',            src:'/stickers/vegetable-tall_french-bean_S_CA-US-FR-GB-AU.png',       size:'S' },
   { key:'vegetable-tall_leek',             label:'Leek',                family:'Vegetable',            src:'/stickers/vegetable-tall_leek_M_CA-US-FR-GB-AU.png',              size:'M' },
-  { key:'vegetable-tall_sunflower',        label:'Sunflower',           family:'Annual Flower',        src:'/stickers/vegetable-tall_sunflower_XL_CA-US-FR-GB-AU.png',        size:'XL' },
+  { key:'vegetable-tall_sunflower',        label:'Sunflower',           family:'Annual Flower',        src:'/stickers/vegetable-tall_sunflower_L_CA-US-FR-GB-AU.png',         size:'L'  },
   { key:'vegetable-tall_sweet-pepper',     label:'Sweet Pepper',        family:'Vegetable',            src:'/stickers/vegetable-tall_sweet-pepper_M_CA-US-FR-GB-AU.png',      size:'M' },
   { key:'vegetable-tall_tomato',           label:'Tomato',              family:'Vegetable',            src:'/stickers/vegetable-tall_tomato_M_CA-US-FR-GB-AU.png',            size:'M' },
 
