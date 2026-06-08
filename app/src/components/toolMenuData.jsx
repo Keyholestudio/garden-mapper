@@ -115,7 +115,7 @@ export const DECOR_ITEMS = [
     ],
   },
   {
-    id: '__arch', label: 'Arch', emoji: '🌼', group: true,
+    id: '__arch', label: 'Arches', emoji: '🌼', group: true,
     children: [
       { id: 'decor-arch-wood',  label: 'Wood Arch',  hint: 'Tap to place wooden arch' },
       { id: 'decor-arch-metal', label: 'Metal Arch', hint: 'Tap to place metal arch' },

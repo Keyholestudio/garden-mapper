@@ -235,9 +235,9 @@ export const PLANT_CATALOG = [
 
   { key:'decor_stairs-cement_M_CA-US-FR-GB-AU', label:'Cement Stairs', family:'Decor', src:'/stickers/decor_stairs-cement_M_CA-US-FR-GB-AU.png', size:'M' },
 
-  { key:'decor_arch-wood_L_CA-US-FR-GB-AU', label:'Wood Garden Arch', family:'Decor', src:'/stickers/decor_arch-wood_L_CA-US-FR-GB-AU.png', size:'L' },
+  { key:'decor_arch-wood_XL_CA-US-FR-GB-AU', label:'Wood Garden Arch', family:'Decor', src:'/stickers/decor_arch-wood_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
-  { key:'decor_arch-metal_L_CA-US-FR-GB-AU', label:'Metal Garden Arch', family:'Decor', src:'/stickers/decor_arch-metal_L_CA-US-FR-GB-AU.png', size:'L' },
+  { key:'decor_arch-metal_XL_CA-US-FR-GB-AU', label:'Metal Garden Arch', family:'Decor', src:'/stickers/decor_arch-metal_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
 ]
 
