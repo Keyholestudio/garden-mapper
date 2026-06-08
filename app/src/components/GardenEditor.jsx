@@ -243,8 +243,8 @@ export default function GardenEditor() {
     'decor-rock-large':   { key: 'decor_rock-large_XL_CA-US-FR-GB-AU',  label: 'Large Stone',     family: 'Decor', size: 'XL', src: '/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png'  },
     'decor-gazebo-square':{ key: 'decor_gazebo-square_XL_CA-US-FR-GB-AU',label: 'Square Gazebo',  family: 'Decor', size: 'XL', src: '/stickers/decor_gazebo-square_XL_CA-US-FR-GB-AU.png'},
     'decor-gazebo-oct':   { key: 'decor_gazebo-oct_XL_CA-US-FR-GB-AU',  label: 'Octagon Gazebo',  family: 'Decor', size: 'XL', src: '/stickers/decor_gazebo-oct_XL_CA-US-FR-GB-AU.png'  },
-    'decor-lounge-modern':{ key: 'decor_lounge-modern_L_CA-US-FR-GB-AU', label: 'Modern Loungers', family: 'Decor', size: 'L',  src: '/stickers/decor_lounge-modern_L_CA-US-FR-GB-AU.png' },
-    'decor-lounge-wood':  { key: 'decor_lounge-wood_L_CA-US-FR-GB-AU',  label: 'Wood Loungers',   family: 'Decor', size: 'L',  src: '/stickers/decor_lounge-wood_L_CA-US-FR-GB-AU.png'  },
+    'decor-lounge-modern':{ key: 'decor_lounge-modern_XL_CA-US-FR-GB-AU', label: 'Plastic Loungers', family: 'Decor', size: 'XL', src: '/stickers/decor_lounge-modern_XL_CA-US-FR-GB-AU.png' },
+    'decor-lounge-wood':  { key: 'decor_lounge-wood_XL_CA-US-FR-GB-AU',  label: 'Wood Loungers',    family: 'Decor', size: 'XL', src: '/stickers/decor_lounge-wood_XL_CA-US-FR-GB-AU.png'  },
     'decor-patio-table':  { key: 'decor_patio-table_L_CA-US-FR-GB-AU',  label: 'Patio Table',     family: 'Decor', size: 'L',  src: '/stickers/decor_patio-table_L_CA-US-FR-GB-AU.png'  },
     'decor-umbrella':     { key: 'decor_umbrella_L_CA-US-FR-GB-AU',     label: 'Beach Umbrella',  family: 'Decor', size: 'L',  src: '/stickers/decor_umbrella_L_CA-US-FR-GB-AU.png'     },
     'decor-pot-s':        { key: 'decor_pot-s_S_CA-US-FR-GB-AU',        label: 'Small Pot',       family: 'Decor', size: 'S',  src: '/stickers/decor_pot-s_S_CA-US-FR-GB-AU.png'        },
@@ -449,7 +449,7 @@ export default function GardenEditor() {
         if (!cb || cb.kind !== 'plant' || !cb.entry._img) return
         const { plantLayer } = layersRef.current
         if (!plantLayer) return
-        const sizeMap = { XS: 24, S: 40, M: 64, L: 96 }
+        const sizeMap = { XS: 24, S: 40, M: 64, L: 96, XL: 128 }
         const size = sizeMap[cb.entry.size] || 64
         // srcX/srcY are group top-left. addPlant expects center coords.
         // Paste one plant-width to the right, same vertical position.
@@ -980,7 +980,7 @@ export default function GardenEditor() {
                 if (!img) return
                 const scaleX = sel.group.scaleX(); const scaleY = sel.group.scaleY()
                 const srcX = sel.group.x(); const srcY = sel.group.y()
-                const sizeMap = { XS: 24, S: 40, M: 64, L: 96 }
+                const sizeMap = { XS: 24, S: 40, M: 64, L: 96, XL: 128 }
                 const size = sizeMap[d?.size] || 64
                 const entry = { ...d, _img: img, scaleX, scaleY }
                 const { plantLayer } = layersRef.current
@@ -1098,7 +1098,7 @@ export default function GardenEditor() {
             const scaleY = sel.group.scaleY()
             const srcX   = sel.group.x()
             const srcY   = sel.group.y()
-            const sizeMap = { XS: 24, S: 40, M: 64, L: 96 }
+            const sizeMap = { XS: 24, S: 40, M: 64, L: 96, XL: 128 }
             const size = sizeMap[d?.size] || 64
             const entry = { ...d, _img: img, scaleX, scaleY }
             // Copy + immediately paste to the right (touch-friendly: one tap)

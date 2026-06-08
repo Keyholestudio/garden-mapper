@@ -208,9 +208,9 @@ export const PLANT_CATALOG = [
 
   { key:'decor_gazebo-oct_XL_CA-US-FR-GB-AU', label:'Octagonal Gazebo', family:'Decor', src:'/stickers/decor_gazebo-oct_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
-  { key:'decor_lounge-modern_L_CA-US-FR-GB-AU', label:'Modern Lounge Chairs', family:'Decor', src:'/stickers/decor_lounge-modern_L_CA-US-FR-GB-AU.png', size:'L' },
+  { key:'decor_lounge-modern_XL_CA-US-FR-GB-AU', label:'Plastic Loungers', family:'Decor', src:'/stickers/decor_lounge-modern_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
-  { key:'decor_lounge-wood_L_CA-US-FR-GB-AU', label:'Wood Lounge Chairs', family:'Decor', src:'/stickers/decor_lounge-wood_L_CA-US-FR-GB-AU.png', size:'L' },
+  { key:'decor_lounge-wood_XL_CA-US-FR-GB-AU', label:'Wood Loungers', family:'Decor', src:'/stickers/decor_lounge-wood_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
   { key:'decor_patio-table_L_CA-US-FR-GB-AU', label:'Patio Table & Chairs', family:'Decor', src:'/stickers/decor_patio-table_L_CA-US-FR-GB-AU.png', size:'L' },
 
