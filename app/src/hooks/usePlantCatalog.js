@@ -189,7 +189,7 @@ export const PLANT_CATALOG = [
   { key:'herb-small_thyme_S_CA-US-FR-GB-AU', label:'Thyme', family:'Herb', src:'/stickers/herb-small_thyme_S_CA-US-FR-GB-AU.png', size:'S' },
 
   // ── New additions
-  { key:'flower-cluster_phlox_S_CA-US-FR-GB-AU', label:'Phlox', family:'Perennial Flower', src:'/stickers/flower-cluster_phlox_S_CA-US-FR-GB-AU.png', size:'S' },
+  { key:'flower-cluster_phlox_M_CA-US-FR-GB-AU', label:'Phlox', family:'Perennial Flower', src:'/stickers/flower-cluster_phlox_M_CA-US-FR-GB-AU.png', size:'M' },
 
   // ── New additions
   { key:'water-feature_fountain-sm_S_CA-US-FR-GB-AU', label:'Small Fountain',  family:'Water Feature', src:'/stickers/water-feature_fountain-sm_S_CA-US-FR-GB-AU.png', size:'S' },
