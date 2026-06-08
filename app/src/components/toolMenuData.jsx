@@ -81,8 +81,9 @@ export const DECOR_ITEMS = [
   {
     id: '__gazebo', label: 'Gazebo', emoji: '🗻', group: true,
     children: [
-      { id: 'decor-gazebo-square', label: 'Square Gazebo',   hint: 'Tap to place square gazebo' },
-      { id: 'decor-gazebo-oct',    label: 'Octagon Gazebo',  hint: 'Tap to place octagonal gazebo' },
+      { id: 'decor-gazebo-square', label: 'Square Gazebo',  hint: 'Tap to place square gazebo' },
+      { id: 'decor-gazebo-oct',    label: 'Octagon Gazebo', hint: 'Tap to place octagonal gazebo' },
+      { id: 'decor-gazebo-large',  label: 'Large Gazebo',   hint: 'Tap to place large gazebo' },
     ],
   },
   {

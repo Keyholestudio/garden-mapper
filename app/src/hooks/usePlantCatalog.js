@@ -205,9 +205,9 @@ export const PLANT_CATALOG = [
 
   { key:'decor_rock-large_XL_CA-US-FR-GB-AU', label:'Large Garden Stone', family:'Decor', src:'/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
-  { key:'decor_gazebo-square_XXL_CA-US-FR-GB-AU', label:'Square Gazebo', family:'Decor', src:'/stickers/decor_gazebo-square_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
-
-  { key:'decor_gazebo-oct_XXL_CA-US-FR-GB-AU', label:'Octagonal Gazebo', family:'Decor', src:'/stickers/decor_gazebo-oct_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
+  { key:'decor_gazebo-square_XL_CA-US-FR-GB-AU', label:'Square Gazebo',  family:'Decor', src:'/stickers/decor_gazebo-square_XL_CA-US-FR-GB-AU.png', size:'XL' },
+  { key:'decor_gazebo-oct_XL_CA-US-FR-GB-AU',   label:'Octagon Gazebo', family:'Decor', src:'/stickers/decor_gazebo-oct_XL_CA-US-FR-GB-AU.png',   size:'XL' },
+  { key:'decor_gazebo-large_XL_CA-US-FR-GB-AU',  label:'Large Gazebo',   family:'Decor', src:'/stickers/decor_gazebo-large_XL_CA-US-FR-GB-AU.png',  size:'XL' },
 
   { key:'decor_lounge-modern_XL_CA-US-FR-GB-AU', label:'Plastic Loungers', family:'Decor', src:'/stickers/decor_lounge-modern_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
