@@ -212,7 +212,10 @@ export const PLANT_CATALOG = [
 
   { key:'decor_lounge-wood_XL_CA-US-FR-GB-AU', label:'Wood Loungers', family:'Decor', src:'/stickers/decor_lounge-wood_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
-  { key:'decor_patio-table_L_CA-US-FR-GB-AU', label:'Patio Table & Chairs', family:'Decor', src:'/stickers/decor_patio-table_L_CA-US-FR-GB-AU.png', size:'L' },
+  { key:'decor_table-pine_XL_CA-US-FR-GB-AU',    label:'Pine Table',     family:'Decor', src:'/stickers/decor_table-pine_XL_CA-US-FR-GB-AU.png',    size:'XL' },
+  { key:'decor_table-stained_XL_CA-US-FR-GB-AU',  label:'Stained Table',  family:'Decor', src:'/stickers/decor_table-stained_XL_CA-US-FR-GB-AU.png',  size:'XL' },
+  { key:'decor_table-enameled_XL_CA-US-FR-GB-AU', label:'Enameled Table', family:'Decor', src:'/stickers/decor_table-enameled_XL_CA-US-FR-GB-AU.png', size:'XL' },
+  { key:'decor_table-bronzed_XL_CA-US-FR-GB-AU',  label:'Bronzed Table',  family:'Decor', src:'/stickers/decor_table-bronzed_XL_CA-US-FR-GB-AU.png',  size:'XL' },
 
   { key:'decor_umbrella_L_CA-US-FR-GB-AU', label:'Beach Umbrella', family:'Decor', src:'/stickers/decor_umbrella_L_CA-US-FR-GB-AU.png', size:'L' },
 
