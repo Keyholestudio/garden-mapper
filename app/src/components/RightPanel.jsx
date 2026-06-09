@@ -294,7 +294,7 @@ export default function RightPanel({
           <div className="panel-sep" />
 
           <div style={{ display:'flex', gap:4 }}>
-            <button className="btn-panel" style={{flex:1}} onClick={onCopyStruct}>⧉ Copy</button>
+            <button className="btn-panel" style={{flex:1, opacity: isGroup ? 0.4 : 1, cursor: isGroup ? 'not-allowed' : 'pointer'}} onClick={!isGroup ? onCopyStruct : undefined} title={isGroup ? 'Cannot copy connected objects' : ''}>⧉ Copy</button>
             <button
               className={`btn-panel${d.locked ? ' btn-panel--locked' : ''}`}
               style={{flex:1}}

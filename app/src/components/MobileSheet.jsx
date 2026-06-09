@@ -468,7 +468,7 @@ export default function MobileSheet({
         <div className="mobile-edit-sep" />
 
         <div className="mobile-edit-row">
-          <button className="mobile-edit-btn" onClick={onCopyStruct}>⧮ Copy</button>
+          <button className="mobile-edit-btn" onClick={!isGroup ? onCopyStruct : undefined} style={{opacity: isGroup ? 0.4 : 1, cursor: isGroup ? 'not-allowed' : 'pointer'}} title={isGroup ? 'Cannot copy connected objects' : ''}>⧮ Copy</button>
           <button
             className={`mobile-edit-btn${d.locked ? ' mobile-edit-btn--locked' : ''}`}
             onClick={onLockStruct}
