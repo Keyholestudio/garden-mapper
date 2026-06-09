@@ -1,0 +1,161 @@
+
+════════════════════════════════════════════════════════════════════
+DATA PERSISTENCE & SAVE SYSTEM ROADMAP
+Last updated: 2026-06-09
+════════════════════════════════════════════════════════════════════
+
+THE PROBLEM
+
+Gardens are currently saved in browser localStorage, scoped to a single origin (domain + port).
+This means:
+  - Different Cloudflare tunnel URLs = different localStorage = data appears lost
+  - Clearing browser cache = data gone permanently
+  - No cross-device access
+  - No protection against our own updates breaking saved data
+
+STANDING RULE: localhost:5200 is for building. Tunnel URLs are for demos only.
+Every new tunnel URL is a fresh localStorage bucket — never build in a tunnel.
+
+
+SAVE TIER SYSTEM
+
+At first launch (or from Settings), the user chooses their save mode:
+
+TIER 1 — GUEST MODE ("I don't need an account")
+  - Saves to localStorage on the current device/browser
+  - Auto-backup: 3 rolling slots (rotates every 10 min)
+  - User can restore from backup via Gardens > Backup Slots
+  - Works on any browser, zero signup required
+  - Limitation: data is device+browser bound. Clearing cache = data loss. No cross-device.
+  - Shown clearly to user: "Your garden is saved on this device only."
+
+TIER 2 — ACCOUNT MODE ("Create an account")
+  - Google / email sign-in
+  - Gardens saved to server database tied to account
+  - Auto-syncs on every save (debounced 1.5s — already built)
+  - 2 versioned backups per garden (restore previous version)
+  - Works on any device — phone, tablet, web
+  - This is the robs-lab.ca/gardenmapper experience
+
+MIGRATION PATH: Guest → Account is non-destructive. On sign-in, localStorage gardens
+migrate to the server automatically. Users never lose data by upgrading.
+
+
+BUILD PHASES
+
+──────────────────────────────────────────────────────
+PHASE 1 — STICKER CONTINUITY  [In Progress — Ongoing Rule]
+──────────────────────────────────────────────────────
+Goal: Updates to stickers never break saved gardens.
+
+Rules:
+  - Never delete a sticker key from the catalog. A saved garden stores keys, not paths.
+    If the key disappears, that shape loads with a broken image silently.
+  - Never delete a sticker PNG without ensuring no saved garden references it.
+  - Replacements: update the PNG file in-place using the same filename. Key stays identical.
+    The user's garden automatically loads the new image — zero data loss.
+  - Renames: keep old key in catalog pointing to new file AND add new key alongside.
+  - Removals: mark retired stickers hidden:true instead of deleting. They render in existing
+    saves but don't appear for new placements. (Archive approach — deferred until needed.)
+
+Rob provides: new image file + confirms which sticker ID it replaces.
+I then: run pipeline, overwrite same filename, no catalog changes needed, commit.
+
+──────────────────────────────────────────────────────
+PHASE 2 — AUTO-BACKUP (Tier 1 hardening)  [Pre-Launch]
+──────────────────────────────────────────────────────
+Goal: Guest users have 3 rolling backup slots. Restoring is one tap.
+
+What changes:
+  - useSaveLoad.js: on every save, rotate gardenData_backup_1/2/3 with timestamps
+  - Gardens switcher UI: "Backups" tab shows last 3 auto-saves with timestamps
+  - Restore: loads backup slot into active garden (with confirm dialog)
+
+Estimated effort: 1–2 sessions
+Protects against: accidental Clear All, our own update bugs, user error
+
+──────────────────────────────────────────────────────
+PHASE 3 — SCHEMA MIGRATION HARDENING  [Pre-Launch]
+──────────────────────────────────────────────────────
+Goal: Loading an old saved garden never crashes or silently loses shapes.
+
+What it fixes:
+  - New fields added to shapes (e.g. notes) default gracefully on old saves
+  - Unknown shape types render as a visible placeholder instead of disappearing
+  - Unknown sticker keys show a "missing sticker" placeholder instead of blank space
+  - Schema version gate: if a save is from a version too old to migrate, warn the user
+  - Dry-run validator: run before shipping any structural change to catch what would break
+
+Estimated effort: 1 session
+Protects against: our updates silently corrupting user gardens on load
+
+──────────────────────────────────────────────────────
+PHASE 4 — SAVE TIER CHOICE UI  [Pre-Launch]
+──────────────────────────────────────────────────────
+Goal: User chooses Guest or Account mode at first launch or from Settings.
+
+What changes:
+  - SetupOverlay.jsx (or new WelcomeOverlay): first-launch screen asks
+    "Save locally (no account)" vs "Create a free account"
+  - useGardenState.js: add saveMode: 'local' | 'account' to app state
+  - Settings menu: allow switching save mode + "Sign in / Sign out"
+  - Guest → Account migration: on sign-in, push all localStorage gardens to server
+
+Estimated effort: 2–3 sessions (UI + auth plumbing)
+
+──────────────────────────────────────────────────────
+PHASE 5 — SERVER BACKEND + ACCOUNTS  [Launch = robs-lab.ca]  (#12)
+──────────────────────────────────────────────────────
+Goal: Full cloud save, cross-device, multi-garden per user.
+
+Recommended stack:
+  - Auth: Supabase Auth (Google + email sign-in, free tier, no infra to manage)
+  - DB: Supabase Postgres
+      gardens table: (id, user_id, name, data JSON, updated_at, version)
+      garden_versions table: last 2 snapshots per garden for version restore
+  - API: Supabase client SDK — no custom backend needed for MVP
+  - Hosting: Vercel (frontend) + Supabase (data) — both free at launch scale
+
+Save flow:
+  1. User places shape → debounced 1.5s autosave (already built)
+  2. Autosave calls supabase.from('gardens').upsert(...) with full JSON
+  3. On load: fetch from Supabase first, fall back to localStorage if offline
+  4. Before each save: copy current data to garden_versions (keep last 2)
+  5. UI: "Restore previous version" shows last 2 snapshots with timestamps
+
+Estimated effort: 3–4 sessions to launch-ready
+This is the foundation for robs-lab.ca/gardenmapper and all cross-device access.
+
+──────────────────────────────────────────────────────
+PHASE 6 — MOBILE APP  [Post-Launch]
+──────────────────────────────────────────────────────
+Goal: Capacitor.js wrapper for iOS/Android with offline-first sync.
+
+How save works on mobile:
+  - Capacitor @capacitor/preferences replaces localStorage
+  - Offline: saves to device storage, queues sync
+  - Online: pushes to Supabase on reconnect
+  - Same JSON schema as web — one codebase, one data format
+
+Dependency: Requires Phase 5 (accounts) first.
+Estimated effort: 2–3 sessions once Phase 5 is stable.
+
+
+DREAM GARDEN — STATUS & BUILD PLAN
+
+Current state: Infrastructure fully built (useDreamGarden.js, dreamGarden.json placeholder,
+DREAM_GARDEN_URL pointing to GitHub placeholder). Gardens tab shows "🌸 Dream Garden" as
+slot 0 but it is empty — waiting for Rob to design it.
+
+Build process (when ready):
+  1. Build your Dream Garden at localhost:5200
+  2. Export via exportGardensJSON() → extract that garden's JSON
+  3. Save to app/src/data/dreamGarden.json (bump _dreamVersion to 2)
+  4. Commit and push to GitHub
+  5. Update DREAM_GARDEN_URL in useDreamGarden.js to point to raw GitHub URL
+  6. All new users see the Dream Garden as their default starting point
+
+Note: seedDreamGarden() is a no-op if gardens already exist in localStorage.
+Existing users with gardens are never affected by Dream Garden updates.
+
+════════════════════════════════════════════════════════════════════

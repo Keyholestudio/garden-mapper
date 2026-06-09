@@ -3,6 +3,25 @@ _L001–L009 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 ---
 
+## L026 — Struct copy: two known limitations to fix
+**Date:** 2026-06-09
+
+### Issue 1 — Copy button should be greyed/disabled for Konva.Group (connected buildings)
+`handleCopyStruct` skips Groups with an early return. The button should reflect this visually.
+**Fix:** In RightPanel and MobileSheet struct panels, add `disabled={isGroup}` to the Copy button.
+Add CSS: `.btn-panel:disabled { opacity: 0.4; cursor: not-allowed; }`
+
+### Issue 2 — Copied rects cannot be joined/connected to other rects
+The original rect gets a `dragend` listener wired by `addRectStruct` in `drawUtils.js` that calls
+`tryMergeRects`. The copied rect in `handleCopyStruct` creates a bare `Konva.Rect` without this
+listener — so it can be dragged but never triggers a merge/join.
+**Fix:** After creating the new rect in `handleCopyStruct`, attach the same `dragend` handler.
+Requires importing `tryMergeRects` from `drawUtils.js` into `GardenEditor.jsx` and calling it
+identically to how `addRectStruct` does. Check `addRectStruct` in `drawUtils.js` for the exact
+dragend handler signature before implementing.
+
+---
+
 ## L025 — Sticker continuity: never delete a sticker key, only replace or alias forward
 **Date:** 2026-06-09
 
