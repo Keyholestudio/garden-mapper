@@ -3,6 +3,35 @@ _L001–L009 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 ---
 
+## L024 — Dev server + tunnel: always kill both together, never let stale processes pile up
+**Date:** 2026-06-09
+
+### The problem
+Multiple stale Vite dev server instances accumulate silently on ports 5200–5203. The Cloudflare tunnel locks to a specific process at launch — if that process is replaced, the tunnel is dead but still appears to be running. Result: tunnel URL serves an old build, changes are invisible.
+
+### Rules
+1. **One Vite process, one tunnel.** Before starting either, kill all existing instances.
+2. **Tunnel dies when Vite restarts.** Always reissue a new tunnel URL after any server restart.
+3. **Never trust a running tunnel from a previous session.** The June 8 tunnel was still "running" on June 9 — it was dead.
+4. **Stale server symptoms:** changes not showing after hot-reload, port floating to 5201/5202/5203.
+
+### Standard restart procedure (for me as assistant)
+```powershell
+# Kill all stale Vite servers
+Get-NetTCPConnection -LocalPort 5200,5201,5202,5203 -State Listen | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }
+# Kill stale tunnels
+Get-Process cloudflared -ErrorAction SilentlyContinue | Stop-Process -Force
+# Then restart Vite + tunnel fresh
+```
+
+### For Rob — use restart.bat
+`projects/garden-planner/restart.bat` — kills stale processes, starts fresh Vite + tunnel, opens browser. Creates a new Cloudflare URL each time (check the tunnel window). Use this any time changes aren't showing or the tunnel URL stops working.
+
+### Desktop shortcut
+Point shortcut to `restart.bat` instead of `start.bat` for daily use. `start.bat` still exists for first-launch if nothing is running.
+
+---
+
 ## L023 — Complete checklist for adding a Decor item to the menu
 **Date:** 2026-06-09
 
