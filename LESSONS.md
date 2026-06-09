@@ -45,6 +45,33 @@ We deleted `decor_pot-s`, `decor_pot-m`, `decor_pot-l` and replaced with 5 new k
 ### Hidden/archive approach (deferred)
 Add `hidden: true` flag to catalog entries for retired stickers. Filter in `usePlantCatalog.js` → `PLANT_CATALOG_TRAY` already excludes Decor families — extend this filter to also exclude `hidden: true`. Retired stickers render in existing saves but don't appear for new placements. Low complexity, high safety. Build when sticker library gets large enough to need pruning.
 
+### ✅ Missing sticker placeholder (tested June 9, 2026)
+If a PNG is missing from `app/public/stickers/`, the app now shows a grey `?` tile instead of a blank. The sticker key is still intact in the save — no data is lost. The `?` is the signal to restore the PNG.
+
+### 🔁 The 3 sticker operations — quick reference for Rob
+
+**Replacing a sticker (new image, same item):**
+1. Send Computer the new image and say which sticker it replaces (name or ID)
+2. Computer runs the pipeline and overwrites the PNG in both locations in-place
+3. No menu changes, no save migration — existing gardens update automatically on next load
+4. Commit message: `"Stickers: replace [name] image in-place"`
+
+**Adding a new sticker:**
+1. Send Computer the image and say what it is + which menu category it belongs to
+2. Computer follows L023 checklist: PNG → catalog → DECOR_CATALOG (if decor) → toolMenuData
+3. Commit: `"Decor: add [name]"`
+
+**Retiring a sticker (never delete):**
+1. Tell Computer "retire [name]" — never say "delete"
+2. Computer marks it `hidden: true` in the catalog — it vanishes from menus but still renders in saved gardens
+3. PNG stays on disk forever
+
+### 🚑 Recovery if a sticker PNG goes missing (grey ? appears)
+1. Check `stickers/` folder (repo copy) → copy back to `app/public/stickers/`
+2. If both are missing: `git checkout HEAD -- stickers/<filename>.png app/public/stickers/<filename>.png`
+3. If never committed (brand new sticker): re-run the sticker pipeline to regenerate
+4. Hard-refresh the browser (Ctrl+Shift+R) after restoring — Vite doesn't hot-reload new PNGs
+
 ---
 
 ## L024 — Dev server + tunnel: always kill both together, never let stale processes pile up
