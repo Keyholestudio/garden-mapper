@@ -1,14 +1,15 @@
 // useDreamGarden.js — Hybrid dream garden seed + silent background fetch
 //
 // Strategy:
-//   1. On first-ever launch (no gardens in LS), seed two gardens:
-//        [0] Dream Garden (locked, read-only)
-//        [1] My Garden    (blank, user-editable)
+//   1. On every launch, ensure index 0 is always the Dream Garden.
+//      - New user (empty LS): seed [Dream Garden, My Garden]
+//      - Existing user missing Dream Garden at index 0: prepend it
+//      - This means Dream Garden is always present and loadable, for everyone.
 //   2. On every launch, silently fetch DREAM_GARDEN_URL in the background.
 //      If the fetched _dreamVersion > stored version → update slot 0 + backup.
 //
 // The dream garden is always at index 0. It is flagged _isDreamGarden: true
-// and locked: true so the UI can treat it as read-only.
+// and locked: true so the UI can treat it as read-only (no delete, no edit).
 
 import dreamGardenFallback from '../data/dreamGarden.json'
 
@@ -51,25 +52,38 @@ function makeBlankGarden() {
     _schemaVersion: SCHEMA_VERSION,
     _isDreamGarden: false,
     name: 'My Garden',
-    width: 20,
-    height: 15,
+    w: 60,
+    h: 40,
     unit: 'ft',
     plants: [],
     structs: [],
   }
 }
 
-// ── Seed: called once when gardens array is empty (brand-new user) ─────────────
+// ── Seed: ensures Dream Garden is always present at index 0 ──────────────────
 export function seedDreamGarden() {
   const gardens = readGardens()
-  if (gardens.length > 0) return  // already seeded
 
-  const dream = makeDreamGarden(dreamGardenFallback)
-  const blank = makeBlankGarden()
-  writeGardens([dream, blank])
+  if (gardens.length === 0) {
+    // Brand-new user: seed Dream Garden + blank My Garden
+    const dream = makeDreamGarden(dreamGardenFallback)
+    const blank = makeBlankGarden()
+    writeGardens([dream, blank])
+    try { localStorage.setItem('gardenLastIndex', '0') } catch {}
+    return
+  }
 
-  // Start on the dream garden so the first thing users see is the beautiful example
-  try { localStorage.setItem('gardenLastIndex', '0') } catch {}
+  // Existing user: check if Dream Garden is already at index 0
+  if (!gardens[0]?._isDreamGarden) {
+    // Prepend Dream Garden; existing user gardens shift to index 1+
+    const dream = makeDreamGarden(dreamGardenFallback)
+    writeGardens([dream, ...gardens])
+    // Shift last-used index forward so the user stays on their own garden
+    try {
+      const last = parseInt(localStorage.getItem('gardenLastIndex') || '0')
+      localStorage.setItem('gardenLastIndex', String(last + 1))
+    } catch {}
+  }
 }
 
 // ── Silent background fetch: runs after UI is loaded ─────────────────────────
