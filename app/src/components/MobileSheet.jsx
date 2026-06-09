@@ -286,35 +286,13 @@ export default function MobileSheet({
   // ── Plant edit panel renderer ─────────────────────────────
   function renderPlantPanel() {
     const d = plantDataRef?.current[selectedPlant.id] || {}
+    const isDecor = ['Decor', 'Water Feature'].includes(d.family)
     return (
       <>
         <div className="mobile-edit-title">{d.label || 'Plant'}</div>
         {d.family && <div className="mobile-edit-subtitle">{d.family}</div>}
         <div className="mobile-edit-sep" />
 
-        <div className="mobile-edit-label">VISIBLE IN SEASONS</div>
-        <div className="mobile-season-checks">
-          {['spring','summer','fall','winter'].map(s => (
-            <label key={s} className="mobile-season-check">
-              <input type="checkbox"
-                defaultChecked={d.seasons?.includes(s)}
-                onChange={e => {
-                  if (e.target.checked) d.seasons = [...(d.seasons||[]), s]
-                  else d.seasons = (d.seasons||[]).filter(x => x !== s)
-                  onSeasonsChange?.()
-                }}
-              />
-              <span>{s.charAt(0).toUpperCase()+s.slice(1)}</span>
-            </label>
-          ))}
-        </div>
-
-        <div className="mobile-edit-sep" />
-
-        <div className="mobile-edit-row">
-          <button className="mobile-edit-btn" onClick={() => onLayerMove?.('plant','up')}>▲ Forward</button>
-          <button className="mobile-edit-btn" onClick={() => onLayerMove?.('plant','down')}>▼ Back</button>
-        </div>
         <div className="mobile-edit-row">
           <button className="mobile-edit-btn" onClick={onCopyPlant}>⧮ Copy</button>
           <button
@@ -322,25 +300,57 @@ export default function MobileSheet({
             onClick={onLockPlant}
           >{d.locked ? '🔒 Locked' : '🔓 Unlocked'}</button>
         </div>
+        <div className="mobile-edit-row">
+          <button className="mobile-edit-btn" onClick={() => onLayerMove?.('plant','up')}>▲ Forward</button>
+          <button className="mobile-edit-btn" onClick={() => onLayerMove?.('plant','down')}>▼ Back</button>
+        </div>
         <button className="mobile-edit-btn full" onClick={onTransparentPlant}>
           👁 {d.transparent ? 'Restore Opacity' : 'Make Transparent'}
         </button>
 
+        {!isDecor && (
+          <>
+            <div className="mobile-edit-sep" />
+            <div className="mobile-edit-label">VISIBLE IN SEASONS</div>
+            <div className="mobile-season-checks">
+              {['spring','summer','fall','winter'].map(s => (
+                <label key={s} className="mobile-season-check">
+                  <input type="checkbox"
+                    defaultChecked={d.seasons?.includes(s)}
+                    onChange={e => {
+                      if (e.target.checked) d.seasons = [...(d.seasons||[]), s]
+                      else d.seasons = (d.seasons||[]).filter(x => x !== s)
+                      onSeasonsChange?.()
+                    }}
+                  />
+                  <span>{s.charAt(0).toUpperCase()+s.slice(1)}</span>
+                </label>
+              ))}
+            </div>
+          </>
+        )}
+
         <div className="mobile-edit-sep" />
-        <button className="mobile-edit-btn danger full" onClick={onDeletePlant}>🗑 Delete</button>
-        {/* #34: Notes section */}
-        <div className="mobile-edit-sep" />
-        <div className="mobile-edit-label">NOTES</div>
-        <textarea
-          className="plant-notes-input plant-notes-mobile"
-          placeholder="Add notes about this plant..."
-          defaultValue={d.notes || ''}
-          onChange={e => {
-            d.notes = e.target.value
-            onSeasonsChange?.()
-          }}
-          rows={2}
-        />
+        <button className="mobile-edit-btn danger full" onClick={onDeletePlant}>
+          🗑 {isDecor ? 'Delete' : 'Remove Plant'}
+        </button>
+
+        {!isDecor && (
+          <>
+            <div className="mobile-edit-sep" />
+            <div className="mobile-edit-label">NOTES</div>
+            <textarea
+              className="plant-notes-input plant-notes-mobile"
+              placeholder="Add notes about this plant..."
+              defaultValue={d.notes || ''}
+              onChange={e => {
+                d.notes = e.target.value
+                onSeasonsChange?.()
+              }}
+              rows={2}
+            />
+          </>
+        )}
       </>
     )
   }
@@ -356,6 +366,7 @@ export default function MobileSheet({
     const colours = TYPE_COLOURS[d.type] || BED_COLOURS
     const isPath  = d.type === 'path'
     const isUG    = d.type?.startsWith('underground')
+    const isBed   = ['bed', 'bed-square', 'bed-sq'].includes(d.type)
     const rectTypes = ['bed-sq','bed-square','building','deck','deck-sq','pool-sq','hedge-sq']
     const isRectType    = isRect && rectTypes.includes(d.type)
     const showDimRect   = isRectType
@@ -469,6 +480,23 @@ export default function MobileSheet({
 
         <div className="mobile-edit-sep" />
         <button className="mobile-edit-btn danger full" onClick={onDeleteStruct}>🗑 Delete</button>
+
+        {(isBed || isUG) && (
+          <>
+            <div className="mobile-edit-sep" />
+            <div className="mobile-edit-label">NOTES</div>
+            <textarea
+              className="plant-notes-input plant-notes-mobile"
+              placeholder={isBed ? 'Add notes about this bed...' : d.type === 'underground-electrical' ? 'Add notes about this electrical...' : 'Add notes about this plumbing...'}
+              defaultValue={d.notes || ''}
+              onChange={e => {
+                d.notes = e.target.value
+                onSeasonsChange?.()
+              }}
+              rows={2}
+            />
+          </>
+        )}
       </>
     )
   }

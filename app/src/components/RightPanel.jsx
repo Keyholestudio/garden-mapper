@@ -109,9 +109,10 @@ export default function RightPanel({
     )
   }
 
-  // ── Plant panel ───────────────────────────────────────────
+  // ── Plant / Decor panel ──────────────────────────────────
   if (selectedPlant) {
     const d = plantDataRef?.current[selectedPlant.id] || {}
+    const isDecor = ['Decor', 'Water Feature'].includes(d.family)
     return (
       <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
         <div className="panel-content">
@@ -130,44 +131,53 @@ export default function RightPanel({
               onClick={onLockPlant}
             >{d.locked ? '🔒 Locked' : '🔓 Unlocked'}</button>
           </div>
-          <button className="btn-panel" onClick={onTransparentPlant}>
-            👁 {d.transparent ? 'Restore Opacity' : 'Make Transparent'}
-          </button>
           <div style={{ display: 'flex', gap: 4 }}>
             <button className="btn-panel" style={{ flex: 1 }} onClick={() => onLayerMove?.('plant', 'up')}>▲ Forward</button>
             <button className="btn-panel" style={{ flex: 1 }} onClick={() => onLayerMove?.('plant', 'down')}>▼ Back</button>
           </div>
+          <button className="btn-panel" onClick={onTransparentPlant}>
+            👁 {d.transparent ? 'Restore Opacity' : 'Make Transparent'}
+          </button>
+          {!isDecor && (
+            <>
+              <div className="panel-sep" />
+              <div className="panel-title">VISIBLE IN SEASONS</div>
+              <div className="season-checks">
+                {['spring','summer','fall','winter'].map(s => (
+                  <label key={s}>
+                    <input type="checkbox"
+                      defaultChecked={d.seasons?.includes(s)}
+                      onChange={e => {
+                        if (e.target.checked) d.seasons = [...(d.seasons||[]), s]
+                        else d.seasons = (d.seasons||[]).filter(x => x !== s)
+                        onSeasonsChange?.()
+                      }}
+                    /> {s.charAt(0).toUpperCase()+s.slice(1)}
+                  </label>
+                ))}
+              </div>
+            </>
+          )}
           <div className="panel-sep" />
-          <div className="panel-title">VISIBLE IN SEASONS</div>
-          <div className="season-checks">
-            {['spring','summer','fall','winter'].map(s => (
-              <label key={s}>
-                <input type="checkbox"
-                  defaultChecked={d.seasons?.includes(s)}
-                  onChange={e => {
-                    if (e.target.checked) d.seasons = [...(d.seasons||[]), s]
-                    else d.seasons = (d.seasons||[]).filter(x => x !== s)
-                    onSeasonsChange?.()
-                  }}
-                /> {s.charAt(0).toUpperCase()+s.slice(1)}
-              </label>
-            ))}
-          </div>
-          <div className="panel-sep" />
-          <button className="btn-panel danger" onClick={onDeletePlant}>🗑 Remove Plant</button>
-          {/* #34: Notes section — compact, auto-expands with content */}
-          <div className="panel-sep" />
-          <div className="panel-title">NOTES</div>
-          <textarea
-            className="plant-notes-input"
-            placeholder="Add notes about this plant..."
-            defaultValue={d.notes || ''}
-            onChange={e => {
-              d.notes = e.target.value
-              onSeasonsChange?.() // reuse dirty-flag callback to trigger save awareness
-            }}
-            rows={2}
-          />
+          <button className="btn-panel danger" onClick={onDeletePlant}>
+            🗑 {isDecor ? 'Delete' : 'Remove Plant'}
+          </button>
+          {!isDecor && (
+            <>
+              <div className="panel-sep" />
+              <div className="panel-title">NOTES</div>
+              <textarea
+                className="plant-notes-input"
+                placeholder="Add notes about this plant..."
+                defaultValue={d.notes || ''}
+                onChange={e => {
+                  d.notes = e.target.value
+                  onSeasonsChange?.()
+                }}
+                rows={2}
+              />
+            </>
+          )}
         </div>
       </div>
     )
@@ -183,6 +193,7 @@ export default function RightPanel({
     const colours = TYPE_COLOURS[d.type] || BED_COLOURS
     const isPath  = d.type === 'path'
     const isUG    = d.type?.startsWith('underground')
+    const isBed   = ['bed', 'bed-square', 'bed-sq'].includes(d.type)
     const rectTypes = ['bed-sq', 'bed-square', 'building', 'deck', 'deck-sq', 'pool-sq', 'hedge-sq']
     const isRectType    = isRect   && rectTypes.includes(d.type)
     const showDimRect   = isRectType
@@ -272,6 +283,13 @@ export default function RightPanel({
             </>
           )}
 
+          {!isCircle && !isGroup && !isRectType && !d.locked && (
+            <button className="btn-panel" onClick={() => onEnterEdit?.(selectedStruct.id)}>✏️ Edit Shape</button>
+          )}
+          {isGroup && (
+            <button className="btn-panel" onClick={onDisconnect}>⇥ Disconnect</button>
+          )}
+
           <div className="panel-sep" />
 
           <div style={{ display:'flex', gap:4 }}>
@@ -288,15 +306,25 @@ export default function RightPanel({
             👁 {d.transparent ? 'Restore' : 'Make Transparent'}
           </button>
 
-          {!isCircle && !isGroup && !isRectType && !d.locked && (
-            <button className="btn-panel" onClick={() => onEnterEdit?.(selectedStruct.id)}>✏️ Edit Shape</button>
-          )}
-          {isGroup && (
-            <button className="btn-panel" onClick={onDisconnect}>⇥ Disconnect</button>
-          )}
-
           <div className="panel-sep" />
           <button className="btn-panel danger" onClick={onDeleteStruct}>🗑 Delete</button>
+
+          {(isBed || isUG) && (
+            <>
+              <div className="panel-sep" />
+              <div className="panel-title">NOTES</div>
+              <textarea
+                className="plant-notes-input"
+                placeholder={isBed ? 'Add notes about this bed...' : d.type === 'underground-electrical' ? 'Add notes about this electrical...' : 'Add notes about this plumbing...'}
+                defaultValue={d.notes || ''}
+                onChange={e => {
+                  d.notes = e.target.value
+                  onSeasonsChange?.()
+                }}
+                rows={2}
+              />
+            </>
+          )}
         </div>
       </div>
     )
