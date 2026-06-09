@@ -51,8 +51,12 @@ export default function GardenSwitcher({
     setConfirmDeleteIdx(null)
   }
 
-  const MAX_GARDENS = 2
-  const atLimit = gardens.length >= MAX_GARDENS
+  // Dream Garden is always index 0 (_isDreamGarden flag)
+  const isDream = (g) => !!(g?._isDreamGarden)
+  // Free tier: 1 user garden (Dream Garden doesn't count toward limit)
+  const MAX_USER_GARDENS = 1
+  const userGardens = gardens.filter((g, i) => !isDream(g))
+  const atLimit = userGardens.length >= MAX_USER_GARDENS
 
   // Placeholder subscription URL — swap in real page when ready
   const SUBSCRIBE_URL = '/subscribe'
@@ -71,14 +75,20 @@ export default function GardenSwitcher({
           )}
           {gardens.map((g, i) => !g ? null : (
             <div key={i} className="switcher-garden-group">
-              <div className={`switcher-row ${i === currentIndex ? 'current' : ''}`}>
+              <div className={`switcher-row ${i === currentIndex ? 'current' : ''} ${isDream(g) ? 'dream' : ''}`}>
                 <span className="switcher-name">
                   {g.name || `Garden ${i + 1}`}
-                  {i === currentIndex && <span className="switcher-badge">current</span>}
+                  {isDream(g) && <span className="switcher-badge switcher-badge--dream">🌸 Dream</span>}
+                  {i === currentIndex && !isDream(g) && <span className="switcher-badge">current</span>}
                 </span>
                 <span className="switcher-dims">{g.w}×{g.h} {g.unit}</span>
                 <button className="btn-load" onClick={() => { onLoad(i); onClose() }}>Load</button>
-                <button className="btn-delete" onClick={() => handleDelete(i)}>🗑</button>
+                <button
+                  className="btn-delete"
+                  onClick={() => !isDream(g) && handleDelete(i)}
+                  disabled={isDream(g)}
+                  title={isDream(g) ? 'Dream Garden cannot be deleted' : ''}
+                >🗑</button>
               </div>
               {/* Backup slots toggle */}
               {(backupSlots[i]?.length > 0) && (
@@ -112,7 +122,7 @@ export default function GardenSwitcher({
             + New Garden
           </button>
           {atLimit && (
-            <span className="switcher-limit-inline">2-garden limit reached</span>
+            <span className="switcher-limit-inline">Garden Limit Reached</span>
           )}
         </div>
       </div>
