@@ -63,34 +63,28 @@ export default function GardenEditor() {
   useEffect(() => { showGridRef.current = state.showGrid }, [state.showGrid])
 
   // ── Respond to browser zoom changes ─────────────────────────────────────
-  // Browser zoom (Ctrl+/-) shrinks the visual viewport but the app's fixed-width
-  // panels overflow the screen. Fix: counter-scale the root element so the entire
-  // app shrinks proportionally to always fit inside the browser window.
+  // Browser zoom (Ctrl+/-) increases devicePixelRatio and shrinks the visual
+  // viewport, causing fixed-width panels to clip off screen.
+  // Fix: apply CSS zoom on the #app root to counter-scale proportionally.
+  // CSS zoom (unlike transform:scale) participates in layout, so panels reflow
+  // correctly within the available space.
   useEffect(() => {
     const root = document.getElementById('app')
     if (!root) return
 
+    // Capture baseline DPR at mount (represents 100% zoom)
+    const baseDPR = window.devicePixelRatio || 1
+
     const applyZoomFit = () => {
-      const vv = window.visualViewport
-      if (!vv) return
-      // Browser zoom level: visualViewport.width / window.screen.availWidth gives
-      // a rough zoom, but outerWidth/innerWidth is more reliable cross-browser
-      const zoomLevel = window.outerWidth / window.innerWidth
+      const currentDPR = window.devicePixelRatio || 1
+      const zoomLevel = currentDPR / baseDPR  // e.g. 1.1 at 110%
       if (zoomLevel <= 1.01) {
-        // At 100% or less — no compensation needed
-        root.style.transform = ''
-        root.style.transformOrigin = ''
-        root.style.width = ''
-        root.style.height = ''
+        root.style.zoom = ''
       } else {
-        // Scale down the app root to compensate for browser zoom
-        const scale = 1 / zoomLevel
-        root.style.transformOrigin = '0 0'
-        root.style.transform = `scale(${scale})`
-        root.style.width = `${zoomLevel * 100}%`
-        root.style.height = `${zoomLevel * 100}%`
+        // Counter-zoom: shrink app to fit
+        root.style.zoom = `${(1 / zoomLevel) * 100}%`
       }
-      // Also update Konva stage size after layout settles
+      // Update Konva stage after layout settles
       requestAnimationFrame(() => {
         const stage = stageRef.current
         const { gridLayer } = layersRef.current
@@ -111,10 +105,7 @@ export default function GardenEditor() {
     return () => {
       window.removeEventListener('resize', applyZoomFit)
       window.visualViewport?.removeEventListener('resize', applyZoomFit)
-      root.style.transform = ''
-      root.style.transformOrigin = ''
-      root.style.width = ''
-      root.style.height = ''
+      root.style.zoom = ''
     }
   }, [stageReady])
 
