@@ -68,6 +68,8 @@ function applyLawnTexture(boundsRect, currentSeason, structLayer) {
 const LS_KEY          = 'gardenData'
 const LS_BACKUP_KEY   = 'gardenData_backup'   // last-known-good snapshot
 const LS_LAST_IDX_KEY = 'gardenLastIndex'
+const LS_SLOTS_KEY    = 'gardenBackupSlots'   // rolling 3-slot per-garden backups
+const MAX_BACKUP_SLOTS = 3
 const MAX_GARDENS     = 2
 const SCHEMA_VERSION  = 2  // increment when save format changes
 
@@ -154,6 +156,36 @@ function writeGardens(arr) {
   } catch (e) {
     console.error('[GardenMapper] Save failed:', e)
   }
+}
+
+// ── Rolling backup slots (3 per garden index) ───────────────────────────────
+function readAllSlots() {
+  try { return JSON.parse(localStorage.getItem(LS_SLOTS_KEY) || '{}') } catch { return {} }
+}
+function writeBackupSlot(gardenIndex, gardenEntry) {
+  try {
+    const all = readAllSlots()
+    const key = String(gardenIndex)
+    const slots = all[key] || []
+    // Prepend new snapshot with timestamp
+    slots.unshift({ ...gardenEntry, _backupAt: new Date().toISOString() })
+    // Keep only latest MAX_BACKUP_SLOTS
+    all[key] = slots.slice(0, MAX_BACKUP_SLOTS)
+    localStorage.setItem(LS_SLOTS_KEY, JSON.stringify(all))
+  } catch (e) {
+    console.warn('[GardenMapper] Backup slot write failed:', e)
+  }
+}
+export function readBackupSlots(gardenIndex) {
+  const all = readAllSlots()
+  return (all[String(gardenIndex)] || []).map(g => migrateGarden({ ...g })).filter(Boolean)
+}
+export function clearBackupSlots(gardenIndex) {
+  try {
+    const all = readAllSlots()
+    delete all[String(gardenIndex)]
+    localStorage.setItem(LS_SLOTS_KEY, JSON.stringify(all))
+  } catch {}
 }
 
 // ── Export gardens as JSON file (user backup) ─────────────────────────────────
@@ -251,6 +283,8 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
   }
   writeGardens(gardens)
   writeLastGardenIndex(currentGardenIndex)
+  // Write rolling backup slot for this garden index
+  writeBackupSlot(currentGardenIndex, gardenEntry)
   return true
 }
 
@@ -259,6 +293,7 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
 // React state setters are called at the END so they don't race with Konva ops.
 export function loadGarden({
   idx,
+  snapshot,   // optional: load a specific snapshot (backup slot) instead of current save
   stage, layers, state, loadedImages,
   showGridRef,
   onSelectPlant, onSelectStruct, onClearSelection,
@@ -266,7 +301,7 @@ export function loadGarden({
   onZoomToFit,
 }) {
   const gardens = readGardens()
-  const g = gardens[idx]
+  const g = snapshot ? migrateGarden({ ...snapshot }) : gardens[idx]
   if (!g) return false
 
   const { plantLayer, structLayer, uiLayer } = layers

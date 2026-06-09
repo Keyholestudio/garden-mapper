@@ -818,10 +818,11 @@ export default function GardenEditor() {
   }
 
   // ── Phase 5: Load ──
-  const handleLoad = (idx) => {
+  const handleLoad = (idx, snapshot = null) => {
     if (!stageRef.current) return
     const ok = loadGarden({
       idx,
+      snapshot,
       stage: stageRef.current,
       layers: layersRef.current,
       state,

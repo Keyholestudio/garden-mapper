@@ -2,7 +2,7 @@
 // Mirrors v8 showGardenSwitcher / garden-switcher panel
 
 import { useState, useEffect } from 'react'
-import { readGardens, deleteGarden } from '../hooks/useSaveLoad'
+import { readGardens, deleteGarden, readBackupSlots } from '../hooks/useSaveLoad'
 import './GardenSwitcher.css'
 
 export default function GardenSwitcher({
@@ -14,10 +14,30 @@ export default function GardenSwitcher({
 }) {
   const [gardens, setGardens] = useState([])
   const [confirmDeleteIdx, setConfirmDeleteIdx] = useState(null)
+  const [expandedBackups, setExpandedBackups] = useState({}) // { [gardenIndex]: bool }
+  const [backupSlots, setBackupSlots] = useState({})         // { [gardenIndex]: slot[] }
 
   useEffect(() => {
-    if (open) setGardens(readGardens())
+    if (open) {
+      const gs = readGardens()
+      setGardens(gs)
+      // Pre-load backup slots for all gardens
+      const slots = {}
+      gs.forEach((_, i) => { slots[i] = readBackupSlots(i) })
+      setBackupSlots(slots)
+    }
   }, [open])
+
+  const toggleBackups = (i) => {
+    setExpandedBackups(prev => ({ ...prev, [i]: !prev[i] }))
+  }
+
+  const formatBackupTime = (iso) => {
+    if (!iso) return ''
+    const d = new Date(iso)
+    return d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' }) +
+      ', ' + d.toLocaleTimeString('en-CA', { hour: 'numeric', minute: '2-digit', hour12: true })
+  }
 
   if (!open) return null
 
@@ -50,14 +70,28 @@ export default function GardenSwitcher({
             <div className="switcher-empty">No saved gardens yet. Click Save first.</div>
           )}
           {gardens.map((g, i) => !g ? null : (
-            <div key={i} className={`switcher-row ${i === currentIndex ? 'current' : ''}`}>
-              <span className="switcher-name">
-                {g.name || `Garden ${i + 1}`}
-                {i === currentIndex && <span className="switcher-badge">current</span>}
-              </span>
-              <span className="switcher-dims">{g.w}×{g.h} {g.unit}</span>
-              <button className="btn-load" onClick={() => { onLoad(i); onClose() }}>Load</button>
-              <button className="btn-delete" onClick={() => handleDelete(i)}>🗑</button>
+            <div key={i} className="switcher-garden-group">
+              <div className={`switcher-row ${i === currentIndex ? 'current' : ''}`}>
+                <span className="switcher-name">
+                  {g.name || `Garden ${i + 1}`}
+                  {i === currentIndex && <span className="switcher-badge">current</span>}
+                </span>
+                <span className="switcher-dims">{g.w}×{g.h} {g.unit}</span>
+                <button className="btn-load" onClick={() => { onLoad(i); onClose() }}>Load</button>
+                <button className="btn-delete" onClick={() => handleDelete(i)}>🗑</button>
+              </div>
+              {/* Backup slots toggle */}
+              {(backupSlots[i]?.length > 0) && (
+                <div className="switcher-backup-toggle" onClick={() => toggleBackups(i)}>
+                  <span>{expandedBackups[i] ? '▾' : '▸'} Backups ({backupSlots[i].length})</span>
+                </div>
+              )}
+              {expandedBackups[i] && (backupSlots[i] || []).map((slot, si) => (
+                <div key={si} className="switcher-backup-row">
+                  <span className="switcher-backup-time">{formatBackupTime(slot._backupAt)}</span>
+                  <button className="btn-load btn-load--sm" onClick={() => { onLoad(i, slot); onClose() }}>Load</button>
+                </div>
+              ))}
             </div>
           ))}
 

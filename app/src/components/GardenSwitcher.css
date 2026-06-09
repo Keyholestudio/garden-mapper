@@ -198,6 +198,51 @@
 .btn-new:hover:not(:disabled) { background: #C8E6C9; }
 .btn-new:disabled { opacity: 0.45; cursor: not-allowed; }
 
+/* Backup slots */
+.switcher-garden-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.switcher-backup-toggle {
+  font-size: 11px;
+  color: #558B2F;
+  font-weight: 700;
+  padding: 3px 14px 4px;
+  cursor: pointer;
+  user-select: none;
+  opacity: 0.8;
+}
+.switcher-backup-toggle:hover { opacity: 1; }
+
+.switcher-backup-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 14px 5px 22px;
+  background: #f6fbf3;
+  border-left: 2px solid #A5D6A7;
+  margin-left: 8px;
+  border-radius: 0 0 6px 6px;
+  gap: 8px;
+}
+.switcher-backup-row:last-child {
+  border-radius: 0 0 6px 6px;
+  margin-bottom: 2px;
+}
+
+.switcher-backup-time {
+  font-size: 11px;
+  color: #666;
+  flex: 1;
+}
+
+.btn-load--sm {
+  padding: 3px 9px !important;
+  font-size: 10px !important;
+}
+
 /* Delete confirm modal */
 .confirm-overlay {
   position: fixed;
