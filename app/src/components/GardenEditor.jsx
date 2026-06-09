@@ -18,7 +18,7 @@ import { useRecentPlants } from '../hooks/useRecentPlants'
 import LogoBar        from './LogoBar'
 import BottomBar      from './BottomBar'
 import PlantTray      from './PlantTray'
-import GardenCanvas  from './GardenCanvas'
+import GardenCanvas, { drawGrid }  from './GardenCanvas'
 import RightPanel    from './RightPanel'
 import SetupOverlay  from './SetupOverlay'
 import GardenSwitcher from './GardenSwitcher'
@@ -62,59 +62,37 @@ export default function GardenEditor() {
   // Keep showGridRef current
   useEffect(() => { showGridRef.current = state.showGrid }, [state.showGrid])
 
-  // ── Block browser zoom + compensate if already zoomed on load ──────────────
-  // Browser zoom with Ctrl+/- changes visualViewport size but not 100vw/100vh,
-  // causing panels to overflow. Fix: scale the root element to always fill the
-  // actual visual viewport, effectively counteracting the browser zoom.
+  // ── Respond to browser zoom changes ─────────────────────────────────────
+  // Browser zoom (Ctrl+/-) changes visualViewport dimensions. The Konva stage
+  // has a ResizeObserver on its container, but it may not fire fast enough.
+  // Fix: on visualViewport resize, directly update the stage size to match
+  // the canvas container's new dimensions, then redraw.
   useEffect(() => {
-    const root = document.documentElement
-
-    const applyZoomCompensation = () => {
-      const vv = window.visualViewport
-      if (!vv) return
-      // devicePixelRatio-based zoom level (1.0 = 100%, 0.9 = 90%, etc.)
-      // Use visualViewport width vs window.outerWidth as the zoom signal
-      const zoom = vv.scale !== undefined ? vv.scale : window.outerWidth / window.innerWidth
-      // Counter-scale the root so layout always fills the full browser window
-      const compensation = 1 / zoom
-      root.style.transform = compensation !== 1 ? `scale(${compensation})` : ''
-      root.style.transformOrigin = '0 0'
-      root.style.width = compensation !== 1 ? `${zoom * 100}vw` : ''
-      root.style.height = compensation !== 1 ? `${zoom * 100}vh` : ''
-    }
-
-    const onWheel = (e) => {
-      if (e.ctrlKey || e.metaKey) e.preventDefault()
-    }
-    const onKeyDown = (e) => {
-      if (e.ctrlKey || e.metaKey) {
-        if (['+', '-', '=', '_', '0', 'Add', 'Subtract'].includes(e.key) ||
-            e.keyCode === 187 || e.keyCode === 189 || e.keyCode === 48 ||
-            e.keyCode === 107 || e.keyCode === 109) {
-          e.preventDefault()
+    const onViewportResize = () => {
+      const stage = stageRef.current
+      const { gridLayer } = layersRef.current
+      if (!stage) return
+      // Find the canvas wrapper and re-measure it
+      const wrap = stage.container().parentElement
+      if (!wrap) return
+      // Use rAF to let the browser finish reflowing the layout first
+      requestAnimationFrame(() => {
+        stage.width(wrap.clientWidth)
+        stage.height(wrap.clientHeight)
+        if (gridLayer) {
+          drawGrid(stage, gridLayer, state.showGrid, state.gardenUnit, state.currentSeason)
         }
-      }
+        stage.batchDraw()
+      })
     }
-
-    // Apply on load and on any resize (browser zoom triggers a resize event)
-    applyZoomCompensation()
-    window.addEventListener('resize', applyZoomCompensation)
-    window.visualViewport?.addEventListener('resize', applyZoomCompensation)
-    window.addEventListener('wheel', onWheel, { passive: false })
-    window.addEventListener('keydown', onKeyDown)
-
+    window.visualViewport?.addEventListener('resize', onViewportResize)
+    // Also fire on regular window resize (handles zoom in some browsers)
+    window.addEventListener('resize', onViewportResize)
     return () => {
-      window.removeEventListener('resize', applyZoomCompensation)
-      window.visualViewport?.removeEventListener('resize', applyZoomCompensation)
-      window.removeEventListener('wheel', onWheel)
-      window.removeEventListener('keydown', onKeyDown)
-      // Clean up root styles on unmount
-      root.style.transform = ''
-      root.style.transformOrigin = ''
-      root.style.width = ''
-      root.style.height = ''
+      window.visualViewport?.removeEventListener('resize', onViewportResize)
+      window.removeEventListener('resize', onViewportResize)
     }
-  }, [])
+  }, [stageReady]) // re-bind once stage is ready
 
   // ── Season visibility — mirrors v8 updatePlantVisibility() ──
   // Runs whenever season changes. Fades plants not visible in the current season.
