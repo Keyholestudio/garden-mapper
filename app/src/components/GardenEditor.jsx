@@ -62,6 +62,26 @@ export default function GardenEditor() {
   // Keep showGridRef current
   useEffect(() => { showGridRef.current = state.showGrid }, [state.showGrid])
 
+  // ── Block browser zoom (Ctrl+wheel, Ctrl+/-, Ctrl+0) on desktop ───────────────
+  // Canvas has its own zoom — browser zoom breaks the fixed layout.
+  useEffect(() => {
+    const onWheel = (e) => {
+      if (e.ctrlKey || e.metaKey) e.preventDefault()
+    }
+    const onKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '_', '0'].includes(e.key)) {
+        e.preventDefault()
+      }
+    }
+    // passive: false required so preventDefault() works on wheel
+    window.addEventListener('wheel', onWheel, { passive: false })
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      window.removeEventListener('wheel', onWheel)
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [])
+
   // ── Season visibility — mirrors v8 updatePlantVisibility() ──
   // Runs whenever season changes. Fades plants not visible in the current season.
   useEffect(() => {
