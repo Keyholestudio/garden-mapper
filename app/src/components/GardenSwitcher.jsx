@@ -78,9 +78,9 @@ export default function GardenSwitcher({
               <div className={`switcher-row ${i === currentIndex ? 'current' : ''} ${isDream(g) ? 'dream' : ''}`}>
                 <span className="switcher-name">
                   {g.name || `Garden ${i + 1}`}
-                  {isDream(g) && <span className="switcher-badge switcher-badge--dream">🌸 Dream</span>}
                   {i === currentIndex && !isDream(g) && <span className="switcher-badge">current</span>}
                 </span>
+                {isDream(g) && <span className="switcher-badge switcher-badge--dream">🌸 Dream</span>}
                 <span className="switcher-dims">{g.w}×{g.h} {g.unit}</span>
                 <button className="btn-load" onClick={() => { onLoad(i); onClose() }}>Load</button>
                 <button

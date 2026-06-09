@@ -110,6 +110,9 @@
 .switcher-badge--dream {
   background: #E1BEE7;
   color: #6A1B9A;
+  white-space: nowrap;
+  overflow: visible;
+  max-width: none;
 }
 
 .switcher-dims {
