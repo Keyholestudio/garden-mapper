@@ -554,6 +554,76 @@ export default function GardenEditor() {
     triggerAutoSave()
   }
 
+  const handleCopyStruct = () => {
+    const sel = state.selectedStruct; if (!sel) return
+    const d = state.structDataRef.current[sel.id]; if (!d) return
+    const { structLayer } = layersRef.current; if (!structLayer) return
+    const OFFSET = 24 // px offset so copy appears beside original
+    const newId = 'struct_' + (++state.plantIdCtr.current)
+    const shape = sel.shape
+    let newShape
+    if (shape instanceof Konva.Rect) {
+      newShape = new Konva.Rect({
+        id: newId,
+        x: shape.x() + OFFSET, y: shape.y() + OFFSET,
+        width: shape.width(), height: shape.height(),
+        fill: shape.fill(), stroke: shape.stroke(), strokeWidth: shape.strokeWidth(),
+        opacity: shape.opacity(), draggable: true,
+        cornerRadius: shape.cornerRadius(),
+        fillPatternImage: shape.fillPatternImage() || undefined,
+        fillPatternRepeat: shape.fillPatternRepeat() || undefined,
+        fillPatternScale: shape.fillPatternScale() || undefined,
+      })
+    } else if (shape instanceof Konva.Circle) {
+      newShape = new Konva.Circle({
+        id: newId,
+        x: shape.x() + OFFSET, y: shape.y() + OFFSET,
+        radius: shape.radius(),
+        fill: shape.fill(), stroke: shape.stroke(), strokeWidth: shape.strokeWidth(),
+        opacity: shape.opacity(), draggable: true,
+      })
+    } else if (shape instanceof Konva.Line) {
+      const pts = shape.points()
+      // Offset all points
+      const newPts = pts.map((v, i) => v + OFFSET)
+      newShape = new Konva.Line({
+        id: newId,
+        x: shape.x(), y: shape.y(),
+        points: newPts,
+        fill: shape.fill(), stroke: shape.stroke(), strokeWidth: shape.strokeWidth(),
+        closed: shape.closed(), opacity: shape.opacity(), draggable: true,
+        tension: shape.tension(),
+        fillPatternImage: shape.fillPatternImage() || undefined,
+        fillPatternRepeat: shape.fillPatternRepeat() || undefined,
+        fillPatternScale: shape.fillPatternScale() || undefined,
+      })
+    } else {
+      return // Groups (connected buildings) — not supported for copy
+    }
+    // Copy data
+    state.structDataRef.current[newId] = { ...d, label: d.label ? d.label + ' (copy)' : '' }
+    // Wire up select handler
+    newShape.on('click tap', (e) => {
+      if (isFreeToolActive() || isDrawToolActive()) return
+      state.setMultiSelection([])
+      state.setSelectedPlant(null)
+      state.setSelectedStruct({ id: newId, shape: newShape, ...state.structDataRef.current[newId] })
+    })
+    newShape.on('dragend', () => triggerAutoSave())
+    structLayer.add(newShape)
+    newShape.moveToTop()
+    structLayer.batchDraw()
+    // Select the new copy
+    state.setSelectedStruct({ id: newId, shape: newShape, ...state.structDataRef.current[newId] })
+    // Push undo
+    state.pushUndo(() => {
+      newShape.destroy()
+      delete state.structDataRef.current[newId]
+      structLayer.batchDraw()
+    })
+    triggerAutoSave()
+  }
+
   const handleLockPlant = () => {
     const sel = state.selectedPlant; if (!sel) return
     const d = state.plantDataRef.current[sel.id]
@@ -990,6 +1060,7 @@ export default function GardenEditor() {
               onDimCircleApply={handleDimCircleApply}
               onLayerMove={handleLayerMove}
               onTransparentStruct={handleTransparentStruct}
+              onCopyStruct={handleCopyStruct}
               onDisconnect={handleDisconnect}
               onSeasonsChange={() => {
                 const { plantLayer } = layersRef.current
@@ -1146,6 +1217,7 @@ export default function GardenEditor() {
           onDimCircleApply={handleDimCircleApply}
           onLayerMove={handleLayerMove}
           onTransparentStruct={handleTransparentStruct}
+          onCopyStruct={handleCopyStruct}
           onDisconnect={handleDisconnect}
           onSeasonsChange={() => {
             const { plantLayer } = layersRef.current

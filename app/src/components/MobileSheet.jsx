@@ -42,6 +42,7 @@ export default function MobileSheet({
   onCopyPlant,
   onLockPlant,
   onLockStruct,
+  onCopyStruct,
   onColourChange, onPathWidthChange,
   onDimRectApply, onDimCircleApply,
   onLayerMove,
@@ -467,13 +468,16 @@ export default function MobileSheet({
         <div className="mobile-edit-sep" />
 
         <div className="mobile-edit-row">
+          <button className="mobile-edit-btn" onClick={onCopyStruct}>⧮ Copy</button>
+          <button
+            className={`mobile-edit-btn${d.locked ? ' mobile-edit-btn--locked' : ''}`}
+            onClick={onLockStruct}
+          >{d.locked ? '🔒 Locked' : '🔓 Unlocked'}</button>
+        </div>
+        <div className="mobile-edit-row">
           <button className="mobile-edit-btn" onClick={() => onLayerMove?.('struct','up')}>▲ Forward</button>
           <button className="mobile-edit-btn" onClick={() => onLayerMove?.('struct','down')}>▼ Back</button>
         </div>
-        <button
-          className={`mobile-edit-btn full${d.locked ? ' mobile-edit-btn--locked' : ''}`}
-          onClick={onLockStruct}
-        >{d.locked ? '🔒 Locked' : '🔓 Unlocked'}</button>
         <button className="mobile-edit-btn full" onClick={onTransparentStruct}>
           👁 {d.transparent ? 'Restore' : 'Make Transparent'}
         </button>

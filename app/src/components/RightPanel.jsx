@@ -37,6 +37,7 @@ export default function RightPanel({
   onDeletePlant, onDeleteStruct, onDeleteMulti,
   onTransparentPlant, onCopyPlant,
   onLockPlant, onLockStruct,
+  onCopyStruct,
   onColourChange, onPathWidthChange,
   onEnterEdit, onExitEdit,
   onDimRectApply, onDimCircleApply,
@@ -293,14 +294,18 @@ export default function RightPanel({
           <div className="panel-sep" />
 
           <div style={{ display:'flex', gap:4 }}>
+            <button className="btn-panel" style={{flex:1}} onClick={onCopyStruct}>⧉ Copy</button>
+            <button
+              className={`btn-panel${d.locked ? ' btn-panel--locked' : ''}`}
+              style={{flex:1}}
+              onClick={onLockStruct}
+            >{d.locked ? '🔒 Locked' : '🔓 Unlocked'}</button>
+          </div>
+
+          <div style={{ display:'flex', gap:4 }}>
             <button className="btn-panel" style={{flex:1}} onClick={() => onLayerMove?.('struct','up')}>▲ Forward</button>
             <button className="btn-panel" style={{flex:1}} onClick={() => onLayerMove?.('struct','down')}>▼ Back</button>
           </div>
-
-          <button
-            className={`btn-panel${d.locked ? ' btn-panel--locked' : ''}`}
-            onClick={onLockStruct}
-          >{d.locked ? '🔒 Locked' : '🔓 Unlocked'}</button>
 
           <button className="btn-panel" onClick={onTransparentStruct}>
             👁 {d.transparent ? 'Restore' : 'Make Transparent'}
