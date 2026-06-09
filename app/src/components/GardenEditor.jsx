@@ -548,7 +548,14 @@ export default function GardenEditor() {
     const sel = state.selectedStruct; if (!sel) return
     const d = state.structDataRef.current[sel.id]
     d.transparent = !d.transparent
-    d.transparent ? (sel.shape.opacity(0.35), sel.shape.moveToBottom()) : (sel.shape.opacity(1), sel.shape.moveToTop())
+    const isUG = d.type?.startsWith('underground')
+    if (d.transparent) {
+      sel.shape.opacity(isUG ? 0.5 : 0.35)
+      if (!isUG) sel.shape.moveToBottom()
+    } else {
+      sel.shape.opacity(1)
+      if (!isUG) sel.shape.moveToTop()
+    }
     layersRef.current.structLayer?.batchDraw()
     state.setSelectedStruct({ ...sel })
     triggerAutoSave()
