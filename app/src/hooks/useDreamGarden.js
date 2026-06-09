@@ -73,17 +73,41 @@ export function seedDreamGarden() {
     return
   }
 
-  // Existing user: check if Dream Garden is already at index 0
-  if (!gardens[0]?._isDreamGarden) {
-    // Prepend Dream Garden; existing user gardens shift to index 1+
-    const dream = makeDreamGarden(dreamGardenFallback)
-    writeGardens([dream, ...gardens])
-    // Shift last-used index forward so the user stays on their own garden
-    try {
-      const last = parseInt(localStorage.getItem('gardenLastIndex') || '0')
-      localStorage.setItem('gardenLastIndex', String(last + 1))
-    } catch {}
+  // Helper: is this entry a dream garden (by flag OR by name fallback)
+  const isDream = (g) => !!(g?._isDreamGarden || g?.name === 'Dream Garden')
+
+  // Remove any duplicate dream gardens (keep only first occurrence)
+  const deduplicated = gardens.filter((g, i) => {
+    if (!isDream(g)) return true          // always keep user gardens
+    return gardens.findIndex(isDream) === i  // keep only first dream entry
+  })
+
+  // Ensure the one dream entry is stamped with _isDreamGarden: true
+  const hasDream = deduplicated.some(isDream)
+  if (hasDream) {
+    const di = deduplicated.findIndex(isDream)
+    deduplicated[di] = makeDreamGarden(deduplicated[di])
+    // Move dream to index 0 if it isn't already
+    if (di !== 0) {
+      const [dream] = deduplicated.splice(di, 1)
+      deduplicated.unshift(dream)
+      // Adjust last-used index
+      try {
+        const last = parseInt(localStorage.getItem('gardenLastIndex') || '0')
+        if (last < di) localStorage.setItem('gardenLastIndex', String(last + 1))
+      } catch {}
+    }
+    writeGardens(deduplicated)
+    return
   }
+
+  // No dream garden found at all — prepend one
+  const dream = makeDreamGarden(dreamGardenFallback)
+  writeGardens([dream, ...deduplicated])
+  try {
+    const last = parseInt(localStorage.getItem('gardenLastIndex') || '0')
+    localStorage.setItem('gardenLastIndex', String(last + 1))
+  } catch {}
 }
 
 // ── Silent background fetch: runs after UI is loaded ─────────────────────────
