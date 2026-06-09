@@ -90,13 +90,13 @@ export default function GardenSwitcher({
                   title={isDream(g) ? 'Dream Garden cannot be deleted' : ''}
                 >🗑</button>
               </div>
-              {/* Backup slots toggle */}
-              {(backupSlots[i]?.length > 0) && (
+              {/* Backup slots toggle — not shown for Dream Garden */}
+              {!isDream(g) && (backupSlots[i]?.length > 0) && (
                 <div className="switcher-backup-toggle" onClick={() => toggleBackups(i)}>
                   <span>{expandedBackups[i] ? '▾' : '▸'} Backups ({backupSlots[i].length})</span>
                 </div>
               )}
-              {expandedBackups[i] && (backupSlots[i] || []).map((slot, si) => (
+              {!isDream(g) && expandedBackups[i] && (backupSlots[i] || []).map((slot, si) => (
                 <div key={si} className="switcher-backup-row">
                   <span className="switcher-backup-time">{formatBackupTime(slot._backupAt)}</span>
                   <button className="btn-load btn-load--sm" onClick={() => { onLoad(i, slot); onClose() }}>Load</button>
