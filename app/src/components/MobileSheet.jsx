@@ -478,9 +478,11 @@ export default function MobileSheet({
           <button className="mobile-edit-btn" onClick={() => onLayerMove?.('struct','up')}>▲ Forward</button>
           <button className="mobile-edit-btn" onClick={() => onLayerMove?.('struct','down')}>▼ Back</button>
         </div>
+        {!isUG && (
         <button className="mobile-edit-btn full" onClick={onTransparentStruct}>
           👁 {d.transparent ? 'Restore' : 'Make Transparent'}
         </button>
+        )}
 
         <div className="mobile-edit-sep" />
         <button className="mobile-edit-btn danger full" onClick={onDeleteStruct}>🗑 Delete</button>
