@@ -63,9 +63,9 @@ export default function GardenEditor() {
   useEffect(() => { showGridRef.current = state.showGrid }, [state.showGrid])
 
   // ── Respond to browser zoom / window resize ──────────────────────────────
-  // Browser zoom and window resize both change the available space. The Konva
-  // stage has a ResizeObserver on its container, but browser zoom also fires
-  // a window resize event. This effect ensures the stage remeasures on both.
+  // GardenCanvas has a ResizeObserver on its container that handles most cases.
+  // Browser zoom in Chrome/Brave also fires window resize — trigger a stage
+  // remeasure on that too so the canvas fills the available space.
   useEffect(() => {
     if (!stageReady) return
     const updateStage = () => {
@@ -82,7 +82,11 @@ export default function GardenEditor() {
       })
     }
     window.addEventListener('resize', updateStage)
-    return () => window.removeEventListener('resize', updateStage)
+    window.visualViewport?.addEventListener('resize', updateStage)
+    return () => {
+      window.removeEventListener('resize', updateStage)
+      window.visualViewport?.removeEventListener('resize', updateStage)
+    }
   }, [stageReady])
 
   // ── Season visibility — mirrors v8 updatePlantVisibility() ──
