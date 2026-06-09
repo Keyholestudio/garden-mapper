@@ -3,6 +3,31 @@ _L001–L009 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 ---
 
+## L025 — Sticker continuity: never delete a sticker key, only replace or alias forward
+**Date:** 2026-06-09
+
+### The rule
+- **Never remove a sticker key from `usePlantCatalog.js` or `DECOR_CATALOG`.** A saved garden stores sticker keys, not image paths. If the key disappears, that shape loads with a broken/missing image silently.
+- **Never delete a sticker PNG from `app/public/stickers/`** without first ensuring no saved garden references it.
+- **Replacements:** when Rob provides a new image for an existing sticker, update the PNG file in-place using the same filename. The key stays identical. The user's garden loads the new image automatically — zero data loss.
+- **Renames:** if a sticker must be renamed (e.g. size tier changes), keep the old key in `usePlantCatalog.js` pointing to the new file, AND add the new key. Old saves load fine; new placements use the new key.
+- **Removals:** if a sticker is truly retired, mark it `hidden: true` in the catalog instead of deleting it. It won't show in the tray/menu but will still render in saved gardens. This is the archive approach.
+
+### What Rob provides for a replacement
+Rob sends: new image file + confirms which sticker ID it replaces. I then:
+1. Run the pipeline on the new image
+2. Overwrite `app/public/stickers/<same-sticker-id>.png` and `stickers/<same-sticker-id>.png`
+3. No catalog changes needed — key is unchanged
+4. Commit: `"Stickers: replace [name] image in-place"`
+
+### What broke today (June 9)
+We deleted `decor_pot-s`, `decor_pot-m`, `decor_pot-l` and replaced with 5 new keys. Any saved garden with old pots now has broken images. Correct approach: keep old keys in catalog pointing to a fallback or new file, add new keys alongside.
+
+### Hidden/archive approach (deferred)
+Add `hidden: true` flag to catalog entries for retired stickers. Filter in `usePlantCatalog.js` → `PLANT_CATALOG_TRAY` already excludes Decor families — extend this filter to also exclude `hidden: true`. Retired stickers render in existing saves but don't appear for new placements. Low complexity, high safety. Build when sticker library gets large enough to need pruning.
+
+---
+
 ## L024 — Dev server + tunnel: always kill both together, never let stale processes pile up
 **Date:** 2026-06-09
 
