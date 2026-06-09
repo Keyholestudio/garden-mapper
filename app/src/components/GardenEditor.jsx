@@ -62,23 +62,57 @@ export default function GardenEditor() {
   // Keep showGridRef current
   useEffect(() => { showGridRef.current = state.showGrid }, [state.showGrid])
 
-  // ── Block browser zoom (Ctrl+wheel, Ctrl+/-, Ctrl+0) on desktop ───────────────
-  // Canvas has its own zoom — browser zoom breaks the fixed layout.
+  // ── Block browser zoom + compensate if already zoomed on load ──────────────
+  // Browser zoom with Ctrl+/- changes visualViewport size but not 100vw/100vh,
+  // causing panels to overflow. Fix: scale the root element to always fill the
+  // actual visual viewport, effectively counteracting the browser zoom.
   useEffect(() => {
+    const root = document.documentElement
+
+    const applyZoomCompensation = () => {
+      const vv = window.visualViewport
+      if (!vv) return
+      // devicePixelRatio-based zoom level (1.0 = 100%, 0.9 = 90%, etc.)
+      // Use visualViewport width vs window.outerWidth as the zoom signal
+      const zoom = vv.scale !== undefined ? vv.scale : window.outerWidth / window.innerWidth
+      // Counter-scale the root so layout always fills the full browser window
+      const compensation = 1 / zoom
+      root.style.transform = compensation !== 1 ? `scale(${compensation})` : ''
+      root.style.transformOrigin = '0 0'
+      root.style.width = compensation !== 1 ? `${zoom * 100}vw` : ''
+      root.style.height = compensation !== 1 ? `${zoom * 100}vh` : ''
+    }
+
     const onWheel = (e) => {
       if (e.ctrlKey || e.metaKey) e.preventDefault()
     }
     const onKeyDown = (e) => {
-      if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '_', '0'].includes(e.key)) {
-        e.preventDefault()
+      if (e.ctrlKey || e.metaKey) {
+        if (['+', '-', '=', '_', '0', 'Add', 'Subtract'].includes(e.key) ||
+            e.keyCode === 187 || e.keyCode === 189 || e.keyCode === 48 ||
+            e.keyCode === 107 || e.keyCode === 109) {
+          e.preventDefault()
+        }
       }
     }
-    // passive: false required so preventDefault() works on wheel
+
+    // Apply on load and on any resize (browser zoom triggers a resize event)
+    applyZoomCompensation()
+    window.addEventListener('resize', applyZoomCompensation)
+    window.visualViewport?.addEventListener('resize', applyZoomCompensation)
     window.addEventListener('wheel', onWheel, { passive: false })
     window.addEventListener('keydown', onKeyDown)
+
     return () => {
+      window.removeEventListener('resize', applyZoomCompensation)
+      window.visualViewport?.removeEventListener('resize', applyZoomCompensation)
       window.removeEventListener('wheel', onWheel)
       window.removeEventListener('keydown', onKeyDown)
+      // Clean up root styles on unmount
+      root.style.transform = ''
+      root.style.transformOrigin = ''
+      root.style.width = ''
+      root.style.height = ''
     }
   }, [])
 
