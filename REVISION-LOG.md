@@ -32,6 +32,16 @@ _History for v1–v7 and Phases 1–6 archived at: `memory/deep/garden-planner/r
 | 7.6 | Garden switcher unlock upsell row + 2-garden free tier enforced | a9f3039 | ✅ |
 | 7.7 | PDF export — 1-page + 4-page tiled, numbered callouts, legend | 49c87d3 | ✅ |
 | 7.7 | Export polish — crops to propBounds, legend on own page, number centering | 8bba0b4 | ✅ |
+| — | **2026-06-09 — Decor/Sticker/Panel standardization session** | |
+| — | DECOR-PROMPT-GUIDE.md created (research/) | eac3280 | ✅ |
+| — | sticker-batch-decor.py cleaned up (BOM, prompt template, arch size fix L→XL) | eac3280 | ✅ |
+| — | 5 new pot stickers replace 3 old terracotta pots | 14848f6 | ✅ |
+| — | L023: complete decor-add checklist added to LESSONS.md | eac3280 | ✅ |
+| — | Fountain merge: FOUNTAIN_CATALOG → DECOR_CATALOG; Fountains moved to Decor menu | 221d9c2 | ✅ |
+| — | Panel standardization: Copy+Lock → Fwd/Back → Transparent → Delete on all panels | ee5f63b | ✅ |
+| — | isDecor branch: Decor/Fountain panels hide seasons+notes, show Delete not Remove Plant | ee5f63b | ✅ |
+| — | Notes added to beds ("this bed"), electrical ("this electrical"), plumbing ("this plumbing") | ee5f63b | ✅ |
+| — | Struct copy (handleCopyStruct): rect/circle/line, undo-aware, offset 24px | 34fa8a1 | ✅ |
 | — | iPad touch confirmation — run start.bat, open tunnel URL, verify pinch/pan | ⏳ Untested |
 | 7.2 | Tablet layout — confirm current layout works touch-enabled (minimal changes) | 🔲 |
 | 7.3 | Mobile layout — bottom-sheet redesign per `design/mockup-mobile.jpg` | 🔲 |

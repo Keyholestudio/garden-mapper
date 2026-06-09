@@ -96,6 +96,19 @@ cd projects/garden-planner/app && npm run dev
 | **Draw tool passthrough** | Clicks on objects during freeform draw don't interrupt tool | `a0a9b9e` | ✅ |
 | **Transparency load fix** | Plant opacity restored on garden load | `97b6aa9` | ✅ |
 
+### June 9 Changes
+| # | Feature | Commit | Status |
+|---|---------|--------|--------|
+| DECOR-PROMPT-GUIDE | Standalone decor prompt guide created | `eac3280` | ✅ |
+| Batch script cleanup | sticker-batch-decor.py: BOM removed, prompt template updated, arch L→XL fixed | `eac3280` | ✅ |
+| New pots | 5 new pot stickers replace 3 old terracotta pots; all 4 files updated per L023 | `14848f6` | ✅ |
+| L023 | Complete checklist for adding decor items to menu (4 files + PNG) | `eac3280` | ✅ |
+| Fountain merge | FOUNTAIN_CATALOG merged into DECOR_CATALOG; Fountains moved to Decor menu | `221d9c2` | ✅ |
+| Panel standardization | Copy+Lock → Fwd/Back → Transparent → Delete on all panels (desktop + mobile) | `ee5f63b` | ✅ |
+| isDecor branch | Decor/Fountain: no seasons, no notes, Delete label | `ee5f63b` | ✅ |
+| Notes | Added to beds, electrical, plumbing with contextual placeholder text | `ee5f63b` | ✅ |
+| Struct copy | handleCopyStruct: rect/circle/line support, undo-aware, 24px offset | `34fa8a1` | ✅ |
+
 ### June 8 Changes
 | # | Feature | Commit | Status |
 |---|---------|--------|--------|
