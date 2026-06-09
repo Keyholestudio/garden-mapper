@@ -262,28 +262,11 @@ export default function GardenEditor() {
     'decor-stairs-cement':{ key: 'decor_stairs-cement_M_CA-US-FR-GB-AU',label: 'Cement Stairs',   family: 'Decor', size: 'M',  src: '/stickers/decor_stairs-cement_M_CA-US-FR-GB-AU.png'},
     'decor-arch-wood':    { key: 'decor_arch-wood_XL_CA-US-FR-GB-AU',    label: 'Wood Arch',       family: 'Decor', size: 'XL', src: '/stickers/decor_arch-wood_XL_CA-US-FR-GB-AU.png'    },
     'decor-arch-metal':   { key: 'decor_arch-metal_XL_CA-US-FR-GB-AU',   label: 'Metal Arch',      family: 'Decor', size: 'XL', src: '/stickers/decor_arch-metal_XL_CA-US-FR-GB-AU.png'   },
-  }
-
-  // Fountain stickers: intercept waterSubTool='fountain-sm/md/lg' and route through sticker placement
-  const FOUNTAIN_CATALOG = {
+    // Fountains — merged from FOUNTAIN_CATALOG (same placement flow as decor stickers)
     'fountain-sm': { key: 'water-feature_fountain-sm_S_CA-US-FR-GB-AU', label: 'Small Fountain',  family: 'Water Feature', size: 'S', src: '/stickers/water-feature_fountain-sm_S_CA-US-FR-GB-AU.png' },
     'fountain-md': { key: 'water-feature_fountain-md_M_CA-US-FR-GB-AU', label: 'Medium Fountain', family: 'Water Feature', size: 'M', src: '/stickers/water-feature_fountain-md_M_CA-US-FR-GB-AU.png' },
     'fountain-lg': { key: 'water-feature_fountain-lg_L_CA-US-FR-GB-AU', label: 'Large Fountain',  family: 'Water Feature', size: 'L', src: '/stickers/water-feature_fountain-lg_L_CA-US-FR-GB-AU.png' },
   }
-  useEffect(() => {
-    const id = state.waterSubTool
-    if (!FOUNTAIN_CATALOG[id]) return
-    state.setWaterSubTool(null)
-    const entry = FOUNTAIN_CATALOG[id]
-    const img = new Image()
-    img.onload = () => {
-      pendingPlantRef.current = { ...entry, _img: img }
-      state.setCurrentMode('select')
-    }
-    img.onerror = () => console.warn('Fountain sticker not found:', entry.src)
-    img.src = entry.src
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.waterSubTool])
 
   // When a decor sub-tool is clicked, load the image and queue it for placement (same as plant click-to-place)
   useEffect(() => {

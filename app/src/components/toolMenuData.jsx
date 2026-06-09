@@ -50,14 +50,6 @@ export const BUILD_ITEMS = [
 ]
 
 export const WATER_ITEMS = [
-  {
-    id: '__fountains', label: 'Fountains', emoji: '⛲', group: true,
-    children: [
-      { id: 'fountain-sm', label: 'Small Fountain',  hint: 'Tap to place a small fountain' },
-      { id: 'fountain-md', label: 'Medium Fountain', hint: 'Tap to place a medium fountain' },
-      { id: 'fountain-lg', label: 'Large Fountain',  hint: 'Tap to place a large fountain' },
-    ],
-  },
   { id: 'underground-plumbing', label: '🔵 Plumbing', hint: 'Freeform underground plumbing run' },
   {
     id: '__pools', label: 'Pools', emoji: '🏊', group: true,
@@ -70,6 +62,14 @@ export const WATER_ITEMS = [
 ]
 
 export const DECOR_ITEMS = [
+  {
+    id: '__fountains', label: 'Fountains', emoji: '⛲', group: true,
+    children: [
+      { id: 'fountain-sm', label: 'Small Fountain',  hint: 'Tap to place a small fountain' },
+      { id: 'fountain-md', label: 'Medium Fountain', hint: 'Tap to place a medium fountain' },
+      { id: 'fountain-lg', label: 'Large Fountain',  hint: 'Tap to place a large fountain' },
+    ],
+  },
   {
     id: '__rocks', label: 'Rocks', emoji: '🪨', group: true,
     children: [
