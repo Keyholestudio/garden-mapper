@@ -12,7 +12,7 @@ import { addPlant }        from '../utils/plantUtils'
 import { insertPointNearestSegment } from '../hooks/useSelection'
 import { saveGarden, loadGarden, createNewGarden, readGardens, readLastGardenIndex, writeLastGardenIndex } from '../hooks/useSaveLoad'
 import { seedDreamGarden, fetchDreamGardenUpdate } from '../hooks/useDreamGarden'
-import { addRectStruct, isFreeMode, applyColourOrTexture } from '../utils/drawUtils'
+import { addRectStruct, isFreeMode, applyColourOrTexture, tryMergeRects } from '../utils/drawUtils'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import { useRecentPlants } from '../hooks/useRecentPlants'
 import LogoBar        from './LogoBar'
@@ -609,7 +609,20 @@ export default function GardenEditor() {
       state.setSelectedPlant(null)
       state.setSelectedStruct({ id: newId, shape: newShape, ...state.structDataRef.current[newId] })
     })
-    newShape.on('dragend', () => triggerAutoSave())
+    newShape.on('dragend', () => {
+      if (shape instanceof Konva.Rect) {
+        tryMergeRects(newId, newShape, {
+          structDataRef: state.structDataRef,
+          structIdCtr: state.structIdCtr,
+          groupIdCtr: state.groupIdCtr,
+          structLayer,
+          snapCell: state.snapCell,
+          showGrid: state.showGrid,
+          onSelect: (id, sh) => state.setSelectedStruct({ id, shape: sh, ...state.structDataRef.current[id] }),
+        })
+      }
+      triggerAutoSave()
+    })
     structLayer.add(newShape)
     newShape.moveToTop()
     structLayer.batchDraw()
