@@ -62,29 +62,13 @@ export default function GardenEditor() {
   // Keep showGridRef current
   useEffect(() => { showGridRef.current = state.showGrid }, [state.showGrid])
 
-  // ── Respond to browser zoom changes ─────────────────────────────────────
-  // Browser zoom (Ctrl+/-) increases devicePixelRatio and shrinks the visual
-  // viewport, causing fixed-width panels to clip off screen.
-  // Fix: apply CSS zoom on the #app root to counter-scale proportionally.
-  // CSS zoom (unlike transform:scale) participates in layout, so panels reflow
-  // correctly within the available space.
+  // ── Respond to browser zoom / window resize ──────────────────────────────
+  // Browser zoom and window resize both change the available space. The Konva
+  // stage has a ResizeObserver on its container, but browser zoom also fires
+  // a window resize event. This effect ensures the stage remeasures on both.
   useEffect(() => {
-    const root = document.getElementById('app')
-    if (!root) return
-
-    // Capture baseline DPR at mount (represents 100% zoom)
-    const baseDPR = window.devicePixelRatio || 1
-
-    const applyZoomFit = () => {
-      const currentDPR = window.devicePixelRatio || 1
-      const zoomLevel = currentDPR / baseDPR  // e.g. 1.1 at 110%
-      if (zoomLevel <= 1.01) {
-        root.style.zoom = ''
-      } else {
-        // Counter-zoom: shrink app to fit
-        root.style.zoom = `${(1 / zoomLevel) * 100}%`
-      }
-      // Update Konva stage after layout settles
+    if (!stageReady) return
+    const updateStage = () => {
       requestAnimationFrame(() => {
         const stage = stageRef.current
         const { gridLayer } = layersRef.current
@@ -97,16 +81,8 @@ export default function GardenEditor() {
         stage.batchDraw()
       })
     }
-
-    applyZoomFit()
-    window.addEventListener('resize', applyZoomFit)
-    window.visualViewport?.addEventListener('resize', applyZoomFit)
-
-    return () => {
-      window.removeEventListener('resize', applyZoomFit)
-      window.visualViewport?.removeEventListener('resize', applyZoomFit)
-      root.style.zoom = ''
-    }
+    window.addEventListener('resize', updateStage)
+    return () => window.removeEventListener('resize', updateStage)
   }, [stageReady])
 
   // ── Season visibility — mirrors v8 updatePlantVisibility() ──
