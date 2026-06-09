@@ -3,6 +3,32 @@ _L001–L009 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 ---
 
+## L027 — Browser zoom-in clips right panel (#32) — in progress
+**Date:** 2026-06-09
+**Status:** Partially resolved. Zoom-out works (panels reflow). Zoom-in clips the right panel off screen until refresh.
+
+### What was tried (all failed)
+- `transform: scale()` on root — doesn't participate in layout, panels still overflow
+- `CSS zoom` on root using `devicePixelRatio / baseDPR` — DPR at mount is already at the user's zoom, so delta is always ~0
+- `window.outerWidth / window.innerWidth` as zoom signal — Chrome keeps these nearly identical, useless
+- `visualViewport resize` listener — fires on zoom-out but NOT reliably on zoom-in in Chrome/Brave
+
+### Root cause
+Chrome/Brave intentionally do not change `window.innerWidth` on Ctrl+/- zoom — the layout viewport stays constant. Only `devicePixelRatio` changes, but we can't use it as a baseline since the page may load at non-100% zoom. The browser fires a `resize` event on zoom-out but not always on zoom-in.
+
+### Current stable state (commit `0e13c9f`)
+- `flex-shrink: 1` + `min-width` on both panels so they compress rather than overflow
+- `max-width: 100vw` + `overflow: hidden` on root layout
+- `window resize` listener updates Konva stage on zoom-out
+- Zoom-in: panels clip until user refreshes. Workaround: refresh after zooming in.
+
+### Potential future fix
+- Use a `MutationObserver` or `ResizeObserver` on `document.documentElement` to detect when `clientWidth` changes
+- Or: add a visible "Refresh to fit" banner when zoom-in is detected (via `window.visualViewport.scale !== 1`)
+- Or: accept it as a known limitation for canvas apps and add a note in the UI
+
+---
+
 ## L026 — Struct copy: two known limitations to fix
 **Date:** 2026-06-09
 
