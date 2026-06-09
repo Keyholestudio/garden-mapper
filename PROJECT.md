@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-06-07_
+_Last updated: 2026-06-08_
 
 ---
 
@@ -85,16 +85,33 @@ cd projects/garden-planner/app && npm run dev
 | Sub-menu colours | Group-header lavender, children lighter lavender/purple trim | `4340340` | ✅ |
 | Dream Garden hybrid | `useDreamGarden.js` - baked-in seed + silent remote fetch. `src/data/dreamGarden.json` placeholder. | `25fd4ea` | ✅ |
 | **Sticker catalog** | 131 transparent PNGs. Tier 1+2+#36. All wired into `usePlantCatalog.js`. | `56b3dca` | ✅ |
-| **#31–36** | Recently-used X fix, XL size map, Logo restored, plant notes, Gladiolus BG removed, flower analysis + 27 new stickers | `edbe230`-`56b3dca` | ✅ |
-| **June 4 — New stickers** | Thyme, Phlox, Fern added | `4a28e4b`–`0ed2eee` | ✅ |
+| **#31-36** | Recently-used X fix, XL size map, Logo restored, plant notes, Gladiolus BG removed, flower analysis + 27 new stickers | `edbe230`-`56b3dca` | ✅ |
+| **June 4 - New stickers** | Thyme, Phlox, Fern added | `4a28e4b`-`0ed2eee` | ✅ |
 | **Decor category** | Select hidden; 18 decor stickers; Decor menu (Rocks/Gazebo/Seating/Umbrella/Pots/Stairs/Arches); decorSubTool state | `c1344cc`, `632cb40` | ✅ |
 | **Fountain sticker** | Architectural PNG replaces old circle struct; waterSubTool intercept | `e07840c` | ✅ |
 | **Season BG + fall texture** | New palette, Rob's fall texture, LAWN_OPACITY per-season | `c8d2674`, `91cf3e3` | ✅ |
 | **Hedge texture** | Wired into draw + load | `25ade59` | ✅ |
 | **Texture system** | 14 textures (deck/roof/soil/path); `#TX:` token; thumbnail swatches in pickers; applyColourOrTexture helper | `86cc5d6`, `98a18e6` | ✅ |
 | **Auto-save** | 1.5s debounce on placement/delete/undo/paste | `613bba1` | ✅ |
-| **Draw tool passthrough** | Clicks on objects during freeform draw don’t interrupt tool | `a0a9b9e` | ✅ |
+| **Draw tool passthrough** | Clicks on objects during freeform draw don't interrupt tool | `a0a9b9e` | ✅ |
 | **Transparency load fix** | Plant opacity restored on garden load | `97b6aa9` | ✅ |
+
+### June 8 Changes
+| # | Feature | Commit | Status |
+|---|---------|--------|--------|
+| Gate fix | Gate tool now places points (`isFreeMode` fenceType check) | `28b0142` | ✅ |
+| Aspect ratio | `makePlantGroup` uses natural image ratio — no more squishing | `c483247` | ✅ |
+| Decor filter | Decor/Water Feature items hidden from plant tray + search | `3836116` | ✅ |
+| XXL size | Added XXL (160px); trees/gazebos/tables → XXL | `bbb901a` | ✅ |
+| Size rebalance | All L plants → M; Arches → XL; Asparagus/Climbing Rose → M | multiple | ✅ |
+| Loungers | Wood + Plastic Lounger new stickers; XL | `a5df431` | ✅ |
+| Tables | Pine/Stained/Enameled/Bronzed tables added to Seating; XXL | `47e92a6` | ✅ |
+| Fountains | Fountain → Fountains group: Small(S)/Medium(M)/Large(L) | `1ad7926` | ✅ |
+| Arches label | Arch → Arches | `c6bbe34` | ✅ |
+| Gazebos | 3 new stickers; Large Gazebo added; XXL → XL | `7a59176` | ✅ |
+| Phlox | New image, M size | `a59c37b` | ✅ |
+| Sunflower | New image, M size | `4f289f3` | ✅ |
+| Beach Umbrella | New image | `20eb697` | ✅ |
 
 ### Additional polish (June 1)
 - Season slider → frosted floating pill over canvas (`95583df`)
@@ -141,17 +158,17 @@ cd projects/garden-planner/app && npm run dev
 ---
 
 ## Open Items
-- **Sticker review** — Rob to review stickers live in app; flag any needing regeneration
-- **#9** Dream garden — `useDreamGarden.js` built; Rob designs when ready, exports JSON
+- **Sticker review** - Rob to review stickers live in app; flag any needing regeneration
+- **#9** Dream garden - `useDreamGarden.js` built; Rob designs when ready, exports JSON
   - `DREAM_GARDEN_URL` = placeholder until GitHub repo is public
-- **Deploy** — method unknown (Netlify? Vercel?). Ask Rob.
-- **GitHub remote** — not yet set up
-- **#12** Multi-device — deferred; needs backend + user accounts
-- **Phase 8** Textures — planned next major phase
-- **Items 16–19** SM campaign, robs-lab.ca, gamification, pricing
-- **Plant submission cron** — form → Gemini sticker → Rob approval → CDN → manifest fetch
-- **Capacitor.js** wrapper — deferred (needs Android Studio or Mac)
-- **TS build error** — pre-existing in main.tsx (doesn't affect dev; fix before Capacitor)
+- **Deploy** - method unknown (Netlify? Vercel?). Ask Rob.
+- **GitHub remote** - not yet set up
+- **#12** Multi-device - deferred; needs backend + user accounts
+- **Phase 8** Textures - planned next major phase
+- **Items 16-19** SM campaign, robs-lab.ca, gamification, pricing
+- **Plant submission cron** - form → Gemini sticker → Rob approval → CDN → manifest fetch
+- **Capacitor.js** wrapper - deferred (needs Android Studio or Mac)
+- **TS build error** - pre-existing in main.tsx (doesn't affect dev; fix before Capacitor)
 
 ---
 

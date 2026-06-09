@@ -1,6 +1,6 @@
-﻿"""
+"""
 Garden Mapper — Decor Sticker Batch Generator
-Generates all 18 decor stickers for the Decor category.
+Generates decor stickers using the prompts defined in research/DECOR-PROMPT-GUIDE.md.
 Uses the same CDP pipeline as other batch scripts.
 Run with: python sticker-batch-decor.py [--start N]  (resume from index N)
 """
@@ -21,8 +21,11 @@ IMAGE_WAIT  = 240
 INTER_PAUSE = 45
 os.makedirs(OUT_DIR, exist_ok=True)
 
+# Prompt template — see research/DECOR-PROMPT-GUIDE.md for full prompts per item.
+# view_prefix: 'Aerial side view' for most items; 'Aerial side-front view' for stairs.
+# Stairs also append 'NO border. NO frame.' to their shape description.
 BASE_PROMPT = (
-    "Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — "
+    "{view_prefix}. Art style: Plants vs. Zombies meets watercolor painting — "
     "tasteful simplified {name} with crisp edges, bold flat icon. Dark outline 2–3px. "
     "No shadows. Centered, 75% canvas fill. Vibrant and iconic.\n"
     "Subject: {name}\n"
@@ -83,27 +86,27 @@ DECOR_ITEMS = [
 
     ("decor_stairs-wood_M_CA-US-FR-GB-AU",   "Wood Stairs",          "Decor", "M",  256,
      "warm teak brown #9B6A3A, light wood grain #C8955A, dark wood shadow #5C3A1E, dark outline #2A1008",
-     "Aerial side-front view of 4-step wooden outdoor stairs with visible treads and risers, natural wood grain. NO border. NO frame. Correct proportions."),
+     "4-step wooden outdoor stairs with visible treads and risers, natural wood grain. NO border. NO frame. Correct proportions."),
 
     ("decor_stairs-stone_M_CA-US-FR-GB-AU",  "Stone Stairs",         "Decor", "M",  256,
      "cool grey stone #8A9A9A, light grey #B8C8C8, dark shadow #4A5A5A, warm mortar #C8B89A, dark outline #1A2A2A",
-     "Aerial side-front view of 4-step natural stone outdoor stairs with irregular stone surfaces and mortar lines. NO border. NO frame. Correct proportions."),
+     "4-step natural stone outdoor stairs with irregular stone surfaces and mortar lines. NO border. NO frame. Correct proportions."),
 
     ("decor_stairs-brick_M_CA-US-FR-GB-AU",  "Brick Stairs",         "Decor", "M",  256,
      "warm red brick #B84A28, dark brick #8A3018, pale mortar #D8C8A8, terracotta highlight #D06040, dark outline #2A1008",
-     "Aerial side-front view of 4-step brick outdoor stairs with visible brick pattern and mortar joints. NO border. NO frame. Correct proportions."),
+     "4-step brick outdoor stairs with visible brick pattern and mortar joints. NO border. NO frame. Correct proportions."),
 
     ("decor_stairs-cement_M_CA-US-FR-GB-AU", "Cement Stairs",        "Decor", "M",  256,
      "cool cement grey #9A9A9A, light grey #C8C8C8, dark shadow #5A5A5A, pale highlight #E0E0E0, dark outline #2A2A2A",
-     "Aerial side-front view of 4-step smooth concrete/cement outdoor stairs with clean edges. NO border. NO frame. Correct proportions."),
+     "4-step smooth concrete/cement outdoor stairs with clean edges. NO border. NO frame. Correct proportions."),
 
-    ("decor_arch-wood_L_CA-US-FR-GB-AU",     "Wood Garden Arch",     "Decor", "L",  384,
+    ("decor_arch-wood_XL_CA-US-FR-GB-AU",    "Wood Garden Arch",     "Decor", "XL", 512,
      "warm teak brown #9B6A3A, light wood grain #C8955A, dark wood shadow #5C3A1E, dark outline #2A1008",
-     "Aerial side view of standalone wooden garden arch/pergola frame with lattice sides, no plants, natural wood. Correct proportions."),
+     "Standalone wooden garden arch/pergola frame with lattice sides, no plants, natural wood. Correct proportions."),
 
-    ("decor_arch-metal_L_CA-US-FR-GB-AU",    "Metal Garden Arch",    "Decor", "L",  384,
+    ("decor_arch-metal_XL_CA-US-FR-GB-AU",   "Metal Garden Arch",    "Decor", "XL", 512,
      "dark iron grey #4A4A5A, mid steel #6A6A7A, pale highlight #A8A8B8, rust accent #8A5A3A, dark outline #1A1A2A",
-     "Aerial side view of standalone ornate metal/wrought iron garden arch frame with decorative scrollwork, no plants. Correct proportions."),
+     "Standalone ornate metal/wrought iron garden arch frame with decorative scrollwork, no plants. Correct proportions."),
 ]
 
 def p(*a): print(*a, flush=True)
@@ -200,8 +203,10 @@ def main():
         # Baseline
         src_before = cdp(ws_url, img_js) or ""
 
-        # Build prompt
-        prompt = BASE_PROMPT.format(name=label, size=size_px, colours=colours, shape=shape)
+        # Build prompt — see research/DECOR-PROMPT-GUIDE.md for canonical prompt per item
+        is_stairs = "stairs" in sticker_id
+        view_prefix = "Aerial side-front view" if is_stairs else "Aerial side view"
+        prompt = BASE_PROMPT.format(view_prefix=view_prefix, name=label, size=size_px, colours=colours, shape=shape)
 
         # Send prompt
         cdp(ws_url, '(function(){var b=document.querySelector("[contenteditable=true]");if(b){b.focus();b.innerHTML="";}return "OK";})()', timeout=8)
