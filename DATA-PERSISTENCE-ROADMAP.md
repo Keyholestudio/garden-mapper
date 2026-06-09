@@ -63,6 +63,17 @@ The choice is non-destructive: a Guest user can upgrade to an account and their 
 
 ---
 
+### Phase 2b — Notes Field Migration Entry — Pre-Launch
+**Goal:** Ensure `notes` field added to beds/electrical/plumbing today is explicitly covered in schema migration.
+
+**What to add in `useSaveLoad.js` migration block:**
+- On load, if a struct of type `bed`, `bed-square`, `underground-electrical`, or `underground-plumbing` has no `notes` field, default it to `''`
+- Currently defaults gracefully via `d.notes || ''` in the panel — but should be explicit in migration for Phase 3 consistency
+
+Estimated effort: 15 minutes. Fold into Phase 3 work.
+
+---
+
 ### Phase 3 — Schema Migration Hardening — Pre-Launch
 **Goal:** Loading an old saved garden never crashes or silently loses shapes.
 
