@@ -3,6 +3,74 @@ _L001–L009 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 ---
 
+## L023 — Complete checklist for adding a Decor item to the menu
+**Date:** 2026-06-09
+
+Adding a decor sticker requires changes in **4 files** plus the sticker PNGs. Miss any one and the item either won't appear in the menu, won't place, or will load a broken image.
+
+### Step 1 — PNG files (2 locations)
+Place the processed (background-removed) PNG in both:
+```
+app/public/stickers/<sticker-id>.png       ← served by Vite at runtime
+stickers/<sticker-id>.png                  ← repo copy / source of truth
+```
+Filename convention: `decor_{item-name}_{size-tier}_{regions}.png`
+Run through `tools/sticker-pipeline.py` first if the source is a raw Gemini JPG.
+
+### Step 2 — `app/src/hooks/usePlantCatalog.js`
+Add a catalog entry. This powers the recently-used list and any future search/filter.
+```js
+{ key:'decor_pot-blue_S_CA-US-FR-GB-AU', label:'Blue Pot', family:'Decor',
+  src:'/stickers/decor_pot-blue_S_CA-US-FR-GB-AU.png', size:'S' },
+```
+- `family` **must** be `'Decor'` (or `'Water Feature'` for fountains). Never use a plant family — it will leak into the plant tray (L022).
+- `key` must match the PNG filename without `.png`.
+
+### Step 3 — `app/src/components/GardenEditor.jsx` → `DECOR_CATALOG`
+Add an entry to the `DECOR_CATALOG` object (~line 240). This is what actually resolves the menu button ID to a sticker and triggers placement.
+```js
+'decor-pot-blue': { key: 'decor_pot-blue_S_CA-US-FR-GB-AU', label: 'Blue Pot',
+  family: 'Decor', size: 'S', src: '/stickers/decor_pot-blue_S_CA-US-FR-GB-AU.png' },
+```
+- The object key (e.g. `'decor-pot-blue'`) is the `id` used in toolMenuData and must match exactly.
+- `src` must be the correct `/stickers/` path — wrong path = broken placement, no error.
+
+### Step 4 — `app/src/components/toolMenuData.jsx`
+Add a menu button entry inside the correct group's `children` array (or at the top level if it's a standalone item).
+```js
+{ id: 'decor-pot-blue', label: 'Blue Pot', hint: 'Tap to place blue pot' },
+```
+- `id` must match the `DECOR_CATALOG` key in GardenEditor exactly.
+- To add a **new group** (expandable submenu), add a parent entry with `group: true` and a `children` array.
+- To add to an **existing group**, find the group by its `id` (e.g. `'__pots'`) and append to `children`.
+
+### Step 5 — `research/DECOR-PROMPT-GUIDE.md`
+Add the item's full prompt, colours, and shape description to the guide. Keep it as the canonical reference for regeneration.
+
+### Step 6 — Commit
+```
+git add -A && git commit -m "Decor: add [item name]"
+```
+Never leave uncommitted changes at session end (L010).
+
+---
+
+### Quick reference — file map
+| What | File |
+|------|------|
+| PNG assets | `app/public/stickers/` + `stickers/` |
+| Catalog (recently-used, search) | `app/src/hooks/usePlantCatalog.js` |
+| Placement engine | `app/src/components/GardenEditor.jsx` → `DECOR_CATALOG` |
+| Menu structure + button labels | `app/src/components/toolMenuData.jsx` |
+| Prompt reference | `research/DECOR-PROMPT-GUIDE.md` |
+
+### Notes
+- **Fountains** use a separate `FOUNTAIN_CATALOG` in GardenEditor (not `DECOR_CATALOG`) and are triggered via `waterSubTool` state, not `decorSubTool`. Same 4-file rule applies but the GardenEditor entry goes in `FOUNTAIN_CATALOG`.
+- **Plants** (non-decor) only need `usePlantCatalog.js` + the PNG — they don't use `DECOR_CATALOG` or `toolMenuData`.
+- The Vite dev server hot-reloads JS changes instantly but **does not** hot-reload new PNG files added after server start. If a new sticker shows as broken: hard-refresh (Ctrl+Shift+R) or restart the dev server.
+
+---
+
 ## L022 — Decor items must never appear in the plant tray
 **Date:** 2026-06-08
 **Rule:** Any new item added to the Decor menu (tables, stones, fountains, loungers, arches, etc.) must have `family: 'Decor'` (or `'Water Feature'` for water items). These families are filtered out of the plant tray via `PLANT_CATALOG_TRAY` in `usePlantCatalog.js`.
