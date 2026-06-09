@@ -21,6 +21,26 @@ const LAWN_OPACITY = {
 }
 const SEASON_NAMES = ['spring', 'summer', 'fall', 'winter']
 
+// ── Missing-sticker placeholder (grey tile with ?) ────────────────────────────
+function makePlaceholderImage(size = 64) {
+  const canvas = document.createElement('canvas')
+  canvas.width = size; canvas.height = size
+  const ctx = canvas.getContext('2d')
+  ctx.fillStyle = '#cccccc'
+  ctx.fillRect(0, 0, size, size)
+  ctx.strokeStyle = '#999999'
+  ctx.lineWidth = 2
+  ctx.strokeRect(1, 1, size - 2, size - 2)
+  ctx.fillStyle = '#666666'
+  ctx.font = `bold ${Math.round(size * 0.5)}px sans-serif`
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText('?', size / 2, size / 2)
+  const img = new window.Image()
+  img.src = canvas.toDataURL()
+  return img
+}
+
 function applyHedgeTexture(shape, layer) {
   const img = new window.Image()
   img.onload = () => {
@@ -55,6 +75,12 @@ const SCHEMA_VERSION  = 2  // increment when save format changes
 function migrateGarden(g) {
   if (!g || typeof g !== 'object') return null
   const v = g._schemaVersion || 1
+
+  // Future-version gate: save was made by a newer version of the app
+  if (v > SCHEMA_VERSION) {
+    console.warn(`[GardenMapper] Garden "${g.name}" was saved with schema v${v} (app is v${SCHEMA_VERSION}). Loading may be incomplete.`)
+    // Don't block load — just warn. A future migration step will handle it when app updates.
+  }
 
   // v1 → v2: ensure all plant entries have seasons array + transparent flag
   if (v < 2) {
@@ -304,6 +330,8 @@ export function loadGarden({
       pathWidth: entry.pathWidth, tension: entry.tension,
       transparent: entry.transparent || false,
       locked: entry.locked || false,
+      notes: entry.notes || '',
+      family: entry.family || '',
     }
 
     let shape
@@ -392,10 +420,9 @@ export function loadGarden({
       size: entry.size, key: entry.key,
     }
 
-    const img = loadedImages[entry.key]
-    if (!img) return
-
     const size = SIZE_MAP[entry.size] || 64
+    const img = loadedImages[entry.key] || makePlaceholderImage(size)
+    if (!img) return  // should never hit, but guard anyway
 
     // Use the same makePlantGroup factory as addPlant (v8: makePlantGroup)
     // x/y are world coords; makePlantGroup expects top-left corner
