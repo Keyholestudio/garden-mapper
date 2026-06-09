@@ -101,9 +101,11 @@ export const DECOR_ITEMS = [
   {
     id: '__pots', label: 'Flower Pots', emoji: '🪴', group: true,
     children: [
-      { id: 'decor-pot-s', label: 'Small Pot',  hint: 'Tap to place small terracotta pot' },
-      { id: 'decor-pot-m', label: 'Medium Pot', hint: 'Tap to place medium terracotta pot' },
-      { id: 'decor-pot-l', label: 'Large Pot',  hint: 'Tap to place large terracotta pot' },
+      { id: 'decor-pot-red-round',       label: 'Red Round Pot',        hint: 'Tap to place red round pot' },
+      { id: 'decor-pot-terracotta-round',label: 'Terracotta Round Pot',  hint: 'Tap to place terracotta round pot' },
+      { id: 'decor-pot-blue',            label: 'Blue Pot',             hint: 'Tap to place blue pot' },
+      { id: 'decor-pot-terracotta',      label: 'Terracotta Pot',       hint: 'Tap to place terracotta pot' },
+      { id: 'decor-pot-green-round',     label: 'Green Round Pot',      hint: 'Tap to place green round pot' },
     ],
   },
   {
