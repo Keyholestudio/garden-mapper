@@ -63,36 +63,60 @@ export default function GardenEditor() {
   useEffect(() => { showGridRef.current = state.showGrid }, [state.showGrid])
 
   // ── Respond to browser zoom changes ─────────────────────────────────────
-  // Browser zoom (Ctrl+/-) changes visualViewport dimensions. The Konva stage
-  // has a ResizeObserver on its container, but it may not fire fast enough.
-  // Fix: on visualViewport resize, directly update the stage size to match
-  // the canvas container's new dimensions, then redraw.
+  // Browser zoom (Ctrl+/-) shrinks the visual viewport but the app's fixed-width
+  // panels overflow the screen. Fix: counter-scale the root element so the entire
+  // app shrinks proportionally to always fit inside the browser window.
   useEffect(() => {
-    const onViewportResize = () => {
-      const stage = stageRef.current
-      const { gridLayer } = layersRef.current
-      if (!stage) return
-      // Find the canvas wrapper and re-measure it
-      const wrap = stage.container().parentElement
-      if (!wrap) return
-      // Use rAF to let the browser finish reflowing the layout first
+    const root = document.getElementById('app')
+    if (!root) return
+
+    const applyZoomFit = () => {
+      const vv = window.visualViewport
+      if (!vv) return
+      // Browser zoom level: visualViewport.width / window.screen.availWidth gives
+      // a rough zoom, but outerWidth/innerWidth is more reliable cross-browser
+      const zoomLevel = window.outerWidth / window.innerWidth
+      if (zoomLevel <= 1.01) {
+        // At 100% or less — no compensation needed
+        root.style.transform = ''
+        root.style.transformOrigin = ''
+        root.style.width = ''
+        root.style.height = ''
+      } else {
+        // Scale down the app root to compensate for browser zoom
+        const scale = 1 / zoomLevel
+        root.style.transformOrigin = '0 0'
+        root.style.transform = `scale(${scale})`
+        root.style.width = `${zoomLevel * 100}%`
+        root.style.height = `${zoomLevel * 100}%`
+      }
+      // Also update Konva stage size after layout settles
       requestAnimationFrame(() => {
+        const stage = stageRef.current
+        const { gridLayer } = layersRef.current
+        if (!stage) return
+        const wrap = stage.container()?.parentElement
+        if (!wrap) return
         stage.width(wrap.clientWidth)
         stage.height(wrap.clientHeight)
-        if (gridLayer) {
-          drawGrid(stage, gridLayer, state.showGrid, state.gardenUnit, state.currentSeason)
-        }
+        if (gridLayer) drawGrid(stage, gridLayer, state.showGrid, state.gardenUnit, state.currentSeason)
         stage.batchDraw()
       })
     }
-    window.visualViewport?.addEventListener('resize', onViewportResize)
-    // Also fire on regular window resize (handles zoom in some browsers)
-    window.addEventListener('resize', onViewportResize)
+
+    applyZoomFit()
+    window.addEventListener('resize', applyZoomFit)
+    window.visualViewport?.addEventListener('resize', applyZoomFit)
+
     return () => {
-      window.visualViewport?.removeEventListener('resize', onViewportResize)
-      window.removeEventListener('resize', onViewportResize)
+      window.removeEventListener('resize', applyZoomFit)
+      window.visualViewport?.removeEventListener('resize', applyZoomFit)
+      root.style.transform = ''
+      root.style.transformOrigin = ''
+      root.style.width = ''
+      root.style.height = ''
     }
-  }, [stageReady]) // re-bind once stage is ready
+  }, [stageReady])
 
   // ── Season visibility — mirrors v8 updatePlantVisibility() ──
   // Runs whenever season changes. Fades plants not visible in the current season.
