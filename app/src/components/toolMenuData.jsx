@@ -212,6 +212,8 @@ export function ToolMenu({
             if (isOpen) {
               setOpenGroup(null)
               setCollapsedGroups(prev => { const n = new Set(prev); n.add(g.id); return n })
+              // Deselect active child when collapsing its group
+              if (hasActive) doSubChange(null)
             } else {
               setOpenGroup(g.id)
               setCollapsedGroups(prev => { const n = new Set(prev); n.delete(g.id); return n })
