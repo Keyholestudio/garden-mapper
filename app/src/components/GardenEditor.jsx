@@ -300,18 +300,28 @@ export default function GardenEditor() {
     if (!id || state.currentMode !== 'decor') return
     const entry = DECOR_CATALOG[id]
     if (!entry) return
-    // Clear decorSubTool immediately so re-entering decor mode later doesn't re-fire this effect
-    state.setDecorSubTool(null)
+    // Do NOT clear decorSubTool here — keep it set so the button stays highlighted
+    // It will be cleared after placement or when mode changes
+    pendingPlantRef.current = null  // cancel any previous pending decor
     const img = new Image()
     img.onload = () => {
       pendingPlantRef.current = { ...entry, _img: img }
-      // Stay in decor mode — panel should not bounce to main menu before placement
-      // Mode will switch to select naturally after the item is placed (handleCanvasClick)
     }
     img.onerror = () => console.warn('Decor sticker not found:', entry.src)
     img.src = entry.src
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.decorSubTool, state.currentMode])
+
+  // When leaving decor mode (Back button or switching tools), cancel any pending decor placement
+  useEffect(() => {
+    if (state.currentMode !== 'decor') {
+      if (pendingPlantRef.current?._img && state.decorSubTool) {
+        pendingPlantRef.current = null
+        state.setDecorSubTool(null)
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.currentMode])
 
   // ── Plant placement ──
   const pendingPlantRef  = useRef(null)
@@ -365,6 +375,8 @@ export default function GardenEditor() {
     // Switch to select mode so info panel shows after placement
     // (decor stays in decor mode until placement to avoid panel bounce)
     state.setCurrentMode('select')
+    // Clear decor subtool now that placement is done (button unhighlights)
+    if (state.decorSubTool) state.setDecorSubTool(null)
     const newId = addPlant({
       entry, x: worldPos.x, y: worldPos.y,
       stage: stageRef.current, plantLayer,
