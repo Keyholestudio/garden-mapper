@@ -350,7 +350,7 @@ export default function GardenEditor() {
     if (!entry) return
     const { plantLayer } = layersRef.current
     if (!plantLayer || !stageRef.current) return
-    addRecent(entry)  // record drag-drop as recent
+    addRecent(entry, { defer: true })  // defer state update so re-render doesn't break drop
     const newId = addPlant({
       entry, x: worldPos.x, y: worldPos.y,
       stage: stageRef.current, plantLayer,
@@ -377,7 +377,7 @@ export default function GardenEditor() {
     pendingPlantRef.current = null
     const { plantLayer } = layersRef.current
     if (!plantLayer || !stageRef.current) return
-    addRecent(entry)  // record click-to-place as recent (after placement confirmed)
+    addRecent(entry, { defer: true })  // defer state update so re-render doesn't interrupt click
     // Switch to select mode so info panel shows after placement
     // (decor stays in decor mode until placement to avoid panel bounce)
     state.setCurrentMode('select')

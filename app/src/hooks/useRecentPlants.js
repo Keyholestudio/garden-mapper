@@ -22,14 +22,25 @@ export function useRecentPlants() {
   const [recents, setRecents] = useState(() => readLS())
   const [hidden,  setHidden]  = useState(() => readHidden())
 
-  const addRecent = useCallback((entry) => {
+  const addRecent = useCallback((entry, { defer } = {}) => {
     // Store only what's needed for display (no Konva/Image objects — those can't be serialised)
     const slim = { key: entry.key, label: entry.label, family: entry.family, src: entry.src, size: entry.size, seasons: entry.seasons }
-    setRecents(prev => {
-      const next = [slim, ...prev.filter(r => r.key !== slim.key)].slice(0, MAX_RECENT)
-      writeLS(next)
-      return next
-    })
+    // Always write to localStorage immediately so it persists even if the state update is deferred.
+    // When defer=true, delay the setRecents call so no React re-render occurs mid-drag/click —
+    // a re-render during an in-flight drag causes the browser to drop the drag connection.
+    const apply = () => {
+      setRecents(prev => {
+        const next = [slim, ...prev.filter(r => r.key !== slim.key)].slice(0, MAX_RECENT)
+        writeLS(next)
+        return next
+      })
+    }
+    if (defer) {
+      writeLS([slim, ...readLS().filter(r => r.key !== slim.key)].slice(0, MAX_RECENT))
+      setTimeout(apply, 0)
+    } else {
+      apply()
+    }
   }, [])
 
   const removeRecent = useCallback((key) => {
