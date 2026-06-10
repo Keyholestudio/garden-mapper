@@ -217,6 +217,8 @@ export function ToolMenu({
             } else {
               setOpenGroup(g.id)
               setCollapsedGroups(prev => { const n = new Set(prev); n.delete(g.id); return n })
+              // Opening a new group clears any active selection from another group
+              if (activeSub) doSubChange(null)
             }
           }}
         >
