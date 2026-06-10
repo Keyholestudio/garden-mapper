@@ -20,7 +20,7 @@ const SCHEMA_VERSION = 2
 // Remote URL — update this once we have a GitHub raw URL or CDN path
 // For now points to a placeholder that will 404 gracefully (no-op on failure)
 const DREAM_GARDEN_URL =
-  'https://raw.githubusercontent.com/placeholder/garden-mapper/main/public/dreamGarden.json'
+  'https://raw.githubusercontent.com/Keyholestudio/garden-mapper/main/app/src/data/dreamGarden.json'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
