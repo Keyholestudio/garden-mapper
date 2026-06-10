@@ -194,14 +194,14 @@ export const PLANT_CATALOG = [
   // ── New additions
   { key:'water-feature_fountain-sm_S_CA-US-FR-GB-AU', label:'Small Fountain',  family:'Water Feature', src:'/stickers/water-feature_fountain-sm_S_CA-US-FR-GB-AU.png', size:'S' },
   { key:'water-feature_fountain-md_M_CA-US-FR-GB-AU', label:'Medium Fountain', family:'Water Feature', src:'/stickers/water-feature_fountain-md_M_CA-US-FR-GB-AU.png', size:'M' },
-  { key:'water-feature_fountain-lg_L_CA-US-FR-GB-AU', label:'Large Fountain',  family:'Water Feature', src:'/stickers/water-feature_fountain-lg_M_CA-US-FR-GB-AU.png', size:'M' },
+  { key:'water-feature_fountain-lg_L_CA-US-FR-GB-AU', label:'Large Fountain',  family:'Water Feature', src:'/stickers/water-feature_fountain-lg_L_CA-US-FR-GB-AU.png', size:'L' },
 
   // ── Reference entry (kept for catalog structure reference only) ───────────────
   // { key:'tree-svg-ref', label:'Apple Tree (SVG ref)', family:'Fruit Tree', src:'/stickers/tree.svg', size:'L' },
   { key:'plant-fern_fern_L_CA-US-FR-GB-AU', label:'Fern', family:'Fern / Groundcover', src:'/stickers/plant-fern_fern_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'decor_rock-small_M_CA-US-FR-GB-AU', label:'Small Garden Stone', family:'Decor', src:'/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png', size:'M' },
 
-  { key:'decor_rock-medium_L_CA-US-FR-GB-AU', label:'Medium Garden Stone', family:'Decor', src:'/stickers/decor_rock-medium_M_CA-US-FR-GB-AU.png', size:'M' },
+  { key:'decor_rock-medium_L_CA-US-FR-GB-AU', label:'Medium Garden Stone', family:'Decor', src:'/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png', size:'L' },
 
   { key:'decor_rock-large_XL_CA-US-FR-GB-AU', label:'Large Garden Stone', family:'Decor', src:'/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
@@ -218,7 +218,7 @@ export const PLANT_CATALOG = [
   { key:'decor_table-enameled_XXL_CA-US-FR-GB-AU', label:'Enameled Table', family:'Decor', src:'/stickers/decor_table-enameled_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
   { key:'decor_table-bronzed_XXL_CA-US-FR-GB-AU',  label:'Bronzed Table',  family:'Decor', src:'/stickers/decor_table-bronzed_XXL_CA-US-FR-GB-AU.png',  size:'XXL' },
 
-  { key:'decor_umbrella_L_CA-US-FR-GB-AU', label:'Beach Umbrella', family:'Decor', src:'/stickers/decor_umbrella_M_CA-US-FR-GB-AU.png', size:'M' },
+  { key:'decor_umbrella_L_CA-US-FR-GB-AU', label:'Beach Umbrella', family:'Decor', src:'/stickers/decor_umbrella_L_CA-US-FR-GB-AU.png', size:'L' },
 
   { key:'decor_pot-red-round_S_CA-US-FR-GB-AU',        label:'Red Round Pot',        family:'Decor', src:'/stickers/decor_pot-red-round_S_CA-US-FR-GB-AU.png',        size:'S' },
   { key:'decor_pot-terracotta-round_M_CA-US-FR-GB-AU',  label:'Terracotta Round Pot',  family:'Decor', src:'/stickers/decor_pot-terracotta-round_M_CA-US-FR-GB-AU.png',  size:'M' },
