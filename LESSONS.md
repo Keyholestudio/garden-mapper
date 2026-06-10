@@ -3,6 +3,18 @@ _L001–L009 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 ---
 
+## L028 — "Update the Dream Garden to the website" workflow
+**Trigger phrase:** "update the Dream Garden to the website"
+1. Browser tool → localhost:5200 → eval `JSON.parse(localStorage.getItem('gardenData'))[0]` → grab JSON
+2. Validate: `_isDreamGarden: true` present; bump `_dreamVersion` +1
+3. Overwrite `app/src/data/dreamGarden.json`
+4. `git add -A && git commit -m "Dream Garden: v[N] — [desc]" && git push`
+5. Verify raw GitHub URL serves new version; confirm to Rob
+
+**No manual steps from Rob. No export button in UI (no auth yet).**
+
+---
+
 ## L027 — Browser zoom-in clips right panel (#32) — in progress
 **Date:** 2026-06-09
 **Status:** Partially resolved. Zoom-out works (panels reflow). Zoom-in clips the right panel off screen until refresh.

@@ -377,6 +377,7 @@ export default function GardenEditor() {
     pendingPlantRef.current = null
     const { plantLayer } = layersRef.current
     if (!plantLayer || !stageRef.current) return
+    addRecent(entry)  // record click-to-place as recent (after placement confirmed)
     // Switch to select mode so info panel shows after placement
     // (decor stays in decor mode until placement to avoid panel bounce)
     state.setCurrentMode('select')

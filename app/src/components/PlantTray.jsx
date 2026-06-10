@@ -23,7 +23,6 @@ export default function PlantTray({
     const img = loadedImages?.[entry.key]
     if (!img || typeof img === 'string') return
     const enriched = { ...entry, _img: img }
-    onAddRecent?.(entry)
     if (onPlantClick) onPlantClick(enriched)
   }
 
@@ -46,7 +45,6 @@ export default function PlantTray({
       e.dataTransfer.setDragImage(offscreen, GHOST / 2, GHOST / 2)
       requestAnimationFrame(() => document.body.removeChild(offscreen))
     } catch (_) {}
-    onAddRecent?.(entry)
     if (onPlantDragStart) onPlantDragStart(enriched)
   }
 
