@@ -100,32 +100,27 @@ If a PNG is missing from `app/public/stickers/`, the app now shows a grey `?` ti
 
 ---
 
-## L024 — Dev server + tunnel: always kill both together, never let stale processes pile up
-**Date:** 2026-06-09
+## L024 — Dev server: kill stale Vite processes when changes aren't showing
+**Date:** 2026-06-09 | **Updated:** 2026-06-10 (Cloudflare tunnel retired — app live at app.gardenmapper.ca)
 
-### The problem
-Multiple stale Vite dev server instances accumulate silently on ports 5200–5203. The Cloudflare tunnel locks to a specific process at launch — if that process is replaced, the tunnel is dead but still appears to be running. Result: tunnel URL serves an old build, changes are invisible.
+### Deployment setup (current)
+- **Dev/build:** `localhost:5200` — hot-reload, for active development only
+- **Public/live:** `https://app.gardenmapper.ca` — Vercel, auto-deploys from GitHub `main` in ~15s
+- **No tunnel** — Cloudflare tunnel retired 2026-06-10. Portfolio Visualizer still uses its own tunnel.
 
-### Rules
-1. **One Vite process, one tunnel.** Before starting either, kill all existing instances.
-2. **Tunnel dies when Vite restarts.** Always reissue a new tunnel URL after any server restart.
-3. **Never trust a running tunnel from a previous session.** The June 8 tunnel was still "running" on June 9 — it was dead.
-4. **Stale server symptoms:** changes not showing after hot-reload, port floating to 5201/5202/5203.
+### Stale Vite server problem
+Multiple stale Vite instances accumulate silently on ports 5200–5203. Changes stop showing, port floats.
 
-### Standard restart procedure (for me as assistant)
+### Restart procedure
 ```powershell
 # Kill all stale Vite servers
 Get-NetTCPConnection -LocalPort 5200,5201,5202,5203 -State Listen | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }
-# Kill stale tunnels
-Get-Process cloudflared -ErrorAction SilentlyContinue | Stop-Process -Force
-# Then restart Vite + tunnel fresh
+# Then restart
+cd projects/garden-planner/app && npx vite
 ```
 
 ### For Rob — use restart.bat
-`projects/garden-planner/restart.bat` — kills stale processes, starts fresh Vite + tunnel, opens browser. Creates a new Cloudflare URL each time (check the tunnel window). Use this any time changes aren't showing or the tunnel URL stops working.
-
-### Desktop shortcut
-Point shortcut to `restart.bat` instead of `start.bat` for daily use. `start.bat` still exists for first-launch if nothing is running.
+`projects/garden-planner/restart.bat` — kills stale Vite processes, starts fresh dev server, opens localhost:5200.
 
 ---
 
@@ -224,7 +219,7 @@ In `onTouchStart` when `e.touches.length === 2`:
 3. On pinch end (after 120ms delay): restore `draggable(true)` on all shapes, then call `onPinchEnd` callback so parent can re-apply locked state for any locked objects
 
 ### Key insight
-Vite hot-reload pushes changes to Cloudflare tunnel immediately — if a fix appears not to work on device, the issue is the fix itself, not the delivery. Don't restart the tunnel or dev server to debug; look at the logic instead.
+Vite hot-reload updates localhost:5200 immediately. For device testing, use **https://app.gardenmapper.ca** (push to GitHub first — Vercel deploys in ~15s). If a fix appears not to work on device, the issue is the fix itself, not the delivery. Look at the logic, not the delivery method.
 
 ### Files changed
 - `GardenCanvas.jsx` — pinch start/end touch handlers

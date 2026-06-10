@@ -174,8 +174,9 @@ cd projects/garden-planner/app && npm run dev
 - **Sticker review** - Rob to review stickers live in app; flag any needing regeneration
 - **#9** Dream garden - `useDreamGarden.js` built; Rob designs when ready, exports JSON
   - `DREAM_GARDEN_URL` = placeholder until GitHub repo is public
-- **Deploy** - method unknown (Netlify? Vercel?). Ask Rob.
-- **GitHub remote** - not yet set up
+- **Live at:** https://app.gardenmapper.ca (Vercel, auto-deploys from GitHub main)
+- **GitHub:** https://github.com/Keyholestudio/garden-mapper
+- **DREAM_GARDEN_URL** — update in `useDreamGarden.js` once GitHub repo is public (currently placeholder)
 - **#12** Multi-device - deferred; needs backend + user accounts
 - **Phase 8** Textures - planned next major phase
 - **Items 16-19** SM campaign, robs-lab.ca, gamification, pricing

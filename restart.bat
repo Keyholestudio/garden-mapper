@@ -1,6 +1,6 @@
 @echo off
 echo ================================================
-echo  Garden Mapper — Clean Restart
+echo  Garden Mapper - Dev Server Restart
 echo ================================================
 echo.
 
@@ -9,18 +9,10 @@ for /f "tokens=5" %%a in ('netstat -aon 2^>nul ^| findstr ":5200 \|:5201 \|:5202
     taskkill /PID %%a /F >nul 2>&1
 )
 
-echo Killing stale Cloudflare tunnels...
-taskkill /IM cloudflared.exe /F >nul 2>&1
-
 timeout /t 2 /nobreak > nul
 
-echo Starting Garden Mapper (port 5200)...
-start "Garden Mapper - App" cmd /k "cd /d C:\Users\RG\.openclaw\workspace\projects\garden-planner\app && npx vite"
-
-timeout /t 4 /nobreak > nul
-
-echo Starting Cloudflare Tunnel...
-start "Garden Mapper - Tunnel" cmd /k "C:\cloudflared\cloudflared.exe tunnel --url http://localhost:5200 2>&1"
+echo Starting Garden Mapper dev server (port 5200)...
+start "Garden Mapper - Dev" cmd /k "cd /d C:\Users\RG\.openclaw\workspace\projects\garden-planner\app && npx vite"
 
 timeout /t 3 /nobreak > nul
 
@@ -30,9 +22,8 @@ start http://localhost:5200
 echo.
 echo Garden Mapper is running.
 echo Local:  http://localhost:5200
-echo Public: Check the 'Garden Mapper - Tunnel' window for the trycloudflare.com URL.
-echo         (URL takes ~5 seconds to appear)
+echo Public: https://app.gardenmapper.ca  (auto-updates on git push)
 echo.
-echo To shut down: close both terminal windows, or run this script again.
+echo To shut down: close the terminal window.
 echo.
 pause
