@@ -305,7 +305,8 @@ export default function GardenEditor() {
     const img = new Image()
     img.onload = () => {
       pendingPlantRef.current = { ...entry, _img: img }
-      state.setCurrentMode('select')
+      // Stay in decor mode — panel should not bounce to main menu before placement
+      // Mode will switch to select naturally after the item is placed (handleCanvasClick)
     }
     img.onerror = () => console.warn('Decor sticker not found:', entry.src)
     img.src = entry.src
@@ -361,6 +362,9 @@ export default function GardenEditor() {
     pendingPlantRef.current = null
     const { plantLayer } = layersRef.current
     if (!plantLayer || !stageRef.current) return
+    // Switch to select mode so info panel shows after placement
+    // (decor stays in decor mode until placement to avoid panel bounce)
+    state.setCurrentMode('select')
     const newId = addPlant({
       entry, x: worldPos.x, y: worldPos.y,
       stage: stageRef.current, plantLayer,
