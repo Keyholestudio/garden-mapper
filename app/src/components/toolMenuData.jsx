@@ -142,9 +142,11 @@ export function getActiveSub(currentMode, bedSubTool, fenceSubTool, fenceType, p
   return null
 }
 
+// Pass id=null to deselect the current sub-tool
 export function handleSubChange(id, currentMode, { onBedSubTool, onFenceType, onFenceSubTool, onPathSubTool, onBuildingSubTool, onWaterSubTool, onDecorSubTool }) {
   if (currentMode === 'beds')     { onBedSubTool(id); return }
   if (currentMode === 'fences')   {
+    if (id === null)    { onFenceType(null); onFenceSubTool(null); return }
     if (id === 'fence') { onFenceType('fence'); return }
     if (id === 'gate')  { onFenceType('gate');  return }
     onFenceType('hedge'); onFenceSubTool(id); return
@@ -166,6 +168,8 @@ export function ToolMenu({
   extraClass = '',
 }) {
   const [openGroup, setOpenGroup] = useState(null)
+  // Track which group is manually collapsed even if it has an active child
+  const [collapsedGroups, setCollapsedGroups] = useState(new Set())
   const activeSub = getActiveSub(currentMode, bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool, decorSubTool)
   const items = ITEMS_MAP[currentMode] || []
 
@@ -180,20 +184,39 @@ export function ToolMenu({
   const renderItem = (s) => (
     <button key={s.id}
       className={`tool-menu-btn${activeSub === s.id ? ' active' : ''}`}
-      onClick={() => doSubChange(s.id)} title={s.hint}
+      onClick={() => {
+        if (activeSub === s.id) {
+          // Clicking active item deselects it and collapses its group
+          doSubChange(null)
+          setCollapsedGroups(prev => { const n = new Set(prev); n.add(openGroup || '__all'); return n })
+          setOpenGroup(null)
+        } else {
+          doSubChange(s.id)
+          setCollapsedGroups(new Set()) // clear manual collapses when new item selected
+        }
+      }} title={s.hint}
     >
       <span className="tool-menu-label">{s.label}</span>
     </button>
   )
 
   const renderGroup = (g) => {
-    const isOpen    = openGroup === g.id || groupHasActive(g)
     const hasActive = groupHasActive(g)
+    // Allow manual collapse even if group has an active child
+    const isOpen    = collapsedGroups.has(g.id) ? false : (openGroup === g.id || hasActive)
     return (
       <div key={g.id} className="tool-menu-group">
         <button
           className={`tool-menu-btn group-header${hasActive ? ' active' : ''}`}
-          onClick={() => setOpenGroup(isOpen ? null : g.id)}
+          onClick={() => {
+            if (isOpen) {
+              setOpenGroup(null)
+              setCollapsedGroups(prev => { const n = new Set(prev); n.add(g.id); return n })
+            } else {
+              setOpenGroup(g.id)
+              setCollapsedGroups(prev => { const n = new Set(prev); n.delete(g.id); return n })
+            }
+          }}
         >
           {g.emoji && <span className="tool-menu-emoji">{g.emoji}</span>}
           <span className="tool-menu-label">{g.label}</span>

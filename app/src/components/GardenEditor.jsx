@@ -297,6 +297,11 @@ export default function GardenEditor() {
   // When a decor sub-tool is clicked, load the image and queue it for placement (same as plant click-to-place)
   useEffect(() => {
     const id = state.decorSubTool
+    // Explicit deselect (null while in decor mode) — cancel pending placement
+    if (id === null && state.currentMode === 'decor') {
+      pendingPlantRef.current = null
+      return
+    }
     if (!id || state.currentMode !== 'decor') return
     const entry = DECOR_CATALOG[id]
     if (!entry) return

@@ -198,7 +198,7 @@ export const PLANT_CATALOG = [
 
   // ── Reference entry (kept for catalog structure reference only) ───────────────
   // { key:'tree-svg-ref', label:'Apple Tree (SVG ref)', family:'Fruit Tree', src:'/stickers/tree.svg', size:'L' },
-  { key:'plant-fern_fern_L_CA-US-FR-GB-AU', label:'Fern', family:'Fern / Groundcover', src:'/stickers/plant-fern_fern_M_CA-US-FR-GB-AU.png', size:'M' },
+  { key:'plant-fern_fern_L_CA-US-FR-GB-AU', label:'Fern', family:'Fern / Groundcover', src:'/stickers/plant-fern_fern_L_CA-US-FR-GB-AU.png', size:'L' },
   { key:'decor_rock-small_M_CA-US-FR-GB-AU', label:'Small Garden Stone', family:'Decor', src:'/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png', size:'M' },
 
   { key:'decor_rock-medium_L_CA-US-FR-GB-AU', label:'Medium Garden Stone', family:'Decor', src:'/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png', size:'L' },
