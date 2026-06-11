@@ -27,6 +27,35 @@ import ExportModal from './ExportModal'
 import MobileSheet from './MobileSheet'
 import './GardenEditor.css'
 
+// ── Layer zone constants ─────────────────────────────────────────
+// Within plantLayer (bottom → top):
+//   TREE_ZONE  : 0 – 999   — trees render below plants/decor
+//   PLANT_ZONE : 1000–1999 — plants + decor render above trees
+const TREE_FAMILIES  = new Set(['Conifer Tree', 'Deciduous Tree', 'Fruit Tree'])
+const TREE_ZONE_MAX  = 999
+const PLANT_ZONE_MIN = 1000
+
+// Returns true if the plant entry (from plantDataRef) is a tree
+const isTreeFamily = (family) => TREE_FAMILIES.has(family)
+
+// Place a newly-added group into its correct zone (top of its zone)
+const placeInZone = (group, family, layer) => {
+  const siblings = layer.find('Group')
+  if (isTreeFamily(family)) {
+    // Top of tree zone: find highest tree zIndex, or default to 0
+    const treeZs = siblings
+      .filter(g => g !== group && TREE_FAMILIES.has(g._family))
+      .map(g => g.zIndex())
+    const target = treeZs.length ? Math.max(...treeZs) + 1 : 0
+    group.zIndex(Math.min(target, TREE_ZONE_MAX))
+  } else {
+    // Top of plant zone: just move to top (plant zone is always above tree zone)
+    group.moveToTop()
+  }
+  // Tag the group for zone lookups (avoids needing to reach into plantDataRef)
+  group._family = family
+}
+
 export default function GardenEditor() {
   const state = useGardenState()
   const { isMobile, isTablet, isDesktop, breakpoint } = useBreakpoint()
@@ -359,6 +388,8 @@ export default function GardenEditor() {
       onSelect: handlePlantSelect,
     })
     if (newId) {
+      const group = plantLayer.findOne('#' + newId)
+      if (group) placeInZone(group, entry.family || '', plantLayer)
       state.pushUndo(() => {
         const g = layersRef.current.plantLayer?.findOne('#' + newId)
         if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() }
@@ -392,6 +423,8 @@ export default function GardenEditor() {
     })
     // Push undo: remove the placed plant
     if (newId) {
+      const group = plantLayer.findOne('#' + newId)
+      if (group) placeInZone(group, entry.family || '', plantLayer)
       state.pushUndo(() => {
         const g = layersRef.current.plantLayer?.findOne('#' + newId)
         if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() }
@@ -501,13 +534,13 @@ export default function GardenEditor() {
           showGridRef,
           onSelect: handlePlantSelect,
         })
-        // Apply stored scale + move to top
+        // Apply stored scale + place in correct layer zone
         if (newId) {
           const group = plantLayer.findOne('#' + newId)
           if (group) {
             if (cb.entry.scaleX) group.scaleX(cb.entry.scaleX)
             if (cb.entry.scaleY) group.scaleY(cb.entry.scaleY)
-            group.moveToTop()
+            placeInZone(group, cb.entry.family || '', plantLayer)
             // Advance srcX so next Ctrl+V steps one more plant to the right
             state.setClipboard({ ...cb, srcX: srcX + size + 8 })
           }
@@ -571,14 +604,102 @@ export default function GardenEditor() {
     triggerAutoSave()
   }
 
+  // ── Overlap-aware layer stepping ─────────────────────────────────────────
+  // Finds siblings whose bounding boxes intersect the selected item, then
+  // jumps directly to the nearest overlapping sibling in the requested direction.
+  // If nothing overlaps, does nothing (Option B).
   const handleLayerMove = (kind, dir) => {
+    const TOUCH_PAD = 2 // px tolerance — catches items that are flush/touching
+
     if (kind === 'plant' && state.selectedPlant) {
-      dir === 'up' ? state.selectedPlant.group.moveUp() : state.selectedPlant.group.moveDown()
-      layersRef.current.plantLayer?.batchDraw()
+      const target = state.selectedPlant.group
+      const layer  = layersRef.current.plantLayer
+      if (!layer) return
+
+      const siblings = layer.find('Group').filter(g => g !== target)
+      const tBox = target.getClientRect()
+
+      // Filter to overlapping siblings only
+      const overlapping = siblings.filter(g => {
+        const b = g.getClientRect()
+        return (
+          tBox.x < b.x + b.width  + TOUCH_PAD &&
+          tBox.x + tBox.width  + TOUCH_PAD > b.x &&
+          tBox.y < b.y + b.height + TOUCH_PAD &&
+          tBox.y + tBox.height + TOUCH_PAD > b.y
+        )
+      })
+
+      if (overlapping.length === 0) { triggerAutoSave(); return } // Option B: nothing to step over
+
+      const targetZ = target.zIndex()
+
+      if (dir === 'up') {
+        // Find the overlapping sibling with the smallest zIndex that is still above target
+        const above = overlapping.filter(g => g.zIndex() > targetZ)
+        if (above.length === 0) { triggerAutoSave(); return }
+        const nextZ = Math.min(...above.map(g => g.zIndex()))
+        // Move target to just above that sibling
+        const nextSib = above.find(g => g.zIndex() === nextZ)
+        nextSib.moveDown()    // sibling steps down one
+        // Re-read zIndex after sibling move, then match
+        target.zIndex(nextSib.zIndex() + 1)
+      } else {
+        // Find the overlapping sibling with the largest zIndex that is still below target
+        const below = overlapping.filter(g => g.zIndex() < targetZ)
+        if (below.length === 0) { triggerAutoSave(); return }
+        const nextZ = Math.max(...below.map(g => g.zIndex()))
+        const nextSib = below.find(g => g.zIndex() === nextZ)
+        nextSib.moveUp()      // sibling steps up one
+        target.zIndex(nextSib.zIndex() - 1)
+      }
+
+      layer.batchDraw()
+
     } else if (kind === 'struct' && state.selectedStruct) {
-      dir === 'up' ? state.selectedStruct.shape.moveUp() : state.selectedStruct.shape.moveDown()
-      layersRef.current.structLayer?.batchDraw()
+      const target = state.selectedStruct.shape
+      const layer  = layersRef.current.structLayer
+      if (!layer) return
+
+      // Exclude non-data shapes (propBounds, propLabel) from consideration
+      const siblings = layer.find('Line,Rect,Circle,Path').filter(s =>
+        s !== target && !!state.structDataRef.current[s.id()]
+      )
+      const tBox = target.getClientRect()
+
+      const overlapping = siblings.filter(s => {
+        const b = s.getClientRect()
+        return (
+          tBox.x < b.x + b.width  + TOUCH_PAD &&
+          tBox.x + tBox.width  + TOUCH_PAD > b.x &&
+          tBox.y < b.y + b.height + TOUCH_PAD &&
+          tBox.y + tBox.height + TOUCH_PAD > b.y
+        )
+      })
+
+      if (overlapping.length === 0) { triggerAutoSave(); return } // Option B
+
+      const targetZ = target.zIndex()
+
+      if (dir === 'up') {
+        const above = overlapping.filter(s => s.zIndex() > targetZ)
+        if (above.length === 0) { triggerAutoSave(); return }
+        const nextZ   = Math.min(...above.map(s => s.zIndex()))
+        const nextSib = above.find(s => s.zIndex() === nextZ)
+        nextSib.moveDown()
+        target.zIndex(nextSib.zIndex() + 1)
+      } else {
+        const below = overlapping.filter(s => s.zIndex() < targetZ)
+        if (below.length === 0) { triggerAutoSave(); return }
+        const nextZ   = Math.max(...below.map(s => s.zIndex()))
+        const nextSib = below.find(s => s.zIndex() === nextZ)
+        nextSib.moveUp()
+        target.zIndex(nextSib.zIndex() - 1)
+      }
+
+      layer.batchDraw()
     }
+
     triggerAutoSave()
   }
 
@@ -586,7 +707,12 @@ export default function GardenEditor() {
     const sel = state.selectedPlant; if (!sel) return
     const d = state.plantDataRef.current[sel.id]
     d.transparent = !d.transparent
-    d.transparent ? (sel.group.opacity(0.35), sel.group.moveToBottom()) : (sel.group.opacity(1), sel.group.moveToTop())
+    if (d.transparent) {
+      sel.group.opacity(0.35); sel.group.moveToBottom()
+    } else {
+      sel.group.opacity(1)
+      placeInZone(sel.group, d.family || '', layersRef.current.plantLayer)
+    }
     layersRef.current.plantLayer?.batchDraw()
     state.setSelectedPlant({ ...sel })
     triggerAutoSave()
@@ -1116,7 +1242,7 @@ export default function GardenEditor() {
                 const newId = addPlant({ entry, x: srcX + size + 8 + size / 2, y: srcY + size / 2, stage: stageRef.current, plantLayer, plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr, showGridRef, onSelect: handlePlantSelect })
                 if (newId) {
                   const group = plantLayer.findOne('#' + newId)
-                  if (group) { group.scaleX(scaleX); group.scaleY(scaleY); group.moveToTop() }
+                  if (group) { group.scaleX(scaleX); group.scaleY(scaleY); placeInZone(group, d?.family || '', plantLayer) }
                   plantLayer.batchDraw()
                   state.pushUndo(() => { const g = layersRef.current.plantLayer?.findOne('#' + newId); if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() } })
                   triggerAutoSave()
@@ -1246,7 +1372,7 @@ export default function GardenEditor() {
               const group = plantLayer.findOne('#' + newId)
               if (group) {
                 group.scaleX(scaleX); group.scaleY(scaleY)
-                group.moveToTop()
+                placeInZone(group, entry.family || '', plantLayer)
               }
               plantLayer.batchDraw()
               state.pushUndo(() => {

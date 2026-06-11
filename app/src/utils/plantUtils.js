@@ -37,6 +37,7 @@ export function addPlant({ entry, x, y, stage, plantLayer, plantDataRef, plantId
   }
 
   const group = makePlantGroup(id, loadedImg, SIZE, x - SIZE / 2, y - SIZE / 2)
+  group._family = entry.family || ''  // stamp family for zone-aware layer stepping
 
   group.on('dragmove', () => {
     const snap = showGridRef?.current ?? false

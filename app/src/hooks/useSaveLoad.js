@@ -471,6 +471,7 @@ export function loadGarden({
     } else if (entry.zIndex !== undefined) {
       try { group.zIndex(entry.zIndex) } catch {}
     }
+    group._family = entry.family || ''  // stamp family for zone-aware layer stepping
     group.on('click tap', () => onSelectPlant(entry.id, group))
     plantLayer?.add(group)
   })
