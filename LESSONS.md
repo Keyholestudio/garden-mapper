@@ -1,5 +1,5 @@
 # Garden Planner — Project Lessons
-_L001–L009 archived at: `memory/deep/garden-planner/lessons-archive.md`_
+_L001–L009, L016–L018, L020 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 ---
 
@@ -15,29 +15,11 @@ _L001–L009 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 ---
 
-## L027 — Browser zoom-in clips right panel (#32) — in progress
+## L027 — Browser zoom-in clips right panel (#32) — known limitation
 **Date:** 2026-06-09
-**Status:** Partially resolved. Zoom-out works (panels reflow). Zoom-in clips the right panel off screen until refresh.
-
-### What was tried (all failed)
-- `transform: scale()` on root — doesn't participate in layout, panels still overflow
-- `CSS zoom` on root using `devicePixelRatio / baseDPR` — DPR at mount is already at the user's zoom, so delta is always ~0
-- `window.outerWidth / window.innerWidth` as zoom signal — Chrome keeps these nearly identical, useless
-- `visualViewport resize` listener — fires on zoom-out but NOT reliably on zoom-in in Chrome/Brave
-
-### Root cause
-Chrome/Brave intentionally do not change `window.innerWidth` on Ctrl+/- zoom — the layout viewport stays constant. Only `devicePixelRatio` changes, but we can't use it as a baseline since the page may load at non-100% zoom. The browser fires a `resize` event on zoom-out but not always on zoom-in.
-
-### Current stable state (commit `0e13c9f`)
-- `flex-shrink: 1` + `min-width` on both panels so they compress rather than overflow
-- `max-width: 100vw` + `overflow: hidden` on root layout
-- `window resize` listener updates Konva stage on zoom-out
-- Zoom-in: panels clip until user refreshes. Workaround: refresh after zooming in.
-
-### Potential future fix
-- Use a `MutationObserver` or `ResizeObserver` on `document.documentElement` to detect when `clientWidth` changes
-- Or: add a visible "Refresh to fit" banner when zoom-in is detected (via `window.visualViewport.scale !== 1`)
-- Or: accept it as a known limitation for canvas apps and add a note in the UI
+Zoom-out works. Zoom-in clips right panel until page refresh. Chrome/Brave don't fire resize on Ctrl++ zoom — `window.innerWidth` stays constant. All attempted fixes failed (see archive for full list).
+**Current state (commit `0e13c9f`):** `flex-shrink:1` + `min-width` on panels; `max-width:100vw` on root; Konva updates on zoom-out. Workaround: refresh after zooming in.
+**Future option:** `ResizeObserver` on `document.documentElement`, or "Refresh to fit" banner via `visualViewport.scale !== 1`.
 
 ---
 
@@ -60,147 +42,41 @@ dragend handler signature before implementing.
 
 ---
 
-## L025 — Sticker continuity: never delete a sticker key, only replace or alias forward
+## L025 — Sticker continuity: never delete a key, only replace/alias/retire
 **Date:** 2026-06-09
-
-### The rule
-- **Never remove a sticker key from `usePlantCatalog.js` or `DECOR_CATALOG`.** A saved garden stores sticker keys, not image paths. If the key disappears, that shape loads with a broken/missing image silently.
-- **Never delete a sticker PNG from `app/public/stickers/`** without first ensuring no saved garden references it.
-- **Replacements:** when Rob provides a new image for an existing sticker, update the PNG file in-place using the same filename. The key stays identical. The user's garden loads the new image automatically — zero data loss.
-- **Renames:** if a sticker must be renamed (e.g. size tier changes), keep the old key in `usePlantCatalog.js` pointing to the new file, AND add the new key. Old saves load fine; new placements use the new key.
-- **Removals:** if a sticker is truly retired, mark it `hidden: true` in the catalog instead of deleting it. It won't show in the tray/menu but will still render in saved gardens. This is the archive approach.
-
-### What Rob provides for a replacement
-Rob sends: new image file + confirms which sticker ID it replaces. I then:
-1. Run the pipeline on the new image
-2. Overwrite `app/public/stickers/<same-sticker-id>.png` and `stickers/<same-sticker-id>.png`
-3. No catalog changes needed — key is unchanged
-4. Commit: `"Stickers: replace [name] image in-place"`
-
-### What broke today (June 9)
-We deleted `decor_pot-s`, `decor_pot-m`, `decor_pot-l` and replaced with 5 new keys. Any saved garden with old pots now has broken images. Correct approach: keep old keys in catalog pointing to a fallback or new file, add new keys alongside.
-
-### Hidden/archive approach (deferred)
-Add `hidden: true` flag to catalog entries for retired stickers. Filter in `usePlantCatalog.js` → `PLANT_CATALOG_TRAY` already excludes Decor families — extend this filter to also exclude `hidden: true`. Retired stickers render in existing saves but don't appear for new placements. Low complexity, high safety. Build when sticker library gets large enough to need pruning.
-
-### ✅ Missing sticker placeholder (tested June 9, 2026)
-If a PNG is missing from `app/public/stickers/`, the app now shows a grey `?` tile instead of a blank. The sticker key is still intact in the save — no data is lost. The `?` is the signal to restore the PNG.
-
-### 🔁 The 3 sticker operations — quick reference for Rob
-
-**Replacing a sticker (new image, same item):**
-1. Send Computer the new image and say which sticker it replaces (name or ID)
-2. Computer runs the pipeline and overwrites the PNG in both locations in-place
-3. No menu changes, no save migration — existing gardens update automatically on next load
-4. Commit message: `"Stickers: replace [name] image in-place"`
-
-**Adding a new sticker:**
-1. Send Computer the image and say what it is + which menu category it belongs to
-2. Computer follows L023 checklist: PNG → catalog → DECOR_CATALOG (if decor) → toolMenuData
-3. Commit: `"Decor: add [name]"`
-
-**Retiring a sticker (never delete):**
-1. Tell Computer "retire [name]" — never say "delete"
-2. Computer marks it `hidden: true` in the catalog — it vanishes from menus but still renders in saved gardens
-3. PNG stays on disk forever
-
-### 🚑 Recovery if a sticker PNG goes missing (grey ? appears)
-1. Check `stickers/` folder (repo copy) → copy back to `app/public/stickers/`
-2. If both are missing: `git checkout HEAD -- stickers/<filename>.png app/public/stickers/<filename>.png`
-3. If never committed (brand new sticker): re-run the sticker pipeline to regenerate
-4. Hard-refresh the browser (Ctrl+Shift+R) after restoring — Vite doesn't hot-reload new PNGs
+Saved gardens store **keys**, not paths. Missing key = silent broken image.
+- **Replace:** overwrite PNG in-place (both `app/public/stickers/` + `stickers/`), key unchanged. Commit: `"Stickers: replace [name] image in-place"`
+- **Rename:** keep old key pointing to new file + add new key alongside
+- **Retire:** mark `hidden:true` in catalog — hides from menus, still renders in saves. Never delete PNG.
+- **Missing PNG:** shows grey `?` tile — restore via `git checkout HEAD -- stickers/<file>.png app/public/stickers/<file>.png`, then Ctrl+Shift+R
+- **Adding:** follow L023 checklist
+- **What broke June 9:** deleted `decor_pot-s/m/l` keys → broken images in any garden with old pots
 
 ---
 
-## L024 — Dev server: kill stale Vite processes when changes aren't showing
-**Date:** 2026-06-09 | **Updated:** 2026-06-10 (Cloudflare tunnel retired — app live at app.gardenmapper.ca)
-
-### Deployment setup (current)
-- **Dev/build:** `localhost:5200` — hot-reload, for active development only
-- **Public/live:** `https://app.gardenmapper.ca` — Vercel, auto-deploys from GitHub `main` in ~15s
-- **No tunnel** — Cloudflare tunnel retired 2026-06-10. Portfolio Visualizer still uses its own tunnel.
-
-### Stale Vite server problem
-Multiple stale Vite instances accumulate silently on ports 5200–5203. Changes stop showing, port floats.
-
-### Restart procedure
-```powershell
-# Kill all stale Vite servers
-Get-NetTCPConnection -LocalPort 5200,5201,5202,5203 -State Listen | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }
-# Then restart
-cd projects/garden-planner/app && npx vite
-```
-
-### For Rob — use restart.bat
-`projects/garden-planner/restart.bat` — kills stale Vite processes, starts fresh dev server, opens localhost:5200.
+## L024 — Dev server: kill stale Vite when changes aren't showing
+**Date:** 2026-06-09 | Updated 2026-06-10
+**Dev:** localhost:5200. **Live:** https://app.gardenmapper.ca (Vercel, ~15s from push). No tunnel.
+Stale instances accumulate on 5200–5203 silently. Kill: `Get-NetTCPConnection -LocalPort 5200,5201,5202,5203 -State Listen | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }`. Or use `restart.bat`.
 
 ---
 
-## L023 — Complete checklist for adding a Decor item to the menu
+## L023 — Checklist: adding a Decor item to the menu
 **Date:** 2026-06-09
+**4 files + 2 PNG locations.** Miss one = item missing, broken placement, or broken image.
 
-Adding a decor sticker requires changes in **4 files** plus the sticker PNGs. Miss any one and the item either won't appear in the menu, won't place, or will load a broken image.
+| # | What | Where |
+|---|------|-------|
+| 1 | PNG (processed, bg removed) | `app/public/stickers/<id>.png` + `stickers/<id>.png` |
+| 2 | Catalog entry | `usePlantCatalog.js` — `family:'Decor'`, `key`=filename without `.png` |
+| 3 | Placement entry | `GardenEditor.jsx` → `DECOR_CATALOG` — object key must match toolMenuData id |
+| 4 | Menu button | `toolMenuData.jsx` → correct group's `children`: `{ id, label, hint }` |
+| 5 | Prompt ref | `research/DECOR-PROMPT-GUIDE.md` |
+| 6 | Commit | `"Decor: add [name]"` |
 
-### Step 1 — PNG files (2 locations)
-Place the processed (background-removed) PNG in both:
-```
-app/public/stickers/<sticker-id>.png       ← served by Vite at runtime
-stickers/<sticker-id>.png                  ← repo copy / source of truth
-```
-Filename convention: `decor_{item-name}_{size-tier}_{regions}.png`
-Run through `tools/sticker-pipeline.py` first if the source is a raw Gemini JPG.
-
-### Step 2 — `app/src/hooks/usePlantCatalog.js`
-Add a catalog entry. This powers the recently-used list and any future search/filter.
-```js
-{ key:'decor_pot-blue_S_CA-US-FR-GB-AU', label:'Blue Pot', family:'Decor',
-  src:'/stickers/decor_pot-blue_S_CA-US-FR-GB-AU.png', size:'S' },
-```
-- `family` **must** be `'Decor'` (or `'Water Feature'` for fountains). Never use a plant family — it will leak into the plant tray (L022).
-- `key` must match the PNG filename without `.png`.
-
-### Step 3 — `app/src/components/GardenEditor.jsx` → `DECOR_CATALOG`
-Add an entry to the `DECOR_CATALOG` object (~line 240). This is what actually resolves the menu button ID to a sticker and triggers placement.
-```js
-'decor-pot-blue': { key: 'decor_pot-blue_S_CA-US-FR-GB-AU', label: 'Blue Pot',
-  family: 'Decor', size: 'S', src: '/stickers/decor_pot-blue_S_CA-US-FR-GB-AU.png' },
-```
-- The object key (e.g. `'decor-pot-blue'`) is the `id` used in toolMenuData and must match exactly.
-- `src` must be the correct `/stickers/` path — wrong path = broken placement, no error.
-
-### Step 4 — `app/src/components/toolMenuData.jsx`
-Add a menu button entry inside the correct group's `children` array (or at the top level if it's a standalone item).
-```js
-{ id: 'decor-pot-blue', label: 'Blue Pot', hint: 'Tap to place blue pot' },
-```
-- `id` must match the `DECOR_CATALOG` key in GardenEditor exactly.
-- To add a **new group** (expandable submenu), add a parent entry with `group: true` and a `children` array.
-- To add to an **existing group**, find the group by its `id` (e.g. `'__pots'`) and append to `children`.
-
-### Step 5 — `research/DECOR-PROMPT-GUIDE.md`
-Add the item's full prompt, colours, and shape description to the guide. Keep it as the canonical reference for regeneration.
-
-### Step 6 — Commit
-```
-git add -A && git commit -m "Decor: add [item name]"
-```
-Never leave uncommitted changes at session end (L010).
-
----
-
-### Quick reference — file map
-| What | File |
-|------|------|
-| PNG assets | `app/public/stickers/` + `stickers/` |
-| Catalog (recently-used, search) | `app/src/hooks/usePlantCatalog.js` |
-| Placement engine | `app/src/components/GardenEditor.jsx` → `DECOR_CATALOG` |
-| Menu structure + button labels | `app/src/components/toolMenuData.jsx` |
-| Prompt reference | `research/DECOR-PROMPT-GUIDE.md` |
-
-### Notes
-- **Fountains** use a separate `FOUNTAIN_CATALOG` in GardenEditor (not `DECOR_CATALOG`) and are triggered via `waterSubTool` state, not `decorSubTool`. Same 4-file rule applies but the GardenEditor entry goes in `FOUNTAIN_CATALOG`.
-- **Plants** (non-decor) only need `usePlantCatalog.js` + the PNG — they don't use `DECOR_CATALOG` or `toolMenuData`.
-- The Vite dev server hot-reloads JS changes instantly but **does not** hot-reload new PNG files added after server start. If a new sticker shows as broken: hard-refresh (Ctrl+Shift+R) or restart the dev server.
+**Fountains:** use `FOUNTAIN_CATALOG` + `waterSubTool`, not `DECOR_CATALOG`.
+**Plants:** only need `usePlantCatalog.js` + PNG.
+**New PNGs:** Vite doesn't hot-reload them — Ctrl+Shift+R after adding.
 
 ---
 
@@ -214,118 +90,21 @@ Never leave uncommitted changes at session end (L010).
 
 ## L021 — Pinch-to-zoom: disable draggable on shapes, not just layer listening
 **Date:** 2026-06-07
-
-### The problem
-During a pinch-to-zoom gesture, if a finger lands on a Konva draggable object, the object moves or resizes even though no transformer handles are visible. The Konva Transformer (`transformstart`/`stopTransform`) is NOT involved — this is Konva's internal drag handler latching onto the shape from the first finger touch.
-
-### What doesn't work
-- `layer.listening(false)` — blocks new events but doesn't interrupt a drag already in progress from finger 1
-- `tr.nodes([])` at pinch start — only affects transformer resize, not plain dragging
-- `capture: true` on the canvas element — fires before Konva but breaks Vite's HMR and Konva's own touch move processing, killing pinch zoom entirely
-- `transformstart` + `stopTransform()` — correct API but only fires for transformer anchor drags, not free dragging
-
-### What works
-In `onTouchStart` when `e.touches.length === 2`:
-1. Call `Konva.DD?.reset()` to cancel any in-progress drag
-2. Call `n.draggable(false)` on every shape in plant and struct layers
-3. On pinch end (after 120ms delay): restore `draggable(true)` on all shapes, then call `onPinchEnd` callback so parent can re-apply locked state for any locked objects
-
-### Key insight
-Vite hot-reload updates localhost:5200 immediately. For device testing, use **https://app.gardenmapper.ca** (push to GitHub first — Vercel deploys in ~15s). If a fix appears not to work on device, the issue is the fix itself, not the delivery. Look at the logic, not the delivery method.
-
-### Files changed
-- `GardenCanvas.jsx` — pinch start/end touch handlers
-- `GardenEditor.jsx` — `onPinchEnd` callback re-applies lock state; `transformstart` guard using `e.evt.touches.length >= 2`
-
----
-
-## L020 — CDP sticker generation: navigate_fresh() causes account switching
-**Date:** 2026-06-04
-`navigate_fresh()` calls `window.location.href = GEMINI_URL` which forces a full page reload. On machines with multiple Google accounts, this lets Google re-evaluate which account is "active" and switches users mid-run.
-**Fix:** Check if `[contenteditable=true]` is already present before navigating. If the input is ready, skip the navigation entirely — reuse the existing chat state.
-```python
-already_ready = cdp(ws_url, 'document.querySelector("[contenteditable=true]")!==null')
-if already_ready:
-    return ws_url  # skip navigation
-```
-**Also:** Always re-verify account AFTER any navigation (added double-check in sticker-generate-one.py).
-**Rule:** Never unconditionally reload the Gemini page between prompts on a multi-account machine.
+Konva's drag handler latches onto a shape from finger 1 before the second finger registers as a pinch. `layer.listening(false)` doesn't interrupt an in-progress drag. `tr.nodes([])` only affects transformer anchors.
+**Fix:** On `e.touches.length === 2`: `Konva.DD?.reset()`, then `n.draggable(false)` on all shapes. After pinch end (120ms): restore `draggable(true)`, call `onPinchEnd` to re-apply lock state.
+**Files:** `GardenCanvas.jsx` (touch handlers), `GardenEditor.jsx` (`onPinchEnd` + `transformstart` guard `e.evt.touches.length >= 2`).
 
 ---
 
 ## L019 — How to add a repeating texture to a season
 **Date:** 2026-06-04
-
-### Overview
-Textures are 256×256 JPGs stored in `app/public/textures/`. They are applied as a `fillPatternImage` on the `__propBounds` Konva rect (the property boundary). They swap automatically when the user cycles the season.
-
-### Step 1 — Get the image from Rob
-Rob sends a raw Gemini-generated JPG via Telegram. Download it from `C:\Users\RG\.openclaw\media\inbound\` — use the latest `file_NNN---*.jpg` matching the send time.
-
-### Step 2 — Process it
-Resize to 256×256 and optionally apply a white fade for subtlety:
-```python
-from PIL import Image
-img = Image.open(src).convert('RGBA').resize((256, 256), Image.LANCZOS)
-white = Image.new('RGBA', img.size, (255, 255, 255, 255))
-blended = Image.blend(img, white, alpha=0.30)  # 0.30 = 30% fade toward white
-blended.convert('RGB').save(dst, 'JPEG', quality=85, optimize=True)
-```
-**Always process from the original source file** — never re-fade an already-faded file or the effect stacks.
-
-Fade levels used so far:
-- Spring: 30% | Summer: 20% | Fall: 10% | Winter: 50%
-
-### Step 3 — Save to textures folder
-```
-app/public/textures/lawn-<season>.jpg
-```
-Current files: `lawn-spring.jpg`, `lawn-summer.jpg`, `lawn-fall-early.jpg`, `lawn-winter.jpg`
-
-### Step 4 — Wire into the season map (3 places)
-All three must match or a season will show the wrong texture:
-
-**a) `app/src/components/GardenCanvas.jsx`** — `LAWN_TEXTURES` constant near top of file:
-```js
-const LAWN_TEXTURES = {
-  spring: '/textures/lawn-spring.jpg',
-  summer: '/textures/lawn-summer.jpg',
-  fall:   '/textures/lawn-fall-early.jpg',
-  winter: '/textures/lawn-winter.jpg',
-}
-```
-
-**b) `app/src/hooks/useSaveLoad.js`** — same `LAWN_TEXTURES` constant near top of file.
-
-**c) `app/src/components/GardenEditor.jsx`** — inline object in the `onStart` handler (SetupOverlay callback), search for `LAWN_TEXTURES` — one line.
-
-### Step 5 — Commit
-```
-git add -A && git commit -m "Textures: update <season> lawn texture"
-```
-
-### Adding a NEW season key
-The season cycle is driven by `currentSeason` (0=spring, 1=summer, 2=fall, 3=winter). If a new season slot is ever added, update `SEASON_NAMES` arrays everywhere and add the new key to all three `LAWN_TEXTURES` maps.
-
-### The flash-then-disappear bug (already fixed — do not regress)
-If a texture ever shows briefly on load then disappears: `loadGarden()` is recreating `__propBounds` without reapplying the texture. The fix is `applyLawnTexture()` called after the rect is added in `useSaveLoad.js`. Do not remove that call.
-
----
-
-## L016 — Gemini CDP sticker generation: Rob's account uses lh3 URLs, not blob:
-**Date:** 2026-06-03
-The OpenClaw Google account (used in earlier sessions) serves Gemini-generated images as `blob:` URLs. Rob's personal Gemini account serves them as `https://lh3.googleusercontent.com/...` URLs. The canvas `drawImage()` grab fails on lh3 due to CORS. Fix: detect lh3 URL, return `"URL:" + src`, then download via Python `urllib.request` instead of canvas capture.
-**Rule:** Always check both URL types in CDP image detection. `blob:` = canvas grab. `lh3.googleusercontent.com` = direct download.
-
-## L017 — CDP WebSocket target goes stale after long navigation loops
-**Date:** 2026-06-03
-On long batch runs (20+ prompts), reusing the same `ws_url` from the start of the session causes `WebSocketBadStatusException: 500 No such target id` after Brave reassigns the tab's CDP target. Fix: call `get_gemini_tab()` fresh at the start of every single prompt to get a current `ws_url`. Never cache it across prompts.
-**Rule:** Always re-fetch ws_url from `/json` endpoint per prompt. Never reuse across navigations.
-
-## L018 — Navigate to fresh Gemini `/app` before each prompt, grab image BEFORE navigating away
-**Date:** 2026-06-03
-Gemini's previous conversation history pollutes the blob/lh3 baseline check. Fix: navigate to `gemini.google.com/app` (fresh chat) before each prompt, wait for `contenteditable` to be ready (up to 30s), then send. Wait for new image to appear BEFORE any further navigation. If you navigate away before grabbing, the image is gone.
-**Rule:** navigate → wait for input → baseline → send → wait for image → grab → THEN pause/navigate.
+Textures = 256×256 JPGs in `app/public/textures/`, applied as `fillPatternImage` on `__propBounds`.
+1. Rob sends JPG via Telegram → `C:\Users\RG\.openclaw\media\inbound\`
+2. Resize 256×256, blend white. **Always from original** — re-fading stacks. Fade levels: spring 30%, summer 20%, fall 10%, winter 50%.
+3. Save as `app/public/textures/lawn-<season>.jpg`
+4. Wire `LAWN_TEXTURES` in **3 places**: `GardenCanvas.jsx`, `useSaveLoad.js`, `GardenEditor.jsx` (onStart handler). All must match.
+5. Commit: `"Textures: update <season> lawn texture"`
+**Flash-then-disappear bug (fixed):** `applyLawnTexture()` called after rect added in `useSaveLoad.js` — do not remove.
 
 ---
 
@@ -351,15 +130,6 @@ Every confirmed working change must be committed immediately — not batched at 
 ## L011 — Reflect before patching. Read before acting. Reference the legend.
 **Date:** 2026-05-29
 Don't patch from memory. Read the actual file before editing. Reference ARCHITECTURE.md before touching any hook, util, or Konva layer. One fix at a time — verify compile + behaviour before moving on. If stuck after 2 attempts, stop and explain before trying again.
-
----
-
-## L014 — Garden Organizer Google Doc
-**Date:** 2026-06-01
-Primary planning doc for this project. Doc ID: `1F3mA5UZw1qo2wxd3pqMuSvyph3L4biChiJ18kbhRf5Q`
-Read it: `gog docs cat 1F3mA5UZw1qo2wxd3pqMuSvyph3L4biChiJ18kbhRf5Q`
-Export it: `gog docs export 1F3mA5UZw1qo2wxd3pqMuSvyph3L4biChiJ18kbhRf5Q --format txt --out projects/garden-planner/garden-organizer-export.txt`
-Also add to TOOLS.md under Google Drive Key Documents.
 
 ---
 

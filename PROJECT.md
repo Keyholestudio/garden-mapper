@@ -1,15 +1,16 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-06-08_
+_Last updated: 2026-06-10_
+_Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
 
 ## What It Is
-A web-based garden planner with a Konva canvas, 141 plant stickers, freeform + rect draw tools, save/load, and season theming. Built as a React + Vite + Konva scaffold ported from a working vanilla JS prototype (index-v8.html).
+A web-based garden planner — React + Vite + Konva canvas, 144 plant stickers + 20 decor + 3 fountains, freeform/rect/circle draw tools, save/load, season theming, textures. Ported from vanilla JS prototype (index-v8.html). Live at https://app.gardenmapper.ca.
 
 ---
 
-## Current Phase: 7 - Mobile & App Readiness (in progress)
+## Current Phase: 7 — Mobile & App Readiness (in progress)
 
 ### Resume Phrase
 `resume Garden Mapper React scaffold`
@@ -20,188 +21,83 @@ A web-based garden planner with a Konva canvas, 141 plant stickers, freeform + r
 ```
 cd projects/garden-planner/app && npm run dev
 ```
-- Frontend: **http://localhost:5200** (pinned - never floats)
-- Git: initialized in `projects/garden-planner/`
-- Reference prototype: `prototype/index-v8.html` - always open for comparison
-- Garden Organizer doc: `1F3mA5UZw1qo2wxd3pqMuSvyph3L4biChiJ18kbhRf5Q` (use `gog docs cat` - see L014)
+- **Dev:** http://localhost:5200 (pinned — never floats)
+- **Live:** https://app.gardenmapper.ca (Vercel, auto-deploys from GitHub main ~15s)
+- **GitHub:** https://github.com/Keyholestudio/garden-mapper
+- **Reference prototype:** `prototype/index-v8.html`
+- **Garden Organizer doc:** `1F3mA5UZw1qo2wxd3pqMuSvyph3L4biChiJ18kbhRf5Q`
 
 ---
 
-## Status
+## Phase Status
 
 | Phase | Status |
 |-------|--------|
-| Phase 1 - Canvas, grid, pan, zoom | ✅ Complete |
-| Phase 2 - Plant catalog, tray, click-to-place | ✅ Complete |
-| Phase 3 - Draw tools (freeform + rect + circle) | ✅ Complete |
-| Phase 4 - Select + edit (transformer, handles, right panel) | ✅ Complete |
-| Phase 5 - Save/load localStorage + garden switcher | ✅ Complete |
-| Phase 6 - Season themes, promo banner, logo bar | ✅ Complete |
-| Phase 7 - Mobile & App Readiness | 🟡 In Progress |
-| Phase 8 - Textures & Visual Polish | 🔲 Planned |
+| Phase 1–6 | ✅ Complete (canvas, plants, draw tools, select/edit, save/load, seasons) |
+| Phase 7 — Mobile & App Readiness | 🟡 In Progress |
+| Phase 8 — Textures & Visual Polish | 🔲 Planned |
 
 ---
 
-## June 1 Changes (Rob's doc notes - all committed)
-
-| # | Feature | Commit | Status |
-|---|---------|--------|--------|
-| 1 | Toolbar → right panel (two-level menu, ← Back) | `0137157` | ✅ |
-| 1B | Decks/Hedges/Pools as nested expandable groups | `1b6d523` | ✅ |
-| 2 | Gate moved to Fences; order: Fence→Gate→Hedges | `963d0ec` | ✅ |
-| 3 | Plumbing moved to Water; order: Fountain/Plumbing/Pools/Pond | `963d0ec` | ✅ |
-| 4 | Touch press-drag + tap-to-place for all square objects | `76e674c` | ✅ |
-| 5 | Tool menu scales to fit panel (no scroll) | `26fdd8f` | ✅ |
-| 5B | Reverted flex-stretch on desktop/tablet; mobile-only scaling | `afdb18d` | ✅ |
-| 6 | Plant tray text bumped to 12px to match panel | `04ea2c7` | ✅ |
-| 7 | Dark green logo bar separator (2px #11502A) | `ea2f577` | ✅ |
-| 8 | Drag-to-place plants from tray (HTML5 drag+drop) | `65280aa` | ✅ |
-| 9 | Dream garden - deferred until #10 confirmed + Rob creates it | - | 🔲 |
-| 10 | Super saves - versioned schema + backup slot + migration | `ea2f577` | ✅ |
-| 11 | Sunny/shady garden areas - deferred | - | ⏳ |
-| 12 | Multi-device sync - needs server architecture discussion | - | 🔲 |
-| 13 | Mobile season cycle button (top-left tap-to-advance) | `9dc9365` | ✅ |
-| 14 | "Need a plant? Submit it!" - no-results link to Google Form | `0d5b5b0` | ✅ |
-| 20 | Mobile edit panel (tap object → name/colour/dims/layers/delete) | `6a2efe9` | ✅ |
-| 21 | Mobile undo button (handle bar, both panels) | `52d3d91` | ✅ |
-| 22 | Mobile plant panel: Copy button | `c06ef28` | ✅ |
-| 23 | Desktop/tablet ← Back button on plant + struct panels | `69b5fe1` | ✅ |
-| 24 | Mobile: Edit Points button for line-based structs (bed, path, fence, etc.) | `cdd92d7` | ✅ |
-| 25 | Mobile: Save button (💾) in top-right of mobile logo bar | `cdd92d7` | ✅ |
-| 26 | Fix: square tap-place now opens shape panel (not main menu) | `cdd92d7` | ✅ |
-| 27 | Recently Used plants - persistent, all 3 surfaces, hide/clear/remove | `6c495f1` | ✅ |
-| 28 | Mobile profile 👤 menu - Gardens, Export, Submit Plant, Settings (soon), Subscription (soon), Website | `928b573` | ✅ |
-| 29 | Disconnect available on mobile struct panel | `e27e8ba` | ✅ |
-| 30 | Plant corners-only transformer; structs keep full 8 anchors | `e27e8ba` | ✅ |
-| 31 | Double-tap debounce 350ms on freeform point placement | `ae2e775` | ✅ |
-| 32 | No default sub-tool - user picks explicitly each time | `ae2e775` | ✅ |
-| 33 | Min point guards before shape closes; red corners fix | `ae2e775` | ✅ |
-| 34 | No-flip on plant resize (boundBoxFunc) | `ae2e775` | ✅ |
-| 35 | Undo/delete return to main menu (handleUndo + clearSelection) | `040aa58` | ✅ |
-| 36 | Mobile sheet spacing tightened | `bc6d417` | ✅ |
-| Lock | 🔓/🔒 Lock button on plants + structs - all surfaces, persists save/load | `0a0ef83` | ✅ |
-| Tool hint | Removed alternate hint text from active tool buttons | `880a07a` | ✅ |
-| Mobile sub-menu widths | Group buttons (Decks/Hedges/Pools + children) fixed - 3-col grid, display:contents, no full-width stretch | `50bd5ce` | ✅ |
-| Sub-menu colours | Group-header lavender, children lighter lavender/purple trim | `4340340` | ✅ |
-| Dream Garden hybrid | `useDreamGarden.js` - baked-in seed + silent remote fetch. `src/data/dreamGarden.json` placeholder. | `25fd4ea` | ✅ |
-| **Sticker catalog** | 131 transparent PNGs. Tier 1+2+#36. All wired into `usePlantCatalog.js`. | `56b3dca` | ✅ |
-| **#31-36** | Recently-used X fix, XL size map, Logo restored, plant notes, Gladiolus BG removed, flower analysis + 27 new stickers | `edbe230`-`56b3dca` | ✅ |
-| **June 4 - New stickers** | Thyme, Phlox, Fern added | `4a28e4b`-`0ed2eee` | ✅ |
-| **Decor category** | Select hidden; 18 decor stickers; Decor menu (Rocks/Gazebo/Seating/Umbrella/Pots/Stairs/Arches); decorSubTool state | `c1344cc`, `632cb40` | ✅ |
-| **Fountain sticker** | Architectural PNG replaces old circle struct; waterSubTool intercept | `e07840c` | ✅ |
-| **Season BG + fall texture** | New palette, Rob's fall texture, LAWN_OPACITY per-season | `c8d2674`, `91cf3e3` | ✅ |
-| **Hedge texture** | Wired into draw + load | `25ade59` | ✅ |
-| **Texture system** | 14 textures (deck/roof/soil/path); `#TX:` token; thumbnail swatches in pickers; applyColourOrTexture helper | `86cc5d6`, `98a18e6` | ✅ |
-| **Auto-save** | 1.5s debounce on placement/delete/undo/paste | `613bba1` | ✅ |
-| **Draw tool passthrough** | Clicks on objects during freeform draw don't interrupt tool | `a0a9b9e` | ✅ |
-| **Transparency load fix** | Plant opacity restored on garden load | `97b6aa9` | ✅ |
-
-### June 9 Changes
-| # | Feature | Commit | Status |
-|---|---------|--------|--------|
-| DECOR-PROMPT-GUIDE | Standalone decor prompt guide created | `eac3280` | ✅ |
-| Batch script cleanup | sticker-batch-decor.py: BOM removed, prompt template updated, arch L→XL fixed | `eac3280` | ✅ |
-| New pots | 5 new pot stickers replace 3 old terracotta pots; all 4 files updated per L023 | `14848f6` | ✅ |
-| L023 | Complete checklist for adding decor items to menu (4 files + PNG) | `eac3280` | ✅ |
-| Fountain merge | FOUNTAIN_CATALOG merged into DECOR_CATALOG; Fountains moved to Decor menu | `221d9c2` | ✅ |
-| Panel standardization | Copy+Lock → Fwd/Back → Transparent → Delete on all panels (desktop + mobile) | `ee5f63b` | ✅ |
-| isDecor branch | Decor/Fountain: no seasons, no notes, Delete label | `ee5f63b` | ✅ |
-| Notes | Added to beds, electrical, plumbing with contextual placeholder text | `ee5f63b` | ✅ |
-| Struct copy | handleCopyStruct: rect/circle/line support, undo-aware, 24px offset | `34fa8a1` | ✅ |
-
-### June 8 Changes
-| # | Feature | Commit | Status |
-|---|---------|--------|--------|
-| Gate fix | Gate tool now places points (`isFreeMode` fenceType check) | `28b0142` | ✅ |
-| Aspect ratio | `makePlantGroup` uses natural image ratio — no more squishing | `c483247` | ✅ |
-| Decor filter | Decor/Water Feature items hidden from plant tray + search | `3836116` | ✅ |
-| XXL size | Added XXL (160px); trees/gazebos/tables → XXL | `bbb901a` | ✅ |
-| Size rebalance | All L plants → M; Arches → XL; Asparagus/Climbing Rose → M | multiple | ✅ |
-| Loungers | Wood + Plastic Lounger new stickers; XL | `a5df431` | ✅ |
-| Tables | Pine/Stained/Enameled/Bronzed tables added to Seating; XXL | `47e92a6` | ✅ |
-| Fountains | Fountain → Fountains group: Small(S)/Medium(M)/Large(L) | `1ad7926` | ✅ |
-| Arches label | Arch → Arches | `c6bbe34` | ✅ |
-| Gazebos | 3 new stickers; Large Gazebo added; XXL → XL | `7a59176` | ✅ |
-| Phlox | New image, M size | `a59c37b` | ✅ |
-| Sunflower | New image, M size | `4f289f3` | ✅ |
-| Beach Umbrella | New image | `20eb697` | ✅ |
-
-### Additional polish (June 1)
-- Season slider → frosted floating pill over canvas (`95583df`)
-- Transparent backing + larger text on slider (`c598c5e`, `6e3066a`)
-- Drag ghost shrunk to 48×48px (`2bb420b`)
-- Mobile bottom sheet: plant grid + tool menu + toggle (`8f39d0c`)
-- Plant grid expands on search focus, tools hide when keyboard open (`8096fa1`)
-- Season button moved to top-left, user icon top-right (`a2c254a`)
-- Port pinned to 5200, vite.config fixed (`a25e3c8`)
-
----
-
-## Architecture - Key Components
+## Architecture — Key Components
 
 | Component | Role |
 |-----------|------|
 | `GardenEditor.jsx` | Top-level shell, owns all state |
 | `RightPanel.jsx` | Desktop/tablet: properties + tool menu |
 | `MobileSheet.jsx` | Mobile: bottom sheet with plant grid + tools |
-| `toolMenuData.jsx` | Shared tool menu data + ToolMenu component (used by both) |
-| `LogoBar.jsx` | Top bar; mobile has season cycle button (left) + profile (right) |
-| `BottomBar.jsx` | Season slider (desktop/tablet floating pill only) |
+| `toolMenuData.jsx` | Shared tool menu data + ToolMenu component |
+| `LogoBar.jsx` | Top bar; mobile: season cycle (left) + profile (right) |
+| `BottomBar.jsx` | Season slider (desktop/tablet floating pill) |
 | `GardenCanvas.jsx` | Konva stage, grid, pan/zoom, touch, drag-drop target |
-| `useSaveLoad.js` | Versioned save/load with backup slot + migration |
-
----
+| `useSaveLoad.js` | Versioned save/load, backup slot, migration |
+| `useDreamGarden.js` | Baked-in seed + silent background fetch from GitHub |
 
 ## Layout by Breakpoint
 
 | Breakpoint | Layout |
 |---|---|
-| Mobile (< 600px) | Full canvas + MobileSheet bottom sheet; season = tap-to-cycle button top-left |
-| Tablet (600-1024px) | Left plant tray + canvas + right panel + floating season slider |
-| Desktop (> 1024px) | Same as tablet |
-
----
+| Mobile (< 600px) | Full canvas + MobileSheet bottom sheet |
+| Tablet / Desktop (≥ 600px) | Left plant tray + canvas + right panel + floating season slider |
 
 ## Save System (v2)
-- Schema version stamped on every save (`_schemaVersion: 2`)
-- Backup slot: `gardenData_backup` - auto-updated before each write
-- Migration: old saves upgraded on load (missing fields filled with defaults)
-- `exportGardensJSON()` ready to wire to a "Download Backup" button
+- Schema v2, backup slot (`gardenData_backup`), migration on load
+- Dream Garden always at index 0, protected from deletion, `_isDreamGarden: true`
+- Free tier = 1 user garden (Dream Garden excluded from count)
 
 ---
 
 ## Open Items
-- **Sticker review** - Rob to review stickers live in app; flag any needing regeneration
-- **#9** Dream garden - `useDreamGarden.js` built; Rob designs when ready, exports JSON
-  - `DREAM_GARDEN_URL` = placeholder until GitHub repo is public
-- **Live at:** https://app.gardenmapper.ca (Vercel, auto-deploys from GitHub main)
-- **GitHub:** https://github.com/Keyholestudio/garden-mapper
-- **DREAM_GARDEN_URL** — update in `useDreamGarden.js` once GitHub repo is public (currently placeholder)
-- **#12** Multi-device - deferred; needs backend + user accounts
-- **Phase 8** Textures - planned next major phase
-- **Items 16-19** SM campaign, robs-lab.ca, gamification, pricing
-- **Plant submission cron** - form → Gemini sticker → Rob approval → CDN → manifest fetch
-- **Capacitor.js** wrapper - deferred (needs Android Studio or Mac)
-- **TS build error** - pre-existing in main.tsx (doesn't affect dev; fix before Capacitor)
+- **#9 Dream Garden** — `useDreamGarden.js` live; trigger: "update the Dream Garden to the website" (see L028)
+- **#11 Sunny/shady areas** — deferred
+- **#12 Multi-device sync** — deferred; needs backend + user accounts
+- **#32 Zoom-in clips right panel** — known limitation (L027); workaround: refresh after zooming in
+- **L026 fixes** — copy button disabled for groups; copied rects need dragend/merge wiring
+- **Sticker review** — Rob to flag any needing regeneration
+- **Phase 8 Textures** — Rob designing; send images when ready
+- **Items 16–19** — SM campaign, robs-lab.ca, gamification, pricing
+- **Plant submission cron** — form → Gemini sticker → approval → CDN
+- **Capacitor.js** — deferred (needs Android Studio or Mac)
+- **TS build error** — pre-existing in main.tsx; fix before Capacitor
 
 ---
 
 ## Key Files
 | File | Purpose |
 |------|---------|
-| `ARCHITECTURE.md` | Component tree, hooks, refs, layers - read before touching code |
-| `LESSONS.md` | Project-specific bugs and patterns (L010-L014) |
-| `REVISION-LOG.md` | Version history per change |
+| `ARCHITECTURE.md` | Component tree, hooks, refs, layers — read before touching code |
+| `LESSONS.md` | Project-specific bugs and patterns |
+| `REVISION-LOG.md` | Version history |
 | `GAP-ANALYSIS.md` | Feature status |
-| `prototype/index-v8.html` | Working reference - read before canvas/Konva work |
-| `garden-organizer-export.txt` | Latest export of Garden Organizer Google Doc |
+| `prototype/index-v8.html` | Working reference — read before any canvas/Konva work |
+| `research/DECOR-PROMPT-GUIDE.md` | Decor sticker prompts + specs |
 
 ---
 
 ## Standing Rules
 1. Read `ARCHITECTURE.md` at session start
 2. Read v8 before solving any canvas/visual/coordinate problem
-3. One fix at a time - verify compile + behaviour before moving on
+3. One fix at a time — verify compile + behaviour before moving on
 4. Commit after every confirmed working change
 5. No session ends with uncommitted changes or stale docs
 6. Port = 5200 always (never float)
