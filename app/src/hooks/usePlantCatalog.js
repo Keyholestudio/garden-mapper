@@ -254,3 +254,49 @@ export function groupCatalog(catalog) {
   })
   return groups
 }
+
+// ── Lazy Pack Loader ──────────────────────────────────────────────────────────
+// Manages on-demand loading of sticker packs beyond the core catalog.
+// Usage: const { loadPack, getPackEntries, isPackLoaded, isPackLoading } = useLazyPacks()
+
+import { useState, useCallback, useRef } from 'react'
+import { PACK_REGISTRY } from '../data/packs/index.js'
+
+export function useLazyPacks() {
+  const [loadedPacks, setLoadedPacks] = useState({})   // packId → entries[]
+  const [loadingPacks, setLoadingPacks] = useState({}) // packId → true
+  const inflightRef = useRef({})                       // prevent duplicate fetches
+
+  const loadPack = useCallback(async (packId) => {
+    if (loadedPacks[packId] || inflightRef.current[packId]) return
+    const reg = PACK_REGISTRY.find(p => p.id === packId)
+    if (!reg || reg.eager) return
+
+    inflightRef.current[packId] = true
+    setLoadingPacks(prev => ({ ...prev, [packId]: true }))
+    try {
+      const mod = await reg.loader()
+      setLoadedPacks(prev => ({ ...prev, [packId]: mod.entries }))
+    } catch (e) {
+      console.error(`[Garden Mapper] Failed to load pack: ${packId}`, e)
+    } finally {
+      setLoadingPacks(prev => ({ ...prev, [packId]: false }))
+      delete inflightRef.current[packId]
+    }
+  }, [loadedPacks])
+
+  const getPackEntries = useCallback((packId) => {
+    return loadedPacks[packId] || []
+  }, [loadedPacks])
+
+  const isPackLoaded  = (packId) => !!loadedPacks[packId]
+  const isPackLoading = (packId) => !!loadingPacks[packId]
+
+  // All entries across core + any loaded lazy packs (for key lookup in save/load)
+  const allEntries = useCallback(() => {
+    const lazy = Object.values(loadedPacks).flat()
+    return [...PLANT_CATALOG, ...lazy]
+  }, [loadedPacks])
+
+  return { loadPack, getPackEntries, isPackLoaded, isPackLoading, allEntries, PACK_REGISTRY }
+}

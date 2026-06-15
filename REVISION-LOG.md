@@ -53,4 +53,20 @@ _History for v1–v7 and Phases 1–6 archived at: `memory/deep/garden-planner/r
 
 ---
 
+---
+
+## Phase 8 — Lazy Pack System + New Stickers
+**Goal:** Split flat catalog into on-demand packs. Scales to 500+ stickers with no boot penalty.
+**Base commit:** 132579b
+
+| # | Change | Commit | Status |
+|---|--------|--------|--------|
+| 8.1 | `src/data/packs/` — core + new pack files | — | 🔲 |
+| 8.2 | `usePlantCatalog.js` — async pack loader hook | — | 🔲 |
+| 8.3 | `PlantTray.jsx` + `MobileSheet.jsx` — per-category load spinner | — | 🔲 |
+| 8.4 | Add 36 new stickers to lookup table (cacti/succulents/tropicals/feverfew) | — | 🔲 |
+| 8.5 | Generate + approve stickers one by one | — | 🔲 |
+
+---
+
 _Add new entries above this line. Archive completed phases when this file exceeds ~4KB._
