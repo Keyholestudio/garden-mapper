@@ -23,7 +23,12 @@ Zoom-out works. Zoom-in clips right panel until page refresh. Chrome/Brave don't
 
 ---
 
-## L026 — Struct copy: two known limitations to fix
+## L026 — Struct copy: RESOLVED 2026-06-15
+~~Two known limitations~~ Both fixed during panel standardization + copy session.
+1. Copy button disabled for groups ✅ (already greyed in UI)
+2. Copied rects connect/merge correctly ✅ (dragend listener wired)
+
+## L026 — Struct copy: two known limitations to fix (ARCHIVED)
 **Date:** 2026-06-09
 
 ### Issue 1 — Copy button should be greyed/disabled for Konva.Group (connected buildings)
