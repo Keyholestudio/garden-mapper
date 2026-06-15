@@ -224,47 +224,18 @@ def verify_account(ws_url):
     return result == "ROB"
 
 def navigate_fresh(ws_url):
-    # Click the "New chat" button in the Gemini sidebar — keeps same tab and account,
-    # starts a fresh conversation so styles don't bleed between generations.
-    p("Clicking New chat button...")
-    click_new_chat_js = """(function(){
-        // Try link with href="/app" or aria-label containing "New chat"
-        var selectors = ['a[href="/app"]', 'a[href^="/app?"]', '[aria-label*="New chat"]', 'a[data-test-id*="new"]'];
-        for (var i=0; i<selectors.length; i++) {
-            var el = document.querySelector(selectors[i]);
-            if (el) { el.click(); return "CLICKED:" + selectors[i]; }
-        }
-        // Fallback: find any link with text "New chat"
-        var links = Array.from(document.querySelectorAll('a,button'));
+    # Click "New chat" in the Gemini sidebar — clears the conversation without page reload.
+    # No navigation = no account switch. Account re-verify is skipped after this call.
+    p("Clicking New chat...")
+    click_js = """(function(){
+        var links = Array.from(document.querySelectorAll('a, button'));
         var nc = links.find(function(l){ return l.textContent.trim() === 'New chat'; });
-        if (nc) { nc.click(); return "CLICKED:text"; }
-        return "NOT_FOUND";
+        if (nc) { nc.click(); return 'CLICKED'; }
+        return 'NOT_FOUND';
     })()"""
-    result = cdp(ws_url, click_new_chat_js, timeout=8)
-    p(f"New chat result: {result}")
-    time.sleep(3)
-    # Update ws_url in case page navigated
-    try:
-        tab = get_brave_tab("gemini.google.com")
-        ws_url = tab["webSocketDebuggerUrl"]
-    except Exception:
-        pass
-    # Wait for input to be ready
-    deadline = time.time() + 20
-    while time.time() < deadline:
-        try:
-            ready = cdp(ws_url, 'document.querySelector("[contenteditable=true]")!==null', timeout=5)
-            if ready:
-                break
-        except Exception:
-            pass
-        time.sleep(2)
-        try:
-            tab = get_brave_tab("gemini.google.com")
-            ws_url = tab["webSocketDebuggerUrl"]
-        except Exception:
-            pass
-    time.sleep(1)
+    result = cdp(ws_url, click_js, timeout=8)
+    p(f"New chat: {result}")
+    time.sleep(2)
     return ws_url
 
 def send_telegram_preview(image_path, plant_name):
@@ -412,14 +383,6 @@ def main():
     p("Navigating to fresh chat...")
     ws_url = navigate_fresh(ws_url)
 
-    # ── Re-verify account AFTER navigation (page reload can switch accounts) ──
-    p("Re-verifying account after navigation...")
-    if not verify_account(ws_url):
-        p("ERROR: Account switched during navigation — Google reloaded with a different account.")
-        p("Please ensure contactsunsetpoetvintage@gmail.com is the DEFAULT account in Brave for Gemini.")
-        p("Tip: In Gemini, click your profile icon and switch to contactsunsetpoetvintage before running.")
-        sys.exit(1)
-    p("[OK] Account still confirmed after navigation.")
 
     img_js = 'var i=Array.from(document.querySelectorAll("img")).filter(x=>(x.src.startsWith("blob:")||x.src.includes("lh3.googleusercontent"))&&x.naturalWidth>100); i.length?i[i.length-1].src:""'
     src_before = cdp(ws_url, img_js) or ""
