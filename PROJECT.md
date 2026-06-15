@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-06-10_
+_Last updated: 2026-06-15_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -10,7 +10,7 @@ A web-based garden planner — React + Vite + Konva canvas, 144 plant stickers +
 
 ---
 
-## Current Phase: 7 — Mobile & App Readiness (in progress)
+## Current Phase: Capacitor.js — Android/iOS App Wrapper (NEXT)
 
 ### Resume Phrase
 `resume Garden Mapper React scaffold`
@@ -34,7 +34,9 @@ cd projects/garden-planner/app && npm run dev
 | Phase | Status |
 |-------|--------|
 | Phase 1–6 | ✅ Complete (canvas, plants, draw tools, select/edit, save/load, seasons) |
-| Phase 7 — Mobile & App Readiness | 🟡 In Progress |
+| Phase 7 — Mobile & App Readiness | ✅ Complete |
+| Capacitor.js — Android/iOS wrapper | 🔴 Next |
+| V1 Backend — Supabase + Google/Apple auth | 🔲 After Capacitor |
 | Phase 8 — Textures & Visual Polish | 🔲 Planned |
 
 ---
@@ -68,17 +70,34 @@ cd projects/garden-planner/app && npm run dev
 ---
 
 ## Open Items
-- **#9 Dream Garden** — `useDreamGarden.js` live; trigger: "update the Dream Garden to the website" (see L028)
-- **#11 Sunny/shady areas** — deferred
-- **#12 Multi-device sync** — deferred; needs backend + user accounts
-- **#32 Zoom-in clips right panel** — known limitation (L027); workaround: refresh after zooming in
+
+### 🔴 Immediate (next session)
+- **TS build error** — pre-existing in `main.tsx`; fix first (5 min), required before Capacitor
+- **Capacitor.js** — install + configure, build first Android APK, sideload + test
+
+### 🟡 Soon
+- **Supabase + auth** — Sign in with Google (Android) + Sign in with Apple (iOS mandatory)
+- **Google Play Developer account** — Rob to set up ($25 one-time)
+- **Apple Developer account** — Rob to set up when iOS ready ($99 USD/year)
 - **L026 fixes** — copy button disabled for groups; copied rects need dragend/merge wiring
-- **Sticker review** — Rob to flag any needing regeneration
+- **Remaining stickers** — Feverfew, Astilbe, 7 cacti, Sandstone Large
+
+### 🔲 Deferred
+- **#9 Dream Garden** — design at localhost:5200, say "update the Dream Garden to the website" (L028)
+- **#11 Sunny/shady areas** — sun sticker + radial gradient overlay
+- **#12 Multi-device sync** — covered by Supabase backend plan
+- **#32 Zoom-in clips right panel** — known limitation (L027); workaround: refresh
 - **Phase 8 Textures** — Rob designing; send images when ready
-- **Items 16–19** — SM campaign, robs-lab.ca, gamification, pricing
-- **Plant submission cron** — form → Gemini sticker → approval → CDN
-- **Capacitor.js** — deferred (needs Android Studio or Mac)
-- **TS build error** — pre-existing in main.tsx; fix before Capacitor
+- **SM campaign, robs-lab.ca, gamification, pricing** — parallel track, non-blocking
+- **Plant submission cron** — form → Gemini sticker → approval → CDN (V3)
+
+### Architecture decisions (June 2026)
+- **Auth:** Sign in with Google (Android) + Sign in with Apple (iOS, mandatory)
+- **Billing:** Google Play Billing + Apple StoreKit — stores handle all payments, zero card data
+- **Backend:** Thin FastAPI + Supabase Postgres — stores only: anon user ID + garden JSON + subscription flag
+- **Onboarding:** Anonymous-first — start using immediately, login prompt on natural trigger
+- **Migration:** localStorage → Supabase automatic on first sign-in, no data loss
+- **Web:** Free/local only — try-it experience, upsells to app install. Web billing deferred.
 
 ---
 
