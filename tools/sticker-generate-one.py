@@ -37,7 +37,8 @@ TEMPLATES = {
     "plant": (
         "Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — "
         "tasteful simplified representation of this plant with crisp edges, focusing on "
-        "a primary characteristics of the plant, bold flat icon. Dark outline 2-3px. "
+        "a primary characteristics of the plant, bold flat icon. Rich watercolor texture "
+        "with visible brushstrokes, wet-on-wet blending, soft colour gradients. Dark outline 2-3px. "
         "No shadows. No background showing in the center of the plant. Centered, 75% "
         "canvas fill. Vibrant and iconic."
     ),
