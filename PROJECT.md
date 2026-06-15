@@ -27,6 +27,14 @@ cd projects/garden-planner/app && npm run dev
 - **Reference prototype:** `prototype/index-v8.html`
 - **Garden Organizer doc:** `1F3mA5UZw1qo2wxd3pqMuSvyph3L4biChiJ18kbhRf5Q`
 
+## Dream Garden Update Workflow
+1. Design at localhost:5200
+2. Say **"update the Dream Garden to the website"** — I pull JSON, validate, bump version, commit + push
+3. Web live at https://app.gardenmapper.ca in ~15s (auto-deploy)
+4. Android: connect USB → double-click **Deploy Garden Mapper (Android)** shortcut on desktop
+
+---
+
 ## Android Deploy
 **One-click:** `app/deploy-android.bat` — builds web, syncs Capacitor, builds APK, installs via adb.
 **Requirements:** Phone connected via USB with USB Debugging enabled (Developer Options).
