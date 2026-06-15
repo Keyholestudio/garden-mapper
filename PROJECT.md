@@ -105,6 +105,7 @@ cd projects/garden-planner/app && npm run dev
 - **Remaining stickers** — Feverfew, Astilbe, 7 cacti, Sandstone Large
 
 ### 🔲 Deferred
+- **Natural edges for beds/hedges** — flat dark border reads as unnatural. Three options (pick one or combine): A) variable-width/feathered stroke (~1h), B) softer border colour match (~10min, try first), C) perimeter-tiled foliage PNG (~4–6h). Phase 8 visual polish.
 - **#9 Dream Garden** — design at localhost:5200, say "update the Dream Garden to the website" (L028)
 - **#11 Sunny/shady areas** — sun sticker + radial gradient overlay
 - **#12 Multi-device sync** — covered by Supabase backend plan
