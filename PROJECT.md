@@ -10,7 +10,7 @@ A web-based garden planner — React + Vite + Konva canvas, 144 plant stickers +
 
 ---
 
-## Current Phase: Capacitor.js — Android/iOS App Wrapper (NEXT)
+## Current Phase: Capacitor.js — Android/iOS App Wrapper (IN PROGRESS)
 
 ### Resume Phrase
 `resume Garden Mapper React scaffold`
@@ -26,6 +26,19 @@ cd projects/garden-planner/app && npm run dev
 - **GitHub:** https://github.com/Keyholestudio/garden-mapper
 - **Reference prototype:** `prototype/index-v8.html`
 - **Garden Organizer doc:** `1F3mA5UZw1qo2wxd3pqMuSvyph3L4biChiJ18kbhRf5Q`
+
+## Android Deploy
+**One-click:** `app/deploy-android.bat` — builds web, syncs Capacitor, builds APK, installs via adb.
+**Requirements:** Phone connected via USB with USB Debugging enabled (Developer Options).
+**Manual steps:**
+1. Enable Developer Options: Settings → About Phone → tap Build Number 7×
+2. Enable USB Debugging in Developer Options
+3. Connect USB → tap Allow on phone → run `deploy-android.bat`
+**APK location:** `app/android/app/build/outputs/apk/debug/app-debug.apk`
+**JAVA_HOME:** `C:\Program Files\Android\Android Studio\jbr`
+**Android SDK:** `C:\Users\RG\AppData\Local\Android\Sdk`
+**adb:** `C:\Users\RG\AppData\Local\Android\Sdk\platform-tools\adb.exe`
+**Note:** USB only needed for install. App runs standalone on device after.
 
 ---
 
@@ -76,6 +89,7 @@ cd projects/garden-planner/app && npm run dev
 - **Capacitor.js** — install + configure, build first Android APK, sideload + test
 
 ### 🟡 Soon
+- **Test on Apple device (iPad/iPhone)** — add iOS Capacitor platform, build via Xcode, sideload for smoke test
 - **Supabase + auth** — Sign in with Google (Android) + Sign in with Apple (iOS mandatory)
 - **Google Play Developer account** — Rob to set up ($25 one-time)
 - **Apple Developer account** — Rob to set up when iOS ready ($99 USD/year)
