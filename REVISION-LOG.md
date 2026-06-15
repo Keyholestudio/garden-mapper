@@ -61,9 +61,9 @@ _History for v1–v7 and Phases 1–6 archived at: `memory/deep/garden-planner/r
 
 | # | Change | Commit | Status |
 |---|--------|--------|--------|
-| 8.1 | `src/data/packs/` — core + new pack files | — | 🔲 |
-| 8.2 | `usePlantCatalog.js` — async pack loader hook | — | 🔲 |
-| 8.3 | `PlantTray.jsx` + `MobileSheet.jsx` — per-category load spinner | — | 🔲 |
+| 8.1 | `src/data/packs/` — core + new pack files | 9d84a0d | ✅ |
+| 8.2 | `usePlantCatalog.js` — async pack loader hook | 0654258 | ✅ |
+| 8.3 | `PlantTray.jsx` — pack toggle buttons + CSS | 0654258 | ✅ |
 | 8.4 | Add 36 new stickers to lookup table (cacti/succulents/tropicals/feverfew) | — | 🔲 |
 | 8.5 | Generate + approve stickers one by one | — | 🔲 |
 
