@@ -8,16 +8,32 @@ export default function PlantTray({
   loadedImages, onPlantClick, onPlantDragStart, onPlantDragEnd,
   // Recently used (from useRecentPlants hook in GardenEditor)
   recents, onAddRecent, onRemoveRecent, onClearRecents, recentsHidden, onSetRecentsHidden,
+  // Lazy pack support
+  lazyPacks, onLoadPack,
 }) {
   const [query, setQuery] = useState('')
+  const [expandedPacks, setExpandedPacks] = useState({})
+
+  const togglePack = (packId) => {
+    const nowExpanded = !expandedPacks[packId]
+    setExpandedPacks(prev => ({ ...prev, [packId]: nowExpanded }))
+    if (nowExpanded && onLoadPack) onLoadPack(packId)
+  }
+
+  // Merge core + any loaded lazy pack entries for search
+  const allSearchable = useMemo(() => {
+    if (!lazyPacks) return PLANT_CATALOG
+    const lazyEntries = Object.values(lazyPacks.loaded || {}).flat()
+    return [...PLANT_CATALOG, ...lazyEntries]
+  }, [lazyPacks])
 
   const filtered = useMemo(() => {
     if (!query.trim()) return PLANT_CATALOG
     const q = query.toLowerCase()
-    return PLANT_CATALOG.filter(p =>
+    return allSearchable.filter(p =>
       p.label.toLowerCase().includes(q) || p.family.toLowerCase().includes(q)
     )
-  }, [query])
+  }, [query, allSearchable])
 
   const handleClick = (entry) => {
     const img = loadedImages?.[entry.key]
@@ -122,6 +138,27 @@ export default function PlantTray({
         {filtered.map(e => (
           <TrayItem key={e.key} entry={e} loadedImages={loadedImages}
             onClick={handleClick} onDragStart={handleDragStart} />
+        ))}
+
+        {/* ── Lazy packs ── */}
+        {!query.trim() && lazyPacks?.registry?.map(pack => (
+          <div key={pack.id} className="tray-pack-section">
+            <button
+              className="tray-pack-toggle"
+              onClick={() => togglePack(pack.id)}
+            >
+              <span>{expandedPacks[pack.id] ? '▼' : '▶'} {pack.label}</span>
+              {lazyPacks.loading?.[pack.id] && <span className="tray-pack-spinner">loading…</span>}
+            </button>
+            {expandedPacks[pack.id] && lazyPacks.loaded?.[pack.id] && (
+              <div className="tray-pack-entries">
+                {lazyPacks.loaded[pack.id].map(e => (
+                  <TrayItem key={e.key} entry={e} loadedImages={loadedImages}
+                    onClick={handleClick} onDragStart={handleDragStart} />
+                ))}
+              </div>
+            )}
+          </div>
         ))}
       </div>
     </div>

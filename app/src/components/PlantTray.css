@@ -119,3 +119,28 @@
 .tray-no-results         { font-size: 12px; color: #888; text-align: center; padding: 8px 4px; display: flex; flex-direction: column; gap: 6px; }
 .tray-submit-plant       { font-size: 12px; font-weight: 600; color: #11502A; text-decoration: none; }
 .tray-submit-plant:hover { text-decoration: underline; }
+
+/* ── Lazy pack sections ───────────────────────────────────────────────── */
+.tray-pack-section {
+  margin-top: 4px;
+  border-top: 1px solid #d0e8d8;
+}
+.tray-pack-toggle {
+  width: 100%;
+  background: #f0f8f2;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #11502A;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+}
+.tray-pack-toggle:hover { background: #d8f0e0; }
+.tray-pack-spinner { font-size: 10px; opacity: 0.6; font-style: italic; }
+.tray-pack-entries { padding-top: 2px; }

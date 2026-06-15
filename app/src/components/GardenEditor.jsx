@@ -7,7 +7,7 @@ import Konva from 'konva'
 import { useGardenState, TEXTURE_MAP }  from '../hooks/useGardenState'
 import { useDrawTools }    from '../hooks/useDrawTools'
 import { useSelection }    from '../hooks/useSelection'
-import { PLANT_CATALOG }   from '../hooks/usePlantCatalog'
+import { PLANT_CATALOG, useLazyPacks }   from '../hooks/usePlantCatalog'
 import { addPlant }        from '../utils/plantUtils'
 import { insertPointNearestSegment } from '../hooks/useSelection'
 import { saveGarden, loadGarden, createNewGarden, readGardens, readLastGardenIndex, writeLastGardenIndex } from '../hooks/useSaveLoad'
@@ -60,6 +60,12 @@ export default function GardenEditor() {
   const state = useGardenState()
   const { isMobile, isTablet, isDesktop, breakpoint } = useBreakpoint()
   const { recents, addRecent, removeRecent, clearRecents, hidden: recentsHidden, setHidden: setRecentsHidden } = useRecentPlants()
+  const { loadPack, getPackEntries, isPackLoaded, isPackLoading, PACK_REGISTRY } = useLazyPacks()
+  const lazyPacksProps = {
+    registry: PACK_REGISTRY.filter(p => !p.eager),
+    loaded:   Object.fromEntries(PACK_REGISTRY.filter(p => !p.eager && isPackLoaded(p.id)).map(p => [p.id, getPackEntries(p.id)])),
+    loading:  Object.fromEntries(PACK_REGISTRY.filter(p => !p.eager).map(p => [p.id, isPackLoading(p.id)])),
+  }
   const stageRef    = useRef(null)
   const layersRef   = useRef({})
   const showGridRef = useRef(state.showGrid) // always-current ref for snap in dragmove closures
@@ -1179,6 +1185,8 @@ export default function GardenEditor() {
             onClearRecents={clearRecents}
             recentsHidden={recentsHidden}
             onSetRecentsHidden={setRecentsHidden}
+            lazyPacks={lazyPacksProps}
+            onLoadPack={loadPack}
           />
         )}
         <div className="canvas-wrap">
