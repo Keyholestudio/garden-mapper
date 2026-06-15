@@ -1,6 +1,6 @@
 // PlantTray.jsx — Left sidebar: plant catalog, search, click-to-place, drag-to-place
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { PLANT_CATALOG_TRAY as PLANT_CATALOG } from '../hooks/usePlantCatalog'
 import './PlantTray.css'
 
@@ -12,21 +12,34 @@ export default function PlantTray({
   lazyPacks, onLoadPack,
 }) {
   const [query, setQuery] = useState('')
-  const [activeTab, setActiveTab] = useState('core') // 'core' | pack.id
+  const scrollRef = useRef(null)
 
-  const switchTab = (tabId) => {
-    setActiveTab(tabId)
-    if (tabId !== 'core' && onLoadPack) onLoadPack(tabId)
+  // Auto-load all lazy packs when user scrolls near the bottom
+  const handleScroll = () => {
+    const el = scrollRef.current
+    if (!el || !lazyPacks?.registry) return
+    const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 200
+    if (nearBottom) {
+      lazyPacks.registry.forEach(pack => {
+        if (!lazyPacks.loaded?.[pack.id] && !lazyPacks.loading?.[pack.id]) {
+          onLoadPack?.(pack.id)
+        }
+      })
+    }
   }
 
-  // Entries for the currently active tab
-  const activeEntries = useMemo(() => {
-    if (activeTab === 'core') return PLANT_CATALOG
-    return lazyPacks?.loaded?.[activeTab] || []
-  }, [activeTab, lazyPacks])
+  // Also load all packs when search query is typed (user may be searching for a lazy plant)
+  useEffect(() => {
+    if (!query.trim() || !lazyPacks?.registry) return
+    lazyPacks.registry.forEach(pack => {
+      if (!lazyPacks.loaded?.[pack.id] && !lazyPacks.loading?.[pack.id]) {
+        onLoadPack?.(pack.id)
+      }
+    })
+  }, [query])
 
-  // Merge all loaded entries for search
-  const allSearchable = useMemo(() => {
+  // All entries: core + any loaded lazy packs
+  const allEntries = useMemo(() => {
     if (!lazyPacks) return PLANT_CATALOG
     const lazyEntries = Object.values(lazyPacks.loaded || {}).flat()
     return [...PLANT_CATALOG, ...lazyEntries]
@@ -34,12 +47,11 @@ export default function PlantTray({
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    if (!q) return activeEntries
-    // Search always spans all loaded packs
-    return allSearchable.filter(p =>
+    if (!q) return allEntries
+    return allEntries.filter(p =>
       p.label.toLowerCase().includes(q) || p.family.toLowerCase().includes(q)
     )
-  }, [query, activeEntries, allSearchable])
+  }, [query, allEntries])
 
   const handleClick = (entry) => {
     const img = loadedImages?.[entry.key]
@@ -72,11 +84,6 @@ export default function PlantTray({
 
   const showRecents = recents?.length > 0 && !query && !recentsHidden
 
-  const tabs = [
-    { id: 'core', label: '🌿 All' },
-    ...(lazyPacks?.registry || []).map(p => ({ id: p.id, label: p.label }))
-  ]
-
   return (
     <div className="plant-tray">
       <input
@@ -86,24 +93,7 @@ export default function PlantTray({
         value={query}
         onChange={e => setQuery(e.target.value)}
       />
-
-      {/* ── Pack tabs ── */}
-      {!query.trim() && tabs.length > 1 && (
-        <div className="tray-tabs">
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              className={`tray-tab${activeTab === tab.id ? ' tray-tab-active' : ''}`}
-              onClick={() => switchTab(tab.id)}
-            >
-              {tab.label}
-              {lazyPacks?.loading?.[tab.id] && ' …'}
-            </button>
-          ))}
-        </div>
-      )}
-
-      <div className="tray-scroll" id="tray-scroll">
+      <div className="tray-scroll" id="tray-scroll" ref={scrollRef} onScroll={handleScroll}>
 
         {/* ── Recently Used section ── */}
         {recents?.length > 0 && !query && (
@@ -162,12 +152,7 @@ export default function PlantTray({
           </div>
         )}
 
-        {/* ── Lazy pack loading state ── */}
-        {!query.trim() && activeTab !== 'core' && lazyPacks?.loading?.[activeTab] && (
-          <div className="tray-pack-loading">Loading…</div>
-        )}
-
-        {/* ── Plant list (core or active lazy pack) ── */}
+        {/* ── Plant list ── */}
         {filtered.map(e => (
           <TrayItem key={e.key} entry={e} loadedImages={loadedImages}
             onClick={handleClick} onDragStart={handleDragStart} />
