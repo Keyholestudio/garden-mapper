@@ -252,9 +252,9 @@ def navigate_fresh(ws_url):
 
 def send_telegram_preview(image_path, plant_name):
     """Send the sticker preview to Rob via Telegram (Garden Mapper topic)."""
-    openclaw = r"C:\Users\RG\AppData\Local\nvm\v22.22.0\node_modules\openclaw\bin\openclaw.js"
+    openclaw = r"openclaw"  # use PATH-resolved openclaw CLI
     cmd = [
-        "node", openclaw, "message", "send",
+        openclaw, "message", "send",
         "--channel", "telegram",
         "--target", "-1003881533717",
         "--thread", "3954",
@@ -437,28 +437,48 @@ def main():
         p("FAIL: no image after 240s"); sys.exit(1)
 
     # ── Grab image ───────────────────────────────────────────
+    # Try blob first (same-origin, always works), then lh3 via browser fetch API (avoids 403)
     blob_js = 'var i=Array.from(document.querySelectorAll("img")).filter(x=>x.src.startsWith("blob:")&&x.naturalWidth>100); i.length?i[i.length-1].src:""'
     blob_src = cdp(ws_url, blob_js) or ""
+    data_url = ""
     if blob_src:
         grab_js = f'(function(){{var img=document.querySelector(\'img[src="{blob_src}"]\');if(!img)return "NONE";var c=document.createElement("canvas");c.width=img.naturalWidth;c.height=img.naturalHeight;c.getContext("2d").drawImage(img,0,0);return c.toDataURL("image/png");}})() '
-        data_url = cdp(ws_url, grab_js, timeout=20)
-    else:
-        lh3_js = 'var i=Array.from(document.querySelectorAll("img")).filter(x=>x.src.includes("lh3.googleusercontent")&&x.naturalWidth>100); i.length?i[i.length-1].src:""'
-        lh3 = cdp(ws_url, lh3_js) or ""
-        data_url = ("URL:" + lh3) if lh3 else None
+        data_url = cdp(ws_url, grab_js, timeout=20) or ""
 
-    if not data_url:
-        p("FAIL: could not grab image"); sys.exit(1)
+    if not data_url or data_url == "NONE":
+        # Fallback: browser fetch API with cookies (works for lh3 since user is signed in)
+        p("No blob found - trying browser fetch API for lh3...")
+        lh3_js = 'var i=Array.from(document.querySelectorAll("img")).filter(x=>x.src.includes("lh3.googleusercontent")&&x.naturalWidth>100); i.length?i[i.length-1].src:""'
+        lh3_url = cdp(ws_url, lh3_js) or ""
+        if lh3_url:
+            fetch_js = """(async function(){
+                var r = await fetch('""" + lh3_url + """', {credentials:'include'});
+                var buf = await r.arrayBuffer();
+                var b64 = btoa(String.fromCharCode.apply(null, new Uint8Array(buf)));
+                return 'data:image/png;base64,' + b64;
+            })()"""
+            ws2 = websocket.create_connection(ws_url, timeout=35)
+            ws2.settimeout(35)
+            ws2.send(json.dumps({"id":99,"method":"Runtime.evaluate","params":{"expression":fetch_js,"returnByValue":True,"awaitPromise":True}}))
+            deadline2 = time.time() + 35
+            while time.time() < deadline2:
+                try:
+                    d = json.loads(ws2.recv())
+                    if d.get("id") == 99:
+                        data_url = d.get("result",{}).get("result",{}).get("value","")
+                        break
+                except: break
+            ws2.close()
+
+    if not data_url or data_url in ("", "NONE"):
+        p("FAIL: could not grab image from browser"); sys.exit(1)
 
     if data_url.startswith("data:image"):
         img_bytes = base64.b64decode(data_url.split(",",1)[1])
         with open(raw_path,"wb") as f: f.write(img_bytes)
-        p(f"RAW saved (canvas): {len(img_bytes)//1024}KB")
-    elif data_url.startswith("URL:"):
-        req = urllib.request.Request(data_url[4:], headers={"User-Agent":"Mozilla/5.0"})
-        with urllib.request.urlopen(req, timeout=30) as r: img_bytes = r.read()
-        with open(raw_path,"wb") as f: f.write(img_bytes)
-        p(f"RAW saved (download): {len(img_bytes)//1024}KB")
+        p(f"RAW saved: {len(img_bytes)//1024}KB")
+    else:
+        p(f"FAIL: unexpected data format: {data_url[:80]}"); sys.exit(1)
 
     # ── Run pipeline ─────────────────────────────────────────
     p("Running pipeline (background removal)...")
