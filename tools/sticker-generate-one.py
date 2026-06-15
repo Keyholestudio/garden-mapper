@@ -224,15 +224,11 @@ def verify_account(ws_url):
     return result == "ROB"
 
 def navigate_fresh(ws_url):
-    # Only navigate if the input box isn't already ready.
-    # Forcing window.location.href causes Google to re-evaluate the active account, switching users.
-    already_ready = cdp(ws_url, 'document.querySelector("[contenteditable=true]")!==null', timeout=5)
-    if already_ready:
-        p("Input already ready — skipping navigation to avoid account switch.")
-        return ws_url
-
-    # Not ready — navigate to fresh chat
-    cdp(ws_url, f'window.location.href="{GEMINI_URL}"', timeout=8)
+    # Always force a brand new Gemini chat to prevent style bleed between generations.
+    # Lesson: Gemini merges prompt styles if reusing the same chat session.
+    NEW_CHAT_URL = "https://gemini.google.com/app"
+    p("Starting new Gemini chat...")
+    cdp(ws_url, f'window.location.href="{NEW_CHAT_URL}"', timeout=8)
     time.sleep(10)
     tab = ensure_gemini_open()
     ws_url = tab["webSocketDebuggerUrl"]
