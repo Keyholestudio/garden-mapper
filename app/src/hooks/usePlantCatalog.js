@@ -198,6 +198,7 @@ export const PLANT_CATALOG = [
 
   { key:'flower-daisy_feverfew_S_CA-US-FR-GB-AU', label:'Feverfew', family:'Perennial', src:'/stickers/flower-daisy_feverfew_S_CA-US-FR-GB-AU.png', size:'S' },
   { key:'cactus_saguaro_XL_CA-US-FR-GB-AU', label:'Saguaro Cactus', family:'Cactus', src:'/stickers/cactus_saguaro_XL_CA-US-FR-GB-AU.png', size:'XL' },
+  { key:'cactus_barrel_M_CA-US-FR-GB-AU', label:'Barrel Cactus', family:'Cactus', src:'/stickers/cactus_barrel_M_CA-US-FR-GB-AU.png', size:'M' },
   // ── Reference entry (kept for catalog structure reference only) ───────────────
   // { key:'tree-svg-ref', label:'Apple Tree (SVG ref)', family:'Fruit Tree', src:'/stickers/tree.svg', size:'L' },
   { key:'plant-fern_fern_L_CA-US-FR-GB-AU', label:'Fern', family:'Fern / Groundcover', src:'/stickers/plant-fern_fern_L_CA-US-FR-GB-AU.png', size:'L' },
