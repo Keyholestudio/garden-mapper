@@ -224,73 +224,46 @@ def verify_account(ws_url):
     return result == "ROB"
 
 def navigate_fresh(ws_url):
-    # Open a NEW TAB to gemini.google.com/app — avoids account switch that happens
-    # when navigating the existing tab (Google reloads with default account).
-    # Lesson: always new chat to prevent style bleed; always new tab to keep account.
-    NEW_CHAT_URL = "https://gemini.google.com/app"
-    p("Opening new Gemini tab for fresh chat...")
-
-    # Open new tab via CDP
-    import urllib.request as _ur
+    # Click the "New chat" button in the Gemini sidebar — keeps same tab and account,
+    # starts a fresh conversation so styles don't bleed between generations.
+    p("Clicking New chat button...")
+    click_new_chat_js = """(function(){
+        // Try link with href="/app" or aria-label containing "New chat"
+        var selectors = ['a[href="/app"]', 'a[href^="/app?"]', '[aria-label*="New chat"]', 'a[data-test-id*="new"]'];
+        for (var i=0; i<selectors.length; i++) {
+            var el = document.querySelector(selectors[i]);
+            if (el) { el.click(); return "CLICKED:" + selectors[i]; }
+        }
+        // Fallback: find any link with text "New chat"
+        var links = Array.from(document.querySelectorAll('a,button'));
+        var nc = links.find(function(l){ return l.textContent.trim() === 'New chat'; });
+        if (nc) { nc.click(); return "CLICKED:text"; }
+        return "NOT_FOUND";
+    })()"""
+    result = cdp(ws_url, click_new_chat_js, timeout=8)
+    p(f"New chat result: {result}")
+    time.sleep(3)
+    # Update ws_url in case page navigated
     try:
-        _ur.urlopen(f"http://127.0.0.1:9222/json/new?{NEW_CHAT_URL}", timeout=5)
+        tab = get_brave_tab("gemini.google.com")
+        ws_url = tab["webSocketDebuggerUrl"]
     except Exception:
-        pass  # fallback: window.open in existing tab
-        cdp(ws_url, f'window.open("{NEW_CHAT_URL}", "_blank")', timeout=5)
-
-    # Wait for new tab to appear and be ready
-    deadline = time.time() + 30
-    new_ws = None
+        pass
+    # Wait for input to be ready
+    deadline = time.time() + 20
     while time.time() < deadline:
-        time.sleep(2)
-        try:
-            import json as _json
-            tabs_raw = _ur.urlopen("http://127.0.0.1:9222/json", timeout=5).read()
-            tabs = _json.loads(tabs_raw)
-            # Find the newest gemini/app tab (most recently opened)
-            gemini_tabs = [t for t in tabs if "gemini.google.com/app" in t.get("url","") and t.get("type")=="page"]
-            if gemini_tabs:
-                new_ws = gemini_tabs[-1]["webSocketDebuggerUrl"]
-                # Check if input is ready
-                ready = cdp(new_ws, 'document.querySelector("[contenteditable=true]")!==null', timeout=5)
-                if ready:
-                    break
-        except Exception:
-            pass
-
-    if new_ws:
-        # Close old tab to keep things clean
-        try:
-            old_target = None
-            tabs_raw = _ur.urlopen("http://127.0.0.1:9222/json", timeout=5).read()
-            import json as _json2
-            for t in _json2.loads(tabs_raw):
-                if t.get("webSocketDebuggerUrl") == ws_url:
-                    old_target = t.get("id")
-                    break
-            if old_target:
-                _ur.urlopen(f"http://127.0.0.1:9222/json/close/{old_target}", timeout=5)
-        except Exception:
-            pass
-        return new_ws
-
-    # Fallback: reuse existing tab
-    p("Warning: could not open new tab, reusing existing")
-    return ws_url
-    time.sleep(10)
-    tab = ensure_gemini_open()
-    ws_url = tab["webSocketDebuggerUrl"]
-    deadline = time.time()+30
-    while time.time()<deadline:
         try:
             ready = cdp(ws_url, 'document.querySelector("[contenteditable=true]")!==null', timeout=5)
-            if ready: break
-        except: pass
+            if ready:
+                break
+        except Exception:
+            pass
         time.sleep(2)
         try:
             tab = get_brave_tab("gemini.google.com")
             ws_url = tab["webSocketDebuggerUrl"]
-        except: pass
+        except Exception:
+            pass
     time.sleep(1)
     return ws_url
 
