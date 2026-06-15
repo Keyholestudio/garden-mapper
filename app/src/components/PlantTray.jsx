@@ -12,15 +12,20 @@ export default function PlantTray({
   lazyPacks, onLoadPack,
 }) {
   const [query, setQuery] = useState('')
-  const [expandedPacks, setExpandedPacks] = useState({})
+  const [activeTab, setActiveTab] = useState('core') // 'core' | pack.id
 
-  const togglePack = (packId) => {
-    const nowExpanded = !expandedPacks[packId]
-    setExpandedPacks(prev => ({ ...prev, [packId]: nowExpanded }))
-    if (nowExpanded && onLoadPack) onLoadPack(packId)
+  const switchTab = (tabId) => {
+    setActiveTab(tabId)
+    if (tabId !== 'core' && onLoadPack) onLoadPack(tabId)
   }
 
-  // Merge core + any loaded lazy pack entries for search
+  // Entries for the currently active tab
+  const activeEntries = useMemo(() => {
+    if (activeTab === 'core') return PLANT_CATALOG
+    return lazyPacks?.loaded?.[activeTab] || []
+  }, [activeTab, lazyPacks])
+
+  // Merge all loaded entries for search
   const allSearchable = useMemo(() => {
     if (!lazyPacks) return PLANT_CATALOG
     const lazyEntries = Object.values(lazyPacks.loaded || {}).flat()
@@ -28,12 +33,13 @@ export default function PlantTray({
   }, [lazyPacks])
 
   const filtered = useMemo(() => {
-    if (!query.trim()) return PLANT_CATALOG
-    const q = query.toLowerCase()
+    const q = query.trim().toLowerCase()
+    if (!q) return activeEntries
+    // Search always spans all loaded packs
     return allSearchable.filter(p =>
       p.label.toLowerCase().includes(q) || p.family.toLowerCase().includes(q)
     )
-  }, [query, allSearchable])
+  }, [query, activeEntries, allSearchable])
 
   const handleClick = (entry) => {
     const img = loadedImages?.[entry.key]
@@ -66,6 +72,11 @@ export default function PlantTray({
 
   const showRecents = recents?.length > 0 && !query && !recentsHidden
 
+  const tabs = [
+    { id: 'core', label: '🌿 All' },
+    ...(lazyPacks?.registry || []).map(p => ({ id: p.id, label: p.label }))
+  ]
+
   return (
     <div className="plant-tray">
       <input
@@ -75,6 +86,23 @@ export default function PlantTray({
         value={query}
         onChange={e => setQuery(e.target.value)}
       />
+
+      {/* ── Pack tabs ── */}
+      {!query.trim() && tabs.length > 1 && (
+        <div className="tray-tabs">
+          {tabs.map(tab => (
+            <button
+              key={tab.id}
+              className={`tray-tab${activeTab === tab.id ? ' tray-tab-active' : ''}`}
+              onClick={() => switchTab(tab.id)}
+            >
+              {tab.label}
+              {lazyPacks?.loading?.[tab.id] && ' …'}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="tray-scroll" id="tray-scroll">
 
         {/* ── Recently Used section ── */}
@@ -134,31 +162,15 @@ export default function PlantTray({
           </div>
         )}
 
-        {/* ── Full catalog ── */}
+        {/* ── Lazy pack loading state ── */}
+        {!query.trim() && activeTab !== 'core' && lazyPacks?.loading?.[activeTab] && (
+          <div className="tray-pack-loading">Loading…</div>
+        )}
+
+        {/* ── Plant list (core or active lazy pack) ── */}
         {filtered.map(e => (
           <TrayItem key={e.key} entry={e} loadedImages={loadedImages}
             onClick={handleClick} onDragStart={handleDragStart} />
-        ))}
-
-        {/* ── Lazy packs ── */}
-        {!query.trim() && lazyPacks?.registry?.map(pack => (
-          <div key={pack.id} className="tray-pack-section">
-            <button
-              className="tray-pack-toggle"
-              onClick={() => togglePack(pack.id)}
-            >
-              <span>{expandedPacks[pack.id] ? '▼' : '▶'} {pack.label}</span>
-              {lazyPacks.loading?.[pack.id] && <span className="tray-pack-spinner">loading…</span>}
-            </button>
-            {expandedPacks[pack.id] && lazyPacks.loaded?.[pack.id] && (
-              <div className="tray-pack-entries">
-                {lazyPacks.loaded[pack.id].map(e => (
-                  <TrayItem key={e.key} entry={e} loadedImages={loadedImages}
-                    onClick={handleClick} onDragStart={handleDragStart} />
-                ))}
-              </div>
-            )}
-          </div>
         ))}
       </div>
     </div>
