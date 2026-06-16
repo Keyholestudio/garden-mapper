@@ -94,6 +94,24 @@ export default function GardenEditor() {
     }))).then(() => setLoadedImages({ ...result }))
   }, [])
 
+  // Load images for pack entries when a pack loads
+  const loadedPackKeysRef = useRef({})
+  useEffect(() => {
+    const allPackEntries = Object.values(lazyPacksProps.loaded || {}).flat()
+    const newEntries = allPackEntries.filter(p => !loadedPackKeysRef.current[p.key])
+    if (newEntries.length === 0) return
+    const result = {}
+    Promise.all(newEntries.map(p => new Promise(res => {
+      const img = new Image()
+      img.onload  = () => { result[p.key] = img; res() }
+      img.onerror = () => res()
+      img.src = p.src
+    }))).then(() => {
+      newEntries.forEach(p => { loadedPackKeysRef.current[p.key] = true })
+      setLoadedImages(prev => ({ ...prev, ...result }))
+    })
+  }, [lazyPacksProps.loaded])
+
   // Keep showGridRef current
   useEffect(() => { showGridRef.current = state.showGrid }, [state.showGrid])
 
@@ -1451,3 +1469,4 @@ export default function GardenEditor() {
     </div>
   )
 }
+
