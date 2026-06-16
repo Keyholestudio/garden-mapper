@@ -3,6 +3,34 @@ _L001–L009, L016–L018, L020 archived at: `memory/deep/garden-planner/lessons
 
 ---
 
+## L029 — Plant tray: catalog vs pack separation + duplicate prevention
+**Date:** 2026-06-16
+
+### Rule: Pack entries must NEVER appear in usePlantCatalog.js
+- `usePlantCatalog.js` = core catalog only (original ~144 stickers)
+- `pack-cacti-succulents.js`, `pack-tropical.js`, etc. = lazy-loaded packs
+- If a key exists in both, the item appears **twice** in the plant tray (duplicate)
+- Hedgehog/Bunny Ears/Old Man were grey because they were only in the pack file, not the catalog, AND the script's partial-key check falsely said "Already in catalog"
+
+### Root cause of the bug
+`add_to_catalog()` checked `if plant_id in content` — this matched on partial string (e.g. `cactus_hedgehog` matched inside a comment block). Fixed to `if f"key:'{plant_id}'" in content` (exact key match).
+
+### Where new stickers go
+| Type | Where to add |
+|------|-------------|
+| Core plant (herb, flower, veg, shrub, tree) | `usePlantCatalog.js` |
+| Cactus / Succulent | `pack-cacti-succulents.js` ONLY |
+| Palm / Tropical | `pack-tropical.js` ONLY |
+| Future packs | Their pack file ONLY |
+
+### Daily tray validator
+A cron runs daily at 9 AM ET (topic 3954) via `tools/validate-tray.ps1`. It checks:
+1. Every sticker key in all pack + catalog files has a matching PNG in `app/public/stickers/`
+2. No key appears in more than one source (catalog + packs)
+3. Reports missing PNGs and duplicates
+
+---
+
 ## L028 — "Update the Dream Garden to the website" workflow
 **Trigger phrase:** "update the Dream Garden to the website"
 1. Browser tool → localhost:5200 → eval `JSON.parse(localStorage.getItem('gardenData'))[0]` → grab JSON
