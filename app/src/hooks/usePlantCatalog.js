@@ -275,6 +275,9 @@ export const PLANT_CATALOG = [
   // ── New additions
   { key:'tree-tropical_bird-of-paradise_XL_CA-US-FR-GB-AU', label:'Bird of Paradise Tree', family:'Tropical', src:'/stickers/tree-tropical_bird-of-paradise_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
+  // ── New additions
+  { key:'tree-tropical_bougainvillea_XL_CA-US-FR-GB-AU', label:'Bougainvillea', family:'Tropical', src:'/stickers/tree-tropical_bougainvillea_XL_CA-US-FR-GB-AU.png', size:'XL' },
+
   // ── Reference entry (kept for catalog structure reference only) ───────────────
   // { key:'tree-svg-ref', label:'Apple Tree (SVG ref)', family:'Fruit Tree', src:'/stickers/tree.svg', size:'L' },
   { key:'plant-fern_fern_L_CA-US-FR-GB-AU', label:'Fern', family:'Fern / Groundcover', src:'/stickers/plant-fern_fern_L_CA-US-FR-GB-AU.png', size:'L' },
