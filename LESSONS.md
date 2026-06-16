@@ -3,6 +3,40 @@ _L001–L009, L016–L018, L020 archived at: `memory/deep/garden-planner/lessons
 
 ---
 
+## L032 — Never auto-commit stickers without Rob's explicit approval
+**Date:** 2026-06-16
+Using `--force` on `sticker-generate-one.py` auto-uploads and commits without Rob seeing the PNG first. This bypasses the approval gate entirely.
+**Rule:** Never use `--force` when generating stickers. Always:
+1. Generate → lands in `stickers/generated/pending/`
+2. Send PNG to Rob via Telegram message tool
+3. Wait for explicit "Approve [name]" before copying to `app/public/stickers/` and committing
+**Exception:** Rob explicitly says "auto-commit" or "no approval needed for this batch".
+
+---
+
+## L031 — Never delete keys or PNGs without explicit approval; present alternatives first
+**Date:** 2026-06-16
+When duplicates or orphans are found, the instinct to "clean up" led to deleting 31 catalog entries without permission, breaking the tray and requiring a full revert.
+**Rule:** When a cleanup is needed:
+1. List exactly what would be deleted and why
+2. Present alternatives (e.g. dedup render fix vs. deletion)
+3. Wait for Rob to say "go ahead" with specific approval
+4. Never delete keys as a side-effect of another fix
+**The correct cleanup path for duplicates:** Fix the render layer (dedup filter) OR remove from the less-authoritative source — never silently delete from both.
+
+---
+
+## L030 — Sticker script --force bypasses catalog check; always verify placement before batch runs
+**Date:** 2026-06-16
+The `--force` flag on `sticker-generate-one.py` deletes existing PNGs and re-runs without checking where the sticker should live (catalog vs. pack). Combined with the partial-key match bug, this caused stickers to end up in wrong locations.
+**Rule:** Before any batch sticker run:
+1. Read L029 — confirm which file (catalog vs. pack) each sticker belongs to
+2. Run `validate-tray.ps1` before AND after any batch
+3. Never run `--force` without Rob's explicit instruction
+4. The script's `add_to_catalog()` uses exact key match — do not revert this
+
+---
+
 ## L029 — Plant tray: catalog vs pack separation + duplicate prevention
 **Date:** 2026-06-16
 
