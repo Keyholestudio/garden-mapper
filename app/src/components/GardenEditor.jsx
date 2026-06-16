@@ -11,6 +11,8 @@ import { PLANT_CATALOG, useLazyPacks }   from '../hooks/usePlantCatalog'
 import { addPlant }        from '../utils/plantUtils'
 import { insertPointNearestSegment } from '../hooks/useSelection'
 import { saveGarden, loadGarden, createNewGarden, readGardens, readLastGardenIndex, writeLastGardenIndex } from '../hooks/useSaveLoad'
+import { useAuth } from '../hooks/useAuth'
+import RestorePrompt from './RestorePrompt'
 import { seedDreamGarden, fetchDreamGardenUpdate } from '../hooks/useDreamGarden'
 import { addRectStruct, isFreeMode, applyColourOrTexture, tryMergeRects } from '../utils/drawUtils'
 import { useBreakpoint } from '../hooks/useBreakpoint'
@@ -81,6 +83,34 @@ export default function GardenEditor() {
   const currentGardenIndexRef = useRef(0)
   // Auto-save: debounced timer ref — fires 1.5s after last placement/change
   const autoSaveTimerRef = useRef(null)
+
+  // ── Auth + cloud sync ────────────────────────────────────────────
+  const { user, showRestorePrompt, restoreFromCloud, dismissRestore, syncToCloud } = useAuth({
+    getLocalGardens: () => readGardens(),
+    setLocalGardens: (gardens) => {
+      localStorage.setItem('gardenData', JSON.stringify(gardens))
+      // Reload the current garden from the restored data
+      if (stageReady) {
+        loadGarden({
+          idx: 0,
+          stage: stageRef.current,
+          layers: layersRef.current,
+          state,
+          loadedImages,
+          showGridRef,
+          onSelectPlant: handleSelectPlant,
+          onSelectStruct: handleSelectStruct,
+          onClearSelection: handleClearSelection,
+          setGardenName:  state.setGardenName,
+          setGardenW:     state.setGardenW,
+          setGardenH:     state.setGardenH,
+          setGardenUnit:  state.setGardenUnit,
+          setIsSetup:     state.setIsSetup,
+          onZoomToFit:    handleZoomToFit,
+        })
+      }
+    },
+  })
 
   // ── Image loading ──
   const [loadedImages, setLoadedImages] = useState({})
@@ -1003,6 +1033,8 @@ export default function GardenEditor() {
     })
     setSaveFlash(true)
     setTimeout(() => setSaveFlash(false), 500)
+    // Cloud sync — push after every local save if user is signed in
+    syncToCloud(readGardens())
   }
 
   // Auto-save: debounced 1.5s after any placement or structural change.
@@ -1085,6 +1117,9 @@ export default function GardenEditor() {
 
   return (
     <div className={`editor-layout bp-${breakpoint}`}>
+      {showRestorePrompt && (
+        <RestorePrompt onRestore={restoreFromCloud} onDismiss={dismissRestore} />
+      )}
       <PromoBanner />
       {!state.isSetup && (
         <SetupOverlay

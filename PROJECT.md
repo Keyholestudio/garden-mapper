@@ -131,6 +131,7 @@ cd projects/garden-planner/app && npm run dev
 | `LESSONS.md` | Project-specific bugs and patterns |
 | `REVISION-LOG.md` | Version history |
 | `GAP-ANALYSIS.md` | Feature status |
+| `SYNC-POLICY.md` | Cloud/local sync rules — read before any auth/storage work |
 | `prototype/index-v8.html` | Working reference — read before any canvas/Konva work |
 | `research/DECOR-PROMPT-GUIDE.md` | Decor sticker prompts + specs |
 
