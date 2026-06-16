@@ -215,6 +215,9 @@ export const PLANT_CATALOG = [
   // ── New additions
   { key:'cactus_totem-pole_XL_CA-US-FR-GB-AU', label:'Totem Pole Cactus', family:'Cactus', src:'/stickers/cactus_totem-pole_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
+  // ── New additions
+  { key:'cactus_star_S_CA-US-FR-GB-AU', label:'Star Cactus', family:'Cactus', src:'/stickers/cactus_star_S_CA-US-FR-GB-AU.png', size:'S' },
+
   // ── Reference entry (kept for catalog structure reference only) ───────────────
   // { key:'tree-svg-ref', label:'Apple Tree (SVG ref)', family:'Fruit Tree', src:'/stickers/tree.svg', size:'L' },
   { key:'plant-fern_fern_L_CA-US-FR-GB-AU', label:'Fern', family:'Fern / Groundcover', src:'/stickers/plant-fern_fern_L_CA-US-FR-GB-AU.png', size:'L' },
