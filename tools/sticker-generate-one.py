@@ -42,6 +42,11 @@ TEMPLATES = {
         "No shadows. No background showing in the center of the plant. Centered, 75% "
         "canvas fill. Vibrant and iconic."
     ),
+    "cedar": (
+        "Aerial side view. Art style: Watercolor painting — tasteful simplified representation of this plant with crisp edges, "
+        "focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2-3px. No shadows. "
+        "No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic."
+    ),
     "deciduous": (
         "Side aerial view. Art style: Plants vs. Zombies meets watercolor painting — "
         "tasteful simplified representation of this plant with crisp edges, focusing on "
@@ -99,7 +104,7 @@ PLANT_LOOKUP = {
     "hydrangea":         ("flower-cluster_hydrangea",    "L",  384, "Shrub",          "plant",     "cornflower blue #5B8DD9, pale lavender #C4B8E8, soft pink #F0B8C8, mid-green #4A7C2F, dark outline #1A1A2E", "Rounded shrub with massive domed flower heads of densely packed small florets in blue and pink, stems at bottom and florals at top."),
 
     # ── Conifers (additions) ──────────────────────────────────────────────────────────
-    "cedar thuja":       ("tree-conifer_cedar-thuja",       "XL", 512, "Conifer Tree",   "pine",      "deep forest green #1A5C1A, mid-green #2E7A2E, bright green tips #5AB83A, dark outline #0A2010, warm brown base #7A5C2A", "Tall narrow conical/columnar evergreen conifer (Thuja occidentalis), dense tight upright form tapering to a point, no visible trunk."),
+    "cedar thuja":       ("tree-conifer_cedar-thuja",       "XL", 512, "Conifer Tree",   "cedar",     "deep forest green #1A5C1A, mid-green #2E7A2E, bright green tips #5AB83A, dark outline #0A2010, No browns", "Correct proportions."),
 
     # ── Cacti ──────────────────────────────────────────────────────────────────────────
     "saguaro cactus":    ("cactus_saguaro",              "XL", 512, "Cactus", "plant", "pale green #8ABF6A, mid green #5A8A3A, deep green #2A5A1A, warm tan ribs #C8A870, dark outline #1A2A0A", "Tall iconic columnar cactus with 2-3 upward-curving arms, vertical ribbing, clusters of spines. Bold silhouette."),
@@ -350,6 +355,14 @@ def main():
             f"Canvas: {size_px}px square.\n"
             f"Colours: {colours}, flat chroma-key green background (#00FF00)\n"
             f"Shape: {shape} Natural proportions."
+        )
+    elif template == "cedar":
+        prompt = (
+            f"{prefix}\n\n"
+            f"Subject: Cedar Thuja Conical Tree, no trunk.\n"
+            f"Canvas: {size_px}px square.\n"
+            f"Colours: {colours}, flat chroma-key green background (#00FF00)\n"
+            f"Shape: Correct proportions."
         )
     elif template == "pine":
         prompt = (
