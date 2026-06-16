@@ -227,6 +227,9 @@ export const PLANT_CATALOG = [
   // ── New additions
   { key:'succulent_echeveria_S_CA-US-FR-GB-AU', label:'Echeveria', family:'Succulent', src:'/stickers/succulent_echeveria_S_CA-US-FR-GB-AU.png', size:'S' },
 
+  // ── New additions
+  { key:'succulent_jade-plant_M_CA-US-FR-GB-AU', label:'Jade Plant', family:'Succulent', src:'/stickers/succulent_jade-plant_M_CA-US-FR-GB-AU.png', size:'M' },
+
   // ── Reference entry (kept for catalog structure reference only) ───────────────
   // { key:'tree-svg-ref', label:'Apple Tree (SVG ref)', family:'Fruit Tree', src:'/stickers/tree.svg', size:'L' },
   { key:'plant-fern_fern_L_CA-US-FR-GB-AU', label:'Fern', family:'Fern / Groundcover', src:'/stickers/plant-fern_fern_L_CA-US-FR-GB-AU.png', size:'L' },
