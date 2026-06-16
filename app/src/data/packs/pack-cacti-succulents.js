@@ -27,6 +27,7 @@ export const entries = [
   { key:'succulent_aloe-vera_M_CA-US-FR-GB-AU',        label:'Aloe Vera',          family:'Succulent', src:'/stickers/succulent_aloe-vera_M_CA-US-FR-GB-AU.png',        size:'M'  },
   { key:'succulent_echeveria_S_CA-US-FR-GB-AU',        label:'Echeveria',           family:'Succulent', src:'/stickers/succulent_echeveria_S_CA-US-FR-GB-AU.png',        size:'S'  },
   { key:'succulent_jade-plant_S_CA-US-FR-GB-AU',       label:'Jade Plant',          family:'Succulent', src:'/stickers/succulent_jade-plant_S_CA-US-FR-GB-AU.png',       size:'S'  },
+  { key:'succulent_jade-plant_M_CA-US-FR-GB-AU',       label:'Jade Plant',          family:'Succulent', src:'/stickers/succulent_jade-plant_S_CA-US-FR-GB-AU.png',       size:'S'  },
   { key:'succulent_haworthia_S_CA-US-FR-GB-AU',        label:'Haworthia',           family:'Succulent', src:'/stickers/succulent_haworthia_S_CA-US-FR-GB-AU.png',        size:'S'  },
   { key:'succulent_sedum-succulent_S_CA-US-FR-GB-AU',  label:'Sedum (Succulent)',   family:'Succulent', src:'/stickers/succulent_sedum-succulent_S_CA-US-FR-GB-AU.png',  size:'S'  },
   { key:'succulent_agave_L_CA-US-FR-GB-AU',            label:'Agave',               family:'Succulent', src:'/stickers/succulent_agave_L_CA-US-FR-GB-AU.png',            size:'L'  },
