@@ -18,14 +18,14 @@ export const PACK_REGISTRY = [
   {
     id: 'cacti-succulents',
     label: 'Cacti & Succulents',
-    eager: false,
+    eager: true,               // load at boot — images show immediately in tray
     loader: () => import('./pack-cacti-succulents.js'),
     families: ['Cactus', 'Succulent'],
   },
   {
     id: 'tropical',
     label: 'Tropical & Palms',
-    eager: false,
+    eager: true,               // load at boot — images show immediately in tray
     loader: () => import('./pack-tropical.js'),
     families: ['Palm Tree', 'Tropical'],
   },
