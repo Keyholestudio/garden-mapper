@@ -281,6 +281,9 @@ export const PLANT_CATALOG = [
   // ── New additions
   { key:'tree-tropical_jacaranda_XXL_CA-US-FR-GB-AU', label:'Jacaranda Tree', family:'Tropical', src:'/stickers/tree-tropical_jacaranda_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
 
+  // ── New additions
+  { key:'tree-tropical_plumeria_M_CA-US-FR-GB-AU', label:'Plumeria', family:'Tropical', src:'/stickers/tree-tropical_plumeria_M_CA-US-FR-GB-AU.png', size:'M' },
+
   // ── Reference entry (kept for catalog structure reference only) ───────────────
   // { key:'tree-svg-ref', label:'Apple Tree (SVG ref)', family:'Fruit Tree', src:'/stickers/tree.svg', size:'L' },
   { key:'plant-fern_fern_L_CA-US-FR-GB-AU', label:'Fern', family:'Fern / Groundcover', src:'/stickers/plant-fern_fern_L_CA-US-FR-GB-AU.png', size:'L' },
