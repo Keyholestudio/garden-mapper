@@ -71,10 +71,13 @@ export default function LogoBar({
             <div className="profile-menu">
               {/* User info header */}
               <div className="profile-menu-header">
-                <div className="profile-menu-avatar">👤</div>
+                <div className="profile-menu-avatar">{user ? '👋' : '👤'}</div>
                 <div className="profile-menu-info">
                   <div className="profile-menu-garden">{gardenName || 'My Garden'}</div>
-                  <div className="profile-menu-dims">{gardenW}×{gardenH} {gardenUnit}</div>
+                  {user
+                    ? <div className="profile-menu-dims" style={{color:'#11502A',fontWeight:600}}>✓ Signed in</div>
+                    : <div className="profile-menu-dims">{gardenW}×{gardenH} {gardenUnit}</div>
+                  }
                 </div>
               </div>
 

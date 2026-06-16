@@ -19,6 +19,7 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
   const [loading, setLoading] = useState(true);
   const [showRestorePrompt, setShowRestorePrompt] = useState(false);
   const [cloudGardenData, setCloudGardenData] = useState(null);
+  const [debugMsg, setDebugMsg] = useState('');
 
   // ── Listen for auth state changes ───────────────────────────────
   useEffect(() => {
@@ -85,21 +86,52 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
       options: {
         redirectTo: REDIRECT_URL,
         skipBrowserRedirect: true,
+        queryParams: { access_type: 'offline', prompt: 'consent' },
       },
     });
     if (error) { console.error('[Auth] signInWithGoogle error:', error); return; }
-    await Browser.open({ url: data.url });
+    console.log('[Auth] OAuth URL:', data?.url);
+    // Open in Chrome specifically — avoids DuckDuckGo intercepting the deep-link
+    await Browser.open({ url: data.url, windowName: '_blank' });
   }, []);
 
   // ── Handle deep-link callback ─────────────────────────────────────
   useEffect(() => {
     const handleAppUrl = async ({ url }) => {
-      if (!url.startsWith(REDIRECT_URL)) return;
-      await Browser.close();
-      await supabase.auth.exchangeCodeForSession(url);
+      setDebugMsg('appUrlOpen fired');
+      if (!url.startsWith('ca.gardenmapper.app')) {
+        setDebugMsg('URL mismatch: ' + url.substring(0, 40));
+        return;
+      }
+      try { await Browser.close(); } catch (e) { /* ignore */ }
+      await new Promise(r => setTimeout(r, 300));
+
+      const hashPart = url.includes('#') ? url.split('#')[1] : url.split('?')[1] || '';
+      const params = new URLSearchParams(hashPart);
+      const accessToken = params.get('access_token');
+      const refreshToken = params.get('refresh_token');
+      const code = params.get('code');
+
+      setDebugMsg(`token:${accessToken ? 'yes' : 'no'} code:${code ? 'yes' : 'no'}`);
+
+      if (accessToken) {
+        const { data, error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken || '',
+        });
+        setDebugMsg(data?.session?.user?.email ?? error?.message ?? 'setSession no result');
+        if (data?.session?.user) setUser(data.session.user);
+      } else if (code) {
+        const { data, error } = await supabase.auth.exchangeCodeForSession(url);
+        setDebugMsg(data?.session?.user?.email ?? error?.message ?? 'exchange no result');
+        if (data?.session?.user) setUser(data.session.user);
+      } else {
+        setDebugMsg('no token or code in URL: ' + hashPart.substring(0, 60));
+      }
     };
-    App.addListener('appUrlOpen', handleAppUrl);
-    return () => { App.removeAllListeners(); };
+    let handle;
+    App.addListener('appUrlOpen', handleAppUrl).then(h => { handle = h; });
+    return () => { handle?.remove(); };
   }, []);
 
   // ── Sign out ─────────────────────────────────────────────────────
@@ -110,6 +142,7 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
   return {
     user,
     loading,
+    debugMsg,
     showRestorePrompt,
     restoreFromCloud,
     dismissRestore,

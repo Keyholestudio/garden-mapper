@@ -3,7 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 const SUPABASE_URL = 'https://oxecjcdxkmtdgmdxlxyt.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im94ZWNqY2R4a210ZGdtZHhseHl0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2MzA2NDIsImV4cCI6MjA5NzIwNjY0Mn0.ihJ6a6w2m51KjSAf2-tEbn_iPK8jjBkZztV_faQnsr4';
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    flowType: 'implicit',
+    detectSessionInUrl: false,  // We handle URL parsing manually via appUrlOpen
+  },
+});
 
 // ── Garden sync helpers ──────────────────────────────────────────
 
