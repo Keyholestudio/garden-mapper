@@ -93,8 +93,7 @@ cd projects/garden-planner/app && npm run dev
 ## Open Items
 
 ### 🔴 Immediate (next session)
-- **TS build error** — pre-existing in `main.tsx`; fix first (5 min), required before Capacitor
-- **Capacitor.js** — install + configure, build first Android APK, sideload + test
+- **Google OAuth Client ID** — Google Cloud Console setup, wire `@codetrix-studio/capacitor-google-auth`, connect to Supabase Auth
 
 ### 🟡 Soon
 - **Test on Apple device (iPad/iPhone)** — add iOS Capacitor platform, build via Xcode, sideload for smoke test
@@ -136,6 +135,15 @@ cd projects/garden-planner/app && npm run dev
 | `research/DECOR-PROMPT-GUIDE.md` | Decor sticker prompts + specs |
 
 ---
+
+## Supabase
+- **Project ID:** oxecjcdxkmtdgmdxlxyt
+- **URL:** https://oxecjcdxkmtdgmdxlxyt.supabase.co
+- **Anon key:** in `app/src/supabase.js`
+- **Table:** `gardens` — `user_id`, `garden_json`, `subscription_flag`, `updated_at`
+- **RLS:** on — users can only access their own rows
+- **Dashboard:** https://supabase.com/dashboard/project/oxecjcdxkmtdgmdxlxyt
+- **Sync policy:** `SYNC-POLICY.md` — read before touching any auth/storage code
 
 ## Standing Rules
 1. Read `ARCHITECTURE.md` at session start
