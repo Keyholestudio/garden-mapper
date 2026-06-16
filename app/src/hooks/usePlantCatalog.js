@@ -245,6 +245,9 @@ export const PLANT_CATALOG = [
   // ── New additions
   { key:'succulent_hens-and-chicks_S_CA-US-FR-GB-AU', label:'Hens and Chicks', family:'Succulent', src:'/stickers/succulent_hens-and-chicks_S_CA-US-FR-GB-AU.png', size:'S' },
 
+  // ── New additions
+  { key:'succulent_lithops_S_CA-US-FR-GB-AU', label:'Lithops', family:'Succulent', src:'/stickers/succulent_lithops_S_CA-US-FR-GB-AU.png', size:'S' },
+
   // ── Reference entry (kept for catalog structure reference only) ───────────────
   // { key:'tree-svg-ref', label:'Apple Tree (SVG ref)', family:'Fruit Tree', src:'/stickers/tree.svg', size:'L' },
   { key:'plant-fern_fern_L_CA-US-FR-GB-AU', label:'Fern', family:'Fern / Groundcover', src:'/stickers/plant-fern_fern_L_CA-US-FR-GB-AU.png', size:'L' },
