@@ -210,6 +210,9 @@ export const PLANT_CATALOG = [
   { key:'cactus_cholla_L_CA-US-FR-GB-AU', label:'Cholla Cactus', family:'Cactus', src:'/stickers/cactus_cholla_L_CA-US-FR-GB-AU.png', size:'L' },
   { key:'cactus_christmas_M_CA-US-FR-GB-AU', label:'Christmas Cactus', family:'Cactus', src:'/stickers/cactus_christmas_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'cactus_fishhook_S_CA-US-FR-GB-AU', label:'Fishhook Cactus', family:'Cactus', src:'/stickers/cactus_fishhook_S_CA-US-FR-GB-AU.png', size:'S' },
+  { key:'cactus_hedgehog_S_CA-US-FR-GB-AU', label:'Hedgehog Cactus', family:'Cactus', src:'/stickers/cactus_hedgehog_S_CA-US-FR-GB-AU.png', size:'S' },
+  { key:'cactus_bunny-ears_M_CA-US-FR-GB-AU', label:'Bunny Ears Cactus', family:'Cactus', src:'/stickers/cactus_bunny-ears_M_CA-US-FR-GB-AU.png', size:'M' },
+  { key:'cactus_old-man_M_CA-US-FR-GB-AU', label:'Old Man Cactus', family:'Cactus', src:'/stickers/cactus_old-man_M_CA-US-FR-GB-AU.png', size:'M' },
   // ── New additions
   { key:'cactus_moon_S_CA-US-FR-GB-AU', label:'Moon Cactus', family:'Cactus', src:'/stickers/cactus_moon_S_CA-US-FR-GB-AU.png', size:'S' },
 
@@ -382,9 +385,12 @@ export function useLazyPacks() {
   const isPackLoading = (packId) => !!loadingPacks[packId]
 
   // All entries across core + any loaded lazy packs (for key lookup in save/load)
+  // Dedup by key: catalog wins; pack entries skipped if key already exists in catalog
   const allEntries = useCallback(() => {
     const lazy = Object.values(loadedPacks).flat()
-    return [...PLANT_CATALOG, ...lazy]
+    const seen = new Set(PLANT_CATALOG.map(e => e.key))
+    const dedupedLazy = lazy.filter(e => !seen.has(e.key))
+    return [...PLANT_CATALOG, ...dedupedLazy]
   }, [loadedPacks])
 
   return { loadPack, getPackEntries, isPackLoaded, isPackLoading, allEntries, PACK_REGISTRY }

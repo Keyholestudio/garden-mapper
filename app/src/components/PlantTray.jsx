@@ -41,8 +41,11 @@ export default function PlantTray({
   // All entries: core + any loaded lazy packs
   const allEntries = useMemo(() => {
     if (!lazyPacks) return PLANT_CATALOG
-    const lazyEntries = Object.values(lazyPacks.loaded || {}).flat()
-    return [...PLANT_CATALOG, ...lazyEntries]
+        const lazyEntries = Object.values(lazyPacks.loaded || {}).flat()
+    // Dedup: skip pack entries whose key already exists in catalog
+    const seen = new Set(PLANT_CATALOG.map(e => e.key))
+    const dedupedLazy = lazyEntries.filter(e => !seen.has(e.key))
+    return [...PLANT_CATALOG, ...dedupedLazy]
   }, [lazyPacks])
 
   const filtered = useMemo(() => {
@@ -189,3 +192,4 @@ function TrayItem({ entry, loadedImages, onClick, onDragStart, onRemove, showRem
     </div>
   )
 }
+
