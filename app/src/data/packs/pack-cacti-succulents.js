@@ -14,6 +14,7 @@ export const entries = [
   { key:'cactus_cholla_L_CA-US-FR-GB-AU',            label:'Cholla Cactus',        family:'Cactus', src:'/stickers/cactus_cholla_L_CA-US-FR-GB-AU.png',            size:'L'   },
   { key:'cactus_fishhook_S_CA-US-FR-GB-AU',          label:'Fishhook Cactus',      family:'Cactus', src:'/stickers/cactus_fishhook_S_CA-US-FR-GB-AU.png',          size:'S'   },
   { key:'cactus_christmas_M_CA-US-FR-GB-AU',         label:'Christmas Cactus',     family:'Cactus', src:'/stickers/cactus_christmas_M_CA-US-FR-GB-AU.png',         size:'M'   },
+  { key:'cactus_golden-barrel_M_CA-US-FR-GB-AU',      label:'Golden Barrel Cactus', family:'Cactus', src:'/stickers/cactus_golden-barrel_M_CA-US-FR-GB-AU.png',      size:'M'   },
   { key:'cactus_hedgehog_S_CA-US-FR-GB-AU',          label:'Hedgehog Cactus',      family:'Cactus', src:'/stickers/cactus_hedgehog_S_CA-US-FR-GB-AU.png',          size:'S'   },
   { key:'cactus_bunny-ears_M_CA-US-FR-GB-AU',        label:'Bunny Ears Cactus',    family:'Cactus', src:'/stickers/cactus_bunny-ears_M_CA-US-FR-GB-AU.png',        size:'M'   },
   { key:'cactus_old-man_M_CA-US-FR-GB-AU',           label:'Old Man Cactus',       family:'Cactus', src:'/stickers/cactus_old-man_M_CA-US-FR-GB-AU.png',           size:'M'   },

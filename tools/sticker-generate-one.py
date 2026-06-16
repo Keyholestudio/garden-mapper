@@ -279,8 +279,8 @@ def add_to_catalog(plant_id, label, family, src_path, size_tier):
         f"src:'/stickers/{filename}', size:'{size_tier}' }},\n"
     )
 
-    # Check if already in catalog
-    if plant_id in content:
+    # Check if already in catalog (exact key match only — avoid partial string false positives)
+    if f"key:'{plant_id}'" in content:
         p(f"  Already in catalog: {plant_id}")
         return False
 
