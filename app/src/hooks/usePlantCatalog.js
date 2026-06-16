@@ -127,6 +127,7 @@ export const PLANT_CATALOG = [
   // ── Conifer Trees ─────────────────────────────────────────────────────────────
   { key:'tree-conifer_blue-spruce',        label:'Blue Spruce',         family:'Conifer Tree',         src:'/stickers/tree-conifer_blue-spruce_XXL_CA-US-FR-GB.png',           size:'XXL' },
   { key:'tree-conifer_leylandii',          label:'Leylandii Cypress',   family:'Conifer Tree',         src:'/stickers/tree-conifer_leylandii_XXL_CA-US-FR-GB.png',             size:'XXL' },
+  { key:'tree-conifer_cedar-thuja_XL_CA-US-FR-GB-AU', label:'Cedar (Thuja)', family:'Conifer Tree', src:'/stickers/tree-conifer_cedar-thuja_XL_CA-US-FR-GB-AU.png', size:'XL' },
   { key:'tree-conifer_pine',               label:'Pine Tree',           family:'Conifer Tree',         src:'/stickers/tree-conifer_pine_XXL_CA-US-FR-GB-AU.png',               size:'XXL' },
 
   // ── Deciduous Trees ───────────────────────────────────────────────────────────
@@ -228,7 +229,7 @@ export const PLANT_CATALOG = [
   { key:'succulent_echeveria_S_CA-US-FR-GB-AU', label:'Echeveria', family:'Succulent', src:'/stickers/succulent_echeveria_S_CA-US-FR-GB-AU.png', size:'S' },
 
   // ── New additions
-  { key:'succulent_jade-plant_M_CA-US-FR-GB-AU', label:'Jade Plant', family:'Succulent', src:'/stickers/succulent_jade-plant_M_CA-US-FR-GB-AU.png', size:'M' },
+  { key:'succulent_jade-plant_M_CA-US-FR-GB-AU', label:'Jade Plant', family:'Succulent', src:'/stickers/succulent_jade-plant_M_CA-US-FR-GB-AU.png', size:'S' },
 
   // ── New additions
   { key:'succulent_haworthia_S_CA-US-FR-GB-AU', label:'Haworthia', family:'Succulent', src:'/stickers/succulent_haworthia_S_CA-US-FR-GB-AU.png', size:'S' },
@@ -388,6 +389,8 @@ export function useLazyPacks() {
 
   return { loadPack, getPackEntries, isPackLoaded, isPackLoading, allEntries, PACK_REGISTRY }
 }
+
+
 
 
 
