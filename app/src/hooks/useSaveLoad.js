@@ -114,7 +114,16 @@ function migrateGarden(g) {
     g.lockedDimensions = true
   }
 
-  g._schemaVersion = SCHEMA_VERSION
+    g._schemaVersion = SCHEMA_VERSION
+
+  // Key remaps: old key -> canonical key (keeps saved gardens loading correctly)
+  const KEY_REMAP = {
+    'succulent_jade-plant_M_CA-US-FR-GB-AU': 'succulent_jade-plant_S_CA-US-FR-GB-AU',
+  }
+  if (Array.isArray(g.plants)) {
+    g.plants = g.plants.map(p => p.key && KEY_REMAP[p.key] ? { ...p, key: KEY_REMAP[p.key] } : p)
+  }
+
   return g
 }
 
@@ -532,3 +541,4 @@ export function deleteGarden(idx) {
   writeGardens(gardens)
   return [...gardens]
 }
+
