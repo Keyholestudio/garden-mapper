@@ -93,7 +93,13 @@ cd projects/garden-planner/app && npm run dev
 ## Open Items
 
 ### 🔴 Immediate (next session)
-- **Google OAuth Client ID** — Google Cloud Console setup, wire `@codetrix-studio/capacitor-google-auth`, connect to Supabase Auth
+- **Fix Google Sign-In** — Supabase returning `unexpected_failure` on token exchange. Steps to try:
+  1. Try sign-in again (Google propagation delay — may just work now)
+  2. If still failing: Supabase dashboard → **Logs → Auth** → check error after sign-in attempt
+  3. If logs show `invalid_client`: verify Web Client ID + Secret in Supabase Auth → Providers → Google
+  4. If logs show `redirect_uri_mismatch`: add `https://oxecjcdxkmtdgmdxlxyt.supabase.co/auth/v1/callback` to Google Web client
+  5. Remove debug banner from `GardenEditor.jsx` + `useAuth.js` once sign-in confirmed working
+- **App icons + splash screen** — deferred (Rob designing)
 
 ### 🟡 Soon
 - **Test on Apple device (iPad/iPhone)** — add iOS Capacitor platform, build via Xcode, sideload for smoke test
