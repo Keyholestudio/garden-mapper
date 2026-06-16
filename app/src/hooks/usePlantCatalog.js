@@ -198,95 +198,59 @@ export const PLANT_CATALOG = [
   { key:'water-feature_fountain-lg_L_CA-US-FR-GB-AU', label:'Large Fountain',  family:'Water Feature', src:'/stickers/water-feature_fountain-lg_L_CA-US-FR-GB-AU.png', size:'L' },
 
   { key:'flower-daisy_feverfew_S_CA-US-FR-GB-AU', label:'Feverfew', family:'Perennial', src:'/stickers/flower-daisy_feverfew_S_CA-US-FR-GB-AU.png', size:'S' },
-  { key:'cactus_saguaro_XL_CA-US-FR-GB-AU', label:'Saguaro Cactus', family:'Cactus', src:'/stickers/cactus_saguaro_XL_CA-US-FR-GB-AU.png', size:'XL' },
-  { key:'cactus_barrel_M_CA-US-FR-GB-AU', label:'Barrel Cactus', family:'Cactus', src:'/stickers/cactus_barrel_M_CA-US-FR-GB-AU.png', size:'M' },
   // ── New additions
-  { key:'cactus_prickly-pear_L_CA-US-FR-GB-AU', label:'Prickly Pear Cactus', family:'Cactus', src:'/stickers/cactus_prickly-pear_L_CA-US-FR-GB-AU.png', size:'L' },
 
   // ── New additions
-  { key:'cactus_golden-barrel_M_CA-US-FR-GB-AU', label:'Golden Barrel Cactus', family:'Cactus', src:'/stickers/cactus_golden-barrel_M_CA-US-FR-GB-AU.png', size:'M' },
-
-  { key:'cactus_organ-pipe_XL_CA-US-FR-GB-AU', label:'Organ Pipe Cactus', family:'Cactus', src:'/stickers/cactus_organ-pipe_XL_CA-US-FR-GB-AU.png', size:'XL' },
-  { key:'cactus_cholla_L_CA-US-FR-GB-AU', label:'Cholla Cactus', family:'Cactus', src:'/stickers/cactus_cholla_L_CA-US-FR-GB-AU.png', size:'L' },
-  { key:'cactus_christmas_M_CA-US-FR-GB-AU', label:'Christmas Cactus', family:'Cactus', src:'/stickers/cactus_christmas_M_CA-US-FR-GB-AU.png', size:'M' },
-  { key:'cactus_fishhook_S_CA-US-FR-GB-AU', label:'Fishhook Cactus', family:'Cactus', src:'/stickers/cactus_fishhook_S_CA-US-FR-GB-AU.png', size:'S' },
-  { key:'cactus_hedgehog_S_CA-US-FR-GB-AU', label:'Hedgehog Cactus', family:'Cactus', src:'/stickers/cactus_hedgehog_S_CA-US-FR-GB-AU.png', size:'S' },
-  { key:'cactus_bunny-ears_M_CA-US-FR-GB-AU', label:'Bunny Ears Cactus', family:'Cactus', src:'/stickers/cactus_bunny-ears_M_CA-US-FR-GB-AU.png', size:'M' },
-  { key:'cactus_old-man_M_CA-US-FR-GB-AU', label:'Old Man Cactus', family:'Cactus', src:'/stickers/cactus_old-man_M_CA-US-FR-GB-AU.png', size:'M' },
-  // ── New additions
-  { key:'cactus_moon_S_CA-US-FR-GB-AU', label:'Moon Cactus', family:'Cactus', src:'/stickers/cactus_moon_S_CA-US-FR-GB-AU.png', size:'S' },
 
   // ── New additions
-  { key:'cactus_totem-pole_XL_CA-US-FR-GB-AU', label:'Totem Pole Cactus', family:'Cactus', src:'/stickers/cactus_totem-pole_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
   // ── New additions
-  { key:'cactus_star_S_CA-US-FR-GB-AU', label:'Star Cactus', family:'Cactus', src:'/stickers/cactus_star_S_CA-US-FR-GB-AU.png', size:'S' },
 
   // ── New additions
-  { key:'cactus_bishops-cap_S_CA-US-FR-GB-AU', label:'Bishops Cap Cactus', family:'Cactus', src:'/stickers/cactus_bishops-cap_S_CA-US-FR-GB-AU.png', size:'S' },
 
   // ── New additions
-  { key:'succulent_aloe-vera_M_CA-US-FR-GB-AU', label:'Aloe Vera', family:'Succulent', src:'/stickers/succulent_aloe-vera_M_CA-US-FR-GB-AU.png', size:'M' },
 
   // ── New additions
-  { key:'succulent_echeveria_S_CA-US-FR-GB-AU', label:'Echeveria', family:'Succulent', src:'/stickers/succulent_echeveria_S_CA-US-FR-GB-AU.png', size:'S' },
 
   // ── New additions
-  { key:'succulent_jade-plant_M_CA-US-FR-GB-AU', label:'Jade Plant', family:'Succulent', src:'/stickers/succulent_jade-plant_M_CA-US-FR-GB-AU.png', size:'S' },
 
   // ── New additions
-  { key:'succulent_haworthia_S_CA-US-FR-GB-AU', label:'Haworthia', family:'Succulent', src:'/stickers/succulent_haworthia_S_CA-US-FR-GB-AU.png', size:'S' },
 
   // ── New additions
-  { key:'succulent_sedum-succulent_S_CA-US-FR-GB-AU', label:'Sedum Succulent', family:'Succulent', src:'/stickers/succulent_sedum-succulent_S_CA-US-FR-GB-AU.png', size:'S' },
 
   // ── New additions
-  { key:'succulent_agave_L_CA-US-FR-GB-AU', label:'Agave', family:'Succulent', src:'/stickers/succulent_agave_L_CA-US-FR-GB-AU.png', size:'L' },
 
   // ── New additions
-  { key:'succulent_string-of-pearls_S_CA-US-FR-GB-AU', label:'String of Pearls', family:'Succulent', src:'/stickers/succulent_string-of-pearls_S_CA-US-FR-GB-AU.png', size:'S' },
 
   // ── New additions
-  { key:'succulent_hens-and-chicks_S_CA-US-FR-GB-AU', label:'Hens and Chicks', family:'Succulent', src:'/stickers/succulent_hens-and-chicks_S_CA-US-FR-GB-AU.png', size:'S' },
 
   // ── New additions
-  { key:'succulent_lithops_S_CA-US-FR-GB-AU', label:'Lithops', family:'Succulent', src:'/stickers/succulent_lithops_S_CA-US-FR-GB-AU.png', size:'S' },
 
   // ── New additions
-  { key:'succulent_burros-tail_S_CA-US-FR-GB-AU', label:'Burros Tail', family:'Succulent', src:'/stickers/succulent_burros-tail_S_CA-US-FR-GB-AU.png', size:'S' },
 
   // ── New additions
-  { key:'tree-palm_coconut_XXL_CA-US-FR-GB-AU', label:'Coconut Palm', family:'Palm Tree', src:'/stickers/tree-palm_coconut_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
 
   // ── New additions
-  { key:'tree-palm_royal_XXL_CA-US-FR-GB-AU', label:'Royal Palm', family:'Palm Tree', src:'/stickers/tree-palm_royal_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
 
   // ── New additions
-  { key:'tree-palm_washingtonia_XXL_CA-US-FR-GB-AU', label:'Washingtonia Palm', family:'Palm Tree', src:'/stickers/tree-palm_washingtonia_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
 
   // ── New additions
-  { key:'tree-palm_date_XXL_CA-US-FR-GB-AU', label:'Date Palm', family:'Palm Tree', src:'/stickers/tree-palm_date_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
 
   // ── New additions
-  { key:'tree-palm_bismarck_XXL_CA-US-FR-GB-AU', label:'Bismarck Palm', family:'Palm Tree', src:'/stickers/tree-palm_bismarck_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
 
   // ── New additions
-  { key:'tree-palm_travellers_XXL_CA-US-FR-GB-AU', label:'Travellers Palm', family:'Palm Tree', src:'/stickers/tree-palm_travellers_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
 
   // ── New additions
-  { key:'tree-tropical_banana_XL_CA-US-FR-GB-AU', label:'Banana Tree', family:'Tropical', src:'/stickers/tree-tropical_banana_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
   // ── New additions
-  { key:'tree-tropical_bird-of-paradise_XL_CA-US-FR-GB-AU', label:'Bird of Paradise Tree', family:'Tropical', src:'/stickers/tree-tropical_bird-of-paradise_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
   // ── New additions
-  { key:'tree-tropical_bougainvillea_XL_CA-US-FR-GB-AU', label:'Bougainvillea', family:'Tropical', src:'/stickers/tree-tropical_bougainvillea_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
   // ── New additions
-  { key:'tree-tropical_jacaranda_XXL_CA-US-FR-GB-AU', label:'Jacaranda Tree', family:'Tropical', src:'/stickers/tree-tropical_jacaranda_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
 
   // ── New additions
-  { key:'tree-tropical_plumeria_M_CA-US-FR-GB-AU', label:'Plumeria', family:'Tropical', src:'/stickers/tree-tropical_plumeria_M_CA-US-FR-GB-AU.png', size:'M' },
+
+  // ── New additions
 
   // ── Reference entry (kept for catalog structure reference only) ───────────────
   // { key:'tree-svg-ref', label:'Apple Tree (SVG ref)', family:'Fruit Tree', src:'/stickers/tree.svg', size:'L' },
@@ -385,16 +349,15 @@ export function useLazyPacks() {
   const isPackLoading = (packId) => !!loadingPacks[packId]
 
   // All entries across core + any loaded lazy packs (for key lookup in save/load)
-  // Dedup by key: catalog wins; pack entries skipped if key already exists in catalog
   const allEntries = useCallback(() => {
     const lazy = Object.values(loadedPacks).flat()
-    const seen = new Set(PLANT_CATALOG.map(e => e.key))
-    const dedupedLazy = lazy.filter(e => !seen.has(e.key))
-    return [...PLANT_CATALOG, ...dedupedLazy]
+    return [...PLANT_CATALOG, ...lazy]
   }, [loadedPacks])
 
   return { loadPack, getPackEntries, isPackLoaded, isPackLoading, allEntries, PACK_REGISTRY }
 }
+
+
 
 
 

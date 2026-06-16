@@ -14,6 +14,7 @@ export const entries = [
   { key:'cactus_cholla_L_CA-US-FR-GB-AU',            label:'Cholla Cactus',        family:'Cactus', src:'/stickers/cactus_cholla_L_CA-US-FR-GB-AU.png',            size:'L'   },
   { key:'cactus_fishhook_S_CA-US-FR-GB-AU',          label:'Fishhook Cactus',      family:'Cactus', src:'/stickers/cactus_fishhook_S_CA-US-FR-GB-AU.png',          size:'S'   },
   { key:'cactus_christmas_M_CA-US-FR-GB-AU',         label:'Christmas Cactus',     family:'Cactus', src:'/stickers/cactus_christmas_M_CA-US-FR-GB-AU.png',         size:'M'   },
+  { key:'cactus_golden-barrel_M_CA-US-FR-GB-AU', label:'Golden Barrel Cactus', family:'Cactus', src:'/stickers/cactus_golden-barrel_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'cactus_hedgehog_S_CA-US-FR-GB-AU',          label:'Hedgehog Cactus',      family:'Cactus', src:'/stickers/cactus_hedgehog_S_CA-US-FR-GB-AU.png',          size:'S'   },
   { key:'cactus_bunny-ears_M_CA-US-FR-GB-AU',        label:'Bunny Ears Cactus',    family:'Cactus', src:'/stickers/cactus_bunny-ears_M_CA-US-FR-GB-AU.png',        size:'M'   },
   { key:'cactus_old-man_M_CA-US-FR-GB-AU',           label:'Old Man Cactus',       family:'Cactus', src:'/stickers/cactus_old-man_M_CA-US-FR-GB-AU.png',           size:'M'   },
@@ -25,7 +26,7 @@ export const entries = [
   // 🌿 Succulents ─────────────────────────────────────────────────────────────
   { key:'succulent_aloe-vera_M_CA-US-FR-GB-AU',        label:'Aloe Vera',          family:'Succulent', src:'/stickers/succulent_aloe-vera_M_CA-US-FR-GB-AU.png',        size:'M'  },
   { key:'succulent_echeveria_S_CA-US-FR-GB-AU',        label:'Echeveria',           family:'Succulent', src:'/stickers/succulent_echeveria_S_CA-US-FR-GB-AU.png',        size:'S'  },
-  { key:'succulent_jade-plant_S_CA-US-FR-GB-AU',       label:'Jade Plant',          family:'Succulent', src:'/stickers/succulent_jade-plant_M_CA-US-FR-GB-AU.png',       size:'S'  },
+  { key:'succulent_jade-plant_S_CA-US-FR-GB-AU',       label:'Jade Plant',          family:'Succulent', src:'/stickers/succulent_jade-plant_S_CA-US-FR-GB-AU.png',       size:'S'  },
   { key:'succulent_haworthia_S_CA-US-FR-GB-AU',        label:'Haworthia',           family:'Succulent', src:'/stickers/succulent_haworthia_S_CA-US-FR-GB-AU.png',        size:'S'  },
   { key:'succulent_sedum-succulent_S_CA-US-FR-GB-AU',  label:'Sedum (Succulent)',   family:'Succulent', src:'/stickers/succulent_sedum-succulent_S_CA-US-FR-GB-AU.png',  size:'S'  },
   { key:'succulent_agave_L_CA-US-FR-GB-AU',            label:'Agave',               family:'Succulent', src:'/stickers/succulent_agave_L_CA-US-FR-GB-AU.png',            size:'L'  },
@@ -35,3 +36,4 @@ export const entries = [
   { key:'succulent_burros-tail_S_CA-US-FR-GB-AU',      label:'Burros Tail',         family:'Succulent', src:'/stickers/succulent_burros-tail_S_CA-US-FR-GB-AU.png',      size:'S'  },
 
 ];
+
