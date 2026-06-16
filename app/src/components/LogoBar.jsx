@@ -20,6 +20,9 @@ export default function LogoBar({
   scaleLabel,
   isMobile,
   onOpenSwitcherMobile,
+  user,
+  onSignIn,
+  onSignOut,
 }) {
   // Hooks must always be called at the top level — never inside conditionals
   const [menuOpen, setMenuOpen] = useState(false)
@@ -108,12 +111,24 @@ export default function LogoBar({
               <div className="profile-menu-divider" />
 
               {/* Account */}
-              <button className="profile-menu-item profile-menu-item--soon" disabled>
-                <span className="profile-menu-icon">⚙️</span>
-                <span>Account Settings</span>
-                <span className="profile-menu-badge">Soon</span>
-              </button>
-
+              {user ? (
+                <>
+                  <div className="profile-menu-user">
+                    <span className="profile-menu-icon">👤</span>
+                    <span className="profile-menu-email">{user.email || 'Signed in'}</span>
+                  </div>
+                  <button className="profile-menu-item" onClick={() => { onSignOut?.(); closeMenu(); }}>
+                    <span className="profile-menu-icon">🚪</span>
+                    <span>Sign Out</span>
+                  </button>
+                </>
+              ) : (
+                <button className="profile-menu-item profile-menu-item--signin" onClick={() => { onSignIn?.(); closeMenu(); }}>
+                  <span className="profile-menu-icon">🔑</span>
+                  <span>Sign in with Google</span>
+                  <span className="profile-menu-hint">Save to cloud</span>
+                </button>
+              )}
               <button className="profile-menu-item profile-menu-item--soon" disabled>
                 <span className="profile-menu-icon">💳</span>
                 <span>Subscription</span>

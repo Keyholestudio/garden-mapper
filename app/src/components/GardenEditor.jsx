@@ -85,7 +85,7 @@ export default function GardenEditor() {
   const autoSaveTimerRef = useRef(null)
 
   // ── Auth + cloud sync ────────────────────────────────────────────
-  const { user, showRestorePrompt, restoreFromCloud, dismissRestore, syncToCloud } = useAuth({
+  const { user, showRestorePrompt, restoreFromCloud, dismissRestore, syncToCloud, signInWithGoogle, signOut } = useAuth({
     getLocalGardens: () => readGardens(),
     setLocalGardens: (gardens) => {
       localStorage.setItem('gardenData', JSON.stringify(gardens))
@@ -1179,6 +1179,9 @@ export default function GardenEditor() {
         saveFlash={saveFlash}
         scaleLabel={scaleLabel}
         isMobile={isMobile}
+        user={user}
+        onSignIn={signInWithGoogle}
+        onSignOut={signOut}
       />
 
       {/* Clear All confirm modal */}

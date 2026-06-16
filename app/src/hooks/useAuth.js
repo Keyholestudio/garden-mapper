@@ -1,5 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, fetchCloudGarden, pushCloudGarden } from '../supabase';
+import { Browser } from '@capacitor/browser';
+import { App } from '@capacitor/app';
+
+const REDIRECT_URL = 'ca.gardenmapper.app://auth/callback';
 
 /**
  * useAuth — manages Supabase auth state + cloud sync triggers.
@@ -74,6 +78,30 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
     await pushCloudGarden(user.id, gardens);
   }, [user]);
 
+  // ── Google Sign-In (PKCE via device browser) ────────────────────
+  const signInWithGoogle = useCallback(async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: REDIRECT_URL,
+        skipBrowserRedirect: true,
+      },
+    });
+    if (error) { console.error('[Auth] signInWithGoogle error:', error); return; }
+    await Browser.open({ url: data.url });
+  }, []);
+
+  // ── Handle deep-link callback ─────────────────────────────────────
+  useEffect(() => {
+    const handleAppUrl = async ({ url }) => {
+      if (!url.startsWith(REDIRECT_URL)) return;
+      await Browser.close();
+      await supabase.auth.exchangeCodeForSession(url);
+    };
+    App.addListener('appUrlOpen', handleAppUrl);
+    return () => { App.removeAllListeners(); };
+  }, []);
+
   // ── Sign out ─────────────────────────────────────────────────────
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
@@ -86,6 +114,7 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
     restoreFromCloud,
     dismissRestore,
     syncToCloud,
+    signInWithGoogle,
     signOut,
   };
 }
