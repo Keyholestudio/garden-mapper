@@ -51,12 +51,12 @@ Shape: [PLANT NAME] and tops peeking from a plant wide soil line. Only show the 
 ### Deciduous Trees
 
 ```
-Side aerial view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, leafy, Dark outline 2–3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Side aerial view. Art style: Watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on primary characteristics of the plant, leafy canopy only, NO TRUNK, NO STEM, NO BARK VISIBLE. Dark outline 2-3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
 
-Subject: [PLANT NAME], [BASIC DESCRIPTION], No trunk.
+Subject: [PLANT NAME], large broad deciduous tree. NO TRUNK. Canopy only. Small leaves.
 Canvas: [SIZE]px square.
 Colours: [4-5 colours or hex codes], flat chroma-key green background (#00FF00)
-Shape: Natural [Leaf type: Leafy, palm] canopy. [If fruit tree: Minimal fruit, only as accent.]
+Shape: Natural full leafy canopy, distinctive lobed leaf shapes visible. No trunk. No branches. Canopy fills the frame. Spring/summer only. No fall colours.
 ```
 
 ---
