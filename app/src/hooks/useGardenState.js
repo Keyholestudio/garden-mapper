@@ -42,19 +42,19 @@ export const TEXTURE_MAP = {
 }
 export const PLANT_VARIANTS = {
   'tree-deciduous_maple': [
-    { label: 'Green',        colour: '#4CAF50', src: '/stickers/tree-deciduous_maple_XXL_CA-US-FR-GB-AU.png' },
-    { label: 'Dark Green',   colour: '#2E7D32', src: '/stickers/tree-deciduous_maple_XXL_dark-green.png' },
-    { label: 'Silver',       colour: '#78909C', src: '/stickers/tree-deciduous_maple_XXL_silver-green.png' },
-    { label: 'Purple',       colour: '#6A1B9A', src: '/stickers/tree-deciduous_maple_XXL_purple-leaf.png' },
-    { label: 'Japanese',     colour: '#C0392B', src: '/stickers/tree-deciduous_japanese-maple_XXL_CA-US-FR-GB-AU.png' },
+    { label: 'Green',      name: 'Maple Tree',      colour: '#4CAF50', src: '/stickers/tree-deciduous_maple_XXL_CA-US-FR-GB-AU.png' },
+    { label: 'Dark Green', name: 'Maple Tree',      colour: '#2E7D32', src: '/stickers/tree-deciduous_maple_XXL_dark-green.png' },
+    { label: 'Silver',     name: 'Silver Maple',    colour: '#78909C', src: '/stickers/tree-deciduous_maple_XXL_silver-green.png' },
+    { label: 'Purple',     name: 'Royal Red Maple', colour: '#6A1B9A', src: '/stickers/tree-deciduous_maple_XXL_purple-leaf.png' },
+    { label: 'Japanese',   name: 'Japanese Maple',  colour: '#C0392B', src: '/stickers/tree-deciduous_japanese-maple_XXL_CA-US-FR-GB-AU.png' },
   ],
   'vegetable-leafy_lettuce': [
-    { label: 'Green',       colour: '#66BB6A', src: '/stickers/vegetable-leafy_lettuce_M_CA-US-FR-GB-AU.png' },
-    { label: 'Light Green', colour: '#A5D6A7', src: '/stickers/vegetable-leafy_lettuce_M_light-green.png' },
-    { label: 'Dark Green',  colour: '#2E7D32', src: '/stickers/vegetable-leafy_lettuce_M_dark-green.png' },
-    { label: 'Red-Green',   colour: '#E57373', src: '/stickers/vegetable-leafy_lettuce_M_red-green.png' },
-    { label: 'Burgundy',    colour: '#880E4F', src: '/stickers/vegetable-leafy_lettuce_M_burgundy.png' },
-    { label: 'Bronze',      colour: '#A1887F', src: '/stickers/vegetable-leafy_lettuce_M_bronze.png' },
+    { label: 'Green',       name: 'Lettuce',                colour: '#66BB6A', src: '/stickers/vegetable-leafy_lettuce_M_CA-US-FR-GB-AU.png' },
+    { label: 'Light Green', name: 'Butterhead Lettuce',     colour: '#A5D6A7', src: '/stickers/vegetable-leafy_lettuce_M_light-green.png' },
+    { label: 'Dark Green',  name: 'Romaine Lettuce',        colour: '#2E7D32', src: '/stickers/vegetable-leafy_lettuce_M_dark-green.png' },
+    { label: 'Red-Green',   name: 'Lollo Rossa Lettuce',    colour: '#E57373', src: '/stickers/vegetable-leafy_lettuce_M_red-green.png' },
+    { label: 'Burgundy',    name: 'Red Romaine Lettuce',    colour: '#880E4F', src: '/stickers/vegetable-leafy_lettuce_M_burgundy.png' },
+    { label: 'Bronze',      name: 'Bronze Lettuce',         colour: '#A1887F', src: '/stickers/vegetable-leafy_lettuce_M_bronze.png' },
   ],
 }
 

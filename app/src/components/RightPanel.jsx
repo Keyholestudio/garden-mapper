@@ -123,7 +123,7 @@ export default function RightPanel({
             <button className="panel-undo-btn" onClick={() => onUndo?.()}>↩</button>
           </div>
           <div className="panel-h2">{d.label || 'Plant'}</div>
-          <div className="panel-sub">{d.family || ''}</div>
+          <div className="panel-sub">{PLANT_VARIANTS[d.key]?.find(v => v.src === d.variantSrc)?.name || d.family || ''}</div>
           {PLANT_VARIANTS[d.key] && (
             <>
               <div className="panel-title" style={{marginTop:8}}>COLOUR</div>

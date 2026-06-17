@@ -292,7 +292,7 @@ export default function MobileSheet({
     return (
       <>
         <div className="mobile-edit-title">{d.label || 'Plant'}</div>
-        {d.family && <div className="mobile-edit-subtitle">{d.family}</div>}
+        {d.family && <div className="mobile-edit-subtitle">{PLANT_VARIANTS[d.key]?.find(v => v.src === d.variantSrc)?.name || d.family}</div>}
         {PLANT_VARIANTS[d.key] && (
           <>
             <div className="mobile-edit-label" style={{marginTop:8}}>COLOUR</div>
