@@ -132,7 +132,6 @@ export const PLANT_CATALOG = [
 
   // ── Deciduous Trees ───────────────────────────────────────────────────────────
   { key:'tree-deciduous_maple',             label:'Maple Tree',          family:'Deciduous Tree',       src:'/stickers/tree-deciduous_maple_XXL_CA-US-FR-GB-AU.png',              size:'XXL' },
-  { key:'tree-deciduous_japanese-maple',   label:'Japanese Maple',      family:'Deciduous Tree',       src:'/stickers/tree-deciduous_japanese-maple_XXL_CA-US-FR-GB-AU.png',   size:'XXL' },
   { key:'tree-deciduous_magnolia',         label:'Magnolia',            family:'Deciduous Tree',       src:'/stickers/tree-deciduous_magnolia_XXL_CA-US-FR-GB-AU.png',         size:'XXL' },
   { key:'tree-deciduous_oak',              label:'Oak Tree',            family:'Deciduous Tree',       src:'/stickers/tree-deciduous_oak_XXL_CA-US-FR-GB-AU.png',              size:'XXL' },
   { key:'tree-deciduous_ornamental-cherry',label:'Ornamental Cherry',   family:'Deciduous Tree',       src:'/stickers/tree-deciduous_ornamental-cherry_XXL_CA-US-FR-GB-AU.png',size:'XXL' },

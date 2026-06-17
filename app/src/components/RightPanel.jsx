@@ -8,7 +8,7 @@ import { ToolMenu } from './toolMenuData.jsx'
 import {
   BED_COLOURS, BUILDING_COLOURS, FENCE_COLOURS, HEDGE_COLOURS,
   PATH_COLOURS, WATER_COLOURS, DECKING_COLOURS, ELEC_COLOURS, PLUMB_COLOURS,
-  UNIT_PX, TEXTURE_MAP,
+  UNIT_PX, TEXTURE_MAP, PLANT_VARIANTS,
 } from '../hooks/useGardenState'
 import './RightPanel.css'
 
@@ -46,6 +46,7 @@ export default function RightPanel({
   onSeasonsChange,
   onClearSelection,
   onUndo,
+  onPlantVariantChange,
   addingPt, onToggleAddPt,
   removingPt, onToggleRemovePt,
   // Tool menu props
@@ -123,6 +124,22 @@ export default function RightPanel({
           </div>
           <div className="panel-h2">{d.label || 'Plant'}</div>
           <div className="panel-sub">{d.family || ''}</div>
+          {PLANT_VARIANTS[d.key] && (
+            <>
+              <div className="panel-title" style={{marginTop:8}}>COLOUR</div>
+              <div className="colour-swatch-row">
+                {PLANT_VARIANTS[d.key].map(v => (
+                  <div
+                    key={v.src}
+                    className={`colour-swatch${d.variantSrc === v.src ? ' selected' : ''}`}
+                    style={{ background: v.colour }}
+                    title={v.label}
+                    onClick={() => onPlantVariantChange?.(v.src)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
           <div className="panel-sep" />
           <div style={{ display: 'flex', gap: 4 }}>
             <button className="btn-panel" style={{ flex: 1 }} onClick={onCopyPlant}>⧉ Copy</button>

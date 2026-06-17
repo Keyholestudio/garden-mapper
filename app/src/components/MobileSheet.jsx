@@ -9,7 +9,7 @@ import { ToolMenu } from './toolMenuData.jsx'
 import {
   BED_COLOURS, BUILDING_COLOURS, FENCE_COLOURS, HEDGE_COLOURS,
   PATH_COLOURS, WATER_COLOURS, DECKING_COLOURS, ELEC_COLOURS, PLUMB_COLOURS,
-  UNIT_PX, TEXTURE_MAP,
+  UNIT_PX, TEXTURE_MAP, PLANT_VARIANTS,
 } from '../hooks/useGardenState'
 import './MobileSheet.css'
 
@@ -51,6 +51,7 @@ export default function MobileSheet({
   onSeasonsChange,
   onClearSelection,
   onUndo,
+  onPlantVariantChange,
   // Edit points
   editingShapeId,
   onEnterEdit,
@@ -292,6 +293,22 @@ export default function MobileSheet({
       <>
         <div className="mobile-edit-title">{d.label || 'Plant'}</div>
         {d.family && <div className="mobile-edit-subtitle">{d.family}</div>}
+        {PLANT_VARIANTS[d.key] && (
+          <>
+            <div className="mobile-edit-label" style={{marginTop:8}}>COLOUR</div>
+            <div className="mobile-colour-swatch-row">
+              {PLANT_VARIANTS[d.key].map(v => (
+                <div
+                  key={v.src}
+                  className={`mobile-colour-swatch${d.variantSrc === v.src ? ' selected' : ''}`}
+                  style={{ background: v.colour }}
+                  title={v.label}
+                  onClick={() => onPlantVariantChange?.(v.src)}
+                />
+              ))}
+            </div>
+          </>
+        )}
         <div className="mobile-edit-sep" />
 
         <div className="mobile-edit-row">

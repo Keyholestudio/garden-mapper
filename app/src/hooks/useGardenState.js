@@ -40,6 +40,22 @@ export const TEXTURE_MAP = {
   '#TX:deck-dark-brown':     { src: '/textures/deck-dark-brown.jpg',     label: 'Dark Brown Planks' },
   '#TX:deck-cedar':          { src: '/textures/deck-cedar.jpg',          label: 'Cedar Planks' },
 }
+export const PLANT_VARIANTS = {
+  'tree-deciduous_maple': [
+    { label: 'Dark Green',   colour: '#2E7D32', src: '/stickers/tree-deciduous_maple_XXL_dark-green.png' },
+    { label: 'Silver',       colour: '#78909C', src: '/stickers/tree-deciduous_maple_XXL_silver-green.png' },
+    { label: 'Purple',       colour: '#6A1B9A', src: '/stickers/tree-deciduous_maple_XXL_purple-leaf.png' },
+    { label: 'Japanese',     colour: '#C0392B', src: '/stickers/tree-deciduous_japanese-maple_XXL_CA-US-FR-GB-AU.png' },
+  ],
+  'vegetable-leafy_lettuce': [
+    { label: 'Light Green', colour: '#A5D6A7', src: '/stickers/vegetable-leafy_lettuce_M_light-green.png' },
+    { label: 'Dark Green',  colour: '#2E7D32', src: '/stickers/vegetable-leafy_lettuce_M_dark-green.png' },
+    { label: 'Red-Green',   colour: '#E57373', src: '/stickers/vegetable-leafy_lettuce_M_red-green.png' },
+    { label: 'Burgundy',    colour: '#880E4F', src: '/stickers/vegetable-leafy_lettuce_M_burgundy.png' },
+    { label: 'Bronze',      colour: '#A1887F', src: '/stickers/vegetable-leafy_lettuce_M_bronze.png' },
+  ],
+}
+
 export const ELEC_COLOURS    = ['#111111','#E53935','#FDD835']
 export const PLUMB_COLOURS   = ['#757575','#1976D2','#6D4C41']
 

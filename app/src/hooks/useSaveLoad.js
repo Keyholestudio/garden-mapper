@@ -225,6 +225,7 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
       scaleX: g.scaleX(), scaleY: g.scaleY(),
       label: d.label, family: d.family, key: d.key, size: d.size,
       notes: d.notes, seasons: d.seasons, transparent: d.transparent, locked: d.locked || false,
+      variantSrc: d.variantSrc || null,
       zIndex: g.zIndex(),
     })
   })
@@ -462,6 +463,7 @@ export function loadGarden({
       transparent: entry.transparent || false,
       locked: entry.locked || false,
       size: entry.size, key: entry.key,
+      variantSrc: entry.variantSrc || null,
     }
 
     const size = SIZE_MAP[entry.size] || 64
@@ -479,6 +481,11 @@ export function loadGarden({
       try { group.zIndex(Math.max(0, entry.zIndex || 0)) } catch {}
     } else if (entry.zIndex !== undefined) {
       try { group.zIndex(entry.zIndex) } catch {}
+    }
+    if (entry.variantSrc) {
+      const vImg = new window.Image()
+      vImg.onload = () => { const k = group.findOne('Image'); if (k) { k.image(vImg); plantLayer?.batchDraw() } }
+      vImg.src = entry.variantSrc
     }
     group._family = entry.family || ''  // stamp family for zone-aware layer stepping
     group.on('click tap', () => onSelectPlant(entry.id, group))

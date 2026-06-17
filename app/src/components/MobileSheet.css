@@ -403,7 +403,7 @@
   margin-bottom: -4px;
 }
 
-.mobile-colour-row {
+.mobile-colour-row, .mobile-colour-swatch-row {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;

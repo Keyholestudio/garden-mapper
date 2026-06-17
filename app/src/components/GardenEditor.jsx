@@ -4,7 +4,7 @@
 
 import { useRef, useState, useEffect } from 'react'
 import Konva from 'konva'
-import { useGardenState, TEXTURE_MAP }  from '../hooks/useGardenState'
+import { useGardenState, TEXTURE_MAP, PLANT_VARIANTS }  from '../hooks/useGardenState'
 import { useDrawTools }    from '../hooks/useDrawTools'
 import { useSelection }    from '../hooks/useSelection'
 import { PLANT_CATALOG, useLazyPacks }   from '../hooks/usePlantCatalog'
@@ -887,6 +887,20 @@ export default function GardenEditor() {
     triggerAutoSave()
   }
 
+  const handlePlantVariantChange = (variantSrc) => {
+    const sel = state.selectedPlant; if (!sel) return
+    const d = state.plantDataRef.current[sel.id]
+    d.variantSrc = variantSrc
+    const img = new window.Image()
+    img.onload = () => {
+      const konvaImg = sel.group.findOne('Image')
+      if (konvaImg) { konvaImg.image(img); layersRef.current.plantLayer?.batchDraw() }
+    }
+    img.src = variantSrc
+    state.setSelectedPlant({ ...sel })
+    triggerAutoSave()
+  }
+
   const handleLockStruct = () => {
     const sel = state.selectedStruct; if (!sel) return
     const d = state.structDataRef.current[sel.id]
@@ -1319,6 +1333,7 @@ export default function GardenEditor() {
                 }
               }}
               onUndo={handleUndo}
+              onPlantVariantChange={handlePlantVariantChange}
               onColourChange={handleColourChange}
               onPathWidthChange={handlePathWidthChange}
               onDimRectApply={handleDimRectApply}
@@ -1454,6 +1469,7 @@ export default function GardenEditor() {
             // Advance srcX so next tap steps one more plant to the right
             state.setClipboard({ kind: 'plant', entry, srcX: srcX + size + 8, srcY })
           }}
+          onPlantVariantChange={handlePlantVariantChange}
           onColourChange={handleColourChange}
           onPathWidthChange={handlePathWidthChange}
           onEnterEdit={enterEdit}
