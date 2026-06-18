@@ -197,67 +197,33 @@ export const PLANT_CATALOG = [
   { key:'water-feature_fountain-lg_L_CA-US-FR-GB-AU', label:'Large Fountain',  family:'Water Feature', src:'/stickers/water-feature_fountain-lg_L_CA-US-FR-GB-AU.png', size:'L' },
 
   { key:'flower-daisy_feverfew_S_CA-US-FR-GB-AU', label:'Feverfew', family:'Perennial', src:'/stickers/flower-daisy_feverfew_S_CA-US-FR-GB-AU.png', size:'S' },
-  // ── New additions
+  // -- New additions --
 
-  // ── New additions
+  // -- New additions --
 
-  // ── New additions
+  // -- New additions --
 
-  // ── New additions
+  // -- New additions --
 
-  // ── New additions
+  // -- New additions --
 
-  // ── New additions
+  // -- New additions --
 
-  // ── New additions
+  // -- New additions --
 
-  // ── New additions
+  // -- New additions --
 
-  // ── New additions
+  // -- New additions --
 
-  // ── New additions
+  // -- New additions --
 
-  // ── New additions
+  // -- New additions --
 
-  // ── New additions
+  // -- New additions --
 
-  // ── New additions
+  // -- New additions --
 
-  // ── New additions
-
-  // ── New additions
-
-  // ── New additions
-
-  // ── New additions
-
-  // ── New additions
-
-  // ── New additions
-
-  // ── New additions
-
-  // ── New additions
-
-  // ── New additions
-
-  // ── New additions
-
-  // ── New additions
-
-  // ── New additions
-
-  // ── New additions
-
-  // ── New additions
-
-  // ── New additions
-
-  // ── New additions
-  { key:'tree-fruit_medlar_XL_CA-US-FR-GB-AU', label:'Medlar', family:'Fruit Tree', src:'/stickers/tree-fruit_medlar_XL_CA-US-FR-GB-AU.png', size:'XL' },
-
-  // ── New additions
-  { key:'tree-fruit_loquat_XL_CA-US-FR-GB-AU', label:'Loquat', family:'Fruit Tree', src:'/stickers/tree-fruit_loquat_XL_CA-US-FR-GB-AU.png', size:'XL' },
+  // -- New additions --
 
   // ── Reference entry (kept for catalog structure reference only) ───────────────
   // { key:'tree-svg-ref', label:'Apple Tree (SVG ref)', family:'Fruit Tree', src:'/stickers/tree.svg', size:'L' },
