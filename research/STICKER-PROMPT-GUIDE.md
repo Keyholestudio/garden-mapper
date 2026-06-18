@@ -318,11 +318,12 @@ Shape: Correct proportions.
 
 **Background colour:** `#FF00FF` solid magenta *(switched from green 2026-06-18 — green caused internal plant colour bleed on leafy plants)*
 
-**Pipeline:** `tools/sticker-pipeline.py` (v9+)
+**Pipeline:** `tools/sticker-pipeline.py` (v10 — current)
 - Chroma: `[255, 0, 255]` magenta
-- Tolerance: `40` | Soft range: `20`
-- Spill suppression: channel-ratio method on ALL visible pixels (`min(R,B) - G`)
+- Tolerance: `80` | Soft range: `40`
+- Spill suppression: **edge-only** (semi-transparent pixels only, same as original green pipeline). Reduces R and B toward G on edge pixels where R-G > 15 AND B-G > 15.
 - Watermark erase: bottom-right 20% corner (covers full Gemini logo after any crop/resize)
+- **Do not add second-pass or whole-image spill suppression** — causes grey halos and incomplete BG removal (L035)
 
 **Do not change the background colour** without also updating `TEMPLATES` in `sticker-generate-one.py` and re-syncing this guide (Workflow 0a).
 

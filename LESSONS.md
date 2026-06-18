@@ -3,12 +3,18 @@ _L001–L009, L016–L018, L020 archived at: `memory/deep/garden-planner/lessons
 
 ---
 
+## L035 — Pipeline: keep it simple — edge-only spill, no second passes
+**Date:** 2026-06-18
+v9 pipeline added aggressive second-pass spill suppression on ALL visible pixels + white-border detection loop. This broke the output: grey halos remained, magenta wasn't being fully removed, some images had no BG removal at all.
+**Fix:** Revert to the same simple structure as the working green pipeline (v4): chroma key distance → alpha, edge-only spill suppression (semi-transparent pixels only), 20% corner erase for watermark. Port to magenta = just change `CHROMA` target and flip spill logic from green-excess to RB-excess.
+**Pipeline:** `sticker-pipeline.py` v10 — this is the current working version.
+**Rule:** Do not add multi-pass complexity to the pipeline without testing on multiple raws first. Simple = reliable.
+
 ## L034 — Use magenta (#FF00FF) background, not green, for sticker generation
 **Date:** 2026-06-18
-Using chroma-key green (#00FF00) with tolerance=80 caused internal plant colour bleed: mid-greens and dark greens inside leafy plants (arugula, etc.) were close enough in hue distance to be partially erased, leaving brown holes. Additionally, Gemini sometimes renders the dark outline with a purple/magenta tint — on a green background these survived as opaque magenta halo pixels.
-**Fix:** Switch to solid magenta (#FF00FF) background with tighter tolerance (40/20). Suppress magenta spill from ALL visible pixels using channel-ratio method: `magenta_amount = max(min(R,B) - G, 0)`. Also erase bottom-right 20% corner (not 13%) to fully remove Gemini watermark after crop+resize.
-**Pipeline:** `sticker-pipeline.py` v9+. **Guide:** `STICKER-PROMPT-GUIDE.md` Section 7b.
-**Rule:** Never use green background for plants that contain green. Magenta is the correct default.
+Using chroma-key green (#00FF00) with tolerance=80 caused internal plant colour bleed — mid-greens inside leafy plants were partially erased. Switch to magenta (#FF00FF) avoids this since plants rarely contain magenta.
+**Pipeline:** `sticker-pipeline.py` v10. Tolerance=80, soft_range=40, edge-only spill suppression, 20% corner watermark erase.
+**Rule:** Always use magenta background. Never revert to green.
 
 ## L033 — Always sync TEMPLATES dict before generating stickers
 **Date:** 2026-06-18
