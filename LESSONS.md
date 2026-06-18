@@ -3,6 +3,13 @@ _L001–L009, L016–L018, L020 archived at: `memory/deep/garden-planner/lessons
 
 ---
 
+## L034 — Use magenta (#FF00FF) background, not green, for sticker generation
+**Date:** 2026-06-18
+Using chroma-key green (#00FF00) with tolerance=80 caused internal plant colour bleed: mid-greens and dark greens inside leafy plants (arugula, etc.) were close enough in hue distance to be partially erased, leaving brown holes. Additionally, Gemini sometimes renders the dark outline with a purple/magenta tint — on a green background these survived as opaque magenta halo pixels.
+**Fix:** Switch to solid magenta (#FF00FF) background with tighter tolerance (40/20). Suppress magenta spill from ALL visible pixels using channel-ratio method: `magenta_amount = max(min(R,B) - G, 0)`. Also erase bottom-right 20% corner (not 13%) to fully remove Gemini watermark after crop+resize.
+**Pipeline:** `sticker-pipeline.py` v9+. **Guide:** `STICKER-PROMPT-GUIDE.md` Section 7b.
+**Rule:** Never use green background for plants that contain green. Magenta is the correct default.
+
 ## L033 — Always sync TEMPLATES dict before generating stickers
 **Date:** 2026-06-18
 The `TEMPLATES` dict in `tools/sticker-generate-one.py` contained stale wording ("Plants vs. Zombies meets watercolor painting") that didn't match `research/STICKER-PROMPT-GUIDE.md` ("watercolor painting" only). Result: 4 pome fruit stickers were generated with the wrong art style directive.

@@ -1,5 +1,5 @@
 # Garden Mapper — Sticker Prompt Guide
-_Last updated: 2026-06-03 — Rob's master edition_
+_Last updated: 2026-06-18 (background switched to magenta) — Rob's master edition_
 
 ---
 
@@ -16,7 +16,7 @@ Aerial side view. Art style: watercolor painting — tasteful simplified represe
 
 Subject: [PLANT NAME], stubby [TYPE OF PLANT], no trunk.
 Canvas: [SIZE]px square.
-Colours: [4-5 colours or hex codes], flat chroma-key green background (#00FF00)
+Colours: [4-5 colours or hex codes], flat solid magenta background (#FF00FF)
 Shape: Correct proportions.
 ```
 
@@ -29,7 +29,7 @@ Aerial side view. Art style: watercolor painting — tasteful simplified represe
 
 Subject: [PLANT NAME], [TYPE OF PLANT].
 Canvas: [SIZE]px square.
-Colours: [4-5 colours or hex codes], flat chroma-key green background (#00FF00)
+Colours: [4-5 colours or hex codes], flat solid magenta background (#FF00FF)
 Shape: [Primary characteristics], stems at bottom and leafy florals at the top. Only a few leaves and flowers, small plant. Correct proportions.
 ```
 
@@ -42,7 +42,7 @@ Side aerial view. Art style: watercolor painting — tasteful simplified represe
 
 Subject: [PLANT NAME], [TYPE OF PLANT].
 Canvas: [SIZE]px square.
-Colours: [4-5 colours or hex codes], flat chroma-key green background (#00FF00)
+Colours: [4-5 colours or hex codes], flat solid magenta background (#FF00FF)
 Shape: [PLANT NAME] and tops peeking from a plant wide soil line. Only show the top of the root/plant above the minimal soil line. [Basic plant description] shoulders visible above the soil, root at bottom and leafy tops. Natural proportions.
 ```
 
@@ -55,7 +55,7 @@ Side aerial view. Art style: Watercolor painting — tasteful simplified represe
 
 Subject: [PLANT NAME], large broad deciduous tree. NO TRUNK. Canopy only. Small leaves.
 Canvas: [SIZE]px square.
-Colours: [4-5 colours or hex codes], flat chroma-key green background (#00FF00)
+Colours: [4-5 colours or hex codes], flat solid magenta background (#FF00FF)
 Shape: Natural full leafy canopy, distinctive lobed leaf shapes visible. No trunk. No branches. Canopy fills the frame. Spring/summer only. No fall colours.
 ```
 
@@ -125,7 +125,7 @@ Full naming convention (for catalog/CDN):
 
 ## 4. Background Removal (Chroma Key Pipeline)
 
-All images are generated with a flat chroma-key green background (`#00FF00`) for clean automated removal.
+All images are generated with a flat solid magenta background (`#FF00FF`) for clean automated removal.
 
 ### Processing script
 ```powershell
@@ -137,7 +137,7 @@ $python = "C:\Users\RG\AppData\Local\Python\bin\python3.exe"
 
 | Step | What happens |
 |---|---|
-| 1. Chroma key removal | Removes `#00FF00` background. Tolerance: 80 (Euclidean RGB). Soft transition zone: 40px for anti-aliased edges. |
+| 1. Chroma key removal | Removes `#FF00FF` background. Tolerance: 80 (Euclidean RGB). Soft transition zone: 40px for anti-aliased edges. |
 | 2. Green spill suppression | Semi-transparent edge pixels only. If green > avg(R+B) by more than 15 → pulls green down. Never touches opaque subject pixels. |
 | 3. Watermark erasure | Bottom-right 13% × 13% region → alpha = 0. Safe zone — no plant occupies this corner. |
 | 4. Crop to content | `Image.getbbox()` trims transparent border on all 4 sides. |
@@ -147,7 +147,7 @@ Output: `<filename>_nobg.png` alongside each input.
 
 ### Manual background removal (if pipeline unavailable)
 - **remove.bg** — web UI, fast, 1 image at a time
-- **Photoshop / GIMP** — Select by color (#00FF00) → delete → export PNG with alpha
+- **Photoshop / GIMP** — Select by color (#FF00FF) → delete → export PNG with alpha
 
 ### PNG output checklist
 - [ ] Transparent background (no green or white remaining)
@@ -252,7 +252,7 @@ Aerial side view. Art style: meets watercolor painting — tasteful simplified r
 
 Subject: French Marigold flower, compact annual.
 Canvas: 160px square.
-Colours: bright orange #FF8C00, golden yellow #FFD700, dark brown centre #8B3A00, mid-green #4A7C2F, deep green stems #2A5010, flat chroma-key green background (#00FF00)
+Colours: bright orange #FF8C00, golden yellow #FFD700, dark brown centre #8B3A00, mid-green #4A7C2F, deep green stems #2A5010, flat solid magenta background (#FF00FF)
 Shape: Bold layered bloom of orange-yellow petals around a dark warm centre disk, stems at bottom and leafy florals at the top. Only a few leaves and flowers, small plant. Correct proportions.
 ```
 
@@ -266,7 +266,7 @@ Aerial side view. Art style: watercolor painting — tasteful simplified represe
 
 Subject: English Lavender shrub, perennial herb.
 Canvas: 256px square.
-Colours: purple #7B5EA7, silver-grey foliage #8FAF82, pale lavender #C4A8E0, dark outline #2D1A4A, warm grey stems #A09070, flat chroma-key green background (#00FF00)
+Colours: purple #7B5EA7, silver-grey foliage #8FAF82, pale lavender #C4A8E0, dark outline #2D1A4A, warm grey stems #A09070, flat solid magenta background (#FF00FF)
 Shape: Upright silver-grey stems topped with dense purple flower spikes, stems at bottom and leafy florals at the top. Only a few leaves and flowers, small plant. Correct proportions.
 ```
 
@@ -280,7 +280,7 @@ Side aerial view. Art style: watercolor painting — tasteful simplified represe
 
 Subject: Carrot, root vegetable.
 Canvas: 96px square.
-Colours: bright orange #FF6B1A, deep orange #CC4A00, bright green tops #4AAF2F, mid-green #2A7010, pale green stem #8FBF6A, flat chroma-key green background (#00FF00)
+Colours: bright orange #FF6B1A, deep orange #CC4A00, bright green tops #4AAF2F, mid-green #2A7010, pale green stem #8FBF6A, flat solid magenta background (#FF00FF)
 Shape: Carrots and tops peeking from a plant wide soil line. Only show the top of the root/plant above the minimal soil line. Bold orange carrot shoulders visible above the soil, root at bottom and leafy tops. Natural proportions.
 ```
 
@@ -294,7 +294,7 @@ Side aerial view. Art style: watercolor painting — tasteful simplified represe
 
 Subject: Apple tree in fruit, round deciduous tree, No trunk.
 Canvas: 512px square.
-Colours: mid-green #4E8C3A, deep green #2A5C1A, bright red apples #D42B2B, warm brown limbs #6B3A2A, pale yellow-green accents #B8D474, flat chroma-key green background (#00FF00)
+Colours: mid-green #4E8C3A, deep green #2A5C1A, bright red apples #D42B2B, warm brown limbs #6B3A2A, pale yellow-green accents #B8D474, flat solid magenta background (#FF00FF)
 Shape: Natural leafy canopy. Minimal fruit, only as accent.
 ```
 
@@ -308,15 +308,29 @@ Aerial side view. Art style: watercolor painting — tasteful simplified represe
 
 Subject: Pine tree, stubby evergreen conifer, no trunk.
 Canvas: 512px square.
-Colours: deep forest green #1A5C2A, mid-green #2E7A3A, blue-green #4A8C6A, dark outline #0A2A10, pale silver-green #8AAF8A, flat chroma-key green background (#00FF00)
+Colours: deep forest green #1A5C2A, mid-green #2E7A3A, blue-green #4A8C6A, dark outline #0A2A10, pale silver-green #8AAF8A, flat solid magenta background (#FF00FF)
 Shape: Correct proportions.
 ```
 
 ---
 
+## 7b. Background Removal Pipeline Settings
+
+**Background colour:** `#FF00FF` solid magenta *(switched from green 2026-06-18 — green caused internal plant colour bleed on leafy plants)*
+
+**Pipeline:** `tools/sticker-pipeline.py` (v9+)
+- Chroma: `[255, 0, 255]` magenta
+- Tolerance: `40` | Soft range: `20`
+- Spill suppression: channel-ratio method on ALL visible pixels (`min(R,B) - G`)
+- Watermark erase: bottom-right 20% corner (covers full Gemini logo after any crop/resize)
+
+**Do not change the background colour** without also updating `TEMPLATES` in `sticker-generate-one.py` and re-syncing this guide (Workflow 0a).
+
+---
+
 ## 8. Quality Gates (before any sticker goes live)
 
-- [ ] Background fully removed — no  flat chroma-key green background (#00FF00) pixels remaining
+- [ ] Background fully removed — no  flat solid magenta background (#FF00FF) pixels remaining
 - [ ] Subject clearly recognisable at 24px (squint test)
 - [ ] No white halo or dark fringe around edges
 - [ ] File named correctly per convention
