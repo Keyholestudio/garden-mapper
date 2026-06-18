@@ -29,6 +29,13 @@ export const PACK_REGISTRY = [
     loader: () => import('./pack-tropical.js'),
     families: ['Palm Tree', 'Tropical'],
   },
+  {
+    id: 'fruit-pome',
+    label: 'Pome Fruit',
+    eager: false,
+    loader: () => import('./pack-fruit-pome.js'),
+    families: ['Pome Fruit'],
+  },
 ];
 
 // Families served by lazy packs — used to exclude them from core tray render

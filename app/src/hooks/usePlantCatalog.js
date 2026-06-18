@@ -251,6 +251,9 @@ export const PLANT_CATALOG = [
 
   // ── New additions
 
+  // ── New additions
+  { key:'tree-fruit_medlar_XL_CA-US-FR-GB-AU', label:'Medlar', family:'Fruit Tree', src:'/stickers/tree-fruit_medlar_XL_CA-US-FR-GB-AU.png', size:'XL' },
+
   // ── Reference entry (kept for catalog structure reference only) ───────────────
   // { key:'tree-svg-ref', label:'Apple Tree (SVG ref)', family:'Fruit Tree', src:'/stickers/tree.svg', size:'L' },
   { key:'plant-fern_fern_L_CA-US-FR-GB-AU', label:'Fern', family:'Fern / Groundcover', src:'/stickers/plant-fern_fern_L_CA-US-FR-GB-AU.png', size:'L' },

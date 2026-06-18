@@ -6,6 +6,7 @@ _Last updated: 2026-06-18_
 
 ## Index
 
+0. [Plant pipeline: Staging → Database](#0-plant-pipeline-staging--database)
 1. [Add a new plant sticker (core catalog)](#1-add-a-new-plant-sticker-core-catalog)
 2. [Add a new plant sticker (lazy pack)](#2-add-a-new-plant-sticker-lazy-pack)
 3. [Create a new pack file](#3-create-a-new-pack-file)
@@ -15,6 +16,31 @@ _Last updated: 2026-06-18_
 7. [Deploy to Android](#7-deploy-to-android)
 8. [Run the tray validator](#8-run-the-tray-validator)
 9. [End-of-session commit checklist](#9-end-of-session-commit-checklist)
+
+---
+
+## 0. Plant pipeline: Staging → Database
+
+> **Three files. Plants move forward, never backward.**
+
+| File | Purpose | When used |
+|------|---------|----------|
+| `research/PLANT-PACK-RESEARCH.md` | Full researched plant lists per pack — counts + names only | Reference only. Never edit directly during sticker work. |
+| `research/PLANT-STAGING.md` | Full schema rows for all researched plants, not yet in app | Source of truth before a sticker is made. Pick plants from here. |
+| `research/PLANT-DATABASE.md` | Plants that exist in the app (sticker generated + committed) | Destination. A row arrives here only after sticker is approved + committed. |
+
+**The flow:**
+1. Rob says "let's do [pack name]" → find the section in `PLANT-STAGING.md`
+2. Pick plants for that pack (start with 3–5 per session)
+3. Generate stickers via Workflow 2 (lazy pack) or Workflow 1 (core)
+4. After approval + commit: **move the row** from `PLANT-STAGING.md` → `PLANT-DATABASE.md` (fill in Sticker ID)
+5. Delete the migrated row from `PLANT-STAGING.md`
+
+**Rules:**
+- Never add a plant to `PLANT-DATABASE.md` without a Sticker ID
+- Never skip `PLANT-STAGING.md` — it is the duplicate-check gate before generation
+- `PLANT-PACK-RESEARCH.md` is read-only reference — update it only when adding new packs
+- Check `PLANT-STAGING.md` first before any sticker generation (same as old PLANT-DATABASE check)
 
 ---
 
@@ -58,12 +84,13 @@ _Last updated: 2026-06-18_
 
 > Use this for: any plant that belongs to one of the 63 defined pack subtypes (see pack list below).
 
-> ⚠️ **PLANT-DATABASE.md is checked BEFORE anything else. No exceptions. No generation until the database check is complete.**
+> ⚠️ **PLANT-STAGING.md is checked BEFORE anything else. No exceptions. No generation until the check is complete.**
 
-**Step 1 — Check PLANT-DATABASE.md first**
-- Search `research/PLANT-DATABASE.md` for the plant by common name AND latin name
-- **If already listed:** confirm the pack column — use exactly that pack, stop here if Sticker ID is already filled (already done)
-- **If not listed:** add the row now with all fields before proceeding. This is the gate.
+**Step 1 — Check PLANT-STAGING.md and PLANT-DATABASE.md first**
+- Search `research/PLANT-STAGING.md` for the plant by common name AND latin name
+- **If found in staging with no Sticker ID:** row is ready — confirm the pack column and proceed from Step 3
+- **If not in staging:** check `research/PLANT-DATABASE.md` — if Sticker ID is filled, it's already in the app — stop
+- **If in neither:** add the row to `PLANT-STAGING.md` now with all fields before proceeding. This is the gate.
 
 **Step 2 — Duplicate check (3 places)**
 1. `research/PLANT-DATABASE.md` — already covered in Step 1

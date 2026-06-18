@@ -12,7 +12,7 @@ Use the correct template for the plant type. Rob's wording is intentional — do
 ### Pines
 
 ```
-Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2–3px. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
+Aerial side view. Art style: watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2–3px. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: [PLANT NAME], stubby [TYPE OF PLANT], no trunk.
 Canvas: [SIZE]px square.
@@ -25,7 +25,7 @@ Shape: Correct proportions.
 ### Plants (herbs, flowers, shrubs, perennials)
 
 ```
-Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
+Aerial side view. Art style: watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: [PLANT NAME], [TYPE OF PLANT].
 Canvas: [SIZE]px square.
@@ -38,7 +38,7 @@ Shape: [Primary characteristics], stems at bottom and leafy florals at the top. 
 ### Root Vegetables
 
 ```
-Side aerial view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
+Side aerial view. Art style: watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: [PLANT NAME], [TYPE OF PLANT].
 Canvas: [SIZE]px square.
@@ -248,7 +248,7 @@ When the automated sticker generation cron runs, it needs to:
 *Final: 40px · Generate at: 160px*
 
 ```
-Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
+Aerial side view. Art style: meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: French Marigold flower, compact annual.
 Canvas: 160px square.
@@ -262,7 +262,7 @@ Shape: Bold layered bloom of orange-yellow petals around a dark warm centre disk
 *Final: 64px · Generate at: 256px*
 
 ```
-Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
+Aerial side view. Art style: watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: English Lavender shrub, perennial herb.
 Canvas: 256px square.
@@ -276,7 +276,7 @@ Shape: Upright silver-grey stems topped with dense purple flower spikes, stems a
 *Final: 24px · Generate at: 96px*
 
 ```
-Side aerial view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
+Side aerial view. Art style: watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: Carrot, root vegetable.
 Canvas: 96px square.
@@ -290,7 +290,7 @@ Shape: Carrots and tops peeking from a plant wide soil line. Only show the top o
 *Final: 128px · Generate at: 512px*
 
 ```
-Side aerial view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, leafy, Dark outline 2–3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Side aerial view. Art style: watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, leafy, Dark outline 2–3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: Apple tree in fruit, round deciduous tree, No trunk.
 Canvas: 512px square.
@@ -304,7 +304,7 @@ Shape: Natural leafy canopy. Minimal fruit, only as accent.
 *Final: 128px · Generate at: 512px*
 
 ```
-Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2–3px. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
+Aerial side view. Art style: watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2–3px. No shadows. No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: Pine tree, stubby evergreen conifer, no trunk.
 Canvas: 512px square.
@@ -316,7 +316,7 @@ Shape: Correct proportions.
 
 ## 8. Quality Gates (before any sticker goes live)
 
-- [ ] Background fully removed — no green pixels remaining
+- [ ] Background fully removed — no  flat chroma-key green background (#00FF00) pixels remaining
 - [ ] Subject clearly recognisable at 24px (squint test)
 - [ ] No white halo or dark fringe around edges
 - [ ] File named correctly per convention
