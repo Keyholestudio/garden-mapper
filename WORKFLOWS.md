@@ -22,10 +22,13 @@ _Last updated: 2026-06-18_
 
 > Use this for: herbs, vegetables, perennials, annuals, shrubs, ornamental trees, bulbs, groundcovers, grasses, climbers, aquatics — anything that lives in `usePlantCatalog.js`.
 
-**Step 1 — Plan it (PLANT-DATABASE.md first)**
-- Add a row to `research/PLANT-DATABASE.md` before touching any code
-- Fill in: Common Name, Latin Name, Family Group, Regions, Size, Pack (`core`), Traits, Search Terms, Variants
-- This locks the key name, size, and search metadata before generation
+**Step 1 — Check PLANT-DATABASE.md first**
+- Search `research/PLANT-DATABASE.md` for the plant by common name AND latin name
+- **If already listed with a Sticker ID:** it's already in the app — stop
+- **If already listed without a Sticker ID:** the row exists, review it and proceed from Step 2
+- **If not listed:** add the row now — Common Name, Latin Name, Family Group, Regions, Size, Pack (`core`), Traits, Search Terms, Variants — before doing anything else
+- Also check `usePlantCatalog.js` by key name to confirm it's not already in code without a DB entry
+- This step locks the key name, size, and search metadata. Nothing proceeds until it's done.
 
 **Step 2 — Generate the sticker**
 - Run: `python sticker-generate-one.py "[Plant Name]"` (no `--force`)
@@ -53,26 +56,49 @@ _Last updated: 2026-06-18_
 
 ## 2. Add a new plant sticker (lazy pack)
 
-> Use this for: cacti, succulents, palms, tropicals, ferns — anything that lives in a `pack-*.js` file.
+> Use this for: any plant that belongs to one of the 63 defined pack subtypes (see pack list below).
 
-**Step 1 — Plan it (PLANT-DATABASE.md first)**
-- Same as above. Pack column = the pack file name (e.g. `pack-ferns-woodland`)
+> ⚠️ **PLANT-DATABASE.md is checked BEFORE anything else. No exceptions. No generation until the database check is complete.**
 
-**Step 2 — Confirm the pack file exists**
+**Step 1 — Check PLANT-DATABASE.md first**
+- Search `research/PLANT-DATABASE.md` for the plant by common name AND latin name
+- **If already listed:** confirm the pack column — use exactly that pack, stop here if Sticker ID is already filled (already done)
+- **If not listed:** add the row now with all fields before proceeding. This is the gate.
+
+**Step 2 — Duplicate check (3 places)**
+1. `research/PLANT-DATABASE.md` — already covered in Step 1
+2. `app/src/hooks/usePlantCatalog.js` — search for the key AND the common name. Many plants (herbs, vegetables, shrubs, climbers) are already in core. If found → stop, it's already in the app.
+3. `app/src/data/packs/pack-cacti-succulents.js` — check this legacy file for any cactus or succulent addition, even if using a new granular pack name
+- **If a duplicate is found anywhere:** tell Rob before doing anything else. Do not proceed.
+
+**Step 3 — Resolve ambiguous pack assignment**
+- Some plants fit multiple subtypes (e.g. Rosemary → culinary, woody, or perennial herbs; Lavender → woody herbs or flowering shrubs)
+- If the correct pack isn't obvious: present the options to Rob and confirm before generating
+- Once confirmed, lock it in PLANT-DATABASE.md before touching anything else
+
+**Step 4 — Confirm the pack file exists**
 - Check `app/src/data/packs/` — if the pack file doesn't exist yet, do [Workflow 3](#3-create-a-new-pack-file) first
 
-**Step 3 — Generate + approve**
-- Same as Workflow 1, Steps 2–3
+**Step 5 — Generate the sticker**
+- Run: `python sticker-generate-one.py "[Plant Name]"` (no `--force`)
+- PNG lands in `stickers/generated/pending/<key>.png`
+- Open the folder for Rob to review
 
-**Step 4 — Commit (only after approval)**
-1. Copy PNG → both sticker locations (same as above)
-2. Add entry to the correct pack file (e.g. `pack-ferns-woodland.js`) — **NEVER to `usePlantCatalog.js`**
-3. Run `pwsh tools/validate-tray.ps1` — 0 errors required
-4. Update `research/PLANT-DATABASE.md` → fill in Sticker ID
+**Step 6 — Approval gate**
+- Rob says "Approve [name]" → proceed
+- Rob says "Redo [name]" → regenerate with updated prompt
+- Rob says "Skip [name]" → discard, do not commit
+
+**Step 7 — Commit (only after approval)**
+1. Copy PNG → `app/public/stickers/<key>.png` AND `stickers/<key>.png`
+2. Add entry to the correct pack file — **NEVER to `usePlantCatalog.js`**
+   - `key`, `label`, `size`, `latinName`, `searchTerms[]`, `traits[]` — use PLANT-DATABASE.md as the source
+3. Run `pwsh tools/validate-tray.ps1` — must show 0 errors before committing
+4. Update `research/PLANT-DATABASE.md` → fill in the Sticker ID column
 5. `git add -A && git commit -m "Sticker: add [Name] ([key]) to [pack name]"`
-6. `git push`
+6. `git push` → Vercel auto-deploys in ~15s
 
-**Duplication rule:** A key must appear in exactly ONE file — catalog OR one pack. Never both.
+**Duplication rule:** A key must appear in exactly ONE file — core catalog OR one pack. Never both. The validator catches this but the database check should catch it first.
 
 ---
 
