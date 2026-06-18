@@ -515,19 +515,9 @@ def main():
     p(f"  python sticker-generate-one.py \"{plant_name}\" --upload-only")
     p("=" * 60)
 
-    # Auto-upload if --force was passed (for batch use)
-    if force:
-        shutil.copy2(clean_path, dest_path)
-        add_to_catalog(plant_id, plant_name, family, dest_path, size_tier)
-        subprocess.run(
-            ["git", "add", "-A"],
-            cwd=WORKSPACE, capture_output=True
-        )
-        subprocess.run(
-            ["git", "commit", "-m", f"Add sticker: {plant_name} ({plant_id})"],
-            cwd=WORKSPACE, capture_output=True
-        )
-        p(f"Auto-uploaded and committed: {plant_name}")
+    # NOTE: --force only means "regenerate even if sticker already exists".
+    # It does NOT auto-upload or auto-commit.
+    # Approval gate is always required. See L032 + Workflow 2.
 
 if __name__ == "__main__":
     main()
