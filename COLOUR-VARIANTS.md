@@ -16,7 +16,7 @@ _Created: 2026-06-17 | Status: In progress_
 ### Chunk 1 — Trees
 | Plant | Key | Status | Variants |
 |-------|-----|--------|----------|
-| Maple | `tree-deciduous_maple` | ✅ Done | Green, Dark Green, Silver, Purple, Japanese (5) |
+| Maple | `tree-deciduous_maple` | ⚠️ Partial | Green (v1 — regen needed), Dark Green ✅, Silver ✅, Purple ✅, Japanese ✅ — Red Leaf (v1 — regen needed) |
 | Japanese Maple | — | ✅ Retired to Maple picker | — |
 | Ornamental Cherry | `tree-deciduous_ornamental-cherry` | 🔲 Next | Pink, White, Deep Pink |
 | Magnolia | `tree-deciduous_magnolia` | 🔲 Next | White, Pink, Purple |
