@@ -3,6 +3,7 @@
 > Sizes: XS (<30cm) | S (30–60cm) | M (60cm–1.5m) | L (1.5m+) | XL (tree, 3m+)
 > Variants: none | planned | done
 > Sticker ID: catalog key once generated (blank = not yet generated)
+> Pack names: see WORKFLOWS.md — Reference: Complete Pack File List for all 63 canonical pack file names
 
 ---
 
@@ -27,24 +28,24 @@
 | Dwarf Tree Fern | Blechnum gibbum | Blechnaceae | AU US FR | M | pack-ferns-tree | | tree-fern, compact, container | blechnum, miniature tree fern, dwarf fern | none | good for pots |
 | Lady Fern | Athyrium filix-femina | Athyriaceae | CA US FR GB AU | M | pack-ferns-woodland | | woodland, feathery, deciduous, shade | athyrium, lacy fern, common lady fern | none | most common garden fern |
 | Japanese Painted Fern | Athyrium niponicum | Athyriaceae | CA US FR GB AU | M | pack-ferns-woodland | | woodland, feathery, shade | athyrium niponicum, painted fern, silver fern | planned | silver/purple frond colouring |
-| Ostrich Fern | Matteuccia struthiopteris | Onocleaceae | CA US FR GB | L | pack-ferns-woodland | | woodland, deciduous, shade, moisture, stream | matteuccia, shuttlecock fern, fiddlehead fern | none | vase-shaped, edible fiddleheads |
-| Sensitive Fern | Onoclea sensibilis | Onocleaceae | CA US FR GB | M | pack-ferns-woodland | | woodland, deciduous, bog, stream | onoclea, bead fern | none | dies back at first frost |
-| Cinnamon Fern | Osmundastrum cinnamomeum | Osmundaceae | CA US FR GB | L | pack-ferns-woodland | | woodland, deciduous, moisture, bog | osmunda cinnamomea, cinnamon fern | none | cinnamon-coloured fertile fronds |
-| Royal Fern | Osmunda regalis | Osmundaceae | CA US FR GB AU | L | pack-ferns-woodland | | woodland, deciduous, moisture, bog, stream | osmunda, flowering fern | none | large architectural fern |
+| Ostrich Fern | Matteuccia struthiopteris | Onocleaceae | CA US FR GB | L | pack-ferns-moisture | | deciduous, moisture, stream | matteuccia, shuttlecock fern, fiddlehead fern | none | vase-shaped, edible fiddleheads |
+| Sensitive Fern | Onoclea sensibilis | Onocleaceae | CA US FR GB | M | pack-ferns-moisture | | deciduous, bog, stream | onoclea, bead fern | none | dies back at first frost |
+| Cinnamon Fern | Osmundastrum cinnamomeum | Osmundaceae | CA US FR GB | L | pack-ferns-moisture | | deciduous, moisture, bog | osmunda cinnamomea, cinnamon fern | none | cinnamon-coloured fertile fronds |
+| Royal Fern | Osmunda regalis | Osmundaceae | CA US FR GB AU | L | pack-ferns-moisture | | deciduous, moisture, bog, stream | osmunda, flowering fern | none | large architectural fern |
 | Interrupted Fern | Claytosmunda claytoniana | Osmundaceae | CA US | L | pack-ferns-woodland | | woodland, deciduous | osmunda claytoniana, clayton fern | none | distinctive interrupted fronds |
 | Maidenhair Fern | Adiantum pedatum | Pteridaceae | CA US FR GB | M | pack-ferns-woodland | | woodland, feathery, deciduous, shade | adiantum, five-fingered fern, northern maidenhair | none | delicate fan-shaped fronds |
-| Marsh Fern | Thelypteris palustris | Thelypteridaceae | CA US FR GB | M | pack-ferns-woodland | | woodland, moisture, bog, stream | thelypteris, marsh fern | none | spreads in wet conditions |
+| Marsh Fern | Thelypteris palustris | Thelypteridaceae | CA US FR GB | M | pack-ferns-moisture | | moisture, bog, stream | thelypteris, marsh fern | none | spreads in wet conditions |
 | Hay-scented Fern | Dennstaedtia punctilobula | Dennstaedtiaceae | CA US | M | pack-ferns-woodland | | woodland, deciduous, dry-shade | dennstaedtia, hay fern | none | tolerates dry shade |
 | Boston Fern | Nephrolepis exaltata | Lomariopsidaceae | US AU | M | pack-ferns-woodland | | humid, container | nephrolepis, sword fern, hanging basket fern | none | annual in cold climates |
-| Autumn Fern | Dryopteris erythrosora | Dryopteridaceae | CA US FR GB AU | M | pack-ferns-woodland | | shade, evergreen, glossy | dryopteris, japanese shield fern, copper shield fern | none | bronze new fronds |
+| Autumn Fern | Dryopteris erythrosora | Dryopteridaceae | CA US FR GB AU | M | pack-ferns-evergreen | | evergreen, glossy, shade | dryopteris, japanese shield fern, copper shield fern | none | bronze new fronds |
 | Male Fern | Dryopteris filix-mas | Dryopteridaceae | CA US FR GB AU | M | pack-ferns-evergreen | | evergreen, tough, shade, dry-shade | dryopteris, common male fern | none | very hardy, tolerates dry shade |
 | Buckler Fern | Dryopteris dilatata | Dryopteridaceae | CA US FR GB AU | M | pack-ferns-evergreen | | evergreen, tough, shade | dryopteris, broad buckler fern | none | wide arching fronds |
 | Soft Shield Fern | Polystichum setiferum | Dryopteridaceae | CA US FR GB AU | M | pack-ferns-evergreen | | evergreen, feathery, low | polystichum, soft shield fern | none | soft feathery texture, low mound |
 | Hard Shield Fern | Polystichum aculeatum | Dryopteridaceae | CA US FR GB AU | M | pack-ferns-evergreen | | evergreen, tough, shade | polystichum, prickly shield fern | none | glossy tough fronds |
 | Christmas Fern | Polystichum acrostichoides | Dryopteridaceae | CA US | M | pack-ferns-evergreen | | evergreen, tough, low | polystichum, dagger fern | none | stays green through winter |
-| Hart's Tongue Fern | Asplenium scolopendrium | Aspleniaceae | CA US FR GB AU | S | pack-ferns-evergreen | | evergreen, glossy, low, rock | asplenium, tongue fern, phyllitis | none | strap-shaped undivided fronds |
-| Maidenhair Spleenwort | Asplenium trichomanes | Aspleniaceae | CA US FR GB AU | XS | pack-ferns-evergreen | | evergreen, rock, crevice | asplenium trichomanes, wall fern, spleenwort | none | tiny fern for wall crevices |
-| Common Polypody | Polypodium vulgare | Polypodiaceae | CA US FR GB AU | S | pack-ferns-evergreen | | evergreen, rock, dry-shade | polypodium, rock fern, wall polypody | none | grows on rocks and walls |
+| Hart's Tongue Fern | Asplenium scolopendrium | Aspleniaceae | CA US FR GB AU | S | pack-ferns-rock | | evergreen, glossy, low, rock | asplenium, tongue fern, phyllitis | none | strap-shaped undivided fronds |
+| Maidenhair Spleenwort | Asplenium trichomanes | Aspleniaceae | CA US FR GB AU | XS | pack-ferns-rock | | evergreen, rock, crevice | asplenium trichomanes, wall fern, spleenwort | none | tiny fern for wall crevices |
+| Common Polypody | Polypodium vulgare | Polypodiaceae | CA US FR GB AU | S | pack-ferns-rock | | evergreen, rock, dry-shade | polypodium, rock fern, wall polypody | none | grows on rocks and walls |
 
 ---
 

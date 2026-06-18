@@ -103,6 +103,8 @@ _Last updated: 2026-06-18_
 **Step 5 — Commit**
 - `git add -A && git commit -m "Packs: add [pack name] pack file (empty)"`
 
+**No groups/packGroup tagging** — each pack file IS the group. One subtype = one file. No further sub-filtering needed.
+
 **Note:** Core catalog plants are NOT migrated to new packs without explicit planning session. Deferred — see PROJECT.md.
 
 ---
@@ -215,6 +217,123 @@ Before `/new` or closing the session:
 - [ ] `research/PLANT-DATABASE.md` — Sticker ID filled in for anything added this session
 - [ ] `REVISION-LOG.md` — new entries marked ✅
 - [ ] `PROJECT.md` — Open Items updated if anything changed status
+
+---
+
+---
+
+## Reference: Complete Pack File List
+
+63 pack files — one per subtype. All live in `app/src/data/packs/`.
+
+### Trees (4)
+| Pack File | Subtype |
+|-----------|--------|
+| `pack-trees-deciduous.js` | Deciduous trees |
+| `pack-trees-evergreen.js` | Evergreen trees |
+| `pack-trees-coniferous.js` | Coniferous trees |
+| `pack-trees-broadleaf-evergreen.js` | Broadleaf evergreen trees |
+
+### Shrubs (5)
+| Pack File | Subtype |
+|-----------|--------|
+| `pack-shrubs-deciduous.js` | Deciduous shrubs |
+| `pack-shrubs-evergreen.js` | Evergreen shrubs |
+| `pack-shrubs-flowering.js` | Flowering shrubs |
+| `pack-shrubs-coniferous.js` | Coniferous shrubs |
+| `pack-shrubs-broadleaf-evergreen.js` | Broadleaf evergreen shrubs |
+
+### Flowers / Perennials (5)
+| Pack File | Subtype |
+|-----------|--------|
+| `pack-flowers-perennials.js` | Flowering perennials |
+| `pack-flowers-bulbs.js` | Bulbs / tuberous plants |
+| `pack-flowers-cottage.js` | Cottage-garden flowers |
+| `pack-flowers-wildflowers.js` | Native wildflowers |
+| `pack-flowers-evergreen-perennials.js` | Evergreen perennials |
+
+### Grasses (5)
+| Pack File | Subtype |
+|-----------|--------|
+| `pack-grasses-ornamental.js` | Ornamental grasses |
+| `pack-grasses-tufting.js` | Tufting grasses |
+| `pack-grasses-spreading.js` | Spreading grasses |
+| `pack-grasses-reeds.js` | Reeds / tall grasses |
+| `pack-grasses-sedge.js` | Sedge-like plants |
+
+### Climbers / Vines (5)
+| Pack File | Subtype |
+|-----------|--------|
+| `pack-climbers-flowering.js` | Flowering climbers |
+| `pack-climbers-evergreen.js` | Evergreen climbers |
+| `pack-climbers-deciduous.js` | Deciduous climbers |
+| `pack-climbers-tendrilled.js` | Tendrilled vines |
+| `pack-climbers-twining.js` | Twining climbers |
+
+### Groundcovers (5)
+| Pack File | Subtype |
+|-----------|--------|
+| `pack-groundcovers-flowering.js` | Flowering groundcovers |
+| `pack-groundcovers-evergreen.js` | Evergreen groundcovers |
+| `pack-groundcovers-mat-forming.js` | Mat-forming groundcovers |
+| `pack-groundcovers-spreading.js` | Spreading groundcovers |
+| `pack-groundcovers-succulents.js` | Groundcover succulents |
+
+### Succulents & Cacti (6)
+> ⚠️ **Legacy:** `pack-cacti-succulents.js` currently holds all cacti/succulents. New plants go into the granular packs below. Migration of existing plants deferred.
+
+| Pack File | Subtype |
+|-----------|--------|
+| `pack-succulents-rosette.js` | Rosette succulents |
+| `pack-succulents-trailing.js` | Trailing succulents |
+| `pack-cacti-columnar.js` | Columnar cacti |
+| `pack-cacti-barrel.js` | Barrel / globular cacti |
+| `pack-cacti-paddle.js` | Paddle / pad cacti |
+| `pack-cacti-shrubby.js` | Shrubby succulents |
+
+### Ferns (5)
+| Pack File | Subtype |
+|-----------|--------|
+| `pack-ferns-tree.js` | Tree ferns |
+| `pack-ferns-woodland.js` | Soft woodland ferns |
+| `pack-ferns-evergreen.js` | Evergreen ferns |
+| `pack-ferns-moisture.js` | Moisture-loving ferns |
+| `pack-ferns-rock.js` | Rock / wall ferns |
+
+### Herbs (6)
+| Pack File | Subtype |
+|-----------|--------|
+| `pack-herbs-culinary.js` | Culinary herbs |
+| `pack-herbs-medicinal.js` | Medicinal herbs |
+| `pack-herbs-woody.js` | Woody herbs |
+| `pack-herbs-soft-leaved.js` | Soft-leaved herbs |
+| `pack-herbs-perennial.js` | Perennial herbs |
+| `pack-herbs-annual.js` | Annual herbs |
+
+### Vegetables (9)
+| Pack File | Subtype |
+|-----------|--------|
+| `pack-vegetables-leafy.js` | Leafy vegetables |
+| `pack-vegetables-root.js` | Root vegetables |
+| `pack-vegetables-bulb.js` | Bulb vegetables |
+| `pack-vegetables-stem.js` | Stem vegetables |
+| `pack-vegetables-fruiting.js` | Fruiting vegetables |
+| `pack-vegetables-legumes.js` | Legumes / pod vegetables |
+| `pack-vegetables-brassica.js` | Brassica vegetables |
+| `pack-vegetables-asian-greens.js` | Asian greens |
+| `pack-vegetables-perennial.js` | Perennial vegetables |
+
+### Fruit (8)
+| Pack File | Subtype |
+|-----------|--------|
+| `pack-fruit-pome.js` | Pome fruit |
+| `pack-fruit-stone.js` | Stone fruit |
+| `pack-fruit-citrus.js` | Citrus |
+| `pack-fruit-berry.js` | Berry fruit |
+| `pack-fruit-vine.js` | Vine fruit |
+| `pack-fruit-tropical.js` | Tropical fruit |
+| `pack-fruit-melons.js` | Melons |
+| `pack-fruit-nuts.js` | Nut-bearing plants |
 
 ---
 
