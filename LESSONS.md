@@ -3,6 +3,15 @@ _L001–L009, L016–L018, L020 archived at: `memory/deep/garden-planner/lessons
 
 ---
 
+## L033 — Always sync TEMPLATES dict before generating stickers
+**Date:** 2026-06-18
+The `TEMPLATES` dict in `tools/sticker-generate-one.py` contained stale wording ("Plants vs. Zombies meets watercolor painting") that didn't match `research/STICKER-PROMPT-GUIDE.md` ("watercolor painting" only). Result: 4 pome fruit stickers were generated with the wrong art style directive.
+**Rule:** Before any sticker generation session, confirm `TEMPLATES` dict matches `STICKER-PROMPT-GUIDE.md` Section 1 word-for-word.
+**Workflow added:** Workflow 0a in WORKFLOWS.md — "Sticker prompt template sync".
+**When Rob says the guide changed:** immediately run Workflow 0a before generating anything.
+
+---
+
 ## L032 — Never auto-commit stickers without Rob's explicit approval
 **Date:** 2026-06-16
 Using `--force` on `sticker-generate-one.py` auto-uploads and commits without Rob seeing the PNG first. This bypasses the approval gate entirely.

@@ -32,36 +32,36 @@ ROB_ACCOUNT = "contactsunsetpoetvintage"   # substring to match in signed-in acc
 IMAGE_WAIT  = 240
 os.makedirs(OUT_DIR, exist_ok=True)
 
-# ── Prompt templates (Rob's wording — do not modify) ───────────────────────────
+# -- Prompt templates (SOURCE OF TRUTH: research/STICKER-PROMPT-GUIDE.md) ---------------------
+# Do not modify without updating STICKER-PROMPT-GUIDE.md first. Last synced: 2026-06-18
 TEMPLATES = {
     "plant": (
-        "Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — "
+        "Aerial side view. Art style: watercolor painting - "
         "tasteful simplified representation of this plant with crisp edges, focusing on "
-        "a primary characteristics of the plant, bold flat icon. Rich watercolor texture "
-        "with visible brushstrokes, wet-on-wet blending, soft colour gradients. Dark outline 2-3px. "
-        "No shadows. No background showing in the center of the plant. Centered, 75% "
+        "a primary characteristics of the plant, bold flat icon. "
+        "Dark outline 2-3px. No shadows. No background showing in the center of the plant. Centered, 75% "
         "canvas fill. Vibrant and iconic."
     ),
     "cedar": (
-        "Aerial side view. Art style: Watercolor painting — tasteful simplified representation of this plant with crisp edges, "
+        "Aerial side view. Art style: watercolor painting - tasteful simplified representation of this plant with crisp edges, "
         "focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2-3px. No shadows. "
         "No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic."
     ),
     "deciduous": (
-        "Side aerial view. Art style: Plants vs. Zombies meets watercolor painting — "
+        "Side aerial view. Art style: Watercolor painting - "
         "tasteful simplified representation of this plant with crisp edges, focusing on "
-        "a primary characteristics of the plant, leafy, Dark outline 2-3px. No shadows. "
-        "Centered, 75% canvas fill. Vibrant and iconic."
+        "primary characteristics of the plant, leafy canopy only, NO TRUNK, NO STEM, NO BARK VISIBLE. "
+        "Dark outline 2-3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic."
     ),
     "pine": (
-        "Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — "
+        "Aerial side view. Art style: watercolor painting - "
         "tasteful simplified representation of this plant with crisp edges, focusing on "
         "a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2-3px. "
         "No shadows. No background showing in the center of the plant. Centered, 75% "
         "canvas fill. Vibrant and iconic."
     ),
     "rootveg": (
-        "Side aerial view. Art style: Plants vs. Zombies meets watercolor painting — "
+        "Side aerial view. Art style: watercolor painting - "
         "tasteful simplified representation of this plant with crisp edges, focusing on "
         "a primary characteristics of the plant, bold flat icon. Dark outline 2-3px. "
         "Line texturing. No shadows. No background showing in the center of the plant. "

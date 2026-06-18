@@ -1,9 +1,9 @@
-# Garden Mapper — Plant Database
+# Garden Mapper - Plant Database
 > Regions: CA = Canada | US = USA | FR = France | GB = Britain | AU = Australia
-> Sizes: XS (<30cm) | S (30–60cm) | M (60cm–1.5m) | L (1.5m+) | XL (tree, 3m+)
+> Sizes: XS (<30cm) | S (30-60cm) | M (60cm-1.5m) | L (1.5m+) | XL (tree, 3m+)
 > Variants: none | planned | done
 > Sticker ID: catalog key once generated (blank = not yet generated)
-> Pack names: see WORKFLOWS.md — Reference: Complete Pack File List for all 63 canonical pack file names
+> Pack names: see WORKFLOWS.md - Reference: Complete Pack File List for all 63 canonical pack file names
 
 ---
 
@@ -12,8 +12,8 @@
 | Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|
 
-> **Traits** — searchMeta tags: shade, sun, evergreen, deciduous, woodland, moisture, bog, rock, container, feathery, glossy, tough, low, humid, stream, dry-shade, tree-fern, etc.
-> **Search Terms** — aliases, alternate common names, latin name fragments users might type
+> **Traits** - searchMeta tags: shade, sun, evergreen, deciduous, woodland, moisture, bog, rock, container, feathery, glossy, tough, low, humid, stream, dry-shade, tree-fern, etc.
+> **Search Terms** - aliases, alternate common names, latin name fragments users might type
 
 ---
 
@@ -191,7 +191,7 @@
 | Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|
 | Maple | Acer platanoides | Soapberry | CA US FR GB AU | XL | core | tree-deciduous_maple | sun, deciduous | maple, acer, erable | done | 5 colour variants |
-| Japanese Maple | Acer palmatum | Soapberry | CA US FR GB AU | XL | core | — retired to maple variants — | sun, deciduous | japanese maple, acer palmatum, erable du japon | done | retired to maple colour picker |
+| Japanese Maple | Acer palmatum | Soapberry | CA US FR GB AU | XL | core | - retired to maple variants - | sun, deciduous | japanese maple, acer palmatum, erable du japon | done | retired to maple colour picker |
 | Oak | Quercus spp. | Beech | CA US FR GB AU | XL | core | tree-deciduous_oak | sun, deciduous | oak, chene, eiche | none | large canopy |
 | Magnolia | Magnolia spp. | Magnolia | CA US FR GB AU | XL | core | tree-deciduous_magnolia | sun, deciduous | magnolia | planned | spring blossom |
 | Silver Birch | Betula pendula | Birch | CA US FR GB | XL | core | tree-deciduous_silver-birch | sun, deciduous | silver birch, betula, bouleau | none | white bark |
@@ -238,5 +238,16 @@
 
 ---
 
-*Total entries: 164 plants (139 original + 25 ferns)*
-*Last updated: 2026-06-18 — added Latin names, Pack, Traits, Search Terms, Variants columns; added 25 ferns section*
+## 🍎 Fruit — Pome
+
+| Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Quince | Cydonia oblonga | Rosaceae | CA US FR GB AU | XL | pack-fruit-pome | tree-fruit_quince_XL_CA-US-FR-GB-AU | fruit, pome, heritage, aromatic | quince, cydonia, japonica quince | none | |
+| Medlar | Mespilus germanica | Rosaceae | FR GB AU CA | XL | pack-fruit-pome | tree-fruit_medlar_XL_CA-US-FR-GB-AU | fruit, pome, heritage | medlar, mespilus | none | |
+| Loquat | Eriobotrya japonica | Rosaceae | AU US FR GB | XL | pack-fruit-pome | tree-fruit_loquat_XL_CA-US-FR-GB-AU | fruit, pome, evergreen, warm | loquat, eriobotrya, japanese plum | none | |
+| Nashi / Asian Pear | Pyrus pyrifolia | Rosaceae | AU US FR CA | XL | pack-fruit-pome | tree-fruit_nashi-pear_XL_CA-US-FR-GB-AU | fruit, pome, crisp, asian | nashi pear, asian pear, chinese pear, pyrus | none | |
+
+---
+
+*Total entries: 168 plants (139 original + 25 ferns + 4 pome fruit)*
+*Last updated: 2026-06-18 — added pack-fruit-pome.js (Quince, Medlar, Loquat, Nashi Pear)*

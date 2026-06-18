@@ -942,12 +942,7 @@ _Then and only then does the row move to PLANT-DATABASE.md with the Sticker ID f
 
 ## 🍎 Fruit — Pome
 
-| Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
-|---|---|---|---|---|---|---|---|---|---|---|
-| Quince | Cydonia oblonga | Rosaceae | CA US FR GB AU | L | pack-fruit-pome | | fruit, pome, heritage, aromatic | quince, cydonia, japonica quince | none | |
-| Medlar | Mespilus germanica | Rosaceae | FR GB AU CA | L | pack-fruit-pome | | fruit, pome, heritage | medlar, mespilus | none | |
-| Loquat | Eriobotrya japonica | Rosaceae | AU US FR GB | L | pack-fruit-pome | | fruit, pome, evergreen, warm | loquat, eriobotrya, japanese plum | none | |
-| Nashi / Asian Pear | Pyrus pyrifolia | Rosaceae | AU US FR CA | L | pack-fruit-pome | | fruit, pome, crisp, asian | nashi pear, asian pear, chinese pear | none | |
+_All plants committed — see PLANT-DATABASE.md ✔️_
 
 ---
 

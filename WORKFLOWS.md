@@ -19,6 +19,32 @@ _Last updated: 2026-06-18_
 
 ---
 
+## 0a. Sticker prompt template sync
+
+> **Trigger:** Any time Rob updates `research/STICKER-PROMPT-GUIDE.md`
+
+**Rule:** `STICKER-PROMPT-GUIDE.md` is the source of truth for all prompt wording. The script's `TEMPLATES` dict in `tools/sticker-generate-one.py` is a mirror of it. They must always match.
+
+**When Rob says "I updated the sticker guide" or "the prompt guide changed":**
+1. Read `research/STICKER-PROMPT-GUIDE.md` → Section 1 (Prompt Templates by Plant Type)
+2. Open `tools/sticker-generate-one.py` → find the `TEMPLATES = {` dict (lines ~35–70)
+3. Update each template key to match the guide exactly — word for word
+4. Update the `# Last synced:` comment date
+5. Commit: `git add -A && git commit -m "Sticker: sync TEMPLATES dict with STICKER-PROMPT-GUIDE.md"`
+
+**Template keys and their guide sections:**
+| Script key | Guide section |
+|---|---|
+| `plant` | Plants (herbs, flowers, shrubs, perennials) |
+| `deciduous` | Deciduous Trees |
+| `pine` | Pines |
+| `rootveg` | Root Vegetables |
+| `cedar` | (cedar/thuja — same as Pines but no trunk) |
+
+**Never generate stickers if you haven't confirmed the TEMPLATES dict matches the guide.**
+
+---
+
 ## 0. Plant pipeline: Staging → Database
 
 > **Three files. Plants move forward, never backward.**
