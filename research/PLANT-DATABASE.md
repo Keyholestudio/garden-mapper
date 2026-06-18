@@ -49,6 +49,22 @@
 
 ---
 
+## 🥕 Vegetables — Root
+
+| Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Celeriac | Apium graveolens var. rapaceum | Apiaceae | CA US FR GB AU | M | pack-vegetables-root | vegetable-root_celeriac | biennial, root, celery-flavour | celeriac, celery root, turnip-rooted celery | none | |
+| Jerusalem Artichoke | Helianthus tuberosus | Asteraceae | CA US FR GB AU | XL | pack-vegetables-root | vegetable-root_jerusalem-artichoke | perennial, root, edible-tuber, tall | jerusalem artichoke, sunchoke, topinambur | none | |
+| Salsify | Tragopogon porrifolius | Asteraceae | CA US FR GB AU | M | pack-vegetables-root | vegetable-root_salsify | biennial, root, heritage, oyster-flavour | salsify, oyster plant, vegetable oyster | none | |
+| Scorzonera | Scorzonera hispanica | Asteraceae | CA US FR GB AU | M | pack-vegetables-root | vegetable-root_scorzonera | perennial, root, heritage | scorzonera, black salsify | none | FR classic |
+| Hamburg Parsley | Petroselinum crispum var. tuberosum | Apiaceae | CA US FR GB AU | M | pack-vegetables-root | vegetable-root_hamburg-parsley | biennial, root, parsley | hamburg parsley, turnip-rooted parsley | none | |
+| Sweet Potato | Ipomoea batatas | Convolvulaceae | CA US FR GB AU | M | pack-vegetables-root | vegetable-root_sweet-potato | annual, root, tropical, spreading | sweet potato, ipomoea, kumara | planned | orange/purple/white forms |
+| Oca | Oxalis tuberosa | Oxalidaceae | CA US FR GB AU | S | pack-vegetables-root | vegetable-root_oca | perennial, root, heritage, andean | oca, new zealand yam, oxalis tuberosa | planned | yellow/orange/red forms |
+| Skirret | Sium sisarum | Apiaceae | CA US FR GB AU | M | pack-vegetables-root | vegetable-root_skirret | perennial, root, heritage | skirret, sium sisarum | none | sweet heritage root veg |
+| Yacon | Smallanthus sonchifolius | Asteraceae | CA US FR GB AU | XL | pack-vegetables-root | vegetable-root_yacon | perennial, root, edible-tuber, andean | yacon, smallanthus, ground apple | none | |
+
+---
+
 ## 🥬 Vegetables — Leafy
 
 | Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |

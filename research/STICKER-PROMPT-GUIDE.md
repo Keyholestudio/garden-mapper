@@ -43,7 +43,7 @@ Side aerial view. Art style: watercolor painting — tasteful simplified represe
 Subject: [PLANT NAME], [TYPE OF PLANT].
 Canvas: [SIZE]px square.
 Colours: [4-5 colours or hex codes], flat solid magenta background (#FF00FF)
-Shape: [PLANT NAME] and tops peeking from a plant wide soil line. Only show the top of the root/plant above the minimal soil line. [Basic plant description] shoulders visible above the soil, root at bottom and leafy tops. Natural proportions.
+Shape: [PLANT NAME] and tops peeking from a plant wide soil line. Only show the top of the root/plant above the minimal soil line. [Basic plant description] shoulders visible above the soil, root at bottom and leafy tops. Natural proportions. Root crown only — do NOT show the full root extracted from soil or hanging in the air.
 ```
 
 ---

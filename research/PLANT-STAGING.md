@@ -819,22 +819,6 @@ _Then and only then does the row move to PLANT-DATABASE.md with the Sticker ID f
 
 ---
 
-## 🥕 Vegetables — Root
-
-| Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
-|---|---|---|---|---|---|---|---|---|---|---|
-| Celeriac | Apium graveolens var. rapaceum | Apiaceae | CA US FR GB AU | M | pack-vegetables-root | | biennial, root, celery-flavour | celeriac, celery root, turnip-rooted celery | none | |
-| Jerusalem Artichoke | Helianthus tuberosus | Asteraceae | CA US FR GB AU | XL | pack-vegetables-root | | perennial, root, edible-tuber, tall | jerusalem artichoke, sunchoke, topinambur | none | |
-| Salsify | Tragopogon porrifolius | Asteraceae | CA US FR GB AU | M | pack-vegetables-root | | biennial, root, heritage, oyster-flavour | salsify, oyster plant, vegetable oyster | none | |
-| Scorzonera | Scorzonera hispanica | Asteraceae | CA US FR GB AU | M | pack-vegetables-root | | perennial, root, heritage | scorzonera, black salsify | none | FR classic |
-| Hamburg Parsley | Petroselinum crispum var. tuberosum | Apiaceae | CA US FR GB AU | M | pack-vegetables-root | | biennial, root, parsley | hamburg parsley, turnip-rooted parsley | none | |
-| Sweet Potato | Ipomoea batatas | Convolvulaceae | CA US FR GB AU | M | pack-vegetables-root | | annual, root, tropical, spreading | sweet potato, ipomoea, kumara | planned | orange/purple/white forms |
-| Oca | Oxalis tuberosa | Oxalidaceae | CA US FR GB AU | S | pack-vegetables-root | | perennial, root, heritage, andean | oca, new zealand yam, oxalis tuberosa | planned | yellow/orange/red forms |
-| Skirret | Sium sisarum | Apiaceae | CA US FR GB AU | M | pack-vegetables-root | | perennial, root, heritage | skirret, sium sisarum | none | sweet heritage root veg |
-| Yacon | Smallanthus sonchifolius | Asteraceae | CA US FR GB AU | XL | pack-vegetables-root | | perennial, root, edible-tuber, andean | yacon, smallanthus, ground apple | none | |
-
----
-
 ## 🧅 Vegetables — Bulb
 
 | Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
