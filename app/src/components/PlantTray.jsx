@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef } from 'react'
 import { PLANT_CATALOG_TRAY as PLANT_CATALOG } from '../hooks/usePlantCatalog'
+import { PLANT_VARIANTS } from '../hooks/useGardenState'
 import './PlantTray.css'
 
 export default function PlantTray({
@@ -54,6 +55,7 @@ export default function PlantTray({
       if (p.latinName && p.latinName.toLowerCase().includes(q)) return true
       if (p.searchTerms && p.searchTerms.some(t => t.toLowerCase().includes(q))) return true
       if (p.traits && p.traits.some(t => t.toLowerCase().includes(q))) return true
+      if (PLANT_VARIANTS[p.key] && PLANT_VARIANTS[p.key].some(v => v.label.toLowerCase().includes(q) || v.name.toLowerCase().includes(q))) return true
       return false
     })
   }, [query, allEntries])

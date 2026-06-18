@@ -81,6 +81,7 @@ export default function MobileSheet({
       if (p.latinName && p.latinName.toLowerCase().includes(q)) return true
       if (p.searchTerms && p.searchTerms.some(t => t.toLowerCase().includes(q))) return true
       if (p.traits && p.traits.some(t => t.toLowerCase().includes(q))) return true
+      if (PLANT_VARIANTS[p.key] && PLANT_VARIANTS[p.key].some(v => v.label.toLowerCase().includes(q) || v.name.toLowerCase().includes(q))) return true
       return false
     })
   }, [query])
