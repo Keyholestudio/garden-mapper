@@ -135,36 +135,88 @@ _Last updated: 2026-06-18_
 
 ---
 
-## 4. Add a colour variant to an existing plant
+## 4. Add colour variants to a plant
 
-> Use this for plants that have meaningful cultivar colour differences (e.g. Maple, Lettuce).
+> Use this for any plant with meaningful cultivar colour differences.
+> Works for both **new plants** (no sticker yet) and **existing plants** (sticker already in app).
 
-**Step 1 — Plan it**
-- Check `COLOUR-VARIANTS.md` for the rollout plan and current chunk
-- Confirm the plant is in the current chunk before starting
+### Trigger prompt
+> **"Add colour variants to [Plant Name]"**
+> or: **"[Plant Name] needs colour variants"**
+> or: **"Add [Plant Name] with colour variants to Garden Mapper"**
 
-**Step 2 — Generate variant stickers**
-- Each colour = its own PNG, with a descriptive key suffix (e.g. `tree-deciduous_maple_dark-green`)
-- Generate via `sticker-generate-one.py`, no `--force`
-- Pending PNGs → open folder for Rob to review
+---
 
-**Step 3 — Approval**
-- Rob approves each variant individually
-- "Approve all" allowed for a confirmed batch
+**Step 1 — Check PLANT-DATABASE.md**
+- Search for the plant by name
+- If not listed: add the row now (Common Name, Latin Name, Family, Regions, Size, Pack, Traits, Search Terms)
+- Check the Variants column: `none` = not started | `planned` = approved for variants | `done` = complete
+- If already `done`: confirm with Rob before re-doing
 
-**Step 4 — Commit**
-1. Copy approved PNGs to both sticker locations
-2. Add the variant entries to `PLANT_VARIANTS` in `usePlantCatalog.js`:
+**Step 2 — Confirm the base sticker exists**
+- Check `app/public/stickers/` for the plant's base PNG
+- **If it exists:** the first swatch will point to it — no new base sticker needed
+- **If it doesn't exist:** do [Workflow 1](#1-add-a-new-plant-sticker-core-catalog) or [Workflow 2](#2-add-a-new-plant-sticker-lazy-pack) first to add the base plant, then return here
+
+**Step 3 — Research the colour variants**
+- Look up 3–6 most common cultivar colours for this plant
+- Record for each: colour label (e.g. "Deep Pink"), cultivar name (e.g. "Kanzan Cherry"), hex code, variant filename
+- Present the proposed swatch list to Rob for confirmation before generating anything
+- Format:
+  ```
+  Proposed variants for [Plant]:
+  1. Pink — Yoshino Cherry — #F48FB1
+  2. White — Tai Haku Cherry — #F5F5F5
+  3. Deep Pink — Kanzan Cherry — #C2185B
+  Proceed?
+  ```
+
+**Step 4 — Generate variant stickers**
+- One PNG per colour variant (not the default — that reuses the base)
+- Filename convention: `[catalog-key]_[size]_[colour-label].png`
+  e.g. `tree-deciduous_ornamental-cherry_XXL_deep-pink.png`
+- Run `sticker-generate-one.py` for each, no `--force`
+- All pending PNGs land in `stickers/generated/pending/`
+- Open the folder for Rob to review locally
+
+**Step 5 — Approval gate**
+- Rob approves each swatch individually, or says "Approve all"
+- "Redo [colour]" → regenerate that one with updated prompt
+- Do not commit any swatch until its approval is confirmed
+
+**Step 6 — Commit**
+1. Copy each approved PNG → `app/public/stickers/` AND `stickers/`
+2. Add (or update) the `PLANT_VARIANTS` entry in `app/src/hooks/useGardenState.js`:
    ```js
    'plant_key': [
-     { label: 'Colour Name', src: '/stickers/key-colour.png', hex: '#RRGGBB' }
+     { label: 'Green',     name: 'Plant Name',      colour: '#hex', src: '/stickers/base-key.png' },  // default — always first, points to base PNG
+     { label: 'Deep Pink', name: 'Cultivar Name',   colour: '#hex', src: '/stickers/key_deep-pink.png' },
+     { label: 'White',     name: 'Cultivar Name',   colour: '#hex', src: '/stickers/key_white.png' },
    ]
    ```
+   - First entry = default, always points to existing base PNG, no new sticker needed
+   - `label` = colour word shown on the swatch
+   - `name` = cultivar name shown in the panel subtitle when that swatch is selected
 3. Update `research/PLANT-DATABASE.md` → Variants column = `done`
-4. Run validator — 0 errors
-5. `git add -A && git commit -m "Variants: add [Plant] colour swatches ([N] colours)"`
+4. Update `COLOUR-VARIANTS.md` → mark plant as ✅ Done with swatch count
+5. Run `pwsh tools/validate-tray.ps1` — 0 errors
+6. `git add -A && git commit -m "Variants: add [Plant] colour swatches ([N] colours)"`
+7. `git push` → Vercel auto-deploys
 
-**Note:** `variantSrc` is user-only — adding new variants never changes existing saved gardens.
+**Step 7 — Test**
+- Select the plant in app at localhost:5200
+- Verify swatch row appears in the info panel
+- Click each swatch — image swaps, subtitle updates to cultivar name
+- Save garden, reload, verify `variantSrc` persists correctly
+
+---
+
+**Standing rules:**
+- Default swatch always first — points to the base PNG, no new sticker needed for it
+- Never add variants to a plant that doesn’t have a base sticker yet
+- `variantSrc` is user-only — adding new variants never changes existing saved gardens
+- Max 2–3 plants per session (sticker generation limits)
+- Prompt style reference: `COLOUR-VARIANTS.md` — Approved Prompt Style section
 
 ---
 
