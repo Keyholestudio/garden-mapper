@@ -6,6 +6,7 @@ $ROOT     = "C:\Users\RG\.openclaw\workspace\projects\garden-planner"
 $CATALOG  = "$ROOT\app\src\hooks\usePlantCatalog.js"
 $PACK1    = "$ROOT\app\src\data\packs\pack-cacti-succulents.js"
 $PACK2    = "$ROOT\app\src\data\packs\pack-tropical.js"
+$PACK3    = "$ROOT\app\src\data\packs\pack-fruit-pome.js"
 $STICKERS = "$ROOT\app\public\stickers"
 
 $errors   = @()
@@ -27,7 +28,8 @@ function Get-Entries($file) {
 $catalogEntries = Get-Entries $CATALOG
 $pack1Entries   = Get-Entries $PACK1
 $pack2Entries   = Get-Entries $PACK2
-$allPackEntries = $pack1Entries + $pack2Entries
+$pack3Entries   = Get-Entries $PACK3
+$allPackEntries = $pack1Entries + $pack2Entries + $pack3Entries
 
 # ── 1. Cross-duplicates (key in both catalog and any pack) ─────────────────────
 $catalogKeys = $catalogEntries | ForEach-Object { $_.Key }
