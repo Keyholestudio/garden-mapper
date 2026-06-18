@@ -1,16 +1,16 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-06-15_
+_Last updated: 2026-06-18_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
 
 ## What It Is
-A web-based garden planner — React + Vite + Konva canvas, 144 plant stickers + 20 decor + 3 fountains, freeform/rect/circle draw tools, save/load, season theming, textures. Ported from vanilla JS prototype (index-v8.html). Live at https://app.gardenmapper.ca.
+A web-based garden planner — React + Vite + Konva canvas, 171 core + 36 pack plant stickers, colour variant picker, freeform/rect/circle draw tools, save/load, season theming, textures. Live at https://app.gardenmapper.ca.
 
 ---
 
-## Current Phase: Capacitor.js — Android/iOS App Wrapper (IN PROGRESS)
+## Current Phase: Plant Catalog Expansion + Colour Variants
 
 ### Resume Phrase
 `resume Garden Mapper React scaffold`
@@ -92,32 +92,25 @@ cd projects/garden-planner/app && npm run dev
 
 ## Open Items
 
-### 🔴 Immediate (next session)
-- **Fix Google Sign-In** — Supabase returning `unexpected_failure` on token exchange. Steps to try:
-  1. Try sign-in again (Google propagation delay — may just work now)
-  2. If still failing: Supabase dashboard → **Logs → Auth** → check error after sign-in attempt
-  3. If logs show `invalid_client`: verify Web Client ID + Secret in Supabase Auth → Providers → Google
-  4. If logs show `redirect_uri_mismatch`: add `https://oxecjcdxkmtdgmdxlxyt.supabase.co/auth/v1/callback` to Google Web client
-  5. Remove debug banner from `GardenEditor.jsx` + `useAuth.js` once sign-in confirmed working
-- **App icons + splash screen** — deferred (Rob designing)
+### 🔴 Immediate
+- **Maple Green + Red Leaf** — v1 stickers, need regen (watercolor style, no trunk). Resume when sticker limits reset.
+- **Remove debug banner** — still in `GardenEditor.jsx` + `useAuth.js`. Remove before release.
 
-### 🟡 Soon
-- **Test on Apple device (iPad/iPhone)** — add iOS Capacitor platform, build via Xcode, sideload for smoke test
-- **Supabase + auth** — Sign in with Google (Android) + Sign in with Apple (iOS mandatory)
-- **Google Play Developer account** — Rob to set up ($25 one-time)
-- **Apple Developer account** — Rob to set up when iOS ready ($99 USD/year)
-- **L026 fixes** — copy button disabled for groups; copied rects need dragend/merge wiring
-- **Remaining stickers** — Feverfew, Astilbe, 7 cacti, Sandstone Large
+### 🟡 In Progress
+- **Colour variant rollout** — plan in `COLOUR-VARIANTS.md`. Chunk 1 next: Ornamental Cherry + Magnolia.
+- **Fern pack files** — create `pack-ferns-tree.js`, `pack-ferns-woodland.js`, `pack-ferns-evergreen.js` + register in `index.js`. 25 plants documented in `PLANT-DATABASE.md`.
+- **Core catalog searchMeta** — add `latinName`, `searchTerms`, `traits` to `usePlantCatalog.js` entries. Tropical pack needs same update.
+- **Pack architecture** — remaining categories (Flowers, Grasses, Climbers etc.) need pack files per Recommended Master Structure.
 
 ### 🔲 Deferred
-- **Natural edges for beds/hedges** — flat dark border reads as unnatural. Three options (pick one or combine): A) variable-width/feathered stroke (~1h), B) softer border colour match (~10min, try first), C) perimeter-tiled foliage PNG (~4–6h). Phase 8 visual polish.
-- **#9 Dream Garden** — design at localhost:5200, say "update the Dream Garden to the website" (L028)
-- **#11 Sunny/shady areas** — sun sticker + radial gradient overlay
-- **#12 Multi-device sync** — covered by Supabase backend plan
-- **#32 Zoom-in clips right panel** — known limitation (L027); workaround: refresh
-- **Phase 8 Textures** — Rob designing; send images when ready
-- **SM campaign, robs-lab.ca, gamification, pricing** — parallel track, non-blocking
-- **Plant submission cron** — form → Gemini sticker → approval → CDN (V3)
+- **Google Sign-In** — Supabase `unexpected_failure`, needs device + USB to debug Auth logs.
+- **Capacitor.js Android/iOS** — deferred until catalog expansion stable.
+- **App icons + splash screen** — Rob designing.
+- **Phase 8 Textures** — Rob designing.
+- **Dream Garden** — say "update the Dream Garden to the website" when ready.
+- **Sunny/shady areas, zoom clip, multi-device sync** — later phases.
+- **SM campaign, pricing, gamification** — parallel track, non-blocking.
+- **Parabolic Stocks crons** — disabled, re-enable when Rob says go.
 
 ### Architecture decisions (June 2026)
 - **Auth:** Sign in with Google (Android) + Sign in with Apple (iOS, mandatory)
@@ -134,6 +127,7 @@ cd projects/garden-planner/app && npm run dev
 |------|---------|
 | `ARCHITECTURE.md` | Component tree, hooks, refs, layers — read before touching code |
 | `LESSONS.md` | Project-specific bugs and patterns |
+| `WORKFLOWS.md` | How-to guides for every repeatable task — start here |
 | `REVISION-LOG.md` | Version history |
 | `GAP-ANALYSIS.md` | Feature status |
 | `SYNC-POLICY.md` | Cloud/local sync rules — read before any auth/storage work |
