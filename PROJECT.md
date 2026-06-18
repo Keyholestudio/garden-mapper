@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-06-18_
+_Last updated: 2026-06-18 (session 2)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -98,9 +98,9 @@ cd projects/garden-planner/app && npm run dev
 
 ### 🟡 In Progress
 - **Colour variant rollout** — plan in `COLOUR-VARIANTS.md`. Chunk 1 next: Ornamental Cherry + Magnolia.
-- **Fern pack files** — create `pack-ferns-tree.js`, `pack-ferns-woodland.js`, `pack-ferns-evergreen.js` + register in `index.js`. 25 plants documented in `PLANT-DATABASE.md`.
+- **Fern pack files** — create 5 fern packs: `pack-ferns-tree.js`, `pack-ferns-woodland.js`, `pack-ferns-evergreen.js`, `pack-ferns-moisture.js`, `pack-ferns-rock.js` + register in `index.js`. 25 plants documented in `PLANT-DATABASE.md`.
 - **Core catalog searchMeta** — add `latinName`, `searchTerms`, `traits` to `usePlantCatalog.js` entries. Tropical pack needs same update.
-- **Pack architecture** — remaining categories (Flowers, Grasses, Climbers etc.) need pack files per Recommended Master Structure.
+- **Pack architecture** — 63 pack files defined (WORKFLOWS.md). Create on demand as plants are added. Core migration deferred.
 
 ### 🔲 Deferred
 - **Google Sign-In** — Supabase `unexpected_failure`, needs device + USB to debug Auth logs.
