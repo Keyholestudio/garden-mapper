@@ -75,9 +75,13 @@ export default function MobileSheet({
   const filtered = useMemo(() => {
     if (!query.trim()) return PLANT_CATALOG
     const q = query.toLowerCase()
-    return PLANT_CATALOG.filter(p =>
-      p.label.toLowerCase().includes(q) || p.family.toLowerCase().includes(q)
-    )
+    return PLANT_CATALOG.filter(p => {
+      if (p.label.toLowerCase().includes(q)) return true
+      if (p.family.toLowerCase().includes(q)) return true
+      if (p.latinName && p.latinName.toLowerCase().includes(q)) return true
+      if (p.searchTerms && p.searchTerms.some(t => t.toLowerCase().includes(q))) return true
+      return false
+    })
   }, [query])
 
   // ── Edit-points panel (line shape in point-edit mode) ────

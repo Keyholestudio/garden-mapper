@@ -48,9 +48,13 @@ export default function PlantTray({
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     if (!q) return allEntries
-    return allEntries.filter(p =>
-      p.label.toLowerCase().includes(q) || p.family.toLowerCase().includes(q)
-    )
+    return allEntries.filter(p => {
+      if (p.label.toLowerCase().includes(q)) return true
+      if (p.family.toLowerCase().includes(q)) return true
+      if (p.latinName && p.latinName.toLowerCase().includes(q)) return true
+      if (p.searchTerms && p.searchTerms.some(t => t.toLowerCase().includes(q))) return true
+      return false
+    })
   }, [query, allEntries])
 
   const handleClick = (entry) => {
