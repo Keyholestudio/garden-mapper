@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-06-18 (session 3)_
+_Last updated: 2026-06-18 (session 4)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -98,9 +98,11 @@ cd projects/garden-planner/app && npm run dev
 
 ### 🟡 In Progress
 - **Plant catalog expansion** — full research complete for all 63 packs (~600 plants). See `research/PLANT-PACK-RESEARCH.md` for counts, `research/PLANT-STAGING.md` for schema rows ready to generate.
-- **Plant pipeline** — three-file staging system set up (Workflow 0 in WORKFLOWS.md). Pick a pack → generate → approve → commit → migrate to PLANT-DATABASE.md.
+- **Plant pipeline** — PLANT-STAGING.md (~617 plants, all 63 packs). Workflow 0 + 0a in WORKFLOWS.md. Generate pack-by-pack with Rob's approval.
+- **Completed packs:** `pack-fruit-pome.js` (4 stickers) ✅
+- **Sticker template fix** — TEMPLATES dict synced to STICKER-PROMPT-GUIDE.md (2026-06-18). Workflow 0a enforces this going forward.
 - **Colour variant rollout** — plan in `COLOUR-VARIANTS.md`. Chunk 1 next: Ornamental Cherry + Magnolia.
-- **Fern pack files** — create 3 packs (collapsed from 5): `pack-ferns-tree.js` (5 plants), `pack-ferns-woodland.js` (12 plants), `pack-ferns-evergreen.js` (8 plants). All 25 plants documented in PLANT-STAGING.md.
+- **Fern pack files** — create 3 packs: `pack-ferns-tree.js` (5), `pack-ferns-woodland.js` (12), `pack-ferns-evergreen.js` (8). Plants in PLANT-STAGING.md.
 - **Core catalog searchMeta** — add `latinName`, `searchTerms`, `traits` to `usePlantCatalog.js` entries. Tropical pack needs same update.
 - **Pack architecture** — 63 pack files defined (WORKFLOWS.md). Create on demand as plants are added. Core migration deferred.
 

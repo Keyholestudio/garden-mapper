@@ -4,10 +4,11 @@
 
 $ROOT     = "C:\Users\RG\.openclaw\workspace\projects\garden-planner"
 $CATALOG  = "$ROOT\app\src\hooks\usePlantCatalog.js"
-$PACK1    = "$ROOT\app\src\data\packs\pack-cacti-succulents.js"
-$PACK2    = "$ROOT\app\src\data\packs\pack-tropical.js"
-$PACK3    = "$ROOT\app\src\data\packs\pack-fruit-pome.js"
 $STICKERS = "$ROOT\app\public\stickers"
+
+# Auto-load all pack files from packs directory
+$PACK_DIR = "$ROOT\app\src\data\packs"
+$PACK_FILES = Get-ChildItem "$PACK_DIR\pack-*.js" | Select-Object -ExpandProperty FullName
 
 $errors   = @()
 $warnings = @()
@@ -16,8 +17,8 @@ $warnings = @()
 function Get-Entries($file) {
     # Strip commented-out lines before parsing
     $content = (Get-Content $file) | Where-Object { $_ -notmatch '^\s*//' } | Out-String
-    $keys  = [regex]::Matches($content, "key:'([^']+)'")   | ForEach-Object { $_.Groups[1].Value }
-    $srcs  = [regex]::Matches($content, "src:'([^']+)'")   | ForEach-Object { $_.Groups[1].Value }
+    $keys  = [regex]::Matches($content, "key:\s*'([^']+)'")   | ForEach-Object { $_.Groups[1].Value }
+    $srcs  = [regex]::Matches($content, "src:\s*'([^']+)'")   | ForEach-Object { $_.Groups[1].Value }
     $result = @()
     for ($i = 0; $i -lt $keys.Count; $i++) {
         $result += [PSCustomObject]@{ Key = $keys[$i]; Src = if ($i -lt $srcs.Count) { $srcs[$i] } else { '' } }
@@ -26,10 +27,10 @@ function Get-Entries($file) {
 }
 
 $catalogEntries = Get-Entries $CATALOG
-$pack1Entries   = Get-Entries $PACK1
-$pack2Entries   = Get-Entries $PACK2
-$pack3Entries   = Get-Entries $PACK3
-$allPackEntries = $pack1Entries + $pack2Entries + $pack3Entries
+$allPackEntries = @()
+foreach ($packFile in $PACK_FILES) {
+    $allPackEntries += Get-Entries $packFile
+}
 
 # ── 1. Cross-duplicates (key in both catalog and any pack) ─────────────────────
 $catalogKeys = $catalogEntries | ForEach-Object { $_.Key }

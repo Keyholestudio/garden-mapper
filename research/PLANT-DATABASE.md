@@ -49,6 +49,22 @@
 
 ---
 
+## 🥬 Vegetables — Leafy
+
+| Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Arugula / Rocket | Eruca vesicaria | Brassicaceae | CA US FR GB AU | S | pack-vegetables-leafy | vegetable-leafy_arugula | annual, leafy, fast, peppery | arugula, rocket, eruca, roquette | none | |
+| Radicchio | Cichorium intybus | Asteraceae | CA US FR GB AU | S | pack-vegetables-leafy | vegetable-leafy_radicchio | annual, leafy, bitter, italian | radicchio, red chicory, cichorium | planned | red/green forms |
+| Endive | Cichorium endivia | Asteraceae | CA US FR GB AU | S | pack-vegetables-leafy | vegetable-leafy_endive | annual, leafy, bitter, french | endive, curly endive, escarole | none | |
+| Red Amaranth | Amaranthus tricolor | Amaranthaceae | CA US FR GB AU | M | pack-vegetables-leafy | vegetable-leafy_red-amaranth | annual, leafy, red, ornamental-edible | red amaranth, joseph's coat, chinese spinach | none | |
+| Lamb's Lettuce / Mâche | Valerianella locusta | Caprifoliaceae | CA US FR GB AU | XS | pack-vegetables-leafy | vegetable-leafy_lambs-lettuce | annual, leafy, cold-tolerant | mache, lamb's lettuce, corn salad | none | |
+| New Zealand Spinach | Tetragonia tetragonioides | Aizoaceae | CA US FR GB AU | M | pack-vegetables-leafy | vegetable-leafy_nz-spinach | annual, leafy, heat-tolerant | new zealand spinach, tetragonia, warrigal greens | none | |
+| Malabar Spinach | Basella alba | Basellaceae | CA US FR GB AU | M | pack-vegetables-leafy | vegetable-leafy_malabar-spinach | annual, leafy, climbing, heat-tolerant | malabar spinach, basella, ceylon spinach | planned | green/red stem forms |
+| Good King Henry | Chenopodium bonus-henricus | Amaranthaceae | CA US FR GB AU | M | pack-vegetables-leafy | vegetable-leafy_good-king-henry | perennial, leafy, heritage | good king henry, poor man's asparagus | none | |
+| Silverbeet | Beta vulgaris | Amaranthaceae | AU NZ | M | pack-vegetables-leafy | vegetable-leafy_silverbeet | perennial, leafy, robust | silverbeet, silver beet, perpetual spinach | none | AU/NZ variant of Swiss chard |
+
+---
+
 ## 🥦 Vegetables & Herbs
 
 | Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
