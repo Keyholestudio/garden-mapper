@@ -343,3 +343,14 @@
 
 /* Soon items slightly muted */
 .profile-menu-item--soon { color: #666; }
+
+/* Email — truncate long addresses to fit on one line */
+.profile-menu-email {
+  font-size: 12px;
+  font-weight: 400;
+  color: #555;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}

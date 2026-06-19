@@ -1134,12 +1134,7 @@ export default function GardenEditor() {
       {showRestorePrompt && (
         <RestorePrompt onRestore={restoreFromCloud} onDismiss={dismissRestore} />
       )}
-      {debugMsg ? (
-        <div style={{position:'fixed',top:0,left:0,right:0,background:'#11502A',color:'#fff',
-          fontSize:12,padding:'6px 12px',zIndex:99999,textAlign:'center',wordBreak:'break-all'}}>
-          AUTH: {debugMsg}
-        </div>
-      ) : null}
+      {/* AUTH debug banner removed — login working */}
       <PromoBanner />
       {!state.isSetup && (
         <SetupOverlay
