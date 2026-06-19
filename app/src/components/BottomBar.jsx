@@ -15,7 +15,7 @@ export default function BottomBar({
     if (!mobileQuery.trim()) return PLANT_CATALOG
     const q = mobileQuery.toLowerCase()
     return PLANT_CATALOG.filter(p =>
-      p.label.toLowerCase().includes(q) || p.family.toLowerCase().includes(q)
+      p.label?.toLowerCase().includes(q) || p.family?.toLowerCase().includes(q)
     )
   }, [mobileQuery])
   const wrapRef = useRef(null)

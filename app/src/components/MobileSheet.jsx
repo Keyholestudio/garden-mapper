@@ -76,8 +76,8 @@ export default function MobileSheet({
     if (!query.trim()) return PLANT_CATALOG
     const q = query.toLowerCase()
     return PLANT_CATALOG.filter(p => {
-      if (p.label.toLowerCase().includes(q)) return true
-      if (p.family.toLowerCase().includes(q)) return true
+      if (p.label?.toLowerCase().includes(q)) return true
+      if (p.family?.toLowerCase().includes(q)) return true
       if (p.latinName && p.latinName.toLowerCase().includes(q)) return true
       if (p.searchTerms && p.searchTerms.some(t => t.toLowerCase().includes(q))) return true
       if (p.traits && p.traits.some(t => t.toLowerCase().includes(q))) return true
