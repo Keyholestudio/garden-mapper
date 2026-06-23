@@ -1,4 +1,4 @@
-# Garden Mapper — Plant Staging Database
+﻿# Garden Mapper — Plant Staging Database
 _Mirror of PLANT-DATABASE.md schema. Plants live here until sticker is generated, approved, committed, and registered in the pack file._
 _Then and only then does the row move to PLANT-DATABASE.md with the Sticker ID filled in._
 
@@ -816,6 +816,39 @@ _Then and only then does the row move to PLANT-DATABASE.md with the Sticker ID f
 | Borage | Borago officinalis | Boraginaceae | CA US FR GB AU | M | pack-herbs-annual | | annual, edible-flower, pollinator | borage, borago, starflower | none | blue star flowers |
 | Lemongrass | Cymbopogon citratus | Poaceae | CA US FR GB AU | L | pack-herbs-annual | | perennial-tender, culinary, lemon | lemongrass, cymbopogon, fever grass | none | |
 | Mexican Tarragon | Tagetes lucida | Asteraceae | CA US FR GB AU | M | pack-herbs-annual | | annual, culinary, anise | mexican tarragon, tagetes lucida, sweet mace | none | |
+
+---
+
+## 🥦 Vegetables — Leafy
+
+| Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Arugula / Rocket | Eruca vesicaria | Brassicaceae | CA US FR GB AU | XS | pack-vegetables-leafy | | annual, leafy, peppery, fast | arugula, rocket, rucola, roquette | none | |
+| Silverbeet | Beta vulgaris subsp. cicla | Amaranthaceae | AU CA US FR GB | S | pack-vegetables-leafy | | perennial, leafy, colourful stems | silverbeet, swiss chard (AU term), beta vulgaris cicla | planned | white/red/yellow stem forms |
+| Radicchio | Cichorium intybus var. foliosum | Asteraceae | CA US FR GB AU | S | pack-vegetables-leafy | | annual/biennial, leafy, bitter, red | radicchio, red chicory, cichorium intybus | planned | red/variegated forms |
+| Endive | Cichorium endivia | Asteraceae | CA US FR GB AU | S | pack-vegetables-leafy | | annual, leafy, bitter, curly | endive, escarole, frisee, cichorium endivia | planned | curly endive/escarole forms |
+| Red Amaranth | Amaranthus tricolor | Amaranthaceae | CA US FR GB AU | M | pack-vegetables-leafy | | annual, leafy, ornamental, heat-tolerant | red amaranth, amaranthus tricolor, joseph's coat | planned | red/green/tricolour forms |
+| Lamb's Lettuce / Mache | Valerianella locusta | Caprifoliaceae | CA US FR GB AU | XS | pack-vegetables-leafy | | annual, leafy, mild, cool-season | lamb's lettuce, mache, corn salad, valerianella | none | |
+| New Zealand Spinach | Tetragonia tetragonioides | Aizoaceae | CA US FR GB AU | S | pack-vegetables-leafy | | perennial, leafy, heat-tolerant, spreading | new zealand spinach, tetragonia, warrigal greens | none | |
+| Malabar Spinach | Basella alba | Basellaceae | CA US FR GB AU | L | pack-vegetables-leafy | | annual, climbing, leafy, tropical | malabar spinach, basella, indian spinach, vine spinach | planned | green/red stem forms |
+| Good King Henry | Chenopodium bonus-henricus | Amaranthaceae | CA US FR GB AU | M | pack-vegetables-leafy | | perennial, leafy, woodland, edible | good king henry, goosefoot, wild spinach, mercury | none | |
+
+---
+
+## 🥦 Vegetables — Root
+
+| Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Celeriac | Apium graveolens var. rapaceum | Apiaceae | CA US FR GB AU | M | pack-vegetables-root | | biennial, root, celery-flavour | celeriac, celery root, turnip-rooted celery, apium | none | |
+| Jerusalem Artichoke | Helianthus tuberosus | Asteraceae | CA US FR GB AU | XL | pack-vegetables-root | | perennial, tuber, spreading, sunflower-relative | jerusalem artichoke, sunchoke, helianthus tuberosus | none | |
+| Salsify | Tragopogon porrifolius | Asteraceae | CA US FR GB AU | M | pack-vegetables-root | | biennial, root, oyster-flavour | salsify, oyster plant, purple salsify, tragopogon | none | |
+| Scorzonera | Scorzonera hispanica | Asteraceae | CA US FR GB AU | M | pack-vegetables-root | | perennial, root, black-skin | scorzonera, black salsify, serpent root | none | |
+| Hamburg Parsley | Petroselinum crispum var. tuberosum | Apiaceae | CA US FR GB AU | M | pack-vegetables-root | | biennial, root, parsley-flavour | hamburg parsley, root parsley, turnip-rooted parsley | none | |
+| Sweet Potato | Ipomoea batatas | Convolvulaceae | CA US FR GB AU | M | pack-vegetables-root | | annual, tuber, climbing, tropical | sweet potato, ipomoea batatas, kumara | planned | orange/purple/white flesh forms |
+| Oca | Oxalis tuberosa | Oxalidaceae | CA US FR GB AU | S | pack-vegetables-root | | perennial, tuber, bright colours | oca, new zealand yam, oxalis tuberosa | planned | orange/yellow/pink tuber forms |
+| Skirret | Sium sisarum | Apiaceae | CA US FR GB AU | M | pack-vegetables-root | | perennial, root, sweet, old-fashioned | skirret, sium sisarum, crummock | none | |
+| Cassava / Manioc | Manihot esculenta | Euphorbiaceae | AU US FR | XL | pack-vegetables-root | | perennial, tuber, tropical, staple | cassava, manioc, yuca, manihot esculenta | none | tropical climates only |
+| Yacon | Smallanthus sonchifolius | Asteraceae | CA US FR GB AU | L | pack-vegetables-root | | perennial, tuber, sweet, sunflower-relative | yacon, peruvian ground apple, smallanthus sonchifolius | none | |
 
 ---
 

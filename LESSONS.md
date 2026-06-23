@@ -3,6 +3,33 @@ _L001–L009, L016–L018, L020 archived at: `memory/deep/garden-planner/lessons
 
 ---
 
+## L036 — Supabase + Google OAuth: setup rules and common failure modes
+**Date:** 2026-06-18
+
+### Config checklist (verify before any auth debugging session)
+| Item | Where | What to check |
+|------|-------|---------------|
+| Client ID | Google Cloud Console → Credentials → Web client | Must match exactly what's in Supabase → Auth → Providers → Google |
+| Client Secret | Google Cloud Console → Credentials → Web client | Must match exactly — this was the root cause today (`invalid_client`) |
+| Authorized redirect URI | Google Cloud Console → Web client | Must include `https://oxecjcdxkmtdgmdxlxyt.supabase.co/auth/v1/callback` exactly |
+| Publishing status | Google Cloud Console → OAuth consent screen → Audience | Must be **In production** — Testing mode = only whitelisted emails can sign in |
+| Flow type | `app/src/supabase.js` | Must be `flowType: 'implicit'` — PKCE breaks Capacitor external browser deep-links (code verifier lost between browser contexts) |
+
+### Root causes found today (in order of discovery)
+1. **OAuth consent screen in Testing mode** — `unexpected_failure` for any non-whitelisted user. Fix: publish the app.
+2. **Wrong client secret in Supabase** — `invalid_client` error in Supabase auth logs. Fix: copy secret fresh from Google Cloud Console.
+3. **PKCE flow breaks Capacitor deep-links** — `invalid flow state, no valid flow state found`. Fix: use `implicit` flow only.
+
+### Rules
+- Never change `flowType` away from `implicit` for this app — PKCE requires shared storage between the authorize call and callback, which breaks across external browser contexts
+- When auth breaks: check Supabase Auth Logs first — the error message is specific and diagnostic
+- If `unexpected_failure`: check OAuth consent screen publishing status
+- If `invalid_client`: re-copy the client secret from Google Cloud Console into Supabase
+- If `invalid flow state`: flowType mismatch — revert to implicit
+- Keep a note of the Client ID: `284573774009-9qvn...` — verify it matches Supabase if credentials are ever rotated
+
+---
+
 ## L035 — Pipeline: keep it simple — edge-only spill, no second passes
 **Date:** 2026-06-18
 v9 pipeline added aggressive second-pass spill suppression on ALL visible pixels + white-border detection loop. This broke the output: grey halos remained, magenta wasn't being fully removed, some images had no BG removal at all.

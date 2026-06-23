@@ -16,6 +16,7 @@ _Last updated: 2026-06-18_
 7. [Deploy to Android](#7-deploy-to-android)
 8. [Run the tray validator](#8-run-the-tray-validator)
 9. [End-of-session commit checklist](#9-end-of-session-commit-checklist)
+10. [Make everything live](#10-make-everything-live)
 
 ---
 
@@ -350,6 +351,51 @@ Before `/new` or closing the session:
 - [ ] `PROJECT.md` — Open Items updated if anything changed status
 
 ---
+
+---
+
+## 10. Make everything live
+
+> **Trigger:** "make sure all our changes are live"
+> Run any time before ending a session that touched app code.
+
+### Step 1 — Local state
+- [ ] `git status` → confirm nothing uncommitted
+- [ ] `git log --oneline -3` → note current HEAD commit hash
+
+### Step 2 — GitHub (required for Vercel + future store deployments)
+- [ ] `git push origin main`
+- [ ] Confirm push succeeded — this is the single source of truth for all targets
+
+### Step 3 — Web (Vercel auto-deploys from GitHub)
+- [ ] Wait ~15–30s after push
+- [ ] Confirm 200 at https://app.gardenmapper.ca (hard-refresh)
+- [ ] If Vercel fails: check Vercel dashboard for build errors
+
+### Step 4 — Android APK (manual — phone required)
+- [ ] Phone connected via USB with USB Debugging on?
+  - **YES** → double-click `deploy-android.bat` on desktop
+  - **NO** → skip and note: *"Android pending — run deploy-android.bat when phone is connected"*
+  - Code is already saved on GitHub. Nothing is lost. Deploy next session.
+
+### Step 5 — Google Play Store *(not yet set up)*
+- [ ] *(Placeholder — requires Google Play Developer account + signed release build)*
+- [ ] Once live: build signed APK → upload to Play Console → submit for review
+
+### Step 6 — Apple App Store *(not yet set up)*
+- [ ] *(Placeholder — requires Mac + Apple Developer account ($99/yr) + Xcode)*
+- [ ] Once live: build iOS release → upload via Xcode/Transporter → submit for review
+
+---
+
+### Deployment map (reference)
+
+| Target | How it deploys | Trigger | Manual? | Status |
+|--------|---------------|---------|---------|--------|
+| Web (gardenmapper.ca) | Vercel | git push to main | No — auto | ✅ Live |
+| Android APK (sideload) | deploy-android.bat | Phone connected | Yes — always | ✅ Working |
+| Google Play Store | Play Console | Signed build upload | Yes | 🔲 Not set up |
+| Apple App Store | Xcode / Transporter | Signed build upload | Yes | 🔲 Not set up |
 
 ---
 

@@ -63,6 +63,20 @@ No PII. No email. No device info.
 
 ---
 
+## What Sign-In Gives Users (V1)
+- **Cloud backup** — garden pushed to Supabase on sign-in ✅
+- **Restore on reinstall** — restore prompt shown when local is empty + signed in ✅
+- **Multi-device (limited)** — single garden slot; last device to save wins. True multi-device = V2.
+- **Premium gating** — subscription flag exists in DB but nothing checks it in UI yet. Not active.
+- **Google Play billing** — wired separately when ready. Sign-in does not trigger billing.
+
+## Auth Error Alerting
+- No built-in Supabase alerting for auth failures. Check Auth Logs manually (Supabase → Authentication → Logs).
+- **Deferred:** Build alerting infrastructure (webhook → notify on repeated login failures) when real users exist. Not worth it for beta scale.
+- See L036 in LESSONS.md for the full auth setup checklist and common failure modes.
+
+---
+
 ## Files This Policy Affects
 - `useSaveLoad.js` — add cloud write on save + restore-on-open logic
 - `GardenEditor.jsx` — restore prompt UI
