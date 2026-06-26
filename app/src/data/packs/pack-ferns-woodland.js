@@ -47,4 +47,13 @@ export const entries = [
     traits: ['shade', 'deciduous-fern', 'ornamental', 'silver'],
   },
 
+  {
+    key: 'plant-fern_harts-tongue-fern_M_CA-US-FR-GB-AU',
+    label: "Hart's Tongue Fern",
+    size: 'M',
+    latinName: 'Asplenium scolopendrium',
+    searchTerms: ["hart's tongue fern", 'asplenium scolopendrium'],
+    traits: ['shade', 'evergreen', 'strap-leafed'],
+  },
+
 ];
