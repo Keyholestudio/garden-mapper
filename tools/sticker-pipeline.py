@@ -49,8 +49,8 @@ def remove_chroma(input_path, output_path):
 
     data[:,:,3] = new_alpha
 
-    # ── Erase Gemini watermark (bottom-right 20% of image) ─────────────────────
-    data[int(h * 0.80):, int(w * 0.80):, 3] = 0
+    # ── Erase Gemini watermark (bottom-right 10% of image) ─────────────────────
+    data[int(h * 0.90):, int(w * 0.90):, 3] = 0
 
     result = Image.fromarray(np.clip(data, 0, 255).astype(np.uint8), 'RGBA')
 
