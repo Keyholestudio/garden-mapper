@@ -20,4 +20,13 @@ export const entries = [
     traits: ['shade', 'deciduous-fern', 'delicate'],
   },
 
+  {
+    key: 'plant-fern_male-fern_L_CA-US-FR-GB-AU',
+    label: 'Male Fern',
+    size: 'L',
+    latinName: 'Dryopteris filix-mas',
+    searchTerms: ['male fern', 'dryopteris', 'buckler fern'],
+    traits: ['shade', 'semi-evergreen', 'robust'],
+  },
+
 ];
