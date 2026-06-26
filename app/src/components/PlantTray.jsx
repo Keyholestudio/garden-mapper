@@ -182,7 +182,7 @@ function TrayItem({ entry, loadedImages, onClick, onDragStart, onRemove, showRem
       title={`${entry.label} — ${entry.family}`}
     >
       {loaded
-        ? <img src={entry.src} alt={entry.label} draggable={false} />
+        ? <img src={entry.src || `/stickers/${entry.key}.png`} alt={entry.label} draggable={false} />
         : <div className="tray-img-placeholder" />
       }
       <span>{entry.label}</span>

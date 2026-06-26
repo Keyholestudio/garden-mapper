@@ -142,7 +142,7 @@ export default function GardenEditor() {
       const img = new Image()
       img.onload  = () => { result[p.key] = img; res() }
       img.onerror = () => res()
-      img.src = p.src
+      img.src = p.src || `/stickers/${p.key}.png`
     }))).then(() => {
       newEntries.forEach(p => { loadedPackKeysRef.current[p.key] = true })
       setLoadedImages(prev => ({ ...prev, ...result }))
