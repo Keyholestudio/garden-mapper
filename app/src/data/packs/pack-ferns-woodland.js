@@ -29,4 +29,13 @@ export const entries = [
     traits: ['shade', 'semi-evergreen', 'robust'],
   },
 
+  {
+    key: 'plant-fern_ostrich-fern_L_CA-US-FR-GB-AU',
+    label: 'Ostrich Fern',
+    size: 'L',
+    latinName: 'Matteuccia struthiopteris',
+    searchTerms: ['ostrich fern', 'matteuccia', 'shuttlecock fern'],
+    traits: ['shade', 'deciduous-fern', 'vase-shaped'],
+  },
+
 ];
