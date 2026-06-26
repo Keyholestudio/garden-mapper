@@ -265,17 +265,24 @@ export default function MobileSheet({
             )}
             {filtered.map(entry => {
               const img = loadedImages?.[entry.key]
-              const loaded = img && typeof img !== 'string'
+              const preloaded = img && typeof img !== 'string'
+              const imgSrc = entry.src || `/stickers/${entry.key}.png`
               return (
                 <div
                   key={entry.key}
-                  className={`mobile-plant-item${loaded ? '' : ' mobile-plant-loading'}`}
-                  onClick={() => loaded && onPlantClick?.({ ...entry, _img: img })}
+                  className="mobile-plant-item"
+                  onClick={() => {
+                    if (preloaded) {
+                      onPlantClick?.({ ...entry, _img: img })
+                    } else {
+                      const i = new Image()
+                      i.onload = () => onPlantClick?.({ ...entry, _img: i })
+                      i.src = imgSrc
+                    }
+                  }}
                   title={entry.label}
                 >
-                  {loaded
-                    ? <img src={entry.src || `/stickers/${entry.key}.png`} alt={entry.label} draggable={false} />
-                    : <div className="mobile-plant-placeholder" />}
+                  <img src={imgSrc} alt={entry.label} draggable={false} />
                   <span>{entry.label}</span>
                 </div>
               )
