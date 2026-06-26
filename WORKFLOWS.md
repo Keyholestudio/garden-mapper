@@ -1,15 +1,15 @@
 # Garden Mapper — Workflows
 _Central reference for how we do things. When in doubt, check here first._
-_Last updated: 2026-06-18_
+_Last updated: 2026-06-23_
+_Archived workflows (1, 3, pack list): `memory/deep/garden-planner/workflows-archive.md`_
 
 ---
 
 ## Index
 
 0. [Plant pipeline: Staging → Database](#0-plant-pipeline-staging--database)
-1. [Add a new plant sticker (core catalog)](#1-add-a-new-plant-sticker-core-catalog)
+0a. [Sticker prompt template sync](#0a-sticker-prompt-template-sync)
 2. [Add a new plant sticker (lazy pack)](#2-add-a-new-plant-sticker-lazy-pack)
-3. [Create a new pack file](#3-create-a-new-pack-file)
 4. [Add a colour variant to an existing plant](#4-add-a-colour-variant-to-an-existing-plant)
 5. [Regenerate / replace an existing sticker](#5-regenerate--replace-an-existing-sticker)
 6. [Update the Dream Garden](#6-update-the-dream-garden)
@@ -71,42 +71,6 @@ _Last updated: 2026-06-18_
 
 ---
 
-## 1. Add a new plant sticker (core catalog)
-
-> Use this for: herbs, vegetables, perennials, annuals, shrubs, ornamental trees, bulbs, groundcovers, grasses, climbers, aquatics — anything that lives in `usePlantCatalog.js`.
-
-**Step 1 — Check PLANT-DATABASE.md first**
-- Search `research/PLANT-DATABASE.md` for the plant by common name AND latin name
-- **If already listed with a Sticker ID:** it's already in the app — stop
-- **If already listed without a Sticker ID:** the row exists, review it and proceed from Step 2
-- **If not listed:** add the row now — Common Name, Latin Name, Family Group, Regions, Size, Pack (`core`), Traits, Search Terms, Variants — before doing anything else
-- Also check `usePlantCatalog.js` by key name to confirm it's not already in code without a DB entry
-- This step locks the key name, size, and search metadata. Nothing proceeds until it's done.
-
-**Step 2 — Generate the sticker**
-- Run: `python sticker-generate-one.py "[Plant Name]"` (no `--force`)
-- PNG lands in `stickers/generated/pending/<key>.png`
-- Open the folder and show Rob the PNG for review
-
-**Step 3 — Approval gate**
-- Rob says "Approve [name]" → proceed
-- Rob says "Redo [name]" → regenerate with updated prompt
-- Rob says "Skip [name]" → discard, do not commit
-
-**Step 4 — Commit (only after approval)**
-1. Copy PNG → `app/public/stickers/<key>.png` AND `stickers/<key>.png`
-2. Add entry to `app/src/hooks/usePlantCatalog.js`:
-   - `key`, `label`, `family`, `size`, `latinName`, `searchTerms[]`, `traits[]`
-   - Use the PLANT-DATABASE.md row as the source
-3. Run `pwsh tools/validate-tray.ps1` — must show 0 errors
-4. Update `research/PLANT-DATABASE.md` → fill in the Sticker ID column
-5. `git add -A && git commit -m "Sticker: add [Name] ([key])"`
-6. `git push` → Vercel auto-deploys in ~15s
-
-**Files touched:** `usePlantCatalog.js`, `app/public/stickers/`, `stickers/`, `PLANT-DATABASE.md`
-
----
-
 ## 2. Add a new plant sticker (lazy pack)
 
 > Use this for: any plant that belongs to one of the 63 defined pack subtypes (see pack list below).
@@ -153,39 +117,6 @@ _Last updated: 2026-06-18_
 6. `git push` → Vercel auto-deploys in ~15s
 
 **Duplication rule:** A key must appear in exactly ONE file — core catalog OR one pack. Never both. The validator catches this but the database check should catch it first.
-
----
-
-## 3. Create a new pack file
-
-> Use this when a new category from the Recommended Master Structure needs its own lazy-load pack.
-
-**Step 1 — Confirm the pack group**
-- Check the Garden Organizer doc → "Plant Lazy Loading folder Structure" tab
-- Identify the category and its red-highlighted main subtypes
-- These subtypes become `packGroup` values (search filter tags) inside the pack file
-
-**Step 2 — Create the pack file**
-- Copy `app/src/data/packs/pack-cacti-succulents.js` as a template
-- Rename to `pack-[category]-[subtype].js` (e.g. `pack-ferns-woodland.js`)
-- Update the `packId`, `packName`, `packGroup`, and clear the `plants[]` array
-- Plants array starts empty — populate via [Workflow 2](#2-add-a-new-plant-sticker-lazy-pack)
-
-**Step 3 — Register the pack**
-- Open `app/src/data/packs/index.js`
-- Add import + export entry for the new pack
-
-**Step 4 — Verify the tray shows it**
-- Start dev server (`npm run dev` → http://localhost:5200)
-- Confirm the pack appears in the plant tray when loaded
-- Run `pwsh tools/validate-tray.ps1` — 0 errors
-
-**Step 5 — Commit**
-- `git add -A && git commit -m "Packs: add [pack name] pack file (empty)"`
-
-**No groups/packGroup tagging** — each pack file IS the group. One subtype = one file. No further sub-filtering needed.
-
-**Note:** Core catalog plants are NOT migrated to new packs without explicit planning session. Deferred — see PROJECT.md.
 
 ---
 
@@ -400,117 +331,7 @@ Before `/new` or closing the session:
 ---
 
 ## Reference: Complete Pack File List
-
-63 pack files — one per subtype. All live in `app/src/data/packs/`.
-
-### Trees (4)
-| Pack File | Subtype |
-|-----------|--------|
-| `pack-trees-deciduous.js` | Deciduous trees |
-| `pack-trees-evergreen.js` | Evergreen trees |
-| `pack-trees-coniferous.js` | Coniferous trees |
-| `pack-trees-broadleaf-evergreen.js` | Broadleaf evergreen trees |
-
-### Shrubs (5)
-| Pack File | Subtype |
-|-----------|--------|
-| `pack-shrubs-deciduous.js` | Deciduous shrubs |
-| `pack-shrubs-evergreen.js` | Evergreen shrubs |
-| `pack-shrubs-flowering.js` | Flowering shrubs |
-| `pack-shrubs-coniferous.js` | Coniferous shrubs |
-| `pack-shrubs-broadleaf-evergreen.js` | Broadleaf evergreen shrubs |
-
-### Flowers / Perennials (5)
-| Pack File | Subtype |
-|-----------|--------|
-| `pack-flowers-perennials.js` | Flowering perennials |
-| `pack-flowers-bulbs.js` | Bulbs / tuberous plants |
-| `pack-flowers-cottage.js` | Cottage-garden flowers |
-| `pack-flowers-wildflowers.js` | Native wildflowers |
-| `pack-flowers-evergreen-perennials.js` | Evergreen perennials |
-
-### Grasses (5)
-| Pack File | Subtype |
-|-----------|--------|
-| `pack-grasses-ornamental.js` | Ornamental grasses |
-| `pack-grasses-tufting.js` | Tufting grasses |
-| `pack-grasses-spreading.js` | Spreading grasses |
-| `pack-grasses-reeds.js` | Reeds / tall grasses |
-| `pack-grasses-sedge.js` | Sedge-like plants |
-
-### Climbers / Vines (5)
-| Pack File | Subtype |
-|-----------|--------|
-| `pack-climbers-flowering.js` | Flowering climbers |
-| `pack-climbers-evergreen.js` | Evergreen climbers |
-| `pack-climbers-deciduous.js` | Deciduous climbers |
-| `pack-climbers-tendrilled.js` | Tendrilled vines |
-| `pack-climbers-twining.js` | Twining climbers |
-
-### Groundcovers (5)
-| Pack File | Subtype |
-|-----------|--------|
-| `pack-groundcovers-flowering.js` | Flowering groundcovers |
-| `pack-groundcovers-evergreen.js` | Evergreen groundcovers |
-| `pack-groundcovers-mat-forming.js` | Mat-forming groundcovers |
-| `pack-groundcovers-spreading.js` | Spreading groundcovers |
-| `pack-groundcovers-succulents.js` | Groundcover succulents |
-
-### Succulents & Cacti (6)
-> ⚠️ **Legacy:** `pack-cacti-succulents.js` currently holds all cacti/succulents. New plants go into the granular packs below. Migration of existing plants deferred.
-
-| Pack File | Subtype |
-|-----------|--------|
-| `pack-succulents-rosette.js` | Rosette succulents |
-| `pack-succulents-trailing.js` | Trailing succulents |
-| `pack-cacti-columnar.js` | Columnar cacti |
-| `pack-cacti-barrel.js` | Barrel / globular cacti |
-| `pack-cacti-paddle.js` | Paddle / pad cacti |
-| `pack-cacti-shrubby.js` | Shrubby succulents |
-
-### Ferns (5)
-| Pack File | Subtype |
-|-----------|--------|
-| `pack-ferns-tree.js` | Tree ferns |
-| `pack-ferns-woodland.js` | Soft woodland ferns |
-| `pack-ferns-evergreen.js` | Evergreen ferns |
-| `pack-ferns-moisture.js` | Moisture-loving ferns |
-| `pack-ferns-rock.js` | Rock / wall ferns |
-
-### Herbs (6)
-| Pack File | Subtype |
-|-----------|--------|
-| `pack-herbs-culinary.js` | Culinary herbs |
-| `pack-herbs-medicinal.js` | Medicinal herbs |
-| `pack-herbs-woody.js` | Woody herbs |
-| `pack-herbs-soft-leaved.js` | Soft-leaved herbs |
-| `pack-herbs-perennial.js` | Perennial herbs |
-| `pack-herbs-annual.js` | Annual herbs |
-
-### Vegetables (9)
-| Pack File | Subtype |
-|-----------|--------|
-| `pack-vegetables-leafy.js` | Leafy vegetables |
-| `pack-vegetables-root.js` | Root vegetables |
-| `pack-vegetables-bulb.js` | Bulb vegetables |
-| `pack-vegetables-stem.js` | Stem vegetables |
-| `pack-vegetables-fruiting.js` | Fruiting vegetables |
-| `pack-vegetables-legumes.js` | Legumes / pod vegetables |
-| `pack-vegetables-brassica.js` | Brassica vegetables |
-| `pack-vegetables-asian-greens.js` | Asian greens |
-| `pack-vegetables-perennial.js` | Perennial vegetables |
-
-### Fruit (8)
-| Pack File | Subtype |
-|-----------|--------|
-| `pack-fruit-pome.js` | Pome fruit |
-| `pack-fruit-stone.js` | Stone fruit |
-| `pack-fruit-citrus.js` | Citrus |
-| `pack-fruit-berry.js` | Berry fruit |
-| `pack-fruit-vine.js` | Vine fruit |
-| `pack-fruit-tropical.js` | Tropical fruit |
-| `pack-fruit-melons.js` | Melons |
-| `pack-fruit-nuts.js` | Nut-bearing plants |
+_63 pack files archived at: `memory/deep/garden-planner/workflows-archive.md`_
 
 ---
 

@@ -150,6 +150,14 @@ export const PACK_REGISTRY = [
     loader: () => import('./pack-fruit-nuts.js'),
     families: ['Nut'],
   },
+  // Ferns
+  {
+    id: 'ferns-woodland',
+    label: 'Woodland Ferns',
+    eager: false,
+    loader: () => import('./pack-ferns-woodland.js'),
+    families: ['Fern / Groundcover'],
+  },
 ];
 
 // Families served by lazy packs — used to exclude them from core tray render

@@ -100,6 +100,7 @@ cd projects/garden-planner/app && npm run dev
 - **Plant catalog expansion** — full research complete for all 63 packs (~600 plants). See `research/PLANT-PACK-RESEARCH.md` for counts, `research/PLANT-STAGING.md` for schema rows ready to generate.
 - **Plant pipeline** — PLANT-STAGING.md (~617 plants, all 63 packs). Workflow 0 + 0a in WORKFLOWS.md. Generate pack-by-pack with Rob's approval.
 - **Completed packs:** `pack-fruit-pome.js` (4 stickers) ✅
+- **In progress:** `pack-ferns-woodland.js` — 12 plants staged, pack file created, sticker generation NOT YET started (Gemini ready, run next session)
 - **Sticker template fix** — TEMPLATES dict synced to STICKER-PROMPT-GUIDE.md (2026-06-18). Workflow 0a enforces this going forward.
 - **Colour variant rollout** — plan in `COLOUR-VARIANTS.md`. Chunk 1 next: Ornamental Cherry + Magnolia.
 - **Fern pack files** — create 3 packs: `pack-ferns-tree.js` (5), `pack-ferns-woodland.js` (12), `pack-ferns-evergreen.js` (8). Plants in PLANT-STAGING.md.

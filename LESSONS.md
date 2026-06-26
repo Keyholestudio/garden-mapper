@@ -1,5 +1,5 @@
 # Garden Planner — Project Lessons
-_L001–L009, L016–L018, L020 archived at: `memory/deep/garden-planner/lessons-archive.md`_
+_L001–L009, L016–L019, L020, L026, L027, L028 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 ---
 
@@ -114,50 +114,6 @@ A cron runs daily at 9 AM ET (topic 3954) via `tools/validate-tray.ps1`. It chec
 
 ---
 
-## L028 — "Update the Dream Garden to the website" workflow
-**Trigger phrase:** "update the Dream Garden to the website"
-1. Browser tool → localhost:5200 → eval `JSON.parse(localStorage.getItem('gardenData'))[0]` → grab JSON
-2. Validate: `_isDreamGarden: true` present; bump `_dreamVersion` +1
-3. Overwrite `app/src/data/dreamGarden.json`
-4. `git add -A && git commit -m "Dream Garden: v[N] — [desc]" && git push`
-5. Verify raw GitHub URL serves new version; confirm to Rob
-
-**No manual steps from Rob. No export button in UI (no auth yet).**
-
----
-
-## L027 — Browser zoom-in clips right panel (#32) — known limitation
-**Date:** 2026-06-09
-Zoom-out works. Zoom-in clips right panel until page refresh. Chrome/Brave don't fire resize on Ctrl++ zoom — `window.innerWidth` stays constant. All attempted fixes failed (see archive for full list).
-**Current state (commit `0e13c9f`):** `flex-shrink:1` + `min-width` on panels; `max-width:100vw` on root; Konva updates on zoom-out. Workaround: refresh after zooming in.
-**Future option:** `ResizeObserver` on `document.documentElement`, or "Refresh to fit" banner via `visualViewport.scale !== 1`.
-
----
-
-## L026 — Struct copy: RESOLVED 2026-06-15
-~~Two known limitations~~ Both fixed during panel standardization + copy session.
-1. Copy button disabled for groups ✅ (already greyed in UI)
-2. Copied rects connect/merge correctly ✅ (dragend listener wired)
-
-## L026 — Struct copy: two known limitations to fix (ARCHIVED)
-**Date:** 2026-06-09
-
-### Issue 1 — Copy button should be greyed/disabled for Konva.Group (connected buildings)
-`handleCopyStruct` skips Groups with an early return. The button should reflect this visually.
-**Fix:** In RightPanel and MobileSheet struct panels, add `disabled={isGroup}` to the Copy button.
-Add CSS: `.btn-panel:disabled { opacity: 0.4; cursor: not-allowed; }`
-
-### Issue 2 — Copied rects cannot be joined/connected to other rects
-The original rect gets a `dragend` listener wired by `addRectStruct` in `drawUtils.js` that calls
-`tryMergeRects`. The copied rect in `handleCopyStruct` creates a bare `Konva.Rect` without this
-listener — so it can be dragged but never triggers a merge/join.
-**Fix:** After creating the new rect in `handleCopyStruct`, attach the same `dragend` handler.
-Requires importing `tryMergeRects` from `drawUtils.js` into `GardenEditor.jsx` and calling it
-identically to how `addRectStruct` does. Check `addRectStruct` in `drawUtils.js` for the exact
-dragend handler signature before implementing.
-
----
-
 ## L025 — Sticker continuity: never delete a key, only replace/alias/retire
 **Date:** 2026-06-09
 Saved gardens store **keys**, not paths. Missing key = silent broken image.
@@ -209,18 +165,6 @@ Stale instances accumulate on 5200–5203 silently. Kill: `Get-NetTCPConnection 
 Konva's drag handler latches onto a shape from finger 1 before the second finger registers as a pinch. `layer.listening(false)` doesn't interrupt an in-progress drag. `tr.nodes([])` only affects transformer anchors.
 **Fix:** On `e.touches.length === 2`: `Konva.DD?.reset()`, then `n.draggable(false)` on all shapes. After pinch end (120ms): restore `draggable(true)`, call `onPinchEnd` to re-apply lock state.
 **Files:** `GardenCanvas.jsx` (touch handlers), `GardenEditor.jsx` (`onPinchEnd` + `transformstart` guard `e.evt.touches.length >= 2`).
-
----
-
-## L019 — How to add a repeating texture to a season
-**Date:** 2026-06-04
-Textures = 256×256 JPGs in `app/public/textures/`, applied as `fillPatternImage` on `__propBounds`.
-1. Rob sends JPG via Telegram → `C:\Users\RG\.openclaw\media\inbound\`
-2. Resize 256×256, blend white. **Always from original** — re-fading stacks. Fade levels: spring 30%, summer 20%, fall 10%, winter 50%.
-3. Save as `app/public/textures/lawn-<season>.jpg`
-4. Wire `LAWN_TEXTURES` in **3 places**: `GardenCanvas.jsx`, `useSaveLoad.js`, `GardenEditor.jsx` (onStart handler). All must match.
-5. Commit: `"Textures: update <season> lawn texture"`
-**Flash-then-disappear bug (fixed):** `applyLawnTexture()` called after rect added in `useSaveLoad.js` — do not remove.
 
 ---
 

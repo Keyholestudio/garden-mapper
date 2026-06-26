@@ -12,8 +12,8 @@ import numpy as np
 import os, sys
 
 CHROMA     = np.array([255, 0, 255], dtype=np.float32)  # Magenta
-TOLERANCE  = 80
-SOFT_RANGE = 40
+TOLERANCE  = 100
+SOFT_RANGE = 55
 OUT_SIZE   = 512
 
 def remove_chroma(input_path, output_path):

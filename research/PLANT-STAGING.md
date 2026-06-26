@@ -17,6 +17,25 @@ _Then and only then does the row move to PLANT-DATABASE.md with the Sticker ID f
 
 ---
 
+## 🌿 Ferns — Woodland
+
+| Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Lady Fern | Athyrium filix-femina | Athyriaceae | CA US FR GB AU | M | pack-ferns-woodland | | shade, deciduous-fern, delicate | lady fern, athyrium, woodland fern | none | |
+| Male Fern | Dryopteris filix-mas | Dryopteridaceae | CA US FR GB AU | L | pack-ferns-woodland | | shade, semi-evergreen, robust | male fern, dryopteris, buckler fern | none | |
+| Ostrich Fern | Matteuccia struthiopteris | Onocleaceae | CA US FR GB | L | pack-ferns-woodland | | shade, deciduous-fern, vase-shaped | ostrich fern, matteuccia, shuttlecock fern | none | iconic vase form |
+| Japanese Painted Fern | Athyrium niponicum | Athyriaceae | CA US FR GB AU | M | pack-ferns-woodland | | shade, deciduous-fern, ornamental, silver | japanese painted fern, athyrium niponicum, silver fern | none | silver-grey fronds |
+| Hart's Tongue Fern | Asplenium scolopendrium | Aspleniaceae | CA US FR GB AU | M | pack-ferns-woodland | | shade, evergreen, strap-leafed | hart's tongue fern, asplenium scolopendrium | none | undivided strap fronds - very distinctive |
+| Maidenhair Fern | Adiantum pedatum | Pteridaceae | CA US FR GB AU | M | pack-ferns-woodland | | shade, deciduous-fern, delicate | maidenhair fern, adiantum, venus hair | none | delicate fan-shaped fronds |
+| Soft Shield Fern | Polystichum setiferum | Dryopteridaceae | CA US FR GB AU | L | pack-ferns-woodland | | shade, semi-evergreen, soft | soft shield fern, polystichum setiferum | none | |
+| Broad Buckler Fern | Dryopteris dilatata | Dryopteridaceae | CA US FR GB AU | L | pack-ferns-woodland | | shade, semi-evergreen, spreading | broad buckler fern, dryopteris dilatata | none | |
+| Royal Fern | Osmunda regalis | Osmundaceae | CA US FR GB AU | XL | pack-ferns-woodland | | shade, wetland, tall, deciduous-fern | royal fern, osmunda, flowering fern | none | tallest UK fern |
+| Interrupted Fern | Osmunda claytoniana | Osmundaceae | CA US FR | L | pack-ferns-woodland | | shade, deciduous-fern, unusual | interrupted fern, osmunda claytoniana | none | |
+| Cinnamon Fern | Osmundastrum cinnamomeum | Osmundaceae | CA US FR | L | pack-ferns-woodland | | shade, wetland, deciduous-fern, cinnamon | cinnamon fern, osmundastrum, fertile fronds | none | cinnamon-coloured fertile fronds |
+| Sensitive Fern | Onoclea sensibilis | Onocleaceae | CA US FR GB | M | pack-ferns-woodland | | shade, wetland, deciduous-fern | sensitive fern, onoclea, bead fern | none | |
+
+---
+
 ## 🌳 Trees — Deciduous
 
 | Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
