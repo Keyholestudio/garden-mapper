@@ -83,4 +83,13 @@ export const entries = [
     traits: ['shade', 'semi-evergreen', 'spreading'],
   },
 
+  {
+    key: 'plant-fern_royal-fern_XL_CA-US-FR-GB-AU',
+    label: 'Royal Fern',
+    size: 'XL',
+    latinName: 'Osmunda regalis',
+    searchTerms: ['royal fern', 'osmunda', 'flowering fern'],
+    traits: ['shade', 'wetland', 'tall', 'deciduous-fern'],
+  },
+
 ];
