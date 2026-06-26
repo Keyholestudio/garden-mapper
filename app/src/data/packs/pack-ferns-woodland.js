@@ -65,4 +65,13 @@ export const entries = [
     traits: ['shade', 'deciduous-fern', 'delicate'],
   },
 
+  {
+    key: 'plant-fern_soft-shield-fern_L_CA-US-FR-GB-AU',
+    label: 'Soft Shield Fern',
+    size: 'L',
+    latinName: 'Polystichum setiferum',
+    searchTerms: ['soft shield fern', 'polystichum setiferum'],
+    traits: ['shade', 'semi-evergreen', 'soft'],
+  },
+
 ];
