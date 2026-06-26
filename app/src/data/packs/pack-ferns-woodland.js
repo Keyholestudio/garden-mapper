@@ -56,4 +56,13 @@ export const entries = [
     traits: ['shade', 'evergreen', 'strap-leafed'],
   },
 
+  {
+    key: 'plant-fern_maidenhair-fern_M_CA-US-FR-GB-AU',
+    label: 'Maidenhair Fern',
+    size: 'M',
+    latinName: 'Adiantum pedatum',
+    searchTerms: ['maidenhair fern', 'adiantum', 'venus hair'],
+    traits: ['shade', 'deciduous-fern', 'delicate'],
+  },
+
 ];

@@ -36,7 +36,7 @@ new_alpha = np.where(hard_transparent, 0,
 data[:,:,3] = new_alpha
 
 # Erase Gemini watermark — bottom-right 8% only (much smaller than before)
-data[int(h * 0.85):, int(w * 0.85):, 3] = 0
+data[int(h * 0.87):, int(w * 0.87):, 3] = 0
 
 result = Image.fromarray(np.clip(data, 0, 255).astype(np.uint8), 'RGBA')
 
