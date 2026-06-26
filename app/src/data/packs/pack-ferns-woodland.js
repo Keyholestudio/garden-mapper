@@ -38,4 +38,13 @@ export const entries = [
     traits: ['shade', 'deciduous-fern', 'vase-shaped'],
   },
 
+  {
+    key: 'plant-fern_japanese-painted-fern_M_CA-US-FR-GB-AU',
+    label: 'Japanese Painted Fern',
+    size: 'M',
+    latinName: 'Athyrium niponicum',
+    searchTerms: ['japanese painted fern', 'athyrium niponicum', 'silver fern'],
+    traits: ['shade', 'deciduous-fern', 'ornamental', 'silver'],
+  },
+
 ];
