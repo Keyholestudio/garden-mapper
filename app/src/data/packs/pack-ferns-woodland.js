@@ -74,4 +74,13 @@ export const entries = [
     traits: ['shade', 'semi-evergreen', 'soft'],
   },
 
+  {
+    key: 'plant-fern_broad-buckler-fern_L_CA-US-FR-GB-AU',
+    label: 'Broad Buckler Fern',
+    size: 'L',
+    latinName: 'Dryopteris dilatata',
+    searchTerms: ['broad buckler fern', 'dryopteris dilatata'],
+    traits: ['shade', 'semi-evergreen', 'spreading'],
+  },
+
 ];
