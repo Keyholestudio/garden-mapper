@@ -92,4 +92,13 @@ export const entries = [
     traits: ['shade', 'wetland', 'tall', 'deciduous-fern'],
   },
 
+  {
+    key: 'plant-fern_interrupted-fern_L_CA-US-FR-GB-AU',
+    label: 'Interrupted Fern',
+    size: 'L',
+    latinName: 'Osmunda claytoniana',
+    searchTerms: ['interrupted fern', 'osmunda claytoniana'],
+    traits: ['shade', 'deciduous-fern', 'unusual'],
+  },
+
 ];
