@@ -101,4 +101,13 @@ export const entries = [
     traits: ['shade', 'deciduous-fern', 'unusual'],
   },
 
+  {
+    key: 'plant-fern_cinnamon-fern_L_CA-US-FR-GB-AU',
+    label: 'Cinnamon Fern',
+    size: 'L',
+    latinName: 'Osmundastrum cinnamomeum',
+    searchTerms: ['cinnamon fern', 'osmundastrum', 'fertile fronds'],
+    traits: ['shade', 'wetland', 'deciduous-fern', 'cinnamon'],
+  },
+
 ];
