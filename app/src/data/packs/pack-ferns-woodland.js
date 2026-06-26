@@ -110,4 +110,13 @@ export const entries = [
     traits: ['shade', 'wetland', 'deciduous-fern', 'cinnamon'],
   },
 
+  {
+    key: 'plant-fern_sensitive-fern_M_CA-US-FR-GB-AU',
+    label: 'Sensitive Fern',
+    size: 'M',
+    latinName: 'Onoclea sensibilis',
+    searchTerms: ['sensitive fern', 'onoclea', 'bead fern'],
+    traits: ['shade', 'wetland', 'deciduous-fern'],
+  },
+
 ];
