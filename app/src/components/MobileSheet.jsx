@@ -2,7 +2,7 @@
 // Contains: ↑↓ toggle, plant search + 2-col grid, tool menu, edit panel
 // Season is now controlled by a tap-to-cycle button in LogoBar (top right)
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Konva from 'konva'
 import { PLANT_CATALOG_TRAY as PLANT_CATALOG } from '../hooks/usePlantCatalog'
 import { ToolMenu } from './toolMenuData.jsx'
@@ -30,6 +30,8 @@ const TYPE_COLOURS = {
 
 export default function MobileSheet({
   loadedImages, onPlantClick,
+  // Lazy pack support
+  lazyPacks, onLoadPack,
   // Recently used plants
   recents, onAddRecent, onRemoveRecent, onClearRecents, recentsHidden, onSetRecentsHidden,
   // Selection state
@@ -72,10 +74,26 @@ export default function MobileSheet({
   // Determine if we're in edit panel mode
   const isEditing = !!(selectedPlant || selectedStruct)
 
+  // Merge core catalog + loaded lazy pack entries
+  const allEntries = useMemo(() => {
+    const lazyEntries = Object.values(lazyPacks?.loaded || {}).flat()
+    return [...PLANT_CATALOG, ...lazyEntries]
+  }, [lazyPacks])
+
+  // Trigger loading all packs when search is used
+  useEffect(() => {
+    if (!query.trim() || !lazyPacks?.registry) return
+    lazyPacks.registry.forEach(pack => {
+      if (!lazyPacks.loaded?.[pack.id] && !lazyPacks.loading?.[pack.id]) {
+        onLoadPack?.(pack.id)
+      }
+    })
+  }, [query])
+
   const filtered = useMemo(() => {
-    if (!query.trim()) return PLANT_CATALOG
+    if (!query.trim()) return allEntries
     const q = query.toLowerCase()
-    return PLANT_CATALOG.filter(p => {
+    return allEntries.filter(p => {
       if (p.label?.toLowerCase().includes(q)) return true
       if (p.family?.toLowerCase().includes(q)) return true
       if (p.latinName && p.latinName.toLowerCase().includes(q)) return true

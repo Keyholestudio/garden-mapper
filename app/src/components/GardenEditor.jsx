@@ -1300,6 +1300,8 @@ export default function GardenEditor() {
             <MobileSheet
               loadedImages={loadedImages}
               onPlantClick={(entry) => { addRecent(entry); handlePlantClick(entry) }}
+              lazyPacks={lazyPacksProps}
+              onLoadPack={loadPack}
               // Selection
               selectedPlant={state.selectedPlant}
               selectedStruct={state.selectedStruct}
