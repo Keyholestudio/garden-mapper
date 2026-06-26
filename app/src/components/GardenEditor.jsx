@@ -63,6 +63,13 @@ export default function GardenEditor() {
   const { isMobile, isTablet, isDesktop, breakpoint } = useBreakpoint()
   const { recents, addRecent, removeRecent, clearRecents, hidden: recentsHidden, setHidden: setRecentsHidden } = useRecentPlants()
   const { loadPack, getPackEntries, isPackLoaded, isPackLoading, PACK_REGISTRY } = useLazyPacks()
+
+  // Load all lazy packs on mount — ensures packs are available on mobile
+  // where the PlantTray scroll trigger never fires
+  useEffect(() => {
+    PACK_REGISTRY.filter(p => !p.eager).forEach(p => loadPack(p.id))
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const lazyPacksProps = {
     registry: PACK_REGISTRY.filter(p => !p.eager),
     loaded:   Object.fromEntries(PACK_REGISTRY.filter(p => !p.eager && isPackLoaded(p.id)).map(p => [p.id, getPackEntries(p.id)])),
