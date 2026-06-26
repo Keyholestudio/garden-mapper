@@ -233,7 +233,7 @@ export default function MobileSheet({
                           title={entry.label}
                         >
                           {loaded
-                            ? <img src={entry.src} alt={entry.label} draggable={false} />
+                            ? <img src={entry.src || `/stickers/${entry.key}.png`} alt={entry.label} draggable={false} />
                             : <div className="mobile-plant-placeholder" />}
                         </div>
                         <button
@@ -274,7 +274,7 @@ export default function MobileSheet({
                   title={entry.label}
                 >
                   {loaded
-                    ? <img src={entry.src} alt={entry.label} draggable={false} />
+                    ? <img src={entry.src || `/stickers/${entry.key}.png`} alt={entry.label} draggable={false} />
                     : <div className="mobile-plant-placeholder" />}
                   <span>{entry.label}</span>
                 </div>
