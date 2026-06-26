@@ -1,6 +1,35 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026, L027, L028 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L037 — MobileSheet and PlantTray are completely separate (2026-06-26)
+**What:** Fixes to PlantTray do nothing on mobile. On mobile (`isMobile=true`) the app renders MobileSheet, NOT PlantTray. They share no code.
+**Why it matters:** Lazy pack wiring, image loading logic, src fallbacks — any change must be made in BOTH components or it only works on one platform.
+**Rule:** When fixing plant tray behaviour, always check both `PlantTray.jsx` AND `MobileSheet.jsx`.
+
+## L038 — Pack entries use `key` not `src` — always use fallback (2026-06-26)
+**What:** Lazy pack entries (cacti, ferns, etc.) have a `key` field but NO `src` field. Core catalog entries have both.
+**Symptom:** Images silently fail to load. Tray shows grey placeholders forever. No console error visible.
+**Fix everywhere `src` is used with pack entries:**
+```js
+entry.src || `/stickers/${entry.key}.png`
+```
+**Applies to:** PlantTray TrayItem render, MobileSheet plant grid render, MobileSheet recents render, GardenEditor image preloader (`p.src || ...`).
+**Rule:** Never use `entry.src` alone on any entry that could be from a lazy pack.
+
+## L039 — `--force` on sticker generator deletes raw before generating (2026-06-26)
+**What:** `sticker-generate-one.py --force` immediately deletes the existing raw + PNG, THEN tries to generate. If Gemini times out after deletion, the original is gone permanently.
+**Fix:** Before using `--force`, confirm Gemini is responsive (not showing reload icon). If unsure, manually back up the raw first.
+**Rule:** Never use `--force` speculatively. Use it only when Gemini is confirmed ready.
+
+## L040 — Gemini image gen: 13% watermark clip is the sweet spot (2026-06-26)
+**What:** Gemini watermark in bottom-right corner. Pipeline erases a square corner region.
+- 10% = logo still visible
+- 13% = logo gone, plant fronds intact (sweet spot for most images)
+- 15% = current pipeline default (acceptable, occasionally clips plants)
+- 20% = original default, visibly clips plant corners
+**Pipeline file:** `tools/sticker-pipeline.py` — `TOLERANCE=100, SOFT_RANGE=55`
+**Note:** White BG images use `reprocess-white-bg.py` — same 13% sweet spot applies.
+
 ---
 
 ## L036 — Supabase + Google OAuth: setup rules and common failure modes
