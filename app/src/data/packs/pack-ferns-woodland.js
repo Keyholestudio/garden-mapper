@@ -23,7 +23,7 @@ export const entries = [
   {
     key: 'plant-fern_male-fern_L_CA-US-FR-GB-AU',
     label: 'Male Fern',
-    size: 'L',
+    size: 'M',
     latinName: 'Dryopteris filix-mas',
     searchTerms: ['male fern', 'dryopteris', 'buckler fern'],
     traits: ['shade', 'semi-evergreen', 'robust'],
@@ -32,7 +32,7 @@ export const entries = [
   {
     key: 'plant-fern_ostrich-fern_L_CA-US-FR-GB-AU',
     label: 'Ostrich Fern',
-    size: 'L',
+    size: 'M',
     latinName: 'Matteuccia struthiopteris',
     searchTerms: ['ostrich fern', 'matteuccia', 'shuttlecock fern'],
     traits: ['shade', 'deciduous-fern', 'vase-shaped'],
@@ -68,7 +68,7 @@ export const entries = [
   {
     key: 'plant-fern_soft-shield-fern_L_CA-US-FR-GB-AU',
     label: 'Soft Shield Fern',
-    size: 'L',
+    size: 'M',
     latinName: 'Polystichum setiferum',
     searchTerms: ['soft shield fern', 'polystichum setiferum'],
     traits: ['shade', 'semi-evergreen', 'soft'],
@@ -77,7 +77,7 @@ export const entries = [
   {
     key: 'plant-fern_broad-buckler-fern_L_CA-US-FR-GB-AU',
     label: 'Broad Buckler Fern',
-    size: 'L',
+    size: 'M',
     latinName: 'Dryopteris dilatata',
     searchTerms: ['broad buckler fern', 'dryopteris dilatata'],
     traits: ['shade', 'semi-evergreen', 'spreading'],
@@ -86,7 +86,7 @@ export const entries = [
   {
     key: 'plant-fern_royal-fern_XL_CA-US-FR-GB-AU',
     label: 'Royal Fern',
-    size: 'XL',
+    size: 'M',
     latinName: 'Osmunda regalis',
     searchTerms: ['royal fern', 'osmunda', 'flowering fern'],
     traits: ['shade', 'wetland', 'tall', 'deciduous-fern'],
@@ -95,7 +95,7 @@ export const entries = [
   {
     key: 'plant-fern_interrupted-fern_L_CA-US-FR-GB-AU',
     label: 'Interrupted Fern',
-    size: 'L',
+    size: 'M',
     latinName: 'Osmunda claytoniana',
     searchTerms: ['interrupted fern', 'osmunda claytoniana'],
     traits: ['shade', 'deciduous-fern', 'unusual'],
@@ -104,7 +104,7 @@ export const entries = [
   {
     key: 'plant-fern_cinnamon-fern_L_CA-US-FR-GB-AU',
     label: 'Cinnamon Fern',
-    size: 'L',
+    size: 'M',
     latinName: 'Osmundastrum cinnamomeum',
     searchTerms: ['cinnamon fern', 'osmundastrum', 'fertile fronds'],
     traits: ['shade', 'wetland', 'deciduous-fern', 'cinnamon'],

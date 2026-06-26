@@ -1,6 +1,6 @@
 # Garden Mapper — Workflows
 _Central reference for how we do things. When in doubt, check here first._
-_Last updated: 2026-06-23_
+_Last updated: 2026-06-26_
 _Archived workflows (1, 3, pack list): `memory/deep/garden-planner/workflows-archive.md`_
 
 ---
@@ -17,6 +17,7 @@ _Archived workflows (1, 3, pack list): `memory/deep/garden-planner/workflows-arc
 8. [Run the tray validator](#8-run-the-tray-validator)
 9. [End-of-session commit checklist](#9-end-of-session-commit-checklist)
 10. [Make everything live](#10-make-everything-live)
+11. [Full deploy: web + Android in one shot](#11-full-deploy-web--android-in-one-shot)
 
 ---
 
@@ -327,6 +328,50 @@ Before `/new` or closing the session:
 | Android APK (sideload) | deploy-android.bat | Phone connected | Yes — always | ✅ Working |
 | Google Play Store | Play Console | Signed build upload | Yes | 🔲 Not set up |
 | Apple App Store | Xcode / Transporter | Signed build upload | Yes | 🔲 Not set up |
+
+---
+
+---
+
+## 11. Full deploy: web + Android in one shot
+
+> **Trigger:** After any committed code or sticker change — use this single command block to push web + build + install Android.
+> Phone must be connected via USB with USB Debugging enabled.
+
+```powershell
+cd "C:\Users\RG\.openclaw\workspace\projects\garden-planner"
+git push  # push to GitHub → Vercel auto-deploys web in ~15s
+
+cd app
+$env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
+npm run build
+npx cap sync android
+cd android
+.\gradlew assembleDebug
+$adb = "C:\Users\RG\AppData\Local\Android\Sdk\platform-tools\adb.exe"
+& $adb install -r "app\build\outputs\apk\debug\app-debug.apk"
+```
+
+**All 4 steps must run in order:** build → sync → assemble → install.
+Skipping `npm run build` before `cap sync` = stale JS in the APK.
+Skipping `cap sync` before `gradlew` = web assets not copied to Android project.
+
+**If phone shows "unauthorized":** tap Allow on the USB debugging prompt on the phone, then re-run `adb install`.
+
+**Web only (no phone):**
+```powershell
+cd "C:\Users\RG\.openclaw\workspace\projects\garden-planner"
+git push  # Vercel handles the rest
+```
+
+**Android only (already pushed to GitHub):**
+```powershell
+cd "C:\Users\RG\.openclaw\workspace\projects\garden-planner\app"
+$env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
+npm run build; npx cap sync android; cd android; .\gradlew assembleDebug
+$adb = "C:\Users\RG\AppData\Local\Android\Sdk\platform-tools\adb.exe"
+& $adb install -r "app\build\outputs\apk\debug\app-debug.apk"
+```
 
 ---
 
