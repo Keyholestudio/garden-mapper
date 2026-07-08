@@ -438,6 +438,8 @@ export default function GardenEditor() {
     const entry = draggingPlantRef.current
     draggingPlantRef.current = null
     if (!entry) return
+    // Block drops outside sandbox when viewing Dream Garden
+    if (isDreamGarden && !isInSandbox(worldPos.x, worldPos.y)) return
     const { plantLayer } = layersRef.current
     if (!plantLayer || !stageRef.current) return
     addRecent(entry, { defer: true })  // defer state update so re-render doesn't break drop
@@ -465,6 +467,11 @@ export default function GardenEditor() {
       // Suppress the clearSelection for that one click so the struct edit panel stays open.
       if (suppressNextClearRef.current) { suppressNextClearRef.current = false; return }
       clearSelection(); return
+    }
+    // Block placements outside sandbox when viewing Dream Garden
+    if (isDreamGarden && !isInSandbox(worldPos.x, worldPos.y)) {
+      pendingPlantRef.current = null
+      return
     }
     pendingPlantRef.current = null
     const { plantLayer } = layersRef.current
@@ -515,6 +522,20 @@ export default function GardenEditor() {
 
   // Shared pinch flag — set by GardenCanvas touch handlers, read by transformer
   const isPinchingRef = useRef(false)
+
+  // ── Dream Garden overlay ──────────────────────────────────────────────────
+  // When currentGardenIndex === 0 (Dream Garden), the canvas is view-only outside
+  // the sandbox zone. sandboxBoundsRef holds the world-coord bounds of the editable
+  // sandbox area so drop/click guards can check before placing anything.
+  const isDreamGarden = currentGardenIndex === 0
+  const sandboxBoundsRef = useRef(null) // { x, y, w, h } in world coords — set by GardenCanvas
+
+  // Returns true if a world-coord point is inside the sandbox zone
+  const isInSandbox = (wx, wy) => {
+    const sb = sandboxBoundsRef.current
+    if (!sb) return true // not yet set — allow
+    return wx >= sb.x && wx <= sb.x + sb.w && wy >= sb.y && wy <= sb.y + sb.h
+  }
 
   const handleStageReady = (stage, layers) => {
     stageRef.current  = stage
@@ -1046,6 +1067,8 @@ export default function GardenEditor() {
   // Plain function (not useCallback) — closes over refs so always reads latest values
   const handleSave = () => {
     if (!stageRef.current) return
+    // Dream Garden is read-only on web/mobile — never overwrite index 0 from user interaction
+    if (isDreamGarden && typeof window !== 'undefined' && window.location.hostname !== 'localhost') return
     saveGarden({
       stage: stageRef.current,
       layers: layersRef.current,
@@ -1281,6 +1304,8 @@ export default function GardenEditor() {
             onDrop={handleCanvasDrop}
             isMobile={isMobile}
             isPinchingRef={isPinchingRef}
+            isDreamGarden={isDreamGarden}
+            sandboxBoundsRef={sandboxBoundsRef}
             onPinchEnd={() => {
               // Re-apply locked state after pinch ends (draggable was blanket-reset to true)
               const { plantLayer, structLayer } = layersRef.current

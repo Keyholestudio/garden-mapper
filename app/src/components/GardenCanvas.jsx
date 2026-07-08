@@ -54,6 +54,8 @@ export default function GardenCanvas({
   isPinchingRef,   // shared ref — set true while 2 fingers on screen, read by transformer to abort
   onPinchEnd,      // callback — fired after pinch ends so parent can re-apply lock/draggable state
   isMobile,        // true on mobile — changes initial zoom to fit height instead of smaller dimension
+  isDreamGarden,   // true when currentGardenIndex === 0 — enables view-only overlay
+  sandboxBoundsRef, // ref — parent writes sandbox world-coord bounds here for drop/click guards
 }) {
   const containerRef    = useRef(null)
   const stageRef        = useRef(null)
@@ -335,6 +337,80 @@ export default function GardenCanvas({
 
     // Notify parent
     if (onStageReady) onStageReady(stage, layersRef.current)
+
+    // ── Dream Garden overlay ───────────────────────────────────────────────
+    // View-only mode: invisible frame blocks all interaction outside the sandbox zone.
+    // Bypassed on localhost so Rob can edit freely.
+    const isLocalDev = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    if (isDreamGarden && !isLocalDev) {
+      const pb = propBoundsRef.current
+      if (pb) {
+        // Sandbox: 20×20 ft centered on the property bounds (in world/canvas pixels)
+        const SANDBOX_FT = 20
+        const sbW = SANDBOX_FT * UNIT_PX  // UNIT_PX = 32px/ft
+        const sbH = SANDBOX_FT * UNIT_PX
+        const sbX = pb.x + (pb.w - sbW) / 2
+        const sbY = pb.y + (pb.h - sbH) / 2
+
+        // Write sandbox bounds into the ref so GardenEditor drop/click guards can read them
+        if (sandboxBoundsRef) {
+          sandboxBoundsRef.current = { x: sbX, y: sbY, w: sbW, h: sbH }
+        }
+
+        // Overlay layer sits above uiLayer — intercepts all pointer events outside sandbox
+        const overlayLayer = new Konva.Layer({ id: '__dreamOverlay' })
+        stage.add(overlayLayer)
+
+        // 4-piece frame: top / bottom / left / right — these cover everything outside sandbox
+        // listening:true, fill transparent — invisible but blocks all events
+        const BIG = 99999
+        const frameRects = [
+          // top strip (above sandbox)
+          { x: -BIG, y: -BIG,        width: BIG * 2, height: BIG + sbY },
+          // bottom strip (below sandbox)
+          { x: -BIG, y: sbY + sbH,   width: BIG * 2, height: BIG },
+          // left strip (left of sandbox, between top and bottom strips)
+          { x: -BIG, y: sbY,         width: BIG + sbX, height: sbH },
+          // right strip (right of sandbox, between top and bottom strips)
+          { x: sbX + sbW, y: sbY,    width: BIG, height: sbH },
+        ]
+        frameRects.forEach(r => {
+          overlayLayer.add(new Konva.Rect({
+            ...r,
+            fill: 'rgba(0,0,0,0)',  // invisible
+            listening: true,
+            perfectDrawEnabled: false,
+          }))
+        })
+
+        // Sandbox visual: dashed border + label — drawn in world coords, not listening
+        overlayLayer.add(new Konva.Rect({
+          x: sbX, y: sbY, width: sbW, height: sbH,
+          stroke: 'rgba(255,255,255,0.55)',
+          strokeWidth: 2,
+          dash: [10, 6],
+          fill: 'transparent',
+          listening: false,
+          strokeScaleEnabled: false,
+        }))
+        overlayLayer.add(new Konva.Text({
+          x: sbX + sbW / 2,
+          y: sbY + sbH - 28,
+          text: '✨ Try planting here',
+          fontSize: 13,
+          fontStyle: 'bold',
+          fill: 'rgba(255,255,255,0.75)',
+          align: 'center',
+          offsetX: 0,  // will be centered via x offset after measuring
+          listening: false,
+        }))
+        // Center the label horizontally after adding
+        const label = overlayLayer.findOne('Text')
+        if (label) label.offsetX(label.width() / 2)
+
+        overlayLayer.batchDraw()
+      }
+    }
 
     return () => {
       ro.disconnect()
