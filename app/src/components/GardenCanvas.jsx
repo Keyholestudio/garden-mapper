@@ -32,6 +32,8 @@ const LAWN_OPACITY = {
   fall:   0.7,
   winter: 1.0,
 }
+// Set to true to re-enable seasonal lawn textures on the property boundary
+const LAWN_TEXTURES_ENABLED = false
 
 function loadTexture(src) {
   return new Promise((resolve) => {
@@ -116,17 +118,19 @@ export default function GardenCanvas({
     })
     structLayer.add(boundsRect)
 
-    // Load lawn texture for current season
-    const seasonName = SEASONS[currentSeason] || 'spring'
-    loadTexture(LAWN_TEXTURES[seasonName]).then((texImg) => {
-      if (texImg) {
-        boundsRect.fillPriority('pattern')
-        boundsRect.fillPatternImage(texImg)
-        boundsRect.fillPatternRepeat('repeat')
-        boundsRect.opacity(LAWN_OPACITY[seasonName] ?? 1.0)
-        structLayer.batchDraw()
-      }
-    })
+    // Load lawn texture for current season (disabled — set LAWN_TEXTURES_ENABLED=true to restore)
+    if (LAWN_TEXTURES_ENABLED) {
+      const seasonName = SEASONS[currentSeason] || 'spring'
+      loadTexture(LAWN_TEXTURES[seasonName]).then((texImg) => {
+        if (texImg) {
+          boundsRect.fillPriority('pattern')
+          boundsRect.fillPatternImage(texImg)
+          boundsRect.fillPatternRepeat('repeat')
+          boundsRect.opacity(LAWN_OPACITY[seasonName] ?? 1.0)
+          structLayer.batchDraw()
+        }
+      })
+    }
     structLayer.add(new Konva.Text({
       x: ox + 6, y: oy + 5,
       text: `${gardenName}  ${gardenW}×${gardenH} ${gardenUnit}`,
@@ -439,8 +443,9 @@ export default function GardenCanvas({
     containerRef.current.style.background = SEASON_BG[season]
   }, [currentSeason])
 
-  // ── Swap lawn texture on season change ──
+  // ── Swap lawn texture on season change (disabled — set LAWN_TEXTURES_ENABLED=true to restore) ──
   useEffect(() => {
+    if (!LAWN_TEXTURES_ENABLED) return
     const { structLayer } = layersRef.current
     if (!structLayer) return
     const rect = structLayer.findOne('#__propBounds')
