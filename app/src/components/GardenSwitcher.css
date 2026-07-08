@@ -68,7 +68,7 @@
 
 .switcher-row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   padding: 9px 12px;
   border: 1.5px solid #ddd;
@@ -90,12 +90,12 @@
   font-weight: 700;
   color: #2A3D1A;
   display: flex;
-  align-items: center;
-  gap: 6px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 4px 6px;
   min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  word-break: break-word;
+  padding-top: 1px;
 }
 
 .switcher-badge {
@@ -119,6 +119,7 @@
   font-size: 11px;
   color: #888;
   flex-shrink: 0;
+  padding-top: 2px;
 }
 
 .btn-load {
