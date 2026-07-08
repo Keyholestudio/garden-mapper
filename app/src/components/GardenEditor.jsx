@@ -1201,11 +1201,11 @@ export default function GardenEditor() {
                 fontSize: 11, fontStyle: 'bold', fill: '#558B2F', opacity: 0.65, listening: false,
               }))
               structLayer.batchDraw()
-              // Apply lawn texture
-              const sName = SEASON_NAMES[state.currentSeason] || 'spring'
-              const texImg = new window.Image()
-              texImg.onload = () => { boundsRect.fillPriority('pattern'); boundsRect.fillPatternImage(texImg); boundsRect.fillPatternRepeat('repeat'); boundsRect.opacity(LAWN_OPACITY[sName] ?? 1.0); structLayer.batchDraw() }
-              texImg.src = LAWN_TEXTURES[sName]
+              // Apply lawn texture (disabled — set LAWN_TEXTURES_ENABLED=true in GardenCanvas.jsx + useSaveLoad.js to restore)
+              // const sName = SEASON_NAMES[state.currentSeason] || 'spring'
+              // const texImg = new window.Image()
+              // texImg.onload = () => { boundsRect.fillPriority('pattern'); boundsRect.fillPatternImage(texImg); boundsRect.fillPatternRepeat('repeat'); boundsRect.opacity(LAWN_OPACITY[sName] ?? 1.0); structLayer.batchDraw() }
+              // texImg.src = LAWN_TEXTURES[sName]
               handleResetView()
             }
             state.setIsSetup(true)

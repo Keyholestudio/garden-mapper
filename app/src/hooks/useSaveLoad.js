@@ -7,6 +7,8 @@ import { SIZE_MAP, TEXTURE_MAP } from './useGardenState'
 import { makePlantGroup } from '../utils/plantUtils'
 import { applyColourOrTexture } from '../utils/drawUtils'
 
+// Set to true to re-enable seasonal lawn textures on the property boundary
+const LAWN_TEXTURES_ENABLED = false
 const LAWN_TEXTURES = {
   spring: '/textures/lawn-spring.jpg',
   summer: '/textures/lawn-summer.jpg',
@@ -53,6 +55,7 @@ function applyHedgeTexture(shape, layer) {
 }
 
 function applyLawnTexture(boundsRect, currentSeason, structLayer) {
+  if (!LAWN_TEXTURES_ENABLED) return  // disabled — set LAWN_TEXTURES_ENABLED=true to restore
   const season = SEASON_NAMES[currentSeason] || 'spring'
   const img = new window.Image()
   img.onload = () => {
