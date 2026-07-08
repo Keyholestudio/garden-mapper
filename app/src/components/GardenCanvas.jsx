@@ -377,12 +377,12 @@ export default function GardenCanvas({
     const pb = propBoundsRef.current
     if (!pb) return
 
-    // Sandbox: 20×20 ft centered on property bounds (world/canvas pixels)
-    const SANDBOX_FT = 20
+    // Sandbox: 15×15 ft, centered horizontally, shifted down 5ft from center
+    const SANDBOX_FT = 15
     const sbW = SANDBOX_FT * UNIT_PX
     const sbH = SANDBOX_FT * UNIT_PX
     const sbX = pb.x + (pb.w - sbW) / 2
-    const sbY = pb.y + (pb.h - sbH) / 2
+    const sbY = pb.y + (pb.h - sbH) / 2 + (5 * UNIT_PX)
 
     // Write bounds for parent drop/click guards
     if (sandboxBoundsRef) sandboxBoundsRef.current = { x: sbX, y: sbY, w: sbW, h: sbH }
@@ -425,6 +425,26 @@ export default function GardenCanvas({
     })
     overlayLayer.add(lbl)
     lbl.offsetX(lbl.width() / 2)  // center horizontally
+
+    // Garden Mapper logo — centered horizontally in the property, above the sandbox
+    const LOGO_W = 400  // display width in canvas pixels (~12.5ft)
+    const LOGO_ASPECT = 747 / 1200  // height/width ratio of source image
+    const LOGO_H = Math.round(LOGO_W * LOGO_ASPECT)
+    const logoImg = new window.Image()
+    logoImg.src = '/garden-mapper-logo.webp'
+    logoImg.onload = () => {
+      const logoNode = new Konva.Image({
+        image: logoImg,
+        x: pb.x + (pb.w - LOGO_W) / 2,
+        y: sbY - LOGO_H - (4 * UNIT_PX),  // 4ft gap above sandbox
+        width: LOGO_W,
+        height: LOGO_H,
+        listening: false,
+        opacity: 0.92,
+      })
+      overlayLayer.add(logoNode)
+      overlayLayer.batchDraw()
+    }
 
     overlayLayer.batchDraw()
   }, [isDreamGarden]) // eslint-disable-line react-hooks/exhaustive-deps

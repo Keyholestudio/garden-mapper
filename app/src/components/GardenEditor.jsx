@@ -1,6 +1,9 @@
 // GardenEditor.jsx — Top-level layout shell
 // Phase 5: save/load localStorage, garden switcher
 // Phase 7: responsive breakpoints
+// ⚠️ TOKEN WARNING (72 KB) — Confirm with Rob before loading this file in full.
+// Consider whether the needed logic can be found via targeted offset/limit read or grep first.
+// Candidate for future splitting: state management, event handlers, and render could be separate files.
 
 import { useRef, useState, useEffect } from 'react'
 import Konva from 'konva'

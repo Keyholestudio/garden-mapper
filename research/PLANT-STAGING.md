@@ -2,6 +2,10 @@
 _Mirror of PLANT-DATABASE.md schema. Plants live here until sticker is generated, approved, committed, and registered in the pack file._
 _Then and only then does the row move to PLANT-DATABASE.md with the Sticker ID filled in._
 
+> ⚠️ **TOKEN WARNING (131 KB) — Do not load this file in full without Rob's explicit instruction.**
+> Before accessing: confirm exactly which pack section is needed and read only that section using `offset`/`limit`.
+> Consider splitting by category (Trees, Shrubs, Flowers, etc.) into separate files if this grows further.
+
 > Regions: CA = Canada | US = USA | FR = France | GB = Britain | AU = Australia
 > Sizes: XS (<30cm) | S (30–60cm) | M (60cm–1.5m) | L (1.5m+) | XL (tree, 3m+) | XXL (statement tree, 5m+)
 > Variants: none | planned | done

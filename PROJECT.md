@@ -150,6 +150,13 @@ cd projects/garden-planner/app && npm run dev
 - **Dashboard:** https://supabase.com/dashboard/project/oxecjcdxkmtdgmdxlxyt
 - **Sync policy:** `SYNC-POLICY.md` — read before touching any auth/storage code
 
+## ⚠️ Large File Warnings — Confirm Before Loading
+| File | Size | Rule |
+|------|------|------|
+| `research/PLANT-STAGING.md` | 131 KB | Read only the needed pack section via offset/limit. Consider splitting by category. |
+| `app/src/components/GardenEditor.jsx` | 72 KB | Grep or offset/limit first. Consider splitting into smaller modules. |
+_Rob flagged these 2026-07-08. Splitting plan TBD — raise with Rob at next relevant session._
+
 ## Standing Rules
 1. Read `ARCHITECTURE.md` at session start
 2. Read v8 before solving any canvas/visual/coordinate problem

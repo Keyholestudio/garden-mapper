@@ -4,6 +4,8 @@ _Regions: Canada (CA), USA (US), France (FR), Britain (GB), Australia (AU)_
 _Criteria: Common nursery plants, loved by gardeners, not noxious weeds, not super rare_
 _Status: Research only — not yet added to PLANT-DATABASE.md_
 
+> **📦 Archived version:** An expanded aspirational counts-only variant exists at `memory/deep/garden-planner/plant-pack-counts-aspirational.md`. Do not load unless explicitly requested — it contains inflated pack sizes (~1,561 plants) that do not reflect the active ~617-plant pipeline.
+
 ## ⚠️ Deduplication Decisions (2026-06-18)
 The following were removed from their secondary pack to avoid near-identical stickers:
 
