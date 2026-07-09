@@ -54,13 +54,16 @@
   transform: translateY(-50%);
   background: none;
   border: none;
-  font-size: 22px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
   color: #11502A;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 2px 8px;
   line-height: 1;
   border-radius: 20px;
   transition: background .12s;
+  white-space: nowrap;
 }
 .mobile-undo-btn:hover { background: #e8f5e9; }
 
