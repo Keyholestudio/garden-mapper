@@ -1365,6 +1365,7 @@ export default function GardenEditor() {
                 }
               }}
               onUndo={handleUndo}
+              canUndo={state.canUndo}
               onPlantVariantChange={handlePlantVariantChange}
               onColourChange={handleColourChange}
               onPathWidthChange={handlePathWidthChange}
@@ -1548,6 +1549,7 @@ export default function GardenEditor() {
           }}
           onClearSelection={clearSelection}
           onUndo={handleUndo}
+          canUndo={state.canUndo}
         />}
       </div>
 

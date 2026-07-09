@@ -121,13 +121,16 @@ export function useGardenState() {
 
   // Undo stack
   const undoStack = useRef([])
+  const [canUndo, setCanUndo] = useState(false)
   const pushUndo = (fn) => {
     undoStack.current.push(fn)
     if (undoStack.current.length > 20) undoStack.current.shift()
+    setCanUndo(true)
   }
   const undo = () => {
     const fn = undoStack.current.pop()
     if (fn) fn()
+    setCanUndo(undoStack.current.length > 0)
   }
 
   // Free draw state (refs — updated every mouse move, no re-render)
@@ -185,6 +188,7 @@ export function useGardenState() {
     groupIdCtr,
 
     // Undo
+    canUndo,
     pushUndo,
     undo,
 
