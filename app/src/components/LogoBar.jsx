@@ -86,14 +86,12 @@ export default function LogoBar({
               {/* Garden actions */}
               <button className="profile-menu-item" onClick={() => { onOpenSwitcher?.(); closeMenu() }}>
                 <span className="profile-menu-icon">🌿</span>
-                <span>Gardens</span>
-                <span className="profile-menu-hint">Switch or create</span>
+                <span>Your Gardens</span>
               </button>
 
               <button className="profile-menu-item" onClick={() => { onExport?.(); closeMenu() }}>
                 <span className="profile-menu-icon">🖨</span>
-                <span>Export PDF</span>
-                <span className="profile-menu-hint">Print your plan</span>
+                <span>Print your Plan</span>
               </button>
 
               <div className="profile-menu-divider" />
@@ -107,8 +105,7 @@ export default function LogoBar({
                 onClick={closeMenu}
               >
                 <span className="profile-menu-icon">🌱</span>
-                <span>Submit a Plant</span>
-                <span className="profile-menu-hint">Request a new sticker</span>
+                <span>Request a Plant</span>
               </a>
 
               <div className="profile-menu-divider" />
@@ -132,25 +129,18 @@ export default function LogoBar({
                   <span className="profile-menu-hint">Save to cloud</span>
                 </button>
               )}
-              <button className="profile-menu-item profile-menu-item--soon" disabled>
-                <span className="profile-menu-icon">💳</span>
-                <span>Subscription</span>
-                <span className="profile-menu-badge">Soon</span>
-              </button>
-
               <div className="profile-menu-divider" />
 
               {/* Website */}
               <a
                 className="profile-menu-item"
-                href="https://robs-lab.ca"
+                href="https://gardenmapper.ca"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={closeMenu}
               >
                 <span className="profile-menu-icon">🌐</span>
-                <span>Our Website</span>
-                <span className="profile-menu-hint">robs-lab.ca</span>
+                <span>Visit GardenMapper.ca</span>
               </a>
             </div>
           </>
@@ -215,8 +205,87 @@ export default function LogoBar({
         </a>
 
         {/* Profile circle (matches v8 #logo-profile-btn) */}
-        <button className="logo-profile-btn" title="Profile">👤</button>
+        <button className="logo-profile-btn" title="Profile" onClick={() => setMenuOpen(v => !v)}>👤</button>
       </div>
+
+      {/* Profile dropdown — portalled so it escapes stacking contexts */}
+      {menuOpen && createPortal(
+        <>
+          <div className="profile-menu-backdrop" onClick={closeMenu} />
+          <div className="profile-menu">
+            <div className="profile-menu-header">
+              <div className="profile-menu-avatar">{user ? '👋' : '👤'}</div>
+              <div className="profile-menu-info">
+                <div className="profile-menu-garden">{gardenName || 'My Garden'}</div>
+                {user
+                  ? <div className="profile-menu-dims" style={{color:'#11502A',fontWeight:600}}>✓ Signed in</div>
+                  : <div className="profile-menu-dims">{gardenW}×{gardenH} {gardenUnit}</div>
+                }
+              </div>
+            </div>
+
+            <div className="profile-menu-divider" />
+
+            <button className="profile-menu-item" onClick={() => { onOpenSwitcher?.(); closeMenu() }}>
+              <span className="profile-menu-icon">🌿</span>
+              <span>Your Gardens</span>
+            </button>
+
+            <button className="profile-menu-item" onClick={() => { onExport?.(); closeMenu() }}>
+              <span className="profile-menu-icon">🖸</span>
+              <span>Print your Plan</span>
+            </button>
+
+            <div className="profile-menu-divider" />
+
+            <a
+              className="profile-menu-item"
+              href="https://docs.google.com/forms/d/e/1FAIpQLScJ5k2ZNqP3SSWe9MwjJQCyIV5TqNDZyUk0Qnch8UjkAQfL8A/viewform"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={closeMenu}
+            >
+              <span className="profile-menu-icon">🌱</span>
+              <span>Request a Plant</span>
+            </a>
+
+            <div className="profile-menu-divider" />
+
+            {user ? (
+              <>
+                <div className="profile-menu-user">
+                  <span className="profile-menu-icon">👤</span>
+                  <span className="profile-menu-email">{user.email || 'Signed in'}</span>
+                </div>
+                <button className="profile-menu-item" onClick={() => { onSignOut?.(); closeMenu(); }}>
+                  <span className="profile-menu-icon">🚲</span>
+                  <span>Sign Out</span>
+                </button>
+              </>
+            ) : (
+              <button className="profile-menu-item profile-menu-item--signin" onClick={() => { onSignIn?.(); closeMenu(); }}>
+                <span className="profile-menu-icon">🔑</span>
+                <span>Sign in with Google</span>
+                <span className="profile-menu-hint">Save to cloud</span>
+              </button>
+            )}
+
+            <div className="profile-menu-divider" />
+
+            <a
+              className="profile-menu-item"
+              href="https://gardenmapper.ca"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={closeMenu}
+            >
+              <span className="profile-menu-icon">🌐</span>
+              <span>Visit GardenMapper.ca</span>
+            </a>
+          </div>
+        </>,
+        document.body
+      )}
 
     </div>
   )

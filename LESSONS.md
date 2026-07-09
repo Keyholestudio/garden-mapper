@@ -56,6 +56,7 @@ entry.src || `/stickers/${entry.key}.png`
 - If `invalid_client`: re-copy the client secret from Google Cloud Console into Supabase
 - If `invalid flow state`: flowType mismatch — revert to implicit
 - Keep a note of the Client ID: `284573774009-9qvn...` — verify it matches Supabase if credentials are ever rotated
+- **Supabase free tier pauses after ~7 days of inactivity** — DNS will fail (`NXDOMAIN`) with no other warning. Always check project status at https://supabase.com/dashboard/project/oxecjcdxkmtdgmdxlxyt first when auth or API calls fail. Fix: click Restore (~2 min). Add this to the login troubleshooting checklist.
 
 ---
 
