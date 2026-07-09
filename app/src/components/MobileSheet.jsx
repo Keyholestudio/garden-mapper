@@ -186,7 +186,7 @@ export default function MobileSheet({
           onClick={() => setExpanded(v => !v)}
           aria-label={expanded ? 'Collapse menu' : 'Expand menu'}
         >
-          {expanded ? '↓' : '↑'}
+          {expanded ? '↓' : '↑'} Menu
         </button>
       </div>
 
