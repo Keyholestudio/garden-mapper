@@ -36,51 +36,60 @@ export function buildPlantLegend(plantLayer, plantDataRef) {
 
 // ── Core export: crops to propBounds, renders callouts, returns dataURL ──────
 // propBoundsRef: { x, y, w, h } in Konva world coords
+// Renders at a fixed world-space scale regardless of current zoom
 export async function renderExportCanvas(stage, plantLayer, plantDataRef, propBoundsRef) {
   const { legend, plantNums } = buildPlantLegend(plantLayer, plantDataRef)
-  const PR = 2  // pixelRatio for crisp output
 
-  // propBounds in stage-pixel space
-  const pb     = propBoundsRef.current
-  const pad    = 24  // small padding around property boundary (world px)
-  const cropX  = (pb.x - pad) * stage.scaleX() + stage.x()
-  const cropY  = (pb.y - pad) * stage.scaleY() + stage.y()
-  const cropW  = (pb.w + pad * 2) * stage.scaleX()
-  const cropH  = (pb.h + pad * 2) * stage.scaleY()
+  const pb  = propBoundsRef.current
+  const pad = 24  // padding around property boundary (world px)
 
-  // Capture full stage at PR then crop to propBounds region
-  const stageDataUrl = stage.toDataURL({ pixelRatio: PR })
-  const stageImg     = await loadImage(stageDataUrl)
+  // Crop region in world coords (zoom-independent)
+  const worldX = pb.x - pad
+  const worldY = pb.y - pad
+  const worldW = pb.w + pad * 2
+  const worldH = pb.h + pad * 2
 
-  const outW = Math.round(cropW * PR)
-  const outH = Math.round(cropH * PR)
+  // Render at a fixed pixel density (4px per world unit) regardless of screen zoom
+  const EXPORT_SCALE = 4
+  const outW = Math.round(worldW * EXPORT_SCALE)
+  const outH = Math.round(worldH * EXPORT_SCALE)
+
+  // Use Konva's built-in crop: temporarily set scale to EXPORT_SCALE, capture, restore
+  const prevScaleX = stage.scaleX()
+  const prevScaleY = stage.scaleY()
+  const prevX = stage.x()
+  const prevY = stage.y()
+
+  stage.scale({ x: EXPORT_SCALE, y: EXPORT_SCALE })
+  stage.position({ x: -worldX * EXPORT_SCALE, y: -worldY * EXPORT_SCALE })
+  stage.batchDraw()
+
+  const stageDataUrl = stage.toDataURL({ pixelRatio: 1, x: 0, y: 0, width: outW, height: outH })
+
+  // Restore original transform
+  stage.scale({ x: prevScaleX, y: prevScaleY })
+  stage.position({ x: prevX, y: prevY })
+  stage.batchDraw()
+
+  const stageImg = await loadImage(stageDataUrl)
 
   const offscreen = document.createElement('canvas')
   offscreen.width  = outW
   offscreen.height = outH
   const ctx = offscreen.getContext('2d')
+  ctx.drawImage(stageImg, 0, 0, outW, outH)
 
-  // Draw only the cropped region
-  ctx.drawImage(
-    stageImg,
-    Math.round(cropX * PR), Math.round(cropY * PR), outW, outH,  // src region
-    0, 0, outW, outH                                               // dest
-  )
-
-  // Draw numbered callout circles — positions relative to crop origin
+  // Draw numbered callout circles in export coords (world * EXPORT_SCALE - crop offset)
   plantLayer.find('Group').forEach(group => {
     const id  = group.id()
     const num = plantNums[id]
     if (num === undefined) return
 
-    const SIZE = group.width() * group.scaleX()
-    // Plant center in full-stage pixel space (PR applied)
-    const fullCx = (group.x() * stage.scaleX() + stage.x() + SIZE * stage.scaleX() / 2) * PR
-    const fullCy = (group.y() * stage.scaleY() + stage.y() + SIZE * stage.scaleY() / 2) * PR
-    // Shift to crop-relative coords
-    const cx = fullCx - Math.round(cropX * PR)
-    const cy = fullCy - Math.round(cropY * PR)
-    const r  = Math.max(12, Math.min(22, SIZE * stage.scaleX() * PR * 0.18))
+    const SIZE = group.width() * group.scaleX()  // world-space size
+    // Plant center in export canvas coords
+    const cx = (group.x() + SIZE / 2 - worldX) * EXPORT_SCALE
+    const cy = (group.y() + SIZE / 2 - worldY) * EXPORT_SCALE
+    const r  = Math.max(12, Math.min(28, SIZE * EXPORT_SCALE * 0.18))
 
     // White fill, dark green border
     ctx.beginPath()
@@ -92,7 +101,7 @@ export async function renderExportCanvas(stage, plantLayer, plantDataRef, propBo
     ctx.stroke()
 
     // Number — centered
-    const fontSize = Math.max(10, Math.min(16, r * 1.05))
+    const fontSize = Math.max(10, Math.min(18, r * 1.05))
     ctx.save()
     ctx.font         = `bold ${fontSize}px sans-serif`
     ctx.fillStyle    = '#11502A'
