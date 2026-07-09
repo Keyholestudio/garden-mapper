@@ -118,7 +118,7 @@ export default function MobileSheet({
             aria-label={expanded ? 'Collapse' : 'Expand'}>
             {expanded ? '↓' : '↑'} Menu
           </button>
-          {canUndo && <button className="mobile-edit-undo-inline" onClick={() => onUndo?.()}>↩ Undo</button>}
+          <button className="mobile-edit-undo-inline" style={{visibility: canUndo ? 'visible' : 'hidden'}} onClick={() => onUndo?.()}>↩ Undo</button>
         </div>
         {expanded && (
           <div className="mobile-sheet-body mobile-edit-body">
@@ -165,7 +165,7 @@ export default function MobileSheet({
             aria-label={expanded ? 'Collapse' : 'Expand'}>
             {expanded ? '↓' : '↑'} Menu
           </button>
-          {canUndo && <button className="mobile-edit-undo-inline" onClick={() => onUndo?.()}>↩ Undo</button>}
+          <button className="mobile-edit-undo-inline" style={{visibility: canUndo ? 'visible' : 'hidden'}} onClick={() => onUndo?.()}>↩ Undo</button>
         </div>
         {expanded && (
           <div className="mobile-sheet-body mobile-edit-body">
@@ -189,6 +189,9 @@ export default function MobileSheet({
         >
           {expanded ? '↓' : '↑'} Menu
         </button>
+        {canUndo && (
+          <button className="mobile-undo-btn" onClick={() => onUndo?.()}>↩ Undo</button>
+        )}
       </div>
 
       {/* ── Sheet body ── */}
