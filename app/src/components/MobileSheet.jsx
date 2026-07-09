@@ -115,7 +115,7 @@ export default function MobileSheet({
           <button className="mobile-edit-back-inline" onClick={() => onExitEdit?.()}>← Back</button>
           <button className="mobile-sheet-toggle" onClick={() => setExpanded(v => !v)}
             aria-label={expanded ? 'Collapse' : 'Expand'}>
-            {expanded ? '↓' : '↑'}
+            {expanded ? '↓' : '↑'} Menu
           </button>
           <button className="mobile-edit-undo-inline" onClick={() => onUndo?.()}>↩ Undo</button>
         </div>
@@ -162,7 +162,7 @@ export default function MobileSheet({
           <button className="mobile-edit-back-inline" onClick={() => onClearSelection?.()}>← Back</button>
           <button className="mobile-sheet-toggle" onClick={() => setExpanded(v => !v)}
             aria-label={expanded ? 'Collapse' : 'Expand'}>
-            {expanded ? '↓' : '↑'}
+            {expanded ? '↓' : '↑'} Menu
           </button>
           <button className="mobile-edit-undo-inline" onClick={() => onUndo?.()}>↩ Undo</button>
         </div>

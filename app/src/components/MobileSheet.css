@@ -31,18 +31,19 @@
 .mobile-sheet-toggle {
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: 13px;
   color: #11502A;
   cursor: pointer;
-  padding: 4px 20px;
+  padding: 2px 20px;
   line-height: 1;
   border-radius: 20px;
   transition: background .12s;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   font-weight: 600;
-  letter-spacing: 0.01em;
+  font-family: inherit;
+  white-space: nowrap;
 }
 .mobile-sheet-toggle:hover { background: #e8f5e9; }
 
