@@ -136,6 +136,7 @@ cd projects/garden-planner/app && npm run dev
 | `REVISION-LOG.md` | Version history |
 | `GAP-ANALYSIS.md` | Feature status |
 | `SYNC-POLICY.md` | Cloud/local sync rules — read before any auth/storage work |
+| `SYNC-PLAN.md` | Multi-device sync + billing build plan (Phases 1–4, sessions A–E) |
 | `prototype/index-v8.html` | Working reference — read before any canvas/Konva work |
 | `research/DECOR-PROMPT-GUIDE.md` | Decor sticker prompts + specs |
 
