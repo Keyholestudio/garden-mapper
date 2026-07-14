@@ -242,5 +242,21 @@ User subscribes (any platform)
 
 ---
 
+## Pricing (locked 2026-07-14)
+
+| Tier | Price | What it gets |
+|---|---|---|
+| Free | $0 | 1 garden, Dream Garden, basic plants |
+| One-time | **$14.99** | Lifetime — unlimited gardens, full sync, full plant DB |
+| Annual | **$9.99/yr** | Same as one-time, billed yearly |
+| Garden packs (future IAP) | **$0.99–$2.99** | Seasonal themes, rare plant packs, decor sets |
+
+**Notes:**
+- $9.99/yr is a launch price — plan to raise to $14.99/yr at ~6 months, grandfather existing subscribers
+- Cosmetic IAP packs are non-paywalled upsells — free users can buy packs too
+- Billing platforms: Stripe (web), Google Play Billing (Android), Apple StoreKit (iOS, future) — all via RevenueCat SDK
+
+---
+
 _Next: Start Session A — DB schema + supabase.js rewrite._
 _Billing discussion: Session C (after sync is confirmed working)._
