@@ -84,6 +84,13 @@ export async function pushCloudGarden(userId, garden) {
     console.warn('[Supabase] Blocked Dream Garden push');
     return false;
   }
+  // Don't push empty gardens — no plants and no structures = nothing worth saving
+  const hasPlants = Array.isArray(garden?.plants) && garden.plants.length > 0;
+  const hasStructs = Array.isArray(garden?.structs) && garden.structs.length > 0;
+  if (!hasPlants && !hasStructs) {
+    console.log('[Supabase] Skipping empty garden push:', garden?.name);
+    return false;
+  }
   const deviceId = getDeviceId();
   const deviceLabel = getDeviceLabel();
 
