@@ -82,7 +82,10 @@ function ConflictMode({ conflict, onLoadCloud, onKeepLocal }) {
         </div>
         <p className="restore-note">A backup of your local version will be saved automatically.</p>
         <div className="restore-actions">
-          <button className="btn-restore-primary" onClick={() => onLoadCloud(conflict)}>
+          <button className="btn-restore-primary" onClick={() => {
+            console.log('[RestorePrompt] Load cloud version clicked, onLoadCloud:', typeof onLoadCloud);
+            onLoadCloud?.(conflict);
+          }}>
             Load cloud version
           </button>
           <button className="btn-restore-secondary" onClick={onKeepLocal}>

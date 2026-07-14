@@ -1131,7 +1131,8 @@ export default function GardenEditor() {
   // Wire the cloud-restore callback now that all handlers exist
   // useAuth.setLocalGardens delegates here via loadGardenFromCloudRef
   loadGardenFromCloudRef.current = (loadIdx) => {
-    if (!stageReadyRef.current) return
+    console.log('[Editor] loadGardenFromCloudRef called, idx:', loadIdx, 'stageReady:', stageReadyRef.current)
+    if (!stageReadyRef.current) { console.warn('[Editor] Stage not ready — load aborted'); return }
     loadGarden({
       idx: loadIdx,
       stage: stageRef.current,

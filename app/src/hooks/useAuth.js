@@ -190,6 +190,7 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
   // ── Conflict resolution (same garden, cloud newer) ────────────────
   // Accept cloud version for a specific conflict
   const resolveConflictLoadCloud = useCallback((conflictItem) => {
+    console.log('[Auth] resolveConflictLoadCloud called, conflictItem:', conflictItem?.local?.name);
     // Pre-save local as backup before overwriting
     try {
       const backupKey = `gm_conflict_backup_${conflictItem.local.garden_id}`;
