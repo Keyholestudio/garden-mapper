@@ -222,10 +222,10 @@ User subscribes (any platform)
 | 1 | DB schema redesign (new `gardens` table) | Session A | ✅ 2026-07-14 |
 | 2 | Update `supabase.js` helpers for new schema | Session A | ✅ 2026-07-14 |
 | 3 | `device_id` generation + `garden_id` on all gardens | Session A | ✅ 2026-07-14 |
-| 4 | Sync logic rewrite (`useAuth.js`, `useSaveLoad.js`) | Session B | 🔲 |
-| 5 | Restore prompt + conflict prompt UI | Session B | 🔲 |
-| 6 | Ghost entry list + dynamic CTA | Session B | 🔲 |
-| 7 | Test: new device, conflict, ghost, backup | Session B | 🔲 |
+| 4 | Sync logic rewrite (`useAuth.js`, `useSaveLoad.js`) | Session B | ✅ 2026-07-14 |
+| 5 | Restore prompt + conflict prompt UI | Session B | ✅ 2026-07-14 |
+| 6 | Ghost entry list + dynamic CTA | Session B | ✅ 2026-07-14 |
+| 7 | Test: new device, conflict, ghost, backup | Session B | ✅ 2026-07-14 |
 | 8 | Stripe integration (web) | Session C | 🔲 |
 | 9 | Subscription flag enforcement in UI | Session C | 🔲 |
 | 10 | Google Play Billing + RevenueCat | Session D | 🔲 |

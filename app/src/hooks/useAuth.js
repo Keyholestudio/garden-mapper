@@ -75,7 +75,6 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
         return true;
       });
       if (dedupedLocal.length !== rawLocal.length) {
-        console.log('[Auth] Deduped local gardens:', rawLocal.length, '->', dedupedLocal.length);
         try { localStorage.setItem('gardenData', JSON.stringify(dedupedLocal)); } catch(e) {}
       }
 
@@ -266,7 +265,6 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
   // ── Conflict resolution (same garden, cloud newer) ────────────────
   // Accept cloud version for a specific conflict
   const resolveConflictLoadCloud = useCallback((conflictItem) => {
-    console.log('[Auth] resolveConflictLoadCloud called, conflictItem:', conflictItem?.local?.name);
     // Pre-save local as backup before overwriting
     try {
       const backupKey = `gm_conflict_backup_${conflictItem.local.garden_id}`;
@@ -341,7 +339,6 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
     let anyFailed = false;
 
     for (const garden of userGardens) {
-      console.log('[Sync] Pushing garden:', garden.name, garden.garden_id, 'user:', user.id);
       const ok = await pushCloudGarden(user.id, garden);
       if (ok) {
         console.log('[Sync] ✓ Push succeeded:', garden.name);
@@ -376,7 +373,6 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
         },
       });
       if (error) { console.error('[Auth] signInWithGoogle error:', error); return; }
-      console.log('[Auth] OAuth URL (native):', data?.url);
       await Browser.open({ url: data.url, windowName: '_blank' });
     } else {
       // Plain web browser (PC/mobile web): let Supabase handle the redirect normally
