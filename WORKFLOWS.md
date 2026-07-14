@@ -18,6 +18,7 @@ _Archived workflows (1, 3, pack list): `memory/deep/garden-planner/workflows-arc
 9. [End-of-session commit checklist](#9-end-of-session-commit-checklist)
 10. [Make everything live](#10-make-everything-live)
 11. [Full deploy: web + Android in one shot](#11-full-deploy-web--android-in-one-shot)
+12. [Session Start — Version Sync Check](#12-session-start--version-sync-check)
 
 ---
 
@@ -330,6 +331,65 @@ Before `/new` or closing the session:
 | Apple App Store | Xcode / Transporter | Signed build upload | Yes | 🔲 Not set up |
 
 ---
+
+---
+
+## 12. Session Start — Version Sync Check
+
+> **Trigger:** Every session start. Run before touching any code or design.
+> Goal: ensure web, Android APK, and local:5200 are all running the same version.
+
+### Step 1 — Check repo state
+```powershell
+cd "C:\Users\RG\.openclaw\workspace\projects\garden-planner"
+git log --oneline -3        # note HEAD commit
+git status                  # must be clean
+```
+
+### Step 2 — Check local:5200 Dream Garden version
+1. Open `localhost:5200` in Brave (dev server must be running)
+2. Open DevTools console → run:
+   ```js
+   JSON.parse(localStorage.getItem('gardenData'))?.[0]?._dreamVersion
+   ```
+3. Compare to `app/src/data/dreamGarden.json` → `_dreamVersion`
+   - **Match** → local is current ✅
+   - **Mismatch** → clear localStorage and reload (Step 3)
+
+### Step 3 — Reset local:5200 Dream Garden (if stale)
+> Run this any time local:5200 shows an old Dream Garden (missing logo, missing sandbox, etc.)
+```js
+// In DevTools console at localhost:5200:
+localStorage.removeItem('gardenData');
+localStorage.removeItem('gardenData_backup');
+localStorage.removeItem('gardenLastIndex');
+location.reload();
+```
+After reload: the app seeds from `dreamGarden.json` (current repo version) → Dream Garden will be current.
+
+### Step 4 — Check Android APK version
+- Ask Rob: "Is Android showing [feature from last commit]?"
+- If Android is behind → run Workflow 11 (Full deploy) to rebuild + install APK
+- Android won't auto-update — it always needs a manual build + install
+
+### Step 5 — Dream Garden version check
+- `dreamGarden.json` → `_dreamVersion` is the master version number
+- Web (live): fetches from GitHub raw — will be current within seconds of a push
+- Local:5200: loads from repo file on cold start (after localStorage clear)
+- Android: baked into the APK build — needs a redeploy to update
+
+### Version sync summary
+| Surface | Dream Garden source | Code source | Needs manual update? |
+|---------|-------------------|-------------|---------------------|
+| Web (app.gardenmapper.ca) | GitHub raw (auto-fetched) | Vercel (auto from git push) | No — auto |
+| Local:5200 | `dreamGarden.json` in repo | Local file system | Clear localStorage if stale |
+| Android APK | Baked into APK at build time + GitHub raw fetch on launch | APK build | Yes — run Workflow 11 |
+
+### Prompts to use
+- **Check versions:** "Are all versions in sync?"
+- **Reset local Dream Garden:** "Reset the local Dream Garden" → run Step 3 console commands
+- **Full sync after changes:** "Make everything live" → Workflow 10 (web) + Workflow 11 (Android)
+- **Update Dream Garden only:** "Update the Dream Garden to the website" → Workflow 6
 
 ---
 
