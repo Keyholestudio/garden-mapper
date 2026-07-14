@@ -103,12 +103,12 @@ export default function GardenEditor() {
     syncToCloud, syncStatus, signInWithGoogle, signOut,
   } = useAuth({
     getLocalGardens: () => readGardens(),
-    setLocalGardens: (gardens) => {
+    setLocalGardens: (gardens, loadIdx = 0) => {
       localStorage.setItem('gardenData', JSON.stringify(gardens))
       // Reload the current garden from the restored data
       if (stageReady) {
         loadGarden({
-          idx: 0,
+          idx: loadIdx,
           stage: stageRef.current,
           layers: layersRef.current,
           state,

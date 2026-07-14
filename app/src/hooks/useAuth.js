@@ -18,6 +18,11 @@ const isNative = !!(window.Capacitor?.isNative);
  * - Never auto-overwrite cloud with empty local
  * - Restore prompt on reinstall (empty local + signed in)
  */
+// Dream Garden detection — belt + suspenders
+function isDreamGarden(g) {
+  return !!(g?._isDreamGarden) || g?.name === '🌸 Dream Garden';
+}
+
 export function useAuth({ getLocalGardens, setLocalGardens }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -62,7 +67,7 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
     async function handleSignIn() {
       const local = getLocalGardens();
       // Exclude Dream Garden from user data check — it's always present and not user content
-      const userGardens = (local || []).filter(g => !g._isDreamGarden);
+      const userGardens = (local || []).filter(g => !isDreamGarden(g));
       const hasLocalData = userGardens.length > 0;
 
       const cloudGardens = await fetchCloudGardens(user.id);
@@ -105,8 +110,9 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
           setShowConflictPrompt(true);
         }
 
-        // Push non-conflicting gardens immediately
+        // Push non-conflicting gardens immediately (never push Dream Garden)
         for (const garden of toPush) {
+          if (isDreamGarden(garden)) continue;
           await pushCloudGarden(user.id, garden);
         }
 
@@ -140,7 +146,7 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
       const local = getLocalGardens() || [];
       const dream = local.filter(g => g._isDreamGarden);
       const existing = local.filter(g => !g._isDreamGarden);
-      setLocalGardens([...dream, ...restored, ...existing]);
+      setLocalGardens([...dream, ...restored, ...existing], dream.length > 0 ? 1 : 0);
     }
     setShowRestorePrompt(false);
     setCloudGardenData(null);
@@ -181,10 +187,11 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
       _lastSynced: conflictItem.cloud.updated_at,
     };
     const local = getLocalGardens() || [];
+    const targetIdx = local.findIndex(g => g.garden_id === conflictItem.local.garden_id);
     const updated = local.map(g =>
       g.garden_id === conflictItem.local.garden_id ? cloudGarden : g
     );
-    setLocalGardens(updated);
+    setLocalGardens(updated, targetIdx >= 0 ? targetIdx : 1);
     _resolveConflict();
   }, [getLocalGardens, setLocalGardens]);
 
