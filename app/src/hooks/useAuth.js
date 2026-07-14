@@ -84,7 +84,16 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
       const userGardens = local.filter(g => !isDreamGarden(g));
       const hasLocalData = userGardens.length > 0;
 
-      const cloudGardens = await fetchCloudGardens(user.id);
+      const rawCloudGardens = await fetchCloudGardens(user.id);
+      // Deduplicate cloud gardens by garden_id — keep most recent per id
+      const cloudMap = new Map();
+      for (const g of rawCloudGardens) {
+        const existing = cloudMap.get(g.garden_id);
+        if (!existing || new Date(g.updated_at) > new Date(existing.updated_at)) {
+          cloudMap.set(g.garden_id, g);
+        }
+      }
+      const cloudGardens = Array.from(cloudMap.values());
       if (cloudGardens.length === 0 && !hasLocalData) return; // nothing to do
 
       if (hasLocalData) {
@@ -148,17 +157,39 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
     // gardenToRestore is always an array of cloud rows (individual Load click = [singleGarden])
     const toLoad = Array.isArray(gardenToRestore) ? gardenToRestore : (gardenToRestore ? [gardenToRestore] : cloudGardenData || []);
 
+    const MAX_FREE = 1;
+    const isSubscribed = false; // TODO: wire real subscription state
+
     if (toLoad.length > 0) {
-      const restored = toLoad.map(cg => ({
+      const local = getLocalGardens() || [];
+      const dream = local.filter(g => g._isDreamGarden);
+      const existing = local.filter(g => !g._isDreamGarden);
+      const existingIds = new Set(existing.map(g => g.garden_id));
+
+      // Enforce free tier cap — only load gardens that fit within the limit
+      const slotsAvailable = isSubscribed ? Infinity : Math.max(0, MAX_FREE - existing.length);
+      const toActuallyLoad = toLoad.slice(0, slotsAvailable);
+      const blocked = toLoad.slice(slotsAvailable);
+
+      if (toActuallyLoad.length === 0) {
+        // All blocked — send to ghosts, keep prompt open if more remain
+        setGhostGardens(prev => {
+          const existingGhostIds = new Set(prev.map(g => g.garden_id));
+          return [...prev, ...toLoad.filter(g => !existingGhostIds.has(g.garden_id))];
+        });
+        setShowRestorePrompt(false);
+        setCloudGardenData(null);
+        setCloudPushHeld(false);
+        return;
+      }
+
+      const restored = toActuallyLoad.map(cg => ({
         ...(cg.garden_json || cg),
         _deviceId: cg.device_id,
         _deviceLabel: cg.device_label,
         _lastSynced: cg.updated_at,
       }));
-      const local = getLocalGardens() || [];
-      const dream = local.filter(g => g._isDreamGarden);
-      const existing = local.filter(g => !g._isDreamGarden);
-      const existingIds = new Set(existing.map(g => g.garden_id));
+
       // Only add brand-new gardens (no duplicates)
       const brandNew = restored.filter(g => !existingIds.has(g.garden_id));
       const merged = existing.map(g => {
@@ -167,6 +198,14 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
       });
       const loadIdx = dream.length > 0 ? 1 : 0;
       setLocalGardens([...dream, ...brandNew, ...merged], loadIdx);
+
+      // Blocked gardens → ghosts
+      if (blocked.length > 0) {
+        setGhostGardens(prev => {
+          const existingGhostIds = new Set(prev.map(g => g.garden_id));
+          return [...prev, ...blocked.filter(g => !existingGhostIds.has(g.garden_id))];
+        });
+      }
 
       // Any cloud gardens NOT loaded → stay as ghosts
       const loadedIds = new Set(toLoad.map(g => g.garden_id));
