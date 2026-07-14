@@ -11,6 +11,10 @@ export default function GardenSwitcher({
   onLoad,
   onNew,
   onClose,
+  // Cloud sync props
+  ghostGardens = [],        // cloud-only gardens (array of cloud rows)
+  onLoadGhost,              // (ghostItem) => void — load a ghost into local
+  isSubscribed = false,     // subscription status
 }) {
   const [gardens, setGardens] = useState([])
   const [confirmDeleteIdx, setConfirmDeleteIdx] = useState(null)
@@ -55,11 +59,24 @@ export default function GardenSwitcher({
   const isDream = (g) => !!(g?._isDreamGarden)
   // Free tier: 1 user garden (Dream Garden doesn't count toward limit)
   const MAX_USER_GARDENS = 1
-  const userGardens = gardens.filter((g, i) => !isDream(g))
+  const userGardens = gardens.filter((g) => !isDream(g))
   const atLimit = userGardens.length >= MAX_USER_GARDENS
 
   // Placeholder subscription URL — swap in real page when ready
   const SUBSCRIBE_URL = '/subscribe'
+
+  // Ghost CTA: recheck on every render based on current garden count
+  const ghostCTA = (ghostItem) => {
+    if (isSubscribed) return { label: 'Load', action: () => onLoadGhost?.(ghostItem), isUpsell: false };
+    if (userGardens.length === 0) return { label: 'Load', action: () => onLoadGhost?.(ghostItem), isUpsell: false };
+    return { label: 'Subscribe to load', action: () => window.open(SUBSCRIBE_URL, '_blank'), isUpsell: true };
+  }
+
+  const formatGhostTime = (iso) => {
+    if (!iso) return ''
+    const d = new Date(iso)
+    return d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' })
+  }
 
   return (
     <div className="switcher-overlay" onClick={onClose}>
@@ -104,16 +121,45 @@ export default function GardenSwitcher({
             </div>
           ))}
 
-          {/* Unlock upsell — always shown after the garden list */}
-          <a
-            href={SUBSCRIBE_URL}
-            className="switcher-unlock-row"
-            onClick={onClose}
-          >
-            <span className="switcher-unlock-icon">🔒</span>
-            <span className="switcher-unlock-text">Unlock more gardens</span>
-            <span className="switcher-unlock-arrow">›</span>
-          </a>
+          {/* Ghost gardens — cloud-only, shown greyed out below local list */}
+          {ghostGardens.length > 0 && (
+            <div className="switcher-ghost-section">
+              <div className="switcher-ghost-label">Saved on another device</div>
+              {ghostGardens.map((g) => {
+                const cta = ghostCTA(g)
+                const name = g.garden_name || g.garden_json?.name || 'Garden'
+                const device = g.device_label || 'Another device'
+                const time = formatGhostTime(g.updated_at)
+                return (
+                  <div key={g.garden_id} className="switcher-row switcher-row--ghost">
+                    <div className="switcher-ghost-info">
+                      <span className="switcher-name switcher-name--ghost">{name}</span>
+                      <span className="switcher-ghost-meta">{device}{time ? ` · ${time}` : ''}</span>
+                    </div>
+                    <button
+                      className={`btn-load ${cta.isUpsell ? 'btn-load--upsell' : ''}`}
+                      onClick={() => { cta.action(); if (!cta.isUpsell) onClose(); }}
+                    >
+                      {cta.label}
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+
+          {/* Unlock upsell — shown when no ghost gardens (keeps upsell always visible) */}
+          {ghostGardens.length === 0 && (
+            <a
+              href={SUBSCRIBE_URL}
+              className="switcher-unlock-row"
+              onClick={onClose}
+            >
+              <span className="switcher-unlock-icon">🔒</span>
+              <span className="switcher-unlock-text">Unlock more gardens</span>
+              <span className="switcher-unlock-arrow">›</span>
+            </a>
+          )}
         </div>
 
         <div className="switcher-footer">

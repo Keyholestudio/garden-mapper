@@ -95,7 +95,13 @@ export default function GardenEditor() {
   const autoSaveTimerRef = useRef(null)
 
   // ── Auth + cloud sync ────────────────────────────────────────────
-  const { user, debugMsg, showRestorePrompt, restoreFromCloud, dismissRestore, syncToCloud, signInWithGoogle, signOut } = useAuth({
+  const {
+    user, debugMsg,
+    showRestorePrompt, cloudGardenData, restoreFromCloud, dismissRestore,
+    showConflictPrompt, conflictGardens, resolveConflictLoadCloud, resolveConflictKeepLocal,
+    ghostGardens, loadGhostGarden,
+    syncToCloud, signInWithGoogle, signOut,
+  } = useAuth({
     getLocalGardens: () => readGardens(),
     setLocalGardens: (gardens) => {
       localStorage.setItem('gardenData', JSON.stringify(gardens))
@@ -1168,8 +1174,21 @@ export default function GardenEditor() {
 
   return (
     <div className={`editor-layout bp-${breakpoint}`}>
-      {showRestorePrompt && (
-        <RestorePrompt onRestore={restoreFromCloud} onDismiss={dismissRestore} />
+      {showRestorePrompt && cloudGardenData && (
+        <RestorePrompt
+          mode="restore"
+          gardens={cloudGardenData}
+          onRestore={restoreFromCloud}
+          onDismiss={dismissRestore}
+        />
+      )}
+      {showConflictPrompt && conflictGardens.length > 0 && (
+        <RestorePrompt
+          mode="conflict"
+          conflict={conflictGardens[0]}
+          onLoadCloud={resolveConflictLoadCloud}
+          onKeepLocal={resolveConflictKeepLocal}
+        />
       )}
       {/* AUTH debug banner removed — login working */}
       <PromoBanner />
@@ -1278,6 +1297,9 @@ export default function GardenEditor() {
         onLoad={handleLoad}
         onNew={handleNewGarden}
         onClose={() => setSwitcherOpen(false)}
+        ghostGardens={ghostGardens}
+        onLoadGhost={loadGhostGarden}
+        isSubscribed={false}
       />
 
       <div className="editor-body">

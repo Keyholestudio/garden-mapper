@@ -21,9 +21,22 @@ const isNative = !!(window.Capacitor?.isNative);
 export function useAuth({ getLocalGardens, setLocalGardens }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showRestorePrompt, setShowRestorePrompt] = useState(false);
-  const [cloudGardenData, setCloudGardenData] = useState(null);
   const [debugMsg, setDebugMsg] = useState('');
+
+  // ── Restore prompt (new device — cloud gardens not in local) ──────
+  const [showRestorePrompt, setShowRestorePrompt] = useState(false);
+  const [cloudGardenData, setCloudGardenData] = useState(null); // array of cloud-only gardens
+
+  // ── Conflict prompt (same garden, cloud is newer) ─────────────────
+  const [conflictGardens, setConflictGardens] = useState([]); // [{ local, cloud }]
+  const [showConflictPrompt, setShowConflictPrompt] = useState(false);
+
+  // ── Ghost gardens (cloud-only, subscription gated) ───────────────
+  // Separate from restore prompt — these stay visible in the garden list indefinitely
+  const [ghostGardens, setGhostGardens] = useState([]); // cloud-only rows
+
+  // ── Cloud push hold — don't push until restore/conflict resolved ──
+  const [cloudPushHeld, setCloudPushHeld] = useState(false);
 
   // ── Listen for auth state changes ───────────────────────────────
   useEffect(() => {
@@ -50,62 +63,165 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
       const hasLocalData = userGardens.length > 0;
 
       const cloudGardens = await fetchCloudGardens(user.id);
+      if (cloudGardens.length === 0 && !hasLocalData) return; // nothing to do
 
       if (hasLocalData) {
-        // Local user gardens exist — push each one to cloud (local wins on first sync)
-        // Skip if this garden_id is already in cloud with a newer updated_at
+        // Local user gardens exist — diff against cloud
+        const localIds = new Set(userGardens.map(g => g.garden_id));
+        const cloudIds = new Set(cloudGardens.map(c => c.garden_id));
+
+        const conflicts = [];
+        const toPush = [];
+
         for (const garden of userGardens) {
           const cloudMatch = cloudGardens.find(c => c.garden_id === garden.garden_id);
           if (cloudMatch) {
             const cloudTime = new Date(cloudMatch.updated_at).getTime();
             const localTime = garden._savedAt ? new Date(garden._savedAt).getTime() : 0;
             if (cloudTime > localTime) {
-              // Cloud is newer for this garden — queue conflict prompt (Session B)
-              // For now: skip push to avoid overwriting newer cloud version
-              console.log('[Auth] Cloud newer for garden:', garden.name, '- skipping push');
-              continue;
+              // Cloud is newer → conflict prompt
+              conflicts.push({ local: garden, cloud: cloudMatch });
+            } else {
+              toPush.push(garden); // local is same age or newer → safe to push
             }
+          } else {
+            toPush.push(garden); // not in cloud yet → push
           }
+        }
+
+        // Cloud-only gardens (not in local) → ghost entries in garden list
+        const cloudOnly = cloudGardens.filter(c => !localIds.has(c.garden_id));
+        if (cloudOnly.length > 0) {
+          setGhostGardens(cloudOnly);
+        }
+
+        if (conflicts.length > 0) {
+          // Hold cloud push until user resolves conflicts
+          setCloudPushHeld(true);
+          setConflictGardens(conflicts);
+          setShowConflictPrompt(true);
+        }
+
+        // Push non-conflicting gardens immediately
+        for (const garden of toPush) {
           await pushCloudGarden(user.id, garden);
         }
 
-        // Check if cloud has gardens not in local — surface as ghost entries (Session B)
-        const localIds = new Set(userGardens.map(g => g.garden_id));
-        const cloudOnly = cloudGardens.filter(c => !localIds.has(c.garden_id));
-        if (cloudOnly.length > 0) {
-          // Store cloud-only gardens for restore prompt
-          setCloudGardenData(cloudOnly);
-          setShowRestorePrompt(true);
-        }
       } else if (cloudGardens.length > 0) {
-        // Local is empty, cloud has gardens → show restore prompt
+        // Local is empty, cloud has gardens → restore prompt
+        // Hold cloud push until resolved
+        setCloudPushHeld(true);
         setCloudGardenData(cloudGardens);
         setShowRestorePrompt(true);
       }
-      // else: both empty → nothing to do
     }
 
     handleSignIn();
   }, [user]);
 
-  // ── Restore from cloud ───────────────────────────────────────────
-  const restoreFromCloud = useCallback(() => {
-    if (cloudGardenData) {
-      setLocalGardens(cloudGardenData);
+  // ── Restore from cloud (new device prompt) ───────────────────────
+  // onRestore(garden) — called with a single cloud garden to restore
+  const restoreFromCloud = useCallback((gardenToRestore) => {
+    const gardens = gardenToRestore
+      ? (Array.isArray(gardenToRestore) ? gardenToRestore : [gardenToRestore])
+      : cloudGardenData;
+    if (gardens && gardens.length > 0) {
+      // Extract garden_json from each cloud row and merge into local
+      const restored = gardens.map(cg => ({
+        ...(cg.garden_json || cg),
+        _deviceId: cg.device_id,
+        _deviceLabel: cg.device_label,
+        _lastSynced: cg.updated_at,
+      }));
+      // Prepend to existing local (after Dream Garden)
+      const local = getLocalGardens() || [];
+      const dream = local.filter(g => g._isDreamGarden);
+      const existing = local.filter(g => !g._isDreamGarden);
+      setLocalGardens([...dream, ...restored, ...existing]);
     }
     setShowRestorePrompt(false);
     setCloudGardenData(null);
-  }, [cloudGardenData, setLocalGardens]);
+    setCloudPushHeld(false);
+  }, [cloudGardenData, getLocalGardens, setLocalGardens]);
 
   const dismissRestore = useCallback(() => {
+    // User chose "Start fresh" — cloud gardens become ghost entries
+    if (cloudGardenData && cloudGardenData.length > 0) {
+      setGhostGardens(prev => {
+        const existingIds = new Set(prev.map(g => g.garden_id));
+        const newGhosts = cloudGardenData.filter(c => !existingIds.has(c.garden_id));
+        return [...prev, ...newGhosts];
+      });
+    }
     setShowRestorePrompt(false);
     setCloudGardenData(null);
+    setCloudPushHeld(false);
+  }, [cloudGardenData]);
+
+  // ── Conflict resolution (same garden, cloud newer) ────────────────
+  // Accept cloud version for a specific conflict
+  const resolveConflictLoadCloud = useCallback((conflictItem) => {
+    // Pre-save local as backup before overwriting
+    try {
+      const backupKey = `gm_conflict_backup_${conflictItem.local.garden_id}`;
+      localStorage.setItem(backupKey, JSON.stringify({
+        garden: conflictItem.local,
+        savedAt: new Date().toISOString(),
+        note: 'Pre-conflict-overwrite backup',
+      }));
+    } catch (e) { console.warn('[Auth] Conflict backup failed:', e); }
+
+    const cloudGarden = {
+      ...(conflictItem.cloud.garden_json || conflictItem.cloud),
+      _deviceId: conflictItem.cloud.device_id,
+      _deviceLabel: conflictItem.cloud.device_label,
+      _lastSynced: conflictItem.cloud.updated_at,
+    };
+    const local = getLocalGardens() || [];
+    const updated = local.map(g =>
+      g.garden_id === conflictItem.local.garden_id ? cloudGarden : g
+    );
+    setLocalGardens(updated);
+    _resolveConflict();
+  }, [getLocalGardens, setLocalGardens]);
+
+  // Keep local version — just dismiss
+  const resolveConflictKeepLocal = useCallback(() => {
+    _resolveConflict();
   }, []);
+
+  function _resolveConflict() {
+    setConflictGardens(prev => {
+      const remaining = prev.slice(1); // resolve one at a time
+      if (remaining.length === 0) {
+        setShowConflictPrompt(false);
+        setCloudPushHeld(false);
+      }
+      return remaining;
+    });
+  }
+
+  // ── Load a ghost garden (from garden switcher) ────────────────────
+  const loadGhostGarden = useCallback((ghostItem) => {
+    const cloudGarden = {
+      ...(ghostItem.garden_json || ghostItem),
+      _deviceId: ghostItem.device_id,
+      _deviceLabel: ghostItem.device_label,
+      _lastSynced: ghostItem.updated_at,
+    };
+    const local = getLocalGardens() || [];
+    const dream = local.filter(g => g._isDreamGarden);
+    const existing = local.filter(g => !g._isDreamGarden);
+    setLocalGardens([...dream, cloudGarden, ...existing]);
+    // Remove from ghost list
+    setGhostGardens(prev => prev.filter(g => g.garden_id !== ghostItem.garden_id));
+  }, [getLocalGardens, setLocalGardens]);
 
   // ── Push to cloud (called from GardenEditor after every save) ──────
   // gardens = full local array; we push each non-Dream garden individually
+  // Held if restore/conflict prompt is still open
   const syncToCloud = useCallback(async (gardens) => {
-    if (!user) return;
+    if (!user || cloudPushHeld) return;
     const userGardens = (gardens || []).filter(g => !g._isDreamGarden && g.garden_id);
     for (const garden of userGardens) {
       const ok = await pushCloudGarden(user.id, garden);
@@ -121,7 +237,7 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
         } catch (e) { console.warn('[Auth] _lastSynced update failed:', e); }
       }
     }
-  }, [user]);
+  }, [user, cloudPushHeld]);
 
   // ── Google Sign-In ──────────────────────────────────────────────
   const signInWithGoogle = useCallback(async () => {
@@ -200,9 +316,20 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
     user,
     loading,
     debugMsg,
+    // Restore prompt (new device)
     showRestorePrompt,
+    cloudGardenData,
     restoreFromCloud,
     dismissRestore,
+    // Conflict prompt (same garden, cloud newer)
+    showConflictPrompt,
+    conflictGardens,
+    resolveConflictLoadCloud,
+    resolveConflictKeepLocal,
+    // Ghost gardens (cloud-only, in switcher)
+    ghostGardens,
+    loadGhostGarden,
+    // Sync
     syncToCloud,
     signInWithGoogle,
     signOut,

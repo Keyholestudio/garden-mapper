@@ -372,7 +372,7 @@ export default function GardenCanvas({
     if (sandboxBoundsRef) sandboxBoundsRef.current = null
 
     const isLocalDev = typeof window !== 'undefined' && window.location.hostname === 'localhost'
-    if (!isDreamGarden || isLocalDev) return  // not dream garden or local dev — nothing to add
+    if (!isDreamGarden) return  // not dream garden — nothing to add
 
     const pb = propBoundsRef.current
     if (!pb) return
@@ -391,25 +391,28 @@ export default function GardenCanvas({
     const overlayLayer = new Konva.Layer({ id: '__dreamOverlay' })
     stage.add(overlayLayer)
 
-    // 4-piece invisible frame covering everything outside the sandbox
-    const BIG = 99999
-    const frameRects = [
-      { x: -BIG,      y: -BIG,      width: BIG * 2,   height: BIG + sbY },  // top
-      { x: -BIG,      y: sbY + sbH, width: BIG * 2,   height: BIG },         // bottom
-      { x: -BIG,      y: sbY,       width: BIG + sbX,  height: sbH },         // left
-      { x: sbX + sbW, y: sbY,       width: BIG,        height: sbH },         // right
-    ]
-    frameRects.forEach(r => overlayLayer.add(new Konva.Rect({
-      ...r,
-      fill: 'rgba(0,0,0,0)',
-      listening: true,
-      perfectDrawEnabled: false,
-    })))
+    if (!isLocalDev) {
+      // Production only: 4-piece invisible frame blocking drops outside sandbox
+      const BIG = 99999
+      const frameRects = [
+        { x: -BIG,      y: -BIG,      width: BIG * 2,   height: BIG + sbY },  // top
+        { x: -BIG,      y: sbY + sbH, width: BIG * 2,   height: BIG },         // bottom
+        { x: -BIG,      y: sbY,       width: BIG + sbX,  height: sbH },         // left
+        { x: sbX + sbW, y: sbY,       width: BIG,        height: sbH },         // right
+      ]
+      frameRects.forEach(r => overlayLayer.add(new Konva.Rect({
+        ...r,
+        fill: 'rgba(0,0,0,0)',
+        listening: true,
+        perfectDrawEnabled: false,
+      })))
+    }
 
-    // Sandbox dashed border
+    // Sandbox dashed border (always visible on Dream Garden — orange dashes on dev)
     overlayLayer.add(new Konva.Rect({
       x: sbX, y: sbY, width: sbW, height: sbH,
-      stroke: 'rgba(255,255,255,0.55)', strokeWidth: 2,
+      stroke: isLocalDev ? 'rgba(255,140,0,0.85)' : 'rgba(255,255,255,0.55)',
+      strokeWidth: isLocalDev ? 3 : 2,
       dash: [10, 6], fill: 'transparent',
       listening: false, strokeScaleEnabled: false,
     }))
@@ -418,9 +421,9 @@ export default function GardenCanvas({
     const lbl = new Konva.Text({
       x: sbX + sbW / 2,
       y: sbY + sbH - 28,
-      text: '✨ Try planting here',
+      text: isLocalDev ? '[ SANDBOX ZONE ]' : '✨ Try planting here',
       fontSize: 13, fontStyle: 'bold',
-      fill: 'rgba(255,255,255,0.75)',
+      fill: isLocalDev ? 'rgba(255,140,0,0.9)' : 'rgba(255,255,255,0.75)',
       listening: false,
     })
     overlayLayer.add(lbl)
@@ -440,7 +443,7 @@ export default function GardenCanvas({
         width: LOGO_W,
         height: LOGO_H,
         listening: false,
-        opacity: 0.92,
+        opacity: isLocalDev ? 0.5 : 0.92,  // dimmed on dev so it doesn't distract
       })
       overlayLayer.add(logoNode)
       overlayLayer.batchDraw()
