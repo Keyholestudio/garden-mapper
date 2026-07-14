@@ -105,3 +105,55 @@
 .canvas-container {
   touch-action: none;
 }
+
+/* ── Cross-device update banner ─────────────────────────────────────────── */
+.cloud-update-banner {
+  position: fixed;
+  bottom: 72px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 900;
+  background: #1b5e20;
+  color: #fff;
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  max-width: 420px;
+  width: calc(100vw - 32px);
+  animation: banner-slide-up 0.3s ease;
+}
+@keyframes banner-slide-up {
+  from { opacity: 0; transform: translateX(-50%) translateY(16px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.cloud-update-text {
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.4;
+}
+.cloud-update-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.cloud-update-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 7px 13px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.cloud-update-btn--load {
+  background: #a5d6a7;
+  color: #1b5e20;
+}
+.cloud-update-btn--load:hover { background: #c8e6c9; }
+.cloud-update-btn--dismiss {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+}
+.cloud-update-btn--dismiss:hover { background: rgba(255,255,255,0.25); }

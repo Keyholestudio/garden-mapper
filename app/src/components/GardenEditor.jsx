@@ -104,6 +104,7 @@ export default function GardenEditor() {
     showRestorePrompt, cloudGardenData, restoreFromCloud, dismissRestore,
     showConflictPrompt, conflictGardens, resolveConflictLoadCloud, resolveConflictKeepLocal,
     ghostGardens, loadGhostGarden, deleteGhostGarden,
+    cloudUpdateAvailable, dismissCloudUpdate, applyCloudUpdate,
     syncToCloud, syncStatus, signInWithGoogle, signOut,
   } = useAuth({
     getLocalGardens: () => readGardens(),
@@ -1206,7 +1207,7 @@ export default function GardenEditor() {
           onRestore={restoreFromCloud}
           onDismiss={dismissRestore}
           isSubscribed={false}
-          localUserGardenCount={readGardens().filter(g => !g._isDreamGarden && g.name !== '\uD83C\uDF38 Dream Garden').length}
+          localUserGardenCount={0}
         />
       )}
       {showConflictPrompt && conflictGardens.length > 0 && (
@@ -1216,6 +1217,18 @@ export default function GardenEditor() {
           onLoadCloud={resolveConflictLoadCloud}
           onKeepLocal={resolveConflictKeepLocal}
         />
+      )}
+      {/* Cross-device update banner */}
+      {cloudUpdateAvailable && (
+        <div className="cloud-update-banner">
+          <span className="cloud-update-text">
+            📱 <strong>{cloudUpdateAvailable.gardenName}</strong> was updated on {cloudUpdateAvailable.device}
+          </span>
+          <div className="cloud-update-actions">
+            <button className="cloud-update-btn cloud-update-btn--load" onClick={() => applyCloudUpdate(cloudUpdateAvailable.cloudRow)}>Load it</button>
+            <button className="cloud-update-btn cloud-update-btn--dismiss" onClick={dismissCloudUpdate}>Dismiss</button>
+          </div>
+        </div>
       )}
       {/* AUTH debug banner removed — login working */}
       <PromoBanner />

@@ -368,6 +368,71 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
     });
   }
 
+  // ── Cross-device update watcher ───────────────────────────────
+  // Polls cloud on app focus. If another device manually saved a garden, shows a banner.
+  const [cloudUpdateAvailable, setCloudUpdateAvailable] = useState(null); // { gardenName, device, cloudRow }
+
+  const dismissCloudUpdate = useCallback(() => setCloudUpdateAvailable(null), []);
+
+  const applyCloudUpdate = useCallback((cloudRow) => {
+    const cloudGarden = {
+      ...(cloudRow.garden_json || cloudRow),
+      _deviceId: cloudRow.device_id,
+      _deviceLabel: cloudRow.device_label,
+      _lastSynced: cloudRow.updated_at,
+    };
+    const local = getLocalGardens() || [];
+    const updated = local.map(g =>
+      g.garden_id === cloudRow.garden_id ? cloudGarden : g
+    );
+    const idx = local.findIndex(g => g.garden_id === cloudRow.garden_id);
+    setLocalGardens(updated, idx >= 0 ? idx : undefined);
+    localStorage.setItem(`gm_last_seen_cloud_${cloudRow.garden_id}`, String(new Date(cloudRow.updated_at).getTime()));
+    setCloudUpdateAvailable(null);
+  }, [getLocalGardens, setLocalGardens]);
+
+  useEffect(() => {
+    if (!user) return;
+    const localDeviceId = localStorage.getItem('gm_device_id');
+
+    const checkForUpdates = async () => {
+      if (document.hidden) return; // only check when app is visible
+      const cloudGardens = await fetchCloudGardens(user.id);
+      const local = getLocalGardens() || [];
+      const userGardens = local.filter(g => !isDreamGarden(g));
+
+      for (const cg of cloudGardens) {
+        // Only care about updates from other devices
+        if (!cg.device_id || cg.device_id === localDeviceId) continue;
+        const localMatch = userGardens.find(g => g.garden_id === cg.garden_id);
+        if (!localMatch) continue; // not a garden we have locally — handled by ghost flow
+        const cloudTime = new Date(cg.updated_at).getTime();
+        const lastSeenKey = `gm_last_seen_cloud_${cg.garden_id}`;
+        const lastSeenTime = parseInt(localStorage.getItem(lastSeenKey) || '0', 10);
+        if (cloudTime > lastSeenTime) {
+          // Another device has a newer version — show notification
+          const name = cg.garden_name || localMatch.name || 'Your Garden';
+          const device = cg.device_label || 'Another device';
+          console.log('[Auth] Cross-device update detected:', name, 'from', device);
+          // Stamp now so we don't re-notify on next focus if user dismisses
+          localStorage.setItem(lastSeenKey, String(cloudTime));
+          setCloudUpdateAvailable({ gardenName: name, device, cloudRow: cg });
+          break; // show one at a time
+        }
+      }
+    };
+
+    // Check on focus (switching back to app tab/window)
+    const onFocus = () => checkForUpdates();
+    const onVisibility = () => { if (!document.hidden) checkForUpdates(); };
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, [user, getLocalGardens]);
+
   // ── Delete a ghost garden (from garden switcher) ───────────────────
   const deleteGhostGarden = useCallback(async (ghostItem) => {
     const ok = await softDeleteCloudGarden(ghostItem.garden_id);
@@ -528,6 +593,10 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
     ghostGardens,
     loadGhostGarden,
     deleteGhostGarden,
+    // Cross-device update notification
+    cloudUpdateAvailable,
+    dismissCloudUpdate,
+    applyCloudUpdate,
     // Sync
     syncToCloud,
     syncStatus,
