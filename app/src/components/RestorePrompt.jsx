@@ -6,47 +6,64 @@ import './RestorePrompt.css';
  *
  * mode="restore"  — New device: cloud has gardens not in local
  *   Props: gardens (array of cloud rows), onRestore(garden), onDismiss
+ *   isSubscribed: bool — controls whether Load buttons are gated
+ *   localUserGardenCount: number — how many non-Dream local gardens exist
  *
  * mode="conflict" — Same garden, cloud is newer than local
  *   Props: conflict { local, cloud }, onLoadCloud(conflict), onKeepLocal
  */
 
+const MAX_FREE_GARDENS = 1;
+
 function formatTime(iso) {
-  if (!iso) return 'Unknown time';
+  if (!iso) return '';
   const d = new Date(iso);
   return d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric' }) +
     ' · ' + d.toLocaleTimeString('en-CA', { hour: 'numeric', minute: '2-digit', hour12: true });
 }
 
 // ── Restore prompt — new device flow ─────────────────────────────────────────
-function RestoreMode({ gardens, onRestore, onDismiss }) {
-  // Show the first garden (most recent by updated_at from Supabase)
-  const g = gardens[0];
-  const name = g?.garden_name || g?.garden_json?.name || 'Your Garden';
-  const device = g?.device_label || 'Another device';
-  const time = formatTime(g?.updated_at);
-  const count = gardens.length;
-
+function RestoreMode({ gardens, onRestore, onDismiss, isSubscribed = false, localUserGardenCount = 0 }) {
   return (
     <div className="restore-overlay">
-      <div className="restore-card">
+      <div className="restore-card restore-card--list">
         <div className="restore-icon">🌱</div>
-        <h2>Garden found from another device</h2>
-        <div className="restore-garden-info">
-          <span className="restore-garden-name">"{name}"</span>
-          <span className="restore-garden-meta">{device} · {time}</span>
-          {count > 1 && (
-            <span className="restore-garden-more">+{count - 1} more garden{count > 2 ? 's' : ''}</span>
-          )}
+        <h2>Gardens found on another device</h2>
+        <p className="restore-subtitle">Choose which gardens to load, or start fresh.</p>
+
+        <div className="restore-garden-list">
+          {gardens.map((g, i) => {
+            const name = g?.garden_name || g?.garden_json?.name || 'Garden';
+            const device = g?.device_label || 'Another device';
+            const time = formatTime(g?.updated_at);
+            // Free tier: only allow loading if slot available
+            const slotsUsed = localUserGardenCount + i; // each load above takes a slot
+            const canLoad = isSubscribed || slotsUsed < MAX_FREE_GARDENS;
+
+            return (
+              <div key={g.garden_id} className="restore-garden-row">
+                <div className="restore-garden-row-info">
+                  <span className="restore-garden-row-name">{name}</span>
+                  <span className="restore-garden-row-meta">{device}{time ? ` · ${time}` : ''}</span>
+                </div>
+                {canLoad ? (
+                  <button
+                    className="btn-restore-load"
+                    onClick={() => onRestore([g])}
+                  >
+                    Load
+                  </button>
+                ) : (
+                  <span className="restore-garden-row-gated">Subscribe</span>
+                )}
+              </div>
+            );
+          })}
         </div>
-        <div className="restore-actions">
-          <button className="btn-restore-primary" onClick={() => onRestore(gardens)}>
-            Load {count > 1 ? 'all gardens' : 'it'}
-          </button>
-          <button className="btn-restore-secondary" onClick={onDismiss}>
-            Start fresh
-          </button>
-        </div>
+
+        <button className="btn-restore-secondary restore-dismiss" onClick={onDismiss}>
+          Start fresh
+        </button>
       </div>
     </div>
   );
@@ -82,10 +99,7 @@ function ConflictMode({ conflict, onLoadCloud, onKeepLocal }) {
         </div>
         <p className="restore-note">A backup of your local version will be saved automatically.</p>
         <div className="restore-actions">
-          <button className="btn-restore-primary" onClick={() => {
-            console.log('[RestorePrompt] Load cloud version clicked, onLoadCloud:', typeof onLoadCloud);
-            onLoadCloud?.(conflict);
-          }}>
+          <button className="btn-restore-primary" onClick={() => onLoadCloud?.(conflict)}>
             Load cloud version
           </button>
           <button className="btn-restore-secondary" onClick={onKeepLocal}>
@@ -99,11 +113,13 @@ function ConflictMode({ conflict, onLoadCloud, onKeepLocal }) {
 
 // ── Main export ───────────────────────────────────────────────────────────────
 export default function RestorePrompt({
-  // Restore mode
   mode = 'restore',
+  // Restore mode
   gardens,
   onRestore,
   onDismiss,
+  isSubscribed,
+  localUserGardenCount,
   // Conflict mode
   conflict,
   onLoadCloud,
@@ -113,7 +129,15 @@ export default function RestorePrompt({
     return <ConflictMode conflict={conflict} onLoadCloud={onLoadCloud} onKeepLocal={onKeepLocal} />;
   }
   if (mode === 'restore' && gardens && gardens.length > 0) {
-    return <RestoreMode gardens={gardens} onRestore={onRestore} onDismiss={onDismiss} />;
+    return (
+      <RestoreMode
+        gardens={gardens}
+        onRestore={onRestore}
+        onDismiss={onDismiss}
+        isSubscribed={isSubscribed}
+        localUserGardenCount={localUserGardenCount}
+      />
+    );
   }
   return null;
 }

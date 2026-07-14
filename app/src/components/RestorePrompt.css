@@ -19,6 +19,11 @@
   box-shadow: 0 8px 32px rgba(0,0,0,0.18);
 }
 
+.restore-card--list {
+  max-width: 400px;
+  padding: 28px 20px 20px;
+}
+
 .restore-card--conflict {
   max-width: 380px;
 }
@@ -135,6 +140,86 @@
   margin: 0 0 18px;
   line-height: 1.5;
   font-style: italic;
+}
+
+/* ── List restore mode ── */
+.restore-subtitle {
+  font-size: 13px;
+  color: #888;
+  margin: 0 0 14px;
+}
+
+.restore-garden-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 260px;
+  overflow-y: auto;
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.restore-garden-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+.restore-garden-row-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.restore-garden-row-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2a3d1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.restore-garden-row-meta {
+  font-size: 11px;
+  color: #999;
+}
+
+.btn-restore-load {
+  background: #11502A;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.btn-restore-load:hover { background: #0d3d20; }
+
+.restore-garden-row-gated {
+  font-size: 11px;
+  font-weight: 700;
+  color: #558B2F;
+  border: 1.5px solid #A5D6A7;
+  border-radius: 8px;
+  padding: 6px 10px;
+  flex-shrink: 0;
+  background: #f4faf4;
+}
+
+.restore-dismiss {
+  width: 100%;
+  text-align: center;
+  padding: 10px;
 }
 
 /* ── Actions ── */

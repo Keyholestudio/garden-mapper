@@ -1197,6 +1197,8 @@ export default function GardenEditor() {
           gardens={cloudGardenData}
           onRestore={restoreFromCloud}
           onDismiss={dismissRestore}
+          isSubscribed={false}
+          localUserGardenCount={readGardens().filter(g => !g._isDreamGarden && g.name !== '\uD83C\uDF38 Dream Garden').length}
         />
       )}
       {showConflictPrompt && conflictGardens.length > 0 && (

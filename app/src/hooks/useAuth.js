@@ -145,29 +145,43 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
   // ── Restore from cloud (new device prompt) ───────────────────────
   // onRestore(garden) — called with a single cloud garden to restore
   const restoreFromCloud = useCallback((gardenToRestore) => {
-    const gardens = gardenToRestore
-      ? (Array.isArray(gardenToRestore) ? gardenToRestore : [gardenToRestore])
-      : cloudGardenData;
-    if (gardens && gardens.length > 0) {
-      // Extract garden_json from each cloud row and merge into local
-      const restored = gardens.map(cg => ({
+    // gardenToRestore is always an array of cloud rows (individual Load click = [singleGarden])
+    const toLoad = Array.isArray(gardenToRestore) ? gardenToRestore : (gardenToRestore ? [gardenToRestore] : cloudGardenData || []);
+
+    if (toLoad.length > 0) {
+      const restored = toLoad.map(cg => ({
         ...(cg.garden_json || cg),
         _deviceId: cg.device_id,
         _deviceLabel: cg.device_label,
         _lastSynced: cg.updated_at,
       }));
-      // Merge into local — replace matching garden_id, prepend new ones (after Dream Garden)
       const local = getLocalGardens() || [];
       const dream = local.filter(g => g._isDreamGarden);
       const existing = local.filter(g => !g._isDreamGarden);
       const existingIds = new Set(existing.map(g => g.garden_id));
+      // Only add brand-new gardens (no duplicates)
       const brandNew = restored.filter(g => !existingIds.has(g.garden_id));
       const merged = existing.map(g => {
         const match = restored.find(r => r.garden_id === g.garden_id);
         return match || g;
       });
-      setLocalGardens([...dream, ...brandNew, ...merged], dream.length > 0 ? 1 : 0);
+      const loadIdx = dream.length > 0 ? 1 : 0;
+      setLocalGardens([...dream, ...brandNew, ...merged], loadIdx);
+
+      // Any cloud gardens NOT loaded → stay as ghosts
+      const loadedIds = new Set(toLoad.map(g => g.garden_id));
+      const remaining = (cloudGardenData || []).filter(g => !loadedIds.has(g.garden_id));
+      if (remaining.length > 0) {
+        setGhostGardens(prev => {
+          const existingGhostIds = new Set(prev.map(g => g.garden_id));
+          return [...prev, ...remaining.filter(g => !existingGhostIds.has(g.garden_id))];
+        });
+        // Keep prompt open if there are more gardens to decide on
+        setCloudGardenData(remaining);
+        return; // don't dismiss yet
+      }
     }
+
     setShowRestorePrompt(false);
     setCloudGardenData(null);
     setCloudPushHeld(false);
