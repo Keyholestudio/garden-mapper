@@ -79,6 +79,11 @@ export async function fetchCloudGardens(userId) {
  * Uses garden_id as the upsert key — creates on first push, updates on subsequent.
  */
 export async function pushCloudGarden(userId, garden) {
+  // Hard guard — Dream Garden must never reach the cloud
+  if (garden?._isDreamGarden || garden?.name === '\uD83C\uDF38 Dream Garden') {
+    console.warn('[Supabase] Blocked Dream Garden push');
+    return false;
+  }
   const deviceId = getDeviceId();
   const deviceLabel = getDeviceLabel();
 
