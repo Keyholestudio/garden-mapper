@@ -165,6 +165,15 @@ _Separate session. Do not start until Phases 1–3 are confirmed working._
   - Client reads `subscription_flag` from Supabase on sign-in to gate features
 - Rule: never mention Stripe inside the iOS app (Apple rules)
 
+**RevenueCat credentials (set up 2026-07-14)**
+- Project ID: `a8a11c30`
+- Dashboard: https://app.revenuecat.com/projects/a8a11c30
+- SDK key (sandbox): `test_YCKSQRAwYqZVvgVNVCijNPLzEbS`
+- SDK: `@revenuecat/purchases-capacitor` v13.2.2 — installed
+- Hook: `app/src/hooks/useRevenueCat.js`
+- Entitlement ID to create in dashboard: `pro`
+- **TODO before production:** Replace sandbox key with live key, create Entitlement `pro`, create Offerings in dashboard
+
 **4b — Google Play Billing**
 - Required for Android in-app purchases (can't use Stripe inside Play Store app)
 - What's needed:
