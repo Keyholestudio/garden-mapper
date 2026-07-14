@@ -3,7 +3,11 @@ import { supabase, fetchCloudGarden, pushCloudGarden } from '../supabase';
 import { Browser } from '@capacitor/browser';
 import { App } from '@capacitor/app';
 
-const REDIRECT_URL = 'ca.gardenmapper.app://auth/callback';
+const APP_REDIRECT_URL = 'ca.gardenmapper.app://auth/callback';  // Capacitor deep-link
+const WEB_REDIRECT_URL = `${window.location.origin}/auth/callback`;  // Web browser redirect
+
+// True when running inside a Capacitor native wrapper (Android/iOS), false on plain web
+const isNative = !!(window.Capacitor?.isNative);
 
 /**
  * useAuth — manages Supabase auth state + cloud sync triggers.
@@ -79,20 +83,33 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
     await pushCloudGarden(user.id, gardens);
   }, [user]);
 
-  // ── Google Sign-In (PKCE via device browser) ────────────────────
+  // ── Google Sign-In ──────────────────────────────────────────────
   const signInWithGoogle = useCallback(async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: REDIRECT_URL,
-        skipBrowserRedirect: true,
-        queryParams: { access_type: 'offline', prompt: 'consent' },
-      },
-    });
-    if (error) { console.error('[Auth] signInWithGoogle error:', error); return; }
-    console.log('[Auth] OAuth URL:', data?.url);
-    // Open in Chrome specifically — avoids DuckDuckGo intercepting the deep-link
-    await Browser.open({ url: data.url, windowName: '_blank' });
+    if (isNative) {
+      // Capacitor (Android/iOS): open OAuth in device browser, deep-link returns to app
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: APP_REDIRECT_URL,
+          skipBrowserRedirect: true,
+          queryParams: { access_type: 'offline', prompt: 'consent' },
+        },
+      });
+      if (error) { console.error('[Auth] signInWithGoogle error:', error); return; }
+      console.log('[Auth] OAuth URL (native):', data?.url);
+      await Browser.open({ url: data.url, windowName: '_blank' });
+    } else {
+      // Plain web browser (PC/mobile web): let Supabase handle the redirect normally
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: WEB_REDIRECT_URL,
+          queryParams: { access_type: 'offline', prompt: 'consent' },
+        },
+      });
+      if (error) { console.error('[Auth] signInWithGoogle error:', error); }
+      // Supabase redirects the browser to Google, then back to WEB_REDIRECT_URL automatically
+    }
   }, []);
 
   // ── Handle deep-link callback ─────────────────────────────────────
