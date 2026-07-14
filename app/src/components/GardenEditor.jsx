@@ -96,6 +96,9 @@ export default function GardenEditor() {
   const autoSaveTimerRef = useRef(null)
 
   // ── Auth + cloud sync ────────────────────────────────────────────
+  // Ref-based callback — set after all handlers are defined, avoids stale closure
+  const loadGardenFromCloudRef = useRef(null)
+
   const {
     user, debugMsg,
     showRestorePrompt, cloudGardenData, restoreFromCloud, dismissRestore,
@@ -106,26 +109,8 @@ export default function GardenEditor() {
     getLocalGardens: () => readGardens(),
     setLocalGardens: (gardens, loadIdx = 0) => {
       localStorage.setItem('gardenData', JSON.stringify(gardens))
-      // Reload the current garden from the restored data
-      if (stageReadyRef.current) {
-        loadGarden({
-          idx: loadIdx,
-          stage: stageRef.current,
-          layers: layersRef.current,
-          state,
-          loadedImages: loadedImagesRef.current,
-          showGridRef,
-          onSelectPlant: handleSelectPlant,
-          onSelectStruct: handleSelectStruct,
-          onClearSelection: handleClearSelection,
-          setGardenName:  state.setGardenName,
-          setGardenW:     state.setGardenW,
-          setGardenH:     state.setGardenH,
-          setGardenUnit:  state.setGardenUnit,
-          setIsSetup:     state.setIsSetup,
-          onZoomToFit:    handleZoomToFit,
-        })
-      }
+      // Delegate to the ref — set after all handlers are defined below
+      loadGardenFromCloudRef.current?.(loadIdx)
     },
   })
 
@@ -1141,6 +1126,34 @@ export default function GardenEditor() {
       setCurrentGardenIndex(idx)
       writeLastGardenIndex(idx)
     }
+  }
+
+  // Wire the cloud-restore callback now that all handlers exist
+  // useAuth.setLocalGardens delegates here via loadGardenFromCloudRef
+  loadGardenFromCloudRef.current = (loadIdx) => {
+    if (!stageReadyRef.current) return
+    loadGarden({
+      idx: loadIdx,
+      stage: stageRef.current,
+      layers: layersRef.current,
+      state,
+      loadedImages: loadedImagesRef.current,
+      showGridRef,
+      onSelectPlant: handlePlantSelect,
+      onSelectStruct: (id, shape) => {
+        state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
+        state.setSelectedPlant(null)
+      },
+      onClearSelection: clearSelection,
+      setGardenName: state.setGardenName,
+      setGardenW:    state.setGardenW,
+      setGardenH:    state.setGardenH,
+      setGardenUnit: state.setGardenUnit,
+      setIsSetup:    state.setIsSetup,
+      onZoomToFit:   handleResetView,
+    })
+    currentGardenIndexRef.current = loadIdx
+    setCurrentGardenIndex(loadIdx)
   }
 
   // ── Phase 5: New garden (mirrors v8 newGarden exactly) ──
