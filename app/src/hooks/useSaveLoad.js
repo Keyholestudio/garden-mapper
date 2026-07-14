@@ -6,6 +6,7 @@ import Konva from 'konva'
 import { SIZE_MAP, TEXTURE_MAP } from './useGardenState'
 import { makePlantGroup } from '../utils/plantUtils'
 import { applyColourOrTexture } from '../utils/drawUtils'
+import { getDeviceId, getDeviceLabel } from '../supabase'
 
 // Set to true to re-enable seasonal lawn textures on the property boundary
 const LAWN_TEXTURES_ENABLED = false
@@ -115,6 +116,11 @@ function migrateGarden(g) {
   // Backfill lockedDimensions for any existing save that doesn't have it
   if (g.lockedDimensions === undefined && g.w && g.h) {
     g.lockedDimensions = true
+  }
+
+  // Backfill garden_id for gardens saved before Session A schema (2026-07-14)
+  if (!g.garden_id) {
+    g.garden_id = crypto.randomUUID()
   }
 
     g._schemaVersion = SCHEMA_VERSION
@@ -274,8 +280,16 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
     )
   }
 
+  // Preserve or generate garden_id — stable UUID per garden, never changes after creation
+  const existingId = existing?.garden_id || crypto.randomUUID()
+
   const gardenEntry = {
     _schemaVersion: SCHEMA_VERSION,
+    garden_id:      existingId,
+    _lastSynced:    null,           // set to ISO string by syncToCloud after successful push
+    _savedAt:       new Date().toISOString(),  // timestamp of this local save
+    _deviceId:      getDeviceId(),
+    _deviceLabel:   getDeviceLabel(),
     lockedDimensions: true,
     name:    state.gardenName,
     unit:    state.gardenUnit,
@@ -539,7 +553,16 @@ export function createNewGarden({ currentGardenIndex, stage, layers, state }) {
 
   const updated = readGardens()
   // New gardens start unlocked — dimensions set via SetupOverlay, then locked on first save
-  updated.push({ name: 'New Garden', unit: 'ft', w: 60, h: 40, lockedDimensions: false, plants: [], structs: [] })
+  updated.push({
+    name: 'New Garden', unit: 'ft', w: 60, h: 40,
+    lockedDimensions: false,
+    garden_id: crypto.randomUUID(),
+    _savedAt: new Date().toISOString(),
+    _lastSynced: null,
+    _deviceId: getDeviceId(),
+    _deviceLabel: getDeviceLabel(),
+    plants: [], structs: [],
+  })
   writeGardens(updated)
   return { newIndex: updated.length - 1, limitReached: false }
 }

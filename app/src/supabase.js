@@ -14,31 +14,88 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   },
 });
 
-// ── Garden sync helpers ──────────────────────────────────────────
+// ── Device identity ────────────────────────────────────────────────────────────
+// Stable per-install identifier. Generated once, stored in localStorage forever.
+const LS_DEVICE_ID = 'gm_device_id';
+const LS_DEVICE_LABEL = 'gm_device_label';
 
-/** Fetch the user's garden from Supabase. Returns null if not found. */
-export async function fetchCloudGarden(userId) {
-  const { data, error } = await supabase
-    .from('gardens')
-    .select('garden_json, updated_at')
-    .eq('user_id', userId)
-    .single();
-
-  if (error && error.code !== 'PGRST116') {
-    // PGRST116 = no rows found — not a real error
-    console.error('[Supabase] fetchCloudGarden error:', error);
-    return null;
+export function getDeviceId() {
+  let id = localStorage.getItem(LS_DEVICE_ID);
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem(LS_DEVICE_ID, id);
   }
-  return data ?? null;
+  return id;
 }
 
-/** Upsert the user's garden to Supabase. */
-export async function pushCloudGarden(userId, gardenJson) {
+export function getDeviceLabel() {
+  let label = localStorage.getItem(LS_DEVICE_LABEL);
+  if (!label) {
+    // Auto-detect a human-readable label
+    const ua = navigator.userAgent;
+    let device = 'Unknown device';
+    if (/iPhone/.test(ua)) device = 'iPhone';
+    else if (/iPad/.test(ua)) device = 'iPad';
+    else if (/Android/.test(ua)) device = 'Android';
+    else if (/Macintosh/.test(ua)) device = 'Mac';
+    else if (/Windows/.test(ua)) device = 'Windows PC';
+    else if (/Linux/.test(ua)) device = 'Linux';
+
+    let browser = '';
+    if (/Chrome/.test(ua) && !/Chromium|Edg/.test(ua)) browser = ' · Chrome';
+    else if (/Firefox/.test(ua)) browser = ' · Firefox';
+    else if (/Safari/.test(ua) && !/Chrome/.test(ua)) browser = ' · Safari';
+    else if (/Edg/.test(ua)) browser = ' · Edge';
+
+    label = device + browser;
+    localStorage.setItem(LS_DEVICE_LABEL, label);
+  }
+  return label;
+}
+
+// ── Per-garden cloud helpers ───────────────────────────────────────────────────
+
+/**
+ * Fetch all cloud gardens for a user (non-deleted).
+ * Returns array of { garden_id, garden_name, device_id, device_label, garden_json, updated_at, subscription_required }
+ */
+export async function fetchCloudGardens(userId) {
+  const { data, error } = await supabase
+    .from('gardens')
+    .select('garden_id, garden_name, device_id, device_label, garden_json, updated_at, subscription_required')
+    .eq('user_id', userId)
+    .eq('is_deleted', false)
+    .order('updated_at', { ascending: false });
+
+  if (error) {
+    console.error('[Supabase] fetchCloudGardens error:', error);
+    return [];
+  }
+  return data ?? [];
+}
+
+/**
+ * Push a single garden to Supabase.
+ * Uses garden_id as the upsert key — creates on first push, updates on subsequent.
+ */
+export async function pushCloudGarden(userId, garden) {
+  const deviceId = getDeviceId();
+  const deviceLabel = getDeviceLabel();
+
   const { error } = await supabase
     .from('gardens')
     .upsert(
-      { user_id: userId, garden_json: gardenJson, updated_at: new Date().toISOString() },
-      { onConflict: 'user_id' }
+      {
+        garden_id: garden.garden_id,
+        user_id: userId,
+        garden_name: garden.name || 'My Garden',
+        device_id: deviceId,
+        device_label: deviceLabel,
+        garden_json: garden,
+        updated_at: new Date().toISOString(),
+        is_deleted: false,
+      },
+      { onConflict: 'garden_id' }
     );
 
   if (error) {
@@ -46,4 +103,28 @@ export async function pushCloudGarden(userId, gardenJson) {
     return false;
   }
   return true;
+}
+
+/**
+ * Soft-delete a garden from Supabase (sets is_deleted = true).
+ * Never hard-deletes — preserves history.
+ */
+export async function softDeleteCloudGarden(gardenId) {
+  const { error } = await supabase
+    .from('gardens')
+    .update({ is_deleted: true, updated_at: new Date().toISOString() })
+    .eq('garden_id', gardenId);
+
+  if (error) {
+    console.error('[Supabase] softDeleteCloudGarden error:', error);
+    return false;
+  }
+  return true;
+}
+
+// ── Legacy compat (used nowhere new — remove after Session B) ─────────────────
+/** @deprecated Use fetchCloudGardens instead */
+export async function fetchCloudGarden(userId) {
+  const gardens = await fetchCloudGardens(userId);
+  return gardens.length > 0 ? { garden_json: gardens[0].garden_json, updated_at: gardens[0].updated_at } : null;
 }

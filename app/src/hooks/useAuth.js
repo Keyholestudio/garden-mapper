@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase, fetchCloudGarden, pushCloudGarden } from '../supabase';
+import { supabase, fetchCloudGardens, pushCloudGarden } from '../supabase';
 import { Browser } from '@capacitor/browser';
 import { App } from '@capacitor/app';
 
@@ -45,16 +45,41 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
 
     async function handleSignIn() {
       const local = getLocalGardens();
-      const hasLocalData = local && local.length > 0 && local.some(g => !g._isDreamGarden);
+      // Exclude Dream Garden from user data check — it's always present and not user content
+      const userGardens = (local || []).filter(g => !g._isDreamGarden);
+      const hasLocalData = userGardens.length > 0;
 
-      const cloud = await fetchCloudGarden(user.id);
+      const cloudGardens = await fetchCloudGardens(user.id);
 
       if (hasLocalData) {
-        // Local exists → push local to cloud (local wins)
-        await pushCloudGarden(user.id, local);
-      } else if (cloud?.garden_json) {
-        // Local is empty, cloud has data → show restore prompt
-        setCloudGardenData(cloud.garden_json);
+        // Local user gardens exist — push each one to cloud (local wins on first sync)
+        // Skip if this garden_id is already in cloud with a newer updated_at
+        for (const garden of userGardens) {
+          const cloudMatch = cloudGardens.find(c => c.garden_id === garden.garden_id);
+          if (cloudMatch) {
+            const cloudTime = new Date(cloudMatch.updated_at).getTime();
+            const localTime = garden._savedAt ? new Date(garden._savedAt).getTime() : 0;
+            if (cloudTime > localTime) {
+              // Cloud is newer for this garden — queue conflict prompt (Session B)
+              // For now: skip push to avoid overwriting newer cloud version
+              console.log('[Auth] Cloud newer for garden:', garden.name, '- skipping push');
+              continue;
+            }
+          }
+          await pushCloudGarden(user.id, garden);
+        }
+
+        // Check if cloud has gardens not in local — surface as ghost entries (Session B)
+        const localIds = new Set(userGardens.map(g => g.garden_id));
+        const cloudOnly = cloudGardens.filter(c => !localIds.has(c.garden_id));
+        if (cloudOnly.length > 0) {
+          // Store cloud-only gardens for restore prompt
+          setCloudGardenData(cloudOnly);
+          setShowRestorePrompt(true);
+        }
+      } else if (cloudGardens.length > 0) {
+        // Local is empty, cloud has gardens → show restore prompt
+        setCloudGardenData(cloudGardens);
         setShowRestorePrompt(true);
       }
       // else: both empty → nothing to do
@@ -77,10 +102,25 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
     setCloudGardenData(null);
   }, []);
 
-  // ── Push to cloud (call this from useSaveLoad after every save) ──
+  // ── Push to cloud (called from GardenEditor after every save) ──────
+  // gardens = full local array; we push each non-Dream garden individually
   const syncToCloud = useCallback(async (gardens) => {
     if (!user) return;
-    await pushCloudGarden(user.id, gardens);
+    const userGardens = (gardens || []).filter(g => !g._isDreamGarden && g.garden_id);
+    for (const garden of userGardens) {
+      const ok = await pushCloudGarden(user.id, garden);
+      if (ok) {
+        // Mark _lastSynced on the local copy so conflict detection works
+        try {
+          const raw = JSON.parse(localStorage.getItem('gardenData') || '[]');
+          const idx = raw.findIndex(g => g.garden_id === garden.garden_id);
+          if (idx !== -1) {
+            raw[idx]._lastSynced = new Date().toISOString();
+            localStorage.setItem('gardenData', JSON.stringify(raw));
+          }
+        } catch (e) { console.warn('[Auth] _lastSynced update failed:', e); }
+      }
+    }
   }, [user]);
 
   // ── Google Sign-In ──────────────────────────────────────────────
