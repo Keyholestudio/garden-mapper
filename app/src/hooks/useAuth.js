@@ -85,21 +85,25 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
 
       // Auto-purge blank cloud gardens (no plants, no structs) — leftovers from dev sessions
       const allCloudGardens = await fetchCloudGardens(user.id);
-      for (const cg of allCloudGardens) {
+      console.log('[Auth] Cloud gardens fetched:', allCloudGardens.length);
+      const purgeResults = await Promise.all(allCloudGardens.map(async (cg) => {
         const json = cg.garden_json || {};
-        const hasPlants = Array.isArray(json.plants) && json.plants.length > 0;
-        const hasStructs = Array.isArray(json.structs) && json.structs.length > 0;
-        if (!hasPlants && !hasStructs) {
-          console.log('[Auth] Auto-purging blank cloud garden:', cg.garden_name, cg.garden_id);
-          await softDeleteCloudGarden(cg.garden_id);
+        // Check all possible plant/struct storage keys (defensive — early schema used different names)
+        const plantCount = Array.isArray(json.plants) ? json.plants.length :
+                           Array.isArray(json.stickers) ? json.stickers.length : 0;
+        const structCount = Array.isArray(json.structs) ? json.structs.length :
+                            Array.isArray(json.structures) ? json.structures.length : 0;
+        const isEmpty = plantCount === 0 && structCount === 0;
+        console.log('[Auth] Cloud garden:', cg.garden_name, '| plants:', plantCount, 'structs:', structCount, 'empty:', isEmpty, '| id:', cg.garden_id);
+        if (isEmpty) {
+          const ok = await softDeleteCloudGarden(cg.garden_id);
+          console.log('[Auth] Auto-purge', ok ? 'SUCCESS' : 'FAILED', ':', cg.garden_name);
+          return ok ? cg.garden_id : null;
         }
-      }
-      const rawCloudGardens = allCloudGardens.filter(cg => {
-        const json = cg.garden_json || {};
-        const hasPlants = Array.isArray(json.plants) && json.plants.length > 0;
-        const hasStructs = Array.isArray(json.structs) && json.structs.length > 0;
-        return hasPlants || hasStructs;
-      });
+        return null;
+      }));
+      const purgedIds = new Set(purgeResults.filter(Boolean));
+      const rawCloudGardens = allCloudGardens.filter(cg => !purgedIds.has(cg.garden_id));
       // Deduplicate cloud gardens by garden_id — keep most recent per id
       const cloudMap = new Map();
       for (const g of rawCloudGardens) {
@@ -363,10 +367,19 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
 
     setSyncStatus('syncing');
     let anyFailed = false;
+    let anyPushed = false;
 
     for (const garden of userGardens) {
+      const hasPlants = Array.isArray(garden.plants) && garden.plants.length > 0;
+      const hasStructs = Array.isArray(garden.structs) && garden.structs.length > 0;
+      if (!hasPlants && !hasStructs) {
+        // Empty garden — skip silently, not an error
+        console.log('[Sync] Skipping empty garden (no content):', garden.name);
+        continue;
+      }
       const ok = await pushCloudGarden(user.id, garden);
       if (ok) {
+        anyPushed = true;
         console.log('[Sync] ✓ Push succeeded:', garden.name);
         try {
           const raw = JSON.parse(localStorage.getItem('gardenData') || '[]');
@@ -382,6 +395,8 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
       }
     }
 
+    // Only show error if a push was actually attempted and failed
+    // If all gardens were skipped (empty), show synced (nothing to push is fine)
     setSyncStatus(anyFailed ? 'error' : 'synced');
     setTimeout(() => setSyncStatus('idle'), 3000);
   }, [user, cloudPushHeld]);
