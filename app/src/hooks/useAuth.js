@@ -115,12 +115,13 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
       const cloudGardens = Array.from(cloudMap.values());
       if (cloudGardens.length === 0 && !hasLocalData) return; // nothing to do
 
+      const localDeviceId = localStorage.getItem('gm_device_id');
+
       if (hasLocalData) {
         // Local user gardens exist — diff against cloud
         const localIds = new Set(userGardens.map(g => g.garden_id));
-        const cloudIds = new Set(cloudGardens.map(c => c.garden_id));
 
-        const conflicts = [];
+        const conflicts = [];  // cross-device only — need user decision
         const toPush = [];
 
         for (const garden of userGardens) {
@@ -128,13 +129,24 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
           if (cloudMatch) {
             const cloudTime = new Date(cloudMatch.updated_at).getTime();
             const localTime = garden._savedAt ? new Date(garden._savedAt).getTime() : 0;
-            // Only conflict if cloud is newer AND we haven't already seen this cloud version
-            // _lastSeenCloudTime is stored locally after each conflict resolution
             const lastSeenKey = `gm_last_seen_cloud_${garden.garden_id}`;
             const lastSeenTime = parseInt(localStorage.getItem(lastSeenKey) || '0', 10);
+
             if (cloudTime > localTime && cloudTime > lastSeenTime) {
-              // Cloud is newer and we haven't seen this version yet → conflict prompt
-              conflicts.push({ local: garden, cloud: cloudMatch });
+              // Cloud is newer and unseen — check if it came from this same device
+              const sameDevice = cloudMatch.device_id && localDeviceId &&
+                                 cloudMatch.device_id === localDeviceId;
+
+              if (sameDevice) {
+                // Same device — cloud is just a newer save from this session/tab.
+                // Auto-accept silently: stamp as seen, queue local push to bring cloud up to date.
+                console.log('[Auth] Same-device cloud newer — auto-accepting silently:', garden.name);
+                localStorage.setItem(lastSeenKey, String(cloudTime));
+                toPush.push(garden); // push local (may be same or slightly different — safe)
+              } else {
+                // Different device — user should decide
+                conflicts.push({ local: garden, cloud: cloudMatch });
+              }
             } else {
               toPush.push(garden); // local is same age or newer, or already seen → safe to push
             }
@@ -150,7 +162,7 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
         }
 
         if (conflicts.length > 0) {
-          // Hold cloud push until user resolves conflicts
+          // Hold cloud push until user resolves cross-device conflicts
           setCloudPushHeld(true);
           setConflictGardens(conflicts);
           setShowConflictPrompt(true);
@@ -164,15 +176,40 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
 
       } else if (cloudGardens.length > 0) {
         // Local is empty, cloud has gardens → restore prompt
-        // Filter out any we've already seen/dismissed
-        const unseenCloud = cloudGardens.filter(g => {
+        // Only show for gardens from a *different* device — same-device gardens auto-restore silently
+        const sameDeviceGardens = cloudGardens.filter(g =>
+          g.device_id && localDeviceId && g.device_id === localDeviceId
+        );
+        const otherDeviceGardens = cloudGardens.filter(g =>
+          !g.device_id || !localDeviceId || g.device_id !== localDeviceId
+        );
+
+        // Auto-restore same-device gardens silently (no prompt)
+        if (sameDeviceGardens.length > 0) {
+          console.log('[Auth] Auto-restoring same-device gardens silently:', sameDeviceGardens.map(g => g.garden_name));
+          const local = getLocalGardens() || [];
+          const dream = local.filter(g => g._isDreamGarden);
+          const restored = sameDeviceGardens.map(cg => ({
+            ...(cg.garden_json || cg),
+            _deviceId: cg.device_id,
+            _deviceLabel: cg.device_label,
+            _lastSynced: cg.updated_at,
+          }));
+          setLocalGardens([...dream, ...restored]);
+          sameDeviceGardens.forEach(g => {
+            localStorage.setItem(`gm_last_seen_cloud_${g.garden_id}`, String(new Date(g.updated_at).getTime()));
+          });
+        }
+
+        // Show restore prompt only for other-device gardens not yet seen/dismissed
+        const unseenOther = otherDeviceGardens.filter(g => {
           const lastSeenKey = `gm_last_seen_cloud_${g.garden_id}`;
           const lastSeen = parseInt(localStorage.getItem(lastSeenKey) || '0', 10);
           return new Date(g.updated_at).getTime() > lastSeen;
         });
-        if (unseenCloud.length > 0) {
+        if (unseenOther.length > 0) {
           setCloudPushHeld(true);
-          setCloudGardenData(unseenCloud);
+          setCloudGardenData(unseenOther);
           setShowRestorePrompt(true);
         }
       }
