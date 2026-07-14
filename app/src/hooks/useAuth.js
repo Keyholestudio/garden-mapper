@@ -109,11 +109,15 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
           if (cloudMatch) {
             const cloudTime = new Date(cloudMatch.updated_at).getTime();
             const localTime = garden._savedAt ? new Date(garden._savedAt).getTime() : 0;
-            if (cloudTime > localTime) {
-              // Cloud is newer → conflict prompt
+            // Only conflict if cloud is newer AND we haven't already seen this cloud version
+            // _lastSeenCloudTime is stored locally after each conflict resolution
+            const lastSeenKey = `gm_last_seen_cloud_${garden.garden_id}`;
+            const lastSeenTime = parseInt(localStorage.getItem(lastSeenKey) || '0', 10);
+            if (cloudTime > localTime && cloudTime > lastSeenTime) {
+              // Cloud is newer and we haven't seen this version yet → conflict prompt
               conflicts.push({ local: garden, cloud: cloudMatch });
             } else {
-              toPush.push(garden); // local is same age or newer → safe to push
+              toPush.push(garden); // local is same age or newer, or already seen → safe to push
             }
           } else {
             toPush.push(garden); // not in cloud yet → push
@@ -141,10 +145,17 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
 
       } else if (cloudGardens.length > 0) {
         // Local is empty, cloud has gardens → restore prompt
-        // Hold cloud push until resolved
-        setCloudPushHeld(true);
-        setCloudGardenData(cloudGardens);
-        setShowRestorePrompt(true);
+        // Filter out any we've already seen/dismissed
+        const unseenCloud = cloudGardens.filter(g => {
+          const lastSeenKey = `gm_last_seen_cloud_${g.garden_id}`;
+          const lastSeen = parseInt(localStorage.getItem(lastSeenKey) || '0', 10);
+          return new Date(g.updated_at).getTime() > lastSeen;
+        });
+        if (unseenCloud.length > 0) {
+          setCloudPushHeld(true);
+          setCloudGardenData(unseenCloud);
+          setShowRestorePrompt(true);
+        }
       }
     }
 
@@ -221,6 +232,12 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
       }
     }
 
+    // Stamp all processed gardens as seen so prompt doesn't repeat on refresh
+    (cloudGardenData || []).forEach(g => {
+      if (g.garden_id && g.updated_at) {
+        localStorage.setItem(`gm_last_seen_cloud_${g.garden_id}`, String(new Date(g.updated_at).getTime()));
+      }
+    });
     setShowRestorePrompt(false);
     setCloudGardenData(null);
     setCloudPushHeld(false);
@@ -235,6 +252,12 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
         return [...prev, ...newGhosts];
       });
     }
+    // Stamp dismissed gardens as seen
+    (cloudGardenData || []).forEach(g => {
+      if (g.garden_id && g.updated_at) {
+        localStorage.setItem(`gm_last_seen_cloud_${g.garden_id}`, String(new Date(g.updated_at).getTime()));
+      }
+    });
     setShowRestorePrompt(false);
     setCloudGardenData(null);
     setCloudPushHeld(false);
@@ -266,17 +289,22 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
       g.garden_id === conflictItem.local.garden_id ? cloudGarden : g
     );
     setLocalGardens(updated, targetIdx >= 0 ? targetIdx : 1);
-    _resolveConflict();
+    _resolveConflict(conflictItem);
   }, [getLocalGardens, setLocalGardens]);
 
   // Keep local version — just dismiss
-  const resolveConflictKeepLocal = useCallback(() => {
-    _resolveConflict();
+  const resolveConflictKeepLocal = useCallback((conflictItem) => {
+    _resolveConflict(conflictItem);
   }, []);
 
-  function _resolveConflict() {
+  function _resolveConflict(conflictItem) {
+    // Stamp the cloud updated_at so we don't re-prompt on next sign-in
+    if (conflictItem?.cloud?.garden_id && conflictItem?.cloud?.updated_at) {
+      const key = `gm_last_seen_cloud_${conflictItem.cloud.garden_id}`;
+      localStorage.setItem(key, String(new Date(conflictItem.cloud.updated_at).getTime()));
+    }
     setConflictGardens(prev => {
-      const remaining = prev.slice(1); // resolve one at a time
+      const remaining = prev.slice(1);
       if (remaining.length === 0) {
         setShowConflictPrompt(false);
         setCloudPushHeld(false);

@@ -1,17 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './RestorePrompt.css';
-
-/**
- * RestorePrompt — two modes:
- *
- * mode="restore"  — New device: cloud has gardens not in local
- *   Props: gardens (array of cloud rows), onRestore(garden), onDismiss
- *   isSubscribed: bool — controls whether Load buttons are gated
- *   localUserGardenCount: number — how many non-Dream local gardens exist
- *
- * mode="conflict" — Same garden, cloud is newer than local
- *   Props: conflict { local, cloud }, onLoadCloud(conflict), onKeepLocal
- */
 
 const MAX_FREE_GARDENS = 1;
 
@@ -24,33 +12,58 @@ function formatTime(iso) {
 
 // ── Restore prompt — new device flow ─────────────────────────────────────────
 function RestoreMode({ gardens, onRestore, onDismiss, isSubscribed = false, localUserGardenCount = 0 }) {
+  const [loadedIds, setLoadedIds] = useState(new Set());
+  const [selectedId, setSelectedId] = useState(null);
+
+  const totalLoaded = loadedIds.size;
+  const slotsTotal = isSubscribed ? Infinity : MAX_FREE_GARDENS;
+  const slotsUsed = localUserGardenCount + totalLoaded;
+  const slotsRemaining = isSubscribed ? Infinity : Math.max(0, slotsTotal - slotsUsed);
+
+  const slotLabel = isSubscribed
+    ? 'Unlimited gardens with your subscription'
+    : `Select ${slotsTotal} garden for Free`;
+
+  const handleLoad = (g) => {
+    if (loadedIds.has(g.garden_id)) return;
+    if (slotsRemaining <= 0) return;
+    onRestore([g]);
+    setLoadedIds(prev => new Set([...prev, g.garden_id]));
+    setSelectedId(g.garden_id);
+  };
+
+  const anyLoaded = loadedIds.size > 0;
+
   return (
     <div className="restore-overlay">
       <div className="restore-card restore-card--list">
         <div className="restore-icon">🌱</div>
         <h2>Gardens found on another device</h2>
-        <p className="restore-subtitle">Choose which gardens to load, or start fresh.</p>
+        <p className="restore-subtitle">{slotLabel}</p>
 
         <div className="restore-garden-list">
-          {gardens.map((g, i) => {
+          {gardens.map((g) => {
             const name = g?.garden_name || g?.garden_json?.name || 'Garden';
             const device = g?.device_label || 'Another device';
             const time = formatTime(g?.updated_at);
-            // Free tier: only allow loading if slot available
-            const slotsUsed = localUserGardenCount + i; // each load above takes a slot
-            const canLoad = isSubscribed || slotsUsed < MAX_FREE_GARDENS;
+            const isLoaded = loadedIds.has(g.garden_id);
+            const isSelected = selectedId === g.garden_id;
+            const canLoad = !isLoaded && slotsRemaining > 0;
 
             return (
-              <div key={g.garden_id} className="restore-garden-row">
+              <div
+                key={g.garden_id}
+                className={`restore-garden-row${isSelected ? ' restore-garden-row--selected' : ''}${isLoaded ? ' restore-garden-row--loaded' : ''}`}
+                onClick={() => !isLoaded && setSelectedId(g.garden_id)}
+              >
                 <div className="restore-garden-row-info">
                   <span className="restore-garden-row-name">{name}</span>
                   <span className="restore-garden-row-meta">{device}{time ? ` · ${time}` : ''}</span>
                 </div>
-                {canLoad ? (
-                  <button
-                    className="btn-restore-load"
-                    onClick={() => onRestore([g])}
-                  >
+                {isLoaded ? (
+                  <span className="restore-garden-row-loaded">✓ Loaded</span>
+                ) : canLoad ? (
+                  <button className="btn-restore-load" onClick={(e) => { e.stopPropagation(); handleLoad(g); }}>
                     Load
                   </button>
                 ) : (
@@ -62,7 +75,7 @@ function RestoreMode({ gardens, onRestore, onDismiss, isSubscribed = false, loca
         </div>
 
         <button className="btn-restore-secondary restore-dismiss" onClick={onDismiss}>
-          Start fresh
+          {anyLoaded ? 'Continue' : 'Start fresh'}
         </button>
       </div>
     </div>
@@ -81,9 +94,10 @@ function ConflictMode({ conflict, onLoadCloud, onKeepLocal }) {
   return (
     <div className="restore-overlay">
       <div className="restore-card restore-card--conflict">
-        <div className="restore-icon">⚠️</div>
+        <div className="restore-icon">🌱</div>
         <h2>Garden updated on another device</h2>
         <p className="restore-conflict-name">"{name}"</p>
+        <p className="restore-conflict-subtitle">Select the garden version you would like to use</p>
         <div className="restore-versions">
           <div className="restore-version restore-version--cloud">
             <span className="restore-version-label">Cloud version</span>
@@ -97,12 +111,11 @@ function ConflictMode({ conflict, onLoadCloud, onKeepLocal }) {
             <span className="restore-version-time">{localTime}</span>
           </div>
         </div>
-        <p className="restore-note">A backup of your local version will be saved automatically.</p>
         <div className="restore-actions">
           <button className="btn-restore-primary" onClick={() => onLoadCloud?.(conflict)}>
             Load cloud version
           </button>
-          <button className="btn-restore-secondary" onClick={onKeepLocal}>
+          <button className="btn-restore-secondary" onClick={() => onKeepLocal?.(conflict)}>
             Keep local version
           </button>
         </div>
@@ -114,13 +127,11 @@ function ConflictMode({ conflict, onLoadCloud, onKeepLocal }) {
 // ── Main export ───────────────────────────────────────────────────────────────
 export default function RestorePrompt({
   mode = 'restore',
-  // Restore mode
   gardens,
   onRestore,
   onDismiss,
   isSubscribed,
   localUserGardenCount,
-  // Conflict mode
   conflict,
   onLoadCloud,
   onKeepLocal,
