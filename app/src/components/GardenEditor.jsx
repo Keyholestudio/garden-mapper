@@ -100,7 +100,7 @@ export default function GardenEditor() {
     showRestorePrompt, cloudGardenData, restoreFromCloud, dismissRestore,
     showConflictPrompt, conflictGardens, resolveConflictLoadCloud, resolveConflictKeepLocal,
     ghostGardens, loadGhostGarden,
-    syncToCloud, signInWithGoogle, signOut,
+    syncToCloud, syncStatus, signInWithGoogle, signOut,
   } = useAuth({
     getLocalGardens: () => readGardens(),
     setLocalGardens: (gardens) => {
@@ -1253,6 +1253,7 @@ export default function GardenEditor() {
         user={user}
         onSignIn={signInWithGoogle}
         onSignOut={signOut}
+        syncStatus={syncStatus}
       />
 
       {/* Clear All confirm modal */}

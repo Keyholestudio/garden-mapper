@@ -38,6 +38,9 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
   // ── Cloud push hold — don't push until restore/conflict resolved ──
   const [cloudPushHeld, setCloudPushHeld] = useState(false);
 
+  // ── Sync status indicator: 'idle' | 'syncing' | 'synced' | 'error' ──
+  const [syncStatus, setSyncStatus] = useState('idle');
+
   // ── Listen for auth state changes ───────────────────────────────
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -223,10 +226,16 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
   const syncToCloud = useCallback(async (gardens) => {
     if (!user || cloudPushHeld) return;
     const userGardens = (gardens || []).filter(g => !g._isDreamGarden && g.garden_id);
+    if (userGardens.length === 0) return;
+
+    setSyncStatus('syncing');
+    let anyFailed = false;
+
     for (const garden of userGardens) {
+      console.log('[Sync] Pushing garden:', garden.name, garden.garden_id, 'user:', user.id);
       const ok = await pushCloudGarden(user.id, garden);
       if (ok) {
-        // Mark _lastSynced on the local copy so conflict detection works
+        console.log('[Sync] ✓ Push succeeded:', garden.name);
         try {
           const raw = JSON.parse(localStorage.getItem('gardenData') || '[]');
           const idx = raw.findIndex(g => g.garden_id === garden.garden_id);
@@ -235,8 +244,14 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
             localStorage.setItem('gardenData', JSON.stringify(raw));
           }
         } catch (e) { console.warn('[Auth] _lastSynced update failed:', e); }
+      } else {
+        console.error('[Sync] ✗ Push failed:', garden.name);
+        anyFailed = true;
       }
     }
+
+    setSyncStatus(anyFailed ? 'error' : 'synced');
+    setTimeout(() => setSyncStatus('idle'), 3000);
   }, [user, cloudPushHeld]);
 
   // ── Google Sign-In ──────────────────────────────────────────────
@@ -331,6 +346,7 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
     loadGhostGarden,
     // Sync
     syncToCloud,
+    syncStatus,
     signInWithGoogle,
     signOut,
   };

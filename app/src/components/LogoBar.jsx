@@ -13,6 +13,13 @@ const SEASON_BADGE_CLASS = ['spring', 'summer', 'fall', 'winter']
 // Cell size display — matches v8 scale-display logic
 const CELL_IN = 3  // 3 inches per cell at base zoom
 
+const SYNC_ICONS = {
+  idle:    null,
+  syncing: { icon: '☁️', label: 'Syncing…',  color: '#888' },
+  synced:  { icon: '✓',  label: 'Synced',    color: '#4CAF50' },
+  error:   { icon: '⚠️', label: 'Sync failed', color: '#E53935' },
+};
+
 export default function LogoBar({
   gardenName, gardenW, gardenH, gardenUnit,
   currentSeason, onSeasonChange,
@@ -23,6 +30,7 @@ export default function LogoBar({
   user,
   onSignIn,
   onSignOut,
+  syncStatus = 'idle',
 }) {
   // Hooks must always be called at the top level — never inside conditionals
   const [menuOpen, setMenuOpen] = useState(false)
@@ -49,6 +57,14 @@ export default function LogoBar({
 
         {/* Right group: Save + Profile */}
         <div className="logo-mobile-right">
+          {user && syncStatus !== 'idle' && SYNC_ICONS[syncStatus] && (
+            <span
+              className={`sync-pill sync-pill--${syncStatus}`}
+              title={SYNC_ICONS[syncStatus].label}
+            >
+              {SYNC_ICONS[syncStatus].icon}
+            </span>
+          )}
           <button
             className={`logo-mobile-save${saveFlash ? ' flash' : ''}`}
             onClick={onSave}
@@ -172,6 +188,14 @@ export default function LogoBar({
           <span className="garden-dims">{gardenW}×{gardenH} {gardenUnit}</span>
         </div>
 
+        {user && syncStatus !== 'idle' && SYNC_ICONS[syncStatus] && (
+          <span
+            className={`sync-pill sync-pill--${syncStatus}`}
+            title={SYNC_ICONS[syncStatus].label}
+          >
+            {SYNC_ICONS[syncStatus].icon} {SYNC_ICONS[syncStatus].label}
+          </span>
+        )}
         <button
           className={`logo-btn${saveFlash ? ' flash' : ''}`}
           onClick={onSave}
