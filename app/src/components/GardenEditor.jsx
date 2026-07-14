@@ -110,7 +110,17 @@ export default function GardenEditor() {
     setLocalGardens: (gardens, loadIdx = 0) => {
       localStorage.setItem('gardenData', JSON.stringify(gardens))
       // Delegate to the ref — set after all handlers are defined below
-      loadGardenFromCloudRef.current?.(loadIdx)
+      // If stage isn't ready yet, retry every 200ms until it is (max 5s)
+      const tryLoad = (attemptsLeft) => {
+        if (loadGardenFromCloudRef.current && stageReadyRef.current) {
+          loadGardenFromCloudRef.current(loadIdx)
+        } else if (attemptsLeft > 0) {
+          setTimeout(() => tryLoad(attemptsLeft - 1), 200)
+        } else {
+          console.warn('[Editor] setLocalGardens: stage never became ready')
+        }
+      }
+      tryLoad(25) // 25 * 200ms = 5s max wait
     },
   })
 
