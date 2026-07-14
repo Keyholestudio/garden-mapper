@@ -171,8 +171,11 @@ _Separate session. Do not start until Phases 1–3 are confirmed working._
 - SDK key (sandbox): `test_YCKSQRAwYqZVvgVNVCijNPLzEbS`
 - SDK: `@revenuecat/purchases-capacitor` v13.2.2 — installed
 - Hook: `app/src/hooks/useRevenueCat.js`
-- Entitlement ID to create in dashboard: `pro`
-- **TODO before production:** Replace sandbox key with live key, create Entitlement `pro`, create Offerings in dashboard
+- Entitlement: `Garden Mapper Pro` (REST ID: `centl71cfe4f3a4`)
+- Offering: `default` (ID: `ofrngcf29b202b5`)
+- Package — lifetime: `prod3faa1b12bd` ($14.99 one-time)
+- Package — yearly: `prod76de34c176` ($9.99/yr)
+- **TODO before production:** Confirm email, replace sandbox key with live key, connect Google Play + App Store in RC dashboard
 
 **4b — Google Play Billing**
 - Required for Android in-app purchases (can't use Stripe inside Play Store app)

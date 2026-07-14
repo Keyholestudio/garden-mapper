@@ -16,11 +16,19 @@ import { Purchases, LOG_LEVEL } from '@revenuecat/purchases-capacitor';
 const RC_API_KEY_IOS     = 'test_YCKSQRAwYqZVvgVNVCijNPLzEbS';
 const RC_API_KEY_ANDROID = 'test_YCKSQRAwYqZVvgVNVCijNPLzEbS';
 
-// Entitlement identifier — set this in RevenueCat dashboard under Entitlements
-// https://app.revenuecat.com/projects/a8a11c30/entitlements
-const ENTITLEMENT_ID = 'pro';
+// RevenueCat identifiers — must match dashboard exactly
+// Entitlement: "Garden Mapper Pro" | REST API ID: centl71cfe4f3a4
+const ENTITLEMENT_ID = 'Garden Mapper Pro';
+// Offering: "default" | ID: ofrngcf29b202b5
+const OFFERING_ID = 'default';
+// Packages
+const PACKAGE_LIFETIME = 'prod3faa1b12bd';  // one-time $14.99
+const PACKAGE_YEARLY   = 'prod76de34c176';  // annual $9.99/yr
 
 const isNative = Capacitor.isNativePlatform();
+
+// Export for use in paywall UI components
+export { ENTITLEMENT_ID, OFFERING_ID, PACKAGE_LIFETIME, PACKAGE_YEARLY };
 
 export function useRevenueCat(userId) {
   const [isSubscribed, setIsSubscribed] = useState(false);
