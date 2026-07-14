@@ -228,14 +228,40 @@ _Archived workflows (1, 3, pack list): `memory/deep/garden-planner/workflows-arc
 
 > Trigger phrase: **"update the Dream Garden to the website"**
 
-1. Open browser → `localhost:5200`
-2. Eval: `JSON.parse(localStorage.getItem('gardenData'))[0]`
-3. Validate: `_isDreamGarden: true` present
-4. Bump `_dreamVersion` + 1
-5. Overwrite `app/src/data/dreamGarden.json`
-6. `git add -A && git commit -m "Dream Garden: v[N] — [desc]" && git push`
-7. Verify raw GitHub URL serves new version
-8. Confirm to Rob — live in ~15s
+### What the Dream Garden actually is
+- **JSON** (`dreamGarden.json`) stores only plant positions + IDs. It does NOT store the logo or sandbox.
+- **Logo + sandbox zone** are rendered by `GardenCanvas.jsx` code whenever `_isDreamGarden: true` — they are always current with the code, not the data.
+- **Local:5200 dev mode:** sandbox shows as an orange dashed border (dev indicator only — not visible in production). Logo is dimmed to 50%. Drop restrictions are disabled so you can design freely anywhere on the canvas.
+
+### Pre-flight check
+- [ ] Brave Debug is open and connected (port 9222)
+- [ ] Dev server running at `localhost:5200`
+- [ ] Dream Garden is loaded (index 0, `_isDreamGarden: true`)
+- [ ] Design is saved (click Save in the app)
+
+### Steps
+1. Eval in browser at `localhost:5200`:
+   ```js
+   JSON.parse(localStorage.getItem('gardenData'))[0]
+   ```
+2. Validate: `_isDreamGarden: true` present
+3. Bump `_dreamVersion` + 1
+4. Overwrite `app/src/data/dreamGarden.json` with the new JSON
+5. `git add -A && git commit -m "Dream Garden: v[N] — [desc]" && git push`
+6. Verify GitHub raw URL serves new version (check `_dreamVersion` in the raw JSON)
+7. Confirm to Rob — web live in ~15s, Android auto-fetches on next launch
+
+### After the commit
+- Web: live in ~15s via Vercel auto-deploy
+- Android: fetches updated Dream Garden silently on next launch (no APK rebuild needed)
+- Local:5200: reset localStorage to pick up the new seed (Workflow 12 Step 3)
+
+### Note on the GardenCanvas dev changes (2026-07-14)
+`GardenCanvas.jsx` was updated so that on `localhost`:
+- Sandbox border is shown in orange (was hidden)
+- Logo is shown at 50% opacity (was hidden)
+- Drop restrictions outside sandbox are disabled (production only)
+This is intentional — do NOT revert before committing Dream Garden updates. The `isLocalDev` check is what gates this; production is unaffected.
 
 ---
 
