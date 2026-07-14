@@ -82,6 +82,7 @@ export default function GardenEditor() {
   const layersRef   = useRef({})
   const showGridRef = useRef(state.showGrid) // always-current ref for snap in dragmove closures
   const [stageReady, setStageReady] = useState(false)
+  const stageReadyRef = useRef(false) // ref so closures always see current value
   const [scaleLabel, setScaleLabel] = useState('1 cell = 3 in')
 
   // Phase 5: save/load state
@@ -106,13 +107,13 @@ export default function GardenEditor() {
     setLocalGardens: (gardens, loadIdx = 0) => {
       localStorage.setItem('gardenData', JSON.stringify(gardens))
       // Reload the current garden from the restored data
-      if (stageReady) {
+      if (stageReadyRef.current) {
         loadGarden({
           idx: loadIdx,
           stage: stageRef.current,
           layers: layersRef.current,
           state,
-          loadedImages,
+          loadedImages: loadedImagesRef.current,
           showGridRef,
           onSelectPlant: handleSelectPlant,
           onSelectStruct: handleSelectStruct,
@@ -130,6 +131,7 @@ export default function GardenEditor() {
 
   // ── Image loading ──
   const [loadedImages, setLoadedImages] = useState({})
+  const loadedImagesRef = useRef({}) // ref so setLocalGardens closure sees current images
   useEffect(() => {
     const result = {}
     Promise.all(PLANT_CATALOG.map(p => new Promise(res => {
@@ -137,7 +139,7 @@ export default function GardenEditor() {
       img.onload  = () => { result[p.key] = img; res() }
       img.onerror = () => res()
       img.src = p.src
-    }))).then(() => setLoadedImages({ ...result }))
+    }))).then(() => { loadedImagesRef.current = { ...result }; setLoadedImages({ ...result }) })
   }, [])
 
   // Load images for pack entries when a pack loads
@@ -562,6 +564,7 @@ export default function GardenEditor() {
     // Auto-save on any drag or resize completing — catches all shapes without per-shape wiring
     stage.on('dragend', () => triggerAutoSave())
     stage.on('transformend', () => triggerAutoSave())
+    stageReadyRef.current = true
     setStageReady(true)
   }
 
