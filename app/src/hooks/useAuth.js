@@ -65,9 +65,23 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
     if (!user) return;
 
     async function handleSignIn() {
-      const local = getLocalGardens();
+      // Dedup local gardens by garden_id — remove any duplicates introduced by prior restore bugs
+      const rawLocal = getLocalGardens() || [];
+      const seenIds = new Set();
+      const dedupedLocal = rawLocal.filter(g => {
+        if (!g.garden_id || isDreamGarden(g)) return true; // keep Dream Garden + id-less entries as-is
+        if (seenIds.has(g.garden_id)) return false; // drop duplicate
+        seenIds.add(g.garden_id);
+        return true;
+      });
+      if (dedupedLocal.length !== rawLocal.length) {
+        console.log('[Auth] Deduped local gardens:', rawLocal.length, '->', dedupedLocal.length);
+        try { localStorage.setItem('gardenData', JSON.stringify(dedupedLocal)); } catch(e) {}
+      }
+
+      const local = dedupedLocal;
       // Exclude Dream Garden from user data check — it's always present and not user content
-      const userGardens = (local || []).filter(g => !isDreamGarden(g));
+      const userGardens = local.filter(g => !isDreamGarden(g));
       const hasLocalData = userGardens.length > 0;
 
       const cloudGardens = await fetchCloudGardens(user.id);
@@ -142,11 +156,17 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
         _deviceLabel: cg.device_label,
         _lastSynced: cg.updated_at,
       }));
-      // Prepend to existing local (after Dream Garden)
+      // Merge into local — replace matching garden_id, prepend new ones (after Dream Garden)
       const local = getLocalGardens() || [];
       const dream = local.filter(g => g._isDreamGarden);
       const existing = local.filter(g => !g._isDreamGarden);
-      setLocalGardens([...dream, ...restored, ...existing], dream.length > 0 ? 1 : 0);
+      const existingIds = new Set(existing.map(g => g.garden_id));
+      const brandNew = restored.filter(g => !existingIds.has(g.garden_id));
+      const merged = existing.map(g => {
+        const match = restored.find(r => r.garden_id === g.garden_id);
+        return match || g;
+      });
+      setLocalGardens([...dream, ...brandNew, ...merged], dream.length > 0 ? 1 : 0);
     }
     setShowRestorePrompt(false);
     setCloudGardenData(null);
