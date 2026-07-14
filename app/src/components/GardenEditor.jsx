@@ -103,7 +103,7 @@ export default function GardenEditor() {
     user, debugMsg,
     showRestorePrompt, cloudGardenData, restoreFromCloud, dismissRestore,
     showConflictPrompt, conflictGardens, resolveConflictLoadCloud, resolveConflictKeepLocal,
-    ghostGardens, loadGhostGarden,
+    ghostGardens, loadGhostGarden, deleteGhostGarden,
     syncToCloud, syncStatus, signInWithGoogle, signOut,
   } = useAuth({
     getLocalGardens: () => readGardens(),
@@ -1327,6 +1327,7 @@ export default function GardenEditor() {
         onClose={() => setSwitcherOpen(false)}
         ghostGardens={ghostGardens}
         onLoadGhost={loadGhostGarden}
+        onDeleteGhost={deleteGhostGarden}
         isSubscribed={false}
       />
 

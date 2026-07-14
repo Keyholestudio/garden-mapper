@@ -14,10 +14,12 @@ export default function GardenSwitcher({
   // Cloud sync props
   ghostGardens = [],        // cloud-only gardens (array of cloud rows)
   onLoadGhost,              // (ghostItem) => void — load a ghost into local
+  onDeleteGhost,            // (ghostItem) => void — soft-delete a ghost from cloud
   isSubscribed = false,     // subscription status
 }) {
   const [gardens, setGardens] = useState([])
   const [confirmDeleteIdx, setConfirmDeleteIdx] = useState(null)
+  const [confirmDeleteGhost, setConfirmDeleteGhost] = useState(null) // ghost item pending delete confirm
   const [expandedBackups, setExpandedBackups] = useState({}) // { [gardenIndex]: bool }
   const [backupSlots, setBackupSlots] = useState({})         // { [gardenIndex]: slot[] }
 
@@ -142,6 +144,11 @@ export default function GardenSwitcher({
                     >
                       {cta.label}
                     </button>
+                    <button
+                      className="btn-delete btn-delete--ghost"
+                      onClick={() => setConfirmDeleteGhost(g)}
+                      title="Delete from cloud"
+                    >🗑</button>
                   </div>
                 )
               })}
@@ -172,7 +179,7 @@ export default function GardenSwitcher({
         </div>
       </div>
 
-      {/* Delete confirm modal */}
+      {/* Delete confirm modal — local garden */}
       {confirmDeleteIdx !== null && (
         <div className="confirm-overlay" onClick={e => e.stopPropagation()}>
           <div className="confirm-box">
@@ -180,6 +187,22 @@ export default function GardenSwitcher({
             <div className="confirm-actions">
               <button className="btn-cancel" onClick={() => setConfirmDeleteIdx(null)}>Cancel</button>
               <button className="btn-confirm-delete" onClick={confirmDelete}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete confirm modal — ghost (cloud) garden */}
+      {confirmDeleteGhost !== null && (
+        <div className="confirm-overlay" onClick={e => e.stopPropagation()}>
+          <div className="confirm-box">
+            <p>Delete <strong>{confirmDeleteGhost.garden_name || 'this garden'}</strong> from the cloud?<br/>It will be removed from all devices.</p>
+            <div className="confirm-actions">
+              <button className="btn-cancel" onClick={() => setConfirmDeleteGhost(null)}>Cancel</button>
+              <button className="btn-confirm-delete" onClick={() => {
+                onDeleteGhost?.(confirmDeleteGhost);
+                setConfirmDeleteGhost(null);
+              }}>Delete</button>
             </div>
           </div>
         </div>

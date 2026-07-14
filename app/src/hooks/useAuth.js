@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase, fetchCloudGardens, pushCloudGarden } from '../supabase';
+import { supabase, fetchCloudGardens, pushCloudGarden, softDeleteCloudGarden } from '../supabase';
 import { Browser } from '@capacitor/browser';
 import { App } from '@capacitor/app';
 
@@ -83,7 +83,23 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
       const userGardens = local.filter(g => !isDreamGarden(g));
       const hasLocalData = userGardens.length > 0;
 
-      const rawCloudGardens = await fetchCloudGardens(user.id);
+      // Auto-purge blank cloud gardens (no plants, no structs) — leftovers from dev sessions
+      const allCloudGardens = await fetchCloudGardens(user.id);
+      for (const cg of allCloudGardens) {
+        const json = cg.garden_json || {};
+        const hasPlants = Array.isArray(json.plants) && json.plants.length > 0;
+        const hasStructs = Array.isArray(json.structs) && json.structs.length > 0;
+        if (!hasPlants && !hasStructs) {
+          console.log('[Auth] Auto-purging blank cloud garden:', cg.garden_name, cg.garden_id);
+          await softDeleteCloudGarden(cg.garden_id);
+        }
+      }
+      const rawCloudGardens = allCloudGardens.filter(cg => {
+        const json = cg.garden_json || {};
+        const hasPlants = Array.isArray(json.plants) && json.plants.length > 0;
+        const hasStructs = Array.isArray(json.structs) && json.structs.length > 0;
+        return hasPlants || hasStructs;
+      });
       // Deduplicate cloud gardens by garden_id — keep most recent per id
       const cloudMap = new Map();
       for (const g of rawCloudGardens) {
@@ -311,6 +327,16 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
     });
   }
 
+  // ── Delete a ghost garden (from garden switcher) ───────────────────
+  const deleteGhostGarden = useCallback(async (ghostItem) => {
+    const ok = await softDeleteCloudGarden(ghostItem.garden_id);
+    if (ok) {
+      setGhostGardens(prev => prev.filter(g => g.garden_id !== ghostItem.garden_id));
+    } else {
+      console.error('[Auth] Failed to delete ghost garden:', ghostItem.garden_id);
+    }
+  }, []);
+
   // ── Load a ghost garden (from garden switcher) ────────────────────
   const loadGhostGarden = useCallback((ghostItem) => {
     const cloudGarden = {
@@ -449,6 +475,7 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
     // Ghost gardens (cloud-only, in switcher)
     ghostGardens,
     loadGhostGarden,
+    deleteGhostGarden,
     // Sync
     syncToCloud,
     syncStatus,
