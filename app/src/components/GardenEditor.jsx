@@ -1028,9 +1028,13 @@ export default function GardenEditor() {
 
   // ── Auto-load on startup: runs after all handlers are defined so closures are valid ──
   // Mirrors v8: on first load, reads LS and restores last garden. Skips setup for returning users.
+  // Guard ref: ensures startup load fires exactly once, even if loadedImagesCount changes in batches.
+  const hasAutoLoaded = useRef(false)
   const loadedImagesCount = Object.keys(loadedImages).length
   useEffect(() => {
     if (!stageReady || loadedImagesCount === 0) return
+    if (hasAutoLoaded.current) return  // already fired — ignore subsequent loadedImages batch updates
+    hasAutoLoaded.current = true
     seedDreamGarden()  // no-op if already seeded; seeds [dreamGarden, blankGarden] on first run
     const gardens = readGardens()
     if (gardens.length === 0) return  // still empty after seed — show setup overlay (shouldn't happen)
