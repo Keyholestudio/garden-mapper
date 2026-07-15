@@ -83,19 +83,22 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
       const userGardens = local.filter(g => !isDreamGarden(g));
       const hasLocalData = userGardens.length > 0;
 
-      // Auto-purge blank cloud gardens (no plants, no structs) — leftovers from dev sessions
+      // Auto-purge truly blank cloud gardens — only if no plants, no structs, AND default name.
+      // This targets dev-session leftovers, not real user gardens that happen to be empty.
       const allCloudGardens = await fetchCloudGardens(user.id);
       console.log('[Auth] Cloud gardens fetched:', allCloudGardens.length);
+      const DEFAULT_NAMES = new Set(['my garden', 'new garden', 'garden']);
       const purgeResults = await Promise.all(allCloudGardens.map(async (cg) => {
         const json = cg.garden_json || {};
-        // Check all possible plant/struct storage keys (defensive — early schema used different names)
         const plantCount = Array.isArray(json.plants) ? json.plants.length :
                            Array.isArray(json.stickers) ? json.stickers.length : 0;
         const structCount = Array.isArray(json.structs) ? json.structs.length :
                             Array.isArray(json.structures) ? json.structures.length : 0;
-        const isEmpty = plantCount === 0 && structCount === 0;
-        console.log('[Auth] Cloud garden:', cg.garden_name, '| plants:', plantCount, 'structs:', structCount, 'empty:', isEmpty, '| id:', cg.garden_id);
-        if (isEmpty) {
+        const nameNorm = (cg.garden_name || '').trim().toLowerCase();
+        // Only purge if: no content AND generic/default name — never purge named user gardens
+        const isPurgeable = plantCount === 0 && structCount === 0 && DEFAULT_NAMES.has(nameNorm);
+        console.log('[Auth] Cloud garden:', cg.garden_name, '| plants:', plantCount, 'structs:', structCount, 'purgeable:', isPurgeable);
+        if (isPurgeable) {
           const ok = await softDeleteCloudGarden(cg.garden_id);
           console.log('[Auth] Auto-purge', ok ? 'SUCCESS' : 'FAILED', ':', cg.garden_name);
           return ok ? cg.garden_id : null;
@@ -207,6 +210,7 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
           const lastSeen = parseInt(localStorage.getItem(lastSeenKey) || '0', 10);
           return new Date(g.updated_at).getTime() > lastSeen;
         });
+        console.log('[Auth] unseenOther gardens for restore prompt:', unseenOther.length, unseenOther.map(g => g.garden_name));
         if (unseenOther.length > 0) {
           setCloudPushHeld(true);
           setCloudGardenData(unseenOther);
