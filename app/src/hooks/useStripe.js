@@ -121,11 +121,16 @@ export function useStripe(userId) {
         throw new Error(fnError?.message || 'Failed to create checkout session');
       }
 
-      const stripe = await getStripe();
-      if (!stripe) throw new Error('Stripe failed to load');
-
-      const { error: redirectError } = await stripe.redirectToCheckout({ sessionId: data.sessionId });
-      if (redirectError) throw redirectError;
+      // Use the checkout URL returned by Stripe directly
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        // Fallback: use stripe.js redirectToCheckout
+        const stripe = await getStripe();
+        if (!stripe) throw new Error('Stripe failed to load');
+        const { error: redirectError } = await stripe.redirectToCheckout({ sessionId: data.sessionId });
+        if (redirectError) throw redirectError;
+      }
 
     } catch (e) {
       console.error('[Stripe] openCheckout error:', e);
