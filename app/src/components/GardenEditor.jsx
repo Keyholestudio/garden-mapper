@@ -15,6 +15,8 @@ import { addPlant }        from '../utils/plantUtils'
 import { insertPointNearestSegment } from '../hooks/useSelection'
 import { saveGarden, loadGarden, createNewGarden, readGardens, readLastGardenIndex, writeLastGardenIndex } from '../hooks/useSaveLoad'
 import { useAuth } from '../hooks/useAuth'
+import { useStripe } from '../hooks/useStripe'
+import SubscribeModal from './SubscribeModal'
 import RestorePrompt from './RestorePrompt'
 import { seedDreamGarden, fetchDreamGardenUpdate } from '../hooks/useDreamGarden'
 import { addRectStruct, isFreeMode, applyColourOrTexture, tryMergeRects } from '../utils/drawUtils'
@@ -124,6 +126,10 @@ export default function GardenEditor() {
       tryLoad(25) // 25 * 200ms = 5s max wait
     },
   })
+
+  // ── Stripe web billing ──────────────────────────────────────────
+  const { isSubscribed, openCheckout, checkoutLoading, error: stripeError } = useStripe(user?.id)
+  const [subscribeModalOpen, setSubscribeModalOpen] = useState(false)
 
   // ── Image loading ──
   const [loadedImages, setLoadedImages] = useState({})
@@ -1202,13 +1208,20 @@ export default function GardenEditor() {
 
   return (
     <div className={`editor-layout bp-${breakpoint}`}>
+      <SubscribeModal
+        isOpen={subscribeModalOpen}
+        onClose={() => setSubscribeModalOpen(false)}
+        onSubscribe={(plan) => { setSubscribeModalOpen(false); openCheckout(plan) }}
+        loading={checkoutLoading}
+        error={stripeError}
+      />
       {showRestorePrompt && cloudGardenData && (
         <RestorePrompt
           mode="restore"
           gardens={cloudGardenData}
           onRestore={restoreFromCloud}
           onDismiss={dismissRestore}
-          isSubscribed={false} // TODO: wire useRevenueCat().isSubscribed — see PROJECT.md
+          isSubscribed={isSubscribed}
           localUserGardenCount={0}
         />
       )}
@@ -1351,7 +1364,8 @@ export default function GardenEditor() {
           }, 50)
         }}
         onDeleteGhost={deleteGhostGarden}
-        isSubscribed={false} // TODO: wire useRevenueCat().isSubscribed — see PROJECT.md
+        isSubscribed={isSubscribed}
+        onSubscribe={() => setSubscribeModalOpen(true)}
       />
 
       <div className="editor-body">

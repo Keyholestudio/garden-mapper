@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-07-16 (session 7 — sync bug fixes, UX polish, Android store prep)_
+_Last updated: 2026-07-16 (session 8 — UX fixes, restore bugs, Dream Garden workflow)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -28,10 +28,18 @@ cd projects/garden-planner/app && npm run dev
 - **Garden Organizer doc:** `1F3mA5UZw1qo2wxd3pqMuSvyph3L4biChiJ18kbhRf5Q`
 
 ## Dream Garden Update Workflow
-1. Design at localhost:5200
-2. Say **"update the Dream Garden to the website"** — I pull JSON, validate, bump version, commit + push
+1. Design at localhost:5200 — full canvas access, save works, no sandbox restriction
+2. Say **"update the Dream Garden to the website"** — I pull JSON, validate, bump `_dreamVersion`, write to `src/data/dreamGarden.json`, commit + push
 3. Web live at https://app.gardenmapper.ca in ~15s (auto-deploy)
 4. Android: connect USB → double-click **Deploy Garden Mapper (Android)** shortcut on desktop
+
+**Overwrite protection (built in):** If local Dream Garden has more plants/structs than the repo version, `fetchDreamGardenUpdate()` skips the remote update automatically. Your edits are safe even if a deploy happens mid-session. Always say the trigger phrase to publish when ready.
+
+**Rules:**
+- localhost:5200 is the master — design here, publish after
+- Users see read-only Dream Garden (sandbox-restricted, no saves)
+- Never edit `dreamGarden.json` directly — always use the trigger phrase
+- After publishing: test on local:5200 AND mobile before calling done
 
 ---
 
@@ -95,6 +103,7 @@ cd projects/garden-planner/app && npm run dev
 ### 🔴 Immediate
 - **Maple Green + Red Leaf** — v1 stickers, need regen (watercolor style, no trunk). Resume when sticker limits reset.
 - **Remove debug banner** — still in `GardenEditor.jsx` + `useAuth.js`. Remove before release.
+- **Dream Garden resize** — Rob wants to resize canvas. Pull current JSON from local:5200, update w/h, re-lock dimensions. Do as part of next Dream Garden update trigger.
 
 ### 🟡 In Progress
 - **Plant catalog expansion** — full research complete for all 63 packs (~600 plants). See `research/PLANT-PACK-RESEARCH.md` for counts, `research/PLANT-STAGING.md` for schema rows ready to generate.

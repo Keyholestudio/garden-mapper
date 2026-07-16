@@ -1,0 +1,157 @@
+/* SubscribeModal.css */
+
+.subscribe-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 16px;
+}
+
+.subscribe-modal {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 28px 24px;
+  max-width: 380px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  text-align: center;
+}
+
+.subscribe-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #999;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+}
+.subscribe-modal-close:hover { color: #333; }
+
+.subscribe-modal-header {
+  margin-bottom: 20px;
+}
+.subscribe-modal-icon {
+  font-size: 36px;
+  display: block;
+  margin-bottom: 8px;
+}
+.subscribe-modal h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px;
+}
+.subscribe-modal-tagline {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+}
+
+.subscribe-modal-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+  text-align: left;
+}
+.subscribe-modal-features li {
+  font-size: 14px;
+  color: #444;
+  padding: 5px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+.subscribe-modal-features li:last-child { border-bottom: none; }
+
+.subscribe-modal-plans {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.subscribe-plan-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border: 2px solid #e5e5e5;
+  border-radius: 12px;
+  background: #fafafa;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  text-align: left;
+}
+.subscribe-plan-btn:hover {
+  border-color: #4caf6e;
+  background: #f4faf7;
+}
+.subscribe-plan-btn.selected {
+  border-color: #4caf6e;
+  background: #f0f9f4;
+}
+
+.plan-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.plan-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+.plan-badge {
+  font-size: 11px;
+  background: #4caf6e;
+  color: #fff;
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-weight: 600;
+}
+.plan-price {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+.plan-once {
+  font-size: 12px;
+  font-weight: 400;
+  color: #888;
+}
+
+.subscribe-modal-error {
+  color: #e05555;
+  font-size: 13px;
+  margin: 0 0 12px;
+}
+
+.subscribe-modal-cta {
+  width: 100%;
+  padding: 14px;
+  background: #4caf6e;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  margin-bottom: 10px;
+}
+.subscribe-modal-cta:hover:not(:disabled) { background: #3d9e5f; }
+.subscribe-modal-cta:disabled { opacity: 0.65; cursor: not-allowed; }
+
+.subscribe-modal-fine {
+  font-size: 11px;
+  color: #bbb;
+  margin: 0;
+}

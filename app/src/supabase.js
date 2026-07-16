@@ -134,6 +134,29 @@ export async function softDeleteCloudGarden(gardenId) {
   return true;
 }
 
+// ── Subscription status ──────────────────────────────────────────────────────────
+
+/**
+ * Fetch subscription flag for a user from user_subscriptions table.
+ * Returns true if user has an active Pro subscription, false otherwise.
+ */
+export async function fetchSubscriptionStatus(userId) {
+  if (!userId) return false;
+  const { data, error } = await supabase
+    .from('user_subscriptions')
+    .select('subscription_flag')
+    .eq('user_id', userId)
+    .single();
+  if (error) {
+    // PGRST116 = no row found — user hasn't subscribed yet, not a real error
+    if (error.code !== 'PGRST116') {
+      console.error('[Supabase] fetchSubscriptionStatus error:', error);
+    }
+    return false;
+  }
+  return data?.subscription_flag === true;
+}
+
 // ── Legacy compat (used nowhere new — remove after Session B) ─────────────────
 /** @deprecated Use fetchCloudGardens instead */
 export async function fetchCloudGarden(userId) {

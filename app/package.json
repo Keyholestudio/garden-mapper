@@ -21,6 +21,7 @@
     "@capacitor/core": "^8.4.0",
     "@revenuecat/purchases-capacitor": "^13.2.2",
     "@revenuecat/purchases-typescript-internal": "^18.21.1",
+    "@stripe/stripe-js": "^9.10.0",
     "@supabase/supabase-js": "^2.108.2",
     "jspdf": "^4.2.1",
     "konva": "^10.3.0",
