@@ -21,8 +21,8 @@ function RestoreMode({ gardens, onRestore, onDismiss, isSubscribed = false, loca
   const slotsRemaining = isSubscribed ? Infinity : Math.max(0, slotsTotal - slotsUsed);
 
   const slotLabel = isSubscribed
-    ? 'Unlimited gardens with your subscription'
-    : `Select ${slotsTotal} garden for Free`;
+    ? 'Garden Limit: None'
+    : 'Garden Limit: 1 · Subscribe for more';
 
   const handleLoad = (g) => {
     if (loadedIds.has(g.garden_id)) return;
