@@ -1040,7 +1040,7 @@ export default function GardenEditor() {
     if (!stageReady || loadedImagesCount === 0) return
     if (hasAutoLoaded.current) return  // already fired — ignore subsequent loadedImages batch updates
     hasAutoLoaded.current = true
-    seedDreamGarden()  // no-op if already seeded; seeds [dreamGarden, blankGarden] on first run
+    seedDreamGarden()  // no-op if already seeded; seeds only Dream Garden on first run (no blank garden — restore prompt handles cloud gardens)
     const gardens = readGardens()
     if (gardens.length === 0) return  // still empty after seed — show setup overlay (shouldn't happen)
     fetchDreamGardenUpdate()  // silent background fetch — updates dream garden if newer version available

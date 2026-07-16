@@ -65,10 +65,12 @@ export function seedDreamGarden() {
   const gardens = readGardens()
 
   if (gardens.length === 0) {
-    // Brand-new user: seed Dream Garden + blank My Garden
+    // Brand-new user: seed Dream Garden only.
+    // Do NOT seed a blank My Garden here — if the user has cloud gardens,
+    // the blank would make hasLocalData=true and block the restore prompt.
+    // GardenEditor handles the zero-user-gardens state (shows New Garden prompt).
     const dream = makeDreamGarden(dreamGardenFallback)
-    const blank = makeBlankGarden()
-    writeGardens([dream, blank])
+    writeGardens([dream])
     try { localStorage.setItem('gardenLastIndex', '0') } catch {}
     return
   }
