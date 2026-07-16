@@ -76,7 +76,7 @@ export function seedDreamGarden() {
   }
 
   // Helper: is this entry a dream garden (by flag OR by name fallback)
-  const isDream = (g) => !!(g?._isDreamGarden || g?.name === 'Dream Garden')
+  const isDream = (g) => !!(g?._isDreamGarden || g?.name === '🌸 Dream Garden' || g?.name === 'Dream Garden')
 
   // Remove any duplicate dream gardens (keep only first occurrence)
   const deduplicated = gardens.filter((g, i) => {

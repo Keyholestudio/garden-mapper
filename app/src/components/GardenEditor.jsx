@@ -445,8 +445,9 @@ export default function GardenEditor() {
     const entry = draggingPlantRef.current
     draggingPlantRef.current = null
     if (!entry) return
-    // Block drops outside sandbox when viewing Dream Garden
-    if (isDreamGarden && !isInSandbox(worldPos.x, worldPos.y)) return
+    // Block drops outside sandbox when viewing Dream Garden (bypass on localhost for editing)
+    const isLocalDev = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    if (isDreamGarden && !isLocalDev && !isInSandbox(worldPos.x, worldPos.y)) return
     const { plantLayer } = layersRef.current
     if (!plantLayer || !stageRef.current) return
     addRecent(entry, { defer: true })  // defer state update so re-render doesn't break drop
@@ -475,8 +476,9 @@ export default function GardenEditor() {
       if (suppressNextClearRef.current) { suppressNextClearRef.current = false; return }
       clearSelection(); return
     }
-    // Block placements outside sandbox when viewing Dream Garden
-    if (isDreamGarden && !isInSandbox(worldPos.x, worldPos.y)) {
+    // Block placements outside sandbox when viewing Dream Garden (bypass on localhost for editing)
+    const isLocalDev = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    if (isDreamGarden && !isLocalDev && !isInSandbox(worldPos.x, worldPos.y)) {
       pendingPlantRef.current = null
       return
     }
