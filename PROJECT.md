@@ -108,6 +108,7 @@ cd projects/garden-planner/app && npm run dev
 - **Pack architecture** — 63 pack files defined (WORKFLOWS.md). Create on demand as plants are added. Core migration deferred.
 
 ### 🔲 Deferred
+- **Wire `isSubscribed` from RevenueCat** — currently hardcoded `false` in GardenEditor.jsx (2 spots, marked TODO). When RevenueCat is live: import `useRevenueCat`, destructure `isSubscribed`, pass to `RestorePrompt` + `GardenSwitcher`. This controls: Load vs Subscribe buttons, garden limit label, ghost garden CTA, free tier cap in `restoreFromCloud`.
 - **Google Sign-In** — Supabase `unexpected_failure`, needs device + USB to debug Auth logs.
 - **Capacitor.js Android/iOS** — deferred until catalog expansion stable.
 - **App icons + splash screen** — Rob designing.

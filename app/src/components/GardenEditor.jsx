@@ -1206,7 +1206,7 @@ export default function GardenEditor() {
           gardens={cloudGardenData}
           onRestore={restoreFromCloud}
           onDismiss={dismissRestore}
-          isSubscribed={false}
+          isSubscribed={false} {/* TODO: wire useRevenueCat().isSubscribed here — controls Load vs Subscribe buttons + garden limit label */}
           localUserGardenCount={0}
         />
       )}
@@ -1341,7 +1341,7 @@ export default function GardenEditor() {
         ghostGardens={ghostGardens}
         onLoadGhost={loadGhostGarden}
         onDeleteGhost={deleteGhostGarden}
-        isSubscribed={false}
+        isSubscribed={false} {/* TODO: wire useRevenueCat().isSubscribed here — controls ghost Load vs Subscribe CTA */}
       />
 
       <div className="editor-body">
