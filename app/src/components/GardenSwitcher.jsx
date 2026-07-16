@@ -16,6 +16,7 @@ export default function GardenSwitcher({
   onLoadGhost,              // (ghostItem) => void — load a ghost into local
   onDeleteGhost,            // (ghostItem) => void — soft-delete a ghost from cloud
   isSubscribed = false,     // subscription status
+  onSubscribe,              // () => void — open the subscribe modal
 }) {
   const [gardens, setGardens] = useState([])
   const [confirmDeleteIdx, setConfirmDeleteIdx] = useState(null)
@@ -64,14 +65,11 @@ export default function GardenSwitcher({
   const userGardens = gardens.filter((g) => !isDream(g))
   const atLimit = userGardens.length >= MAX_USER_GARDENS
 
-  // Placeholder subscription URL — swap in real page when ready
-  const SUBSCRIBE_URL = '/subscribe'
-
   // Ghost CTA: recheck on every render based on current garden count
   const ghostCTA = (ghostItem) => {
     if (isSubscribed) return { label: 'Load', action: () => onLoadGhost?.(ghostItem), isUpsell: false };
     if (userGardens.length === 0) return { label: 'Load', action: () => onLoadGhost?.(ghostItem), isUpsell: false };
-    return { label: 'Subscribe to load', action: () => window.open(SUBSCRIBE_URL, '_blank'), isUpsell: true };
+    return { label: 'Subscribe to load', action: () => { onClose?.(); onSubscribe?.(); }, isUpsell: true };
   }
 
   const formatGhostTime = (iso) => {
@@ -158,9 +156,9 @@ export default function GardenSwitcher({
           {/* Unlock upsell — shown when no ghost gardens (keeps upsell always visible) */}
           {ghostGardens.length === 0 && (
             <a
-              href={SUBSCRIBE_URL}
+              href="#"
               className="switcher-unlock-row"
-              onClick={onClose}
+              onClick={(e) => { e.preventDefault(); onClose?.(); onSubscribe?.(); }}
             >
               <span className="switcher-unlock-icon">🔒</span>
               <span className="switcher-unlock-text">Unlock more gardens</span>
