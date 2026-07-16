@@ -1339,7 +1339,15 @@ export default function GardenEditor() {
         onNew={handleNewGarden}
         onClose={() => setSwitcherOpen(false)}
         ghostGardens={ghostGardens}
-        onLoadGhost={loadGhostGarden}
+        onLoadGhost={(ghostItem) => {
+          loadGhostGarden(ghostItem)
+          // After saving to local, find the new index and load it into the canvas
+          setTimeout(() => {
+            const gardens = readGardens()
+            const idx = gardens.findIndex(g => g.garden_id === (ghostItem.garden_json?.garden_id || ghostItem.garden_id))
+            if (idx !== -1) handleLoad(idx)
+          }, 50)
+        }}
         onDeleteGhost={deleteGhostGarden}
         isSubscribed={false} // TODO: wire useRevenueCat().isSubscribed — see PROJECT.md
       />
