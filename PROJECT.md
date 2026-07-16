@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-07-08 (session 6)_
+_Last updated: 2026-07-16 (session 7 — sync bug fixes, UX polish, Android store prep)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -110,6 +110,7 @@ cd projects/garden-planner/app && npm run dev
 ### 🔲 Deferred
 - **Wire `isSubscribed` from RevenueCat** — currently hardcoded `false` in GardenEditor.jsx (2 spots, marked TODO). When RevenueCat is live: import `useRevenueCat`, destructure `isSubscribed`, pass to `RestorePrompt` + `GardenSwitcher`. This controls: Load vs Subscribe buttons, garden limit label, ghost garden CTA, free tier cap in `restoreFromCloud`.
 - **Google Sign-In** — Supabase `unexpected_failure`, needs device + USB to debug Auth logs.
+- **Google Play Developer account** — ✅ complete (2026-07-16, $25 paid)
 - **Capacitor.js Android/iOS** — deferred until catalog expansion stable.
 - **App icons + splash screen** — Rob designing.
 - **Phase 8 Textures** — Rob designing.
