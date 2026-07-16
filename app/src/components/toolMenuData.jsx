@@ -3,10 +3,50 @@
 
 import { useState } from 'react'
 
+// Inline SVGs for tools that need custom icons (beds, fences)
+const BED_SVG = (
+  <svg width="28" height="22" viewBox="0 0 28 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Soil mound */}
+    <rect x="2" y="14" width="24" height="6" rx="2" fill="#8B5E3C"/>
+    {/* Raised bed sides */}
+    <rect x="2" y="12" width="24" height="3" rx="1" fill="#6B4226"/>
+    {/* Flower stems */}
+    <line x1="8" y1="12" x2="8" y2="6" stroke="#2E7D32" strokeWidth="1.5"/>
+    <line x1="14" y1="12" x2="14" y2="4" stroke="#2E7D32" strokeWidth="1.5"/>
+    <line x1="20" y1="12" x2="20" y2="7" stroke="#2E7D32" strokeWidth="1.5"/>
+    {/* Flower heads */}
+    <circle cx="8" cy="5" r="2.5" fill="#E91E63"/>
+    <circle cx="14" cy="3" r="2.5" fill="#FF9800"/>
+    <circle cx="20" cy="6" r="2.5" fill="#FFEB3B"/>
+    {/* Flower centres */}
+    <circle cx="8" cy="5" r="1" fill="#FFF9C4"/>
+    <circle cx="14" cy="3" r="1" fill="#FFF9C4"/>
+    <circle cx="20" cy="6" r="1" fill="#FFF9C4"/>
+  </svg>
+)
+
+const FENCE_SVG = (
+  <svg width="28" height="22" viewBox="0 0 28 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Rail top */}
+    <rect x="1" y="8" width="26" height="2.5" rx="1" fill="#A0846C"/>
+    {/* Rail bottom */}
+    <rect x="1" y="14" width="26" height="2.5" rx="1" fill="#A0846C"/>
+    {/* Pickets */}
+    <rect x="3"  y="4" width="4" height="15" rx="1" fill="#C4A882"/>
+    <polygon points="5,1 3,5 7,5" fill="#C4A882"/>
+    <rect x="10" y="4" width="4" height="15" rx="1" fill="#C4A882"/>
+    <polygon points="12,1 10,5 14,5" fill="#C4A882"/>
+    <rect x="17" y="4" width="4" height="15" rx="1" fill="#C4A882"/>
+    <polygon points="19,1 17,5 21,5" fill="#C4A882"/>
+    <rect x="24" y="4" width="3" height="15" rx="1" fill="#C4A882"/>
+    <polygon points="25.5,1 24,5 27,5" fill="#C4A882"/>
+  </svg>
+)
+
 export const TOP_TOOLS = [
-  { id: 'beds',     label: 'Beds',      emoji: '🌿' },
+  { id: 'beds',     label: 'Beds',      emoji: '🌿', svg: BED_SVG },
   { id: 'building', label: 'Buildings', emoji: '🏠' },
-  { id: 'fences',   label: 'Fences',    emoji: '🪵' },
+  { id: 'fences',   label: 'Fences',    emoji: '🪵', svg: FENCE_SVG },
   { id: 'paths',    label: 'Paths',     emoji: '〰' },
   { id: 'water',    label: 'Water',     emoji: '💧' },
   { id: 'decor',    label: 'Decor',     emoji: '🪴' },
@@ -243,7 +283,7 @@ export function ToolMenu({
           ← Back
         </button>
         <div className="panel-h2" style={{ marginTop: 2, flexShrink: 0 }}>
-          {TOP_TOOLS.find(t => t.id === currentMode)?.emoji}{' '}
+          {TOP_TOOLS.find(t => t.id === currentMode)?.svg ?? TOP_TOOLS.find(t => t.id === currentMode)?.emoji}{' '}
           {TOP_TOOLS.find(t => t.id === currentMode)?.label}
         </div>
         <div className="panel-sep" style={{ flexShrink: 0 }} />
@@ -264,7 +304,7 @@ export function ToolMenu({
             className={`tool-menu-btn${currentMode === t.id ? ' active' : ''}`}
             onClick={() => { onModeChange(t.id); setOpenGroup(null) }}
           >
-            <span className="tool-menu-emoji">{t.emoji}</span>
+            <span className="tool-menu-emoji">{t.svg ?? t.emoji}</span>
             <span className="tool-menu-label">{t.label}</span>
           </button>
         ))}

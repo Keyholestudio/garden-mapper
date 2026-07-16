@@ -1,7 +1,8 @@
 // LogoBar.jsx — matches v8 #logo-bar exactly
 // Left: scale display + season badge
 // Center: logo (flex:1, centered)
-// Right: garden name/dims + Save + Gardens + YouTube + Profile circle
+// Right: garden name/dims + Save + Gardens + Profile circle
+// Note: Export + YouTube hidden from top bar on web (accessible via profile menu)
 
 import { useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -211,22 +212,6 @@ export default function LogoBar({
         >
           🌿 Gardens
         </button>
-
-        <button
-          className="logo-btn"
-          onClick={onExport}
-          title="Export garden plan as PDF"
-        >
-          🖨 Export
-        </button>
-
-        {/* YouTube button (matches v8 #logo-yt-btn) */}
-        <a className="logo-yt-btn" href="#" title="YouTube">
-          <svg width="22" height="16" viewBox="0 0 22 16" fill="none">
-            <rect width="22" height="16" rx="4" fill="#11502A"/>
-            <polygon points="9,4 9,12 16,8" fill="white"/>
-          </svg>
-        </a>
 
         {/* Profile circle (matches v8 #logo-profile-btn) */}
         <button className="logo-profile-btn" title="Profile" onClick={() => setMenuOpen(v => !v)}>👤</button>
