@@ -14,10 +14,10 @@ const SEASON_BADGE_CLASS = ['spring', 'summer', 'fall', 'winter']
 const CELL_IN = 3  // 3 inches per cell at base zoom
 
 const SYNC_ICONS = {
-  idle:    { icon: '☁️', label: 'Cloud sync on',  color: '#aaa' },
-  syncing: { icon: '☁️', label: 'Syncing…',       color: '#888' },
-  synced:  { icon: '✓',  label: 'Synced',          color: '#4CAF50' },
-  error:   { icon: '⚠️', label: 'Sync failed',     color: '#E53935' },
+  idle:    null,
+  syncing: { icon: '☁️', label: 'Syncing…',  color: '#888' },
+  synced:  { icon: '✓',  label: 'Synced',    color: '#4CAF50' },
+  error:   { icon: '⚠️', label: 'Sync failed', color: '#E53935' },
 };
 
 export default function LogoBar({
@@ -57,7 +57,7 @@ export default function LogoBar({
 
         {/* Right group: Save + Profile */}
         <div className="logo-mobile-right">
-          {user && SYNC_ICONS[syncStatus] && (
+          {user && syncStatus !== 'idle' && SYNC_ICONS[syncStatus] && (
             <span
               className={`sync-pill sync-pill--${syncStatus}`}
               title={SYNC_ICONS[syncStatus].label}
@@ -188,7 +188,7 @@ export default function LogoBar({
           <span className="garden-dims">{gardenW}×{gardenH} {gardenUnit}</span>
         </div>
 
-        {user && SYNC_ICONS[syncStatus] && (
+        {user && syncStatus !== 'idle' && SYNC_ICONS[syncStatus] && (
           <span
             className={`sync-pill sync-pill--${syncStatus}`}
             title={SYNC_ICONS[syncStatus].label}
