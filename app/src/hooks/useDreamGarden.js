@@ -131,6 +131,18 @@ export async function fetchDreamGardenUpdate() {
     // Only update if remote is newer
     if (remote._dreamVersion <= storedVersion) return
 
+    // Safety guard: if local Dream Garden has more content than remote, skip update.
+    // This protects mid-session edits on localhost:5200 from being overwritten by a
+    // deploy before the "Update the Dream Garden to the website" workflow is triggered.
+    const localPlants  = stored?.plants?.length  ?? 0
+    const localStructs = stored?.structs?.length  ?? 0
+    const remotePlants  = remote?.plants?.length  ?? 0
+    const remoteStructs = remote?.structs?.length  ?? 0
+    if (localPlants + localStructs > remotePlants + remoteStructs) {
+      console.log(`[DreamGarden] Skipping remote v${remote._dreamVersion} — local has more content (${localPlants + localStructs} items vs ${remotePlants + remoteStructs}). Run "Update the Dream Garden to the website" to publish.`)
+      return
+    }
+
     gardens[0] = makeDreamGarden(remote)
     writeGardens(gardens)
     console.log(`[DreamGarden] Updated to v${remote._dreamVersion}`)
