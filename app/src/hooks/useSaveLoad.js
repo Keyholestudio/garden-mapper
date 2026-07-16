@@ -259,6 +259,7 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
       entry.svgPath = s.data(); entry.lx = s.x(); entry.ly = s.y()
     } else if (s instanceof Konva.Line) {
       entry.points = s.points(); entry.lx = s.x(); entry.ly = s.y()
+      entry.closed = s.closed()  // persist exact open/closed state — never re-infer on load
     } else if (s instanceof Konva.Circle) {
       entry.cx = s.x(); entry.cy = s.y(); entry.radius = s.radius()
     }
@@ -415,7 +416,10 @@ export function loadGarden({
     } else if (entry.points !== undefined) {
       const isPath     = entry.type === 'path'
       const isFenceType = entry.type === 'fence' || entry.type === 'gate'
-      const cl = !isPath && !isFenceType
+      // Use saved closed value when present (new saves); fall back to type inference for old data
+      const cl = entry.closed !== undefined
+        ? entry.closed
+        : (!isPath && !isFenceType)
       const isTxLine = entry.colour?.startsWith('#TX:')
       shape = new Konva.Line({
         id: entry.id,
