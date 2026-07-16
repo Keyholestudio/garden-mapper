@@ -38,21 +38,21 @@ export function useStripe(userId) {
   const [error, setError] = useState(null);
 
   // ── Fetch subscription status from Supabase on mount / userId change ──
+  // Also listens to Supabase auth state changes so sign-in after mount triggers a re-check
   useEffect(() => {
     if (isNative) {
-      // Native: RevenueCat handles billing — this hook is a no-op
-      setLoading(false);
-      return;
-    }
-    if (!userId) {
-      setIsSubscribed(false);
       setLoading(false);
       return;
     }
 
-    async function checkStatus() {
+    async function checkStatus(uid) {
+      if (!uid) {
+        setIsSubscribed(false);
+        setLoading(false);
+        return;
+      }
       try {
-        const flag = await fetchSubscriptionStatus(userId);
+        const flag = await fetchSubscriptionStatus(uid);
         setIsSubscribed(flag);
       } catch (e) {
         console.error('[Stripe] fetchSubscriptionStatus error:', e);
@@ -61,7 +61,16 @@ export function useStripe(userId) {
       }
     }
 
-    checkStatus();
+    // Check immediately with current userId
+    checkStatus(userId);
+
+    // Also listen for auth state changes (handles delayed session restore on page load)
+    const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const uid = session?.user?.id ?? null;
+      checkStatus(uid);
+    });
+
+    return () => authSub.unsubscribe();
   }, [userId]);
 
   // ── Check for Stripe success redirect ────────────────────────────────
