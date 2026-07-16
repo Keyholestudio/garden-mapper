@@ -414,24 +414,26 @@ export function loadGarden({
       shape.on('dblclick dbltap', () => { /* enterEditMode wired via useSelection */ })
 
     } else if (entry.points !== undefined) {
-      const isPath     = entry.type === 'path'
+      const isPath      = entry.type === 'path'
       const isFenceType = entry.type === 'fence' || entry.type === 'gate'
+      const isUG        = entry.type === 'underground-electrical' || entry.type === 'underground-plumbing'
       // Use saved closed value when present (new saves); fall back to type inference for old data
       const cl = entry.closed !== undefined
         ? entry.closed
-        : (!isPath && !isFenceType)
+        : (!isPath && !isFenceType && !isUG)
       const isTxLine = entry.colour?.startsWith('#TX:')
+      const ugWidth  = entry.pathWidth || 4
       shape = new Konva.Line({
         id: entry.id,
         points: entry.points,
         x: (entry.lx || 0) + dX, y: (entry.ly || 0) + dY,
         tension: entry.tension || 0,
         closed: cl,
-        fill: (isPath || isFenceType) ? 'transparent' : isTxLine ? 'transparent' : entry.colour + 'CC',
-        stroke: (isPath || isFenceType) ? entry.colour : '#3A2A10',
-        strokeWidth: isPath ? (entry.pathWidth || 18) : isFenceType ? 6 : 2,
+        fill: (isPath || isFenceType || isUG) ? 'transparent' : isTxLine ? 'transparent' : entry.colour + 'CC',
+        stroke: (isPath || isFenceType || isUG) ? entry.colour : '#3A2A10',
+        strokeWidth: isPath ? (entry.pathWidth || 18) : isFenceType ? 6 : isUG ? ugWidth : 2,
         strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round', draggable: true,
-        hitStrokeWidth: isPath ? (entry.pathWidth || 18) + 10 : undefined,
+        hitStrokeWidth: isPath ? (entry.pathWidth || 18) + 10 : isUG ? ugWidth + 10 : undefined,
       })
       shape.on('click tap', e => { if (!state.editingShapeIdRef?.current) onSelectStruct(entry.id, shape, e) })
 
