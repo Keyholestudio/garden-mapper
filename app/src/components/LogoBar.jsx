@@ -31,6 +31,7 @@ export default function LogoBar({
   user,
   onSignIn,
   onSignOut,
+  onOpenAccount,
   syncStatus = 'idle',
 }) {
   // Hooks must always be called at the top level — never inside conditionals
@@ -134,6 +135,10 @@ export default function LogoBar({
                     <span className="profile-menu-icon">👤</span>
                     <span className="profile-menu-email">{user.email || 'Signed in'}</span>
                   </div>
+                  <button className="profile-menu-item" onClick={() => { onOpenAccount?.(); closeMenu(); }}>
+                    <span className="profile-menu-icon">⚙️</span>
+                    <span>Account</span>
+                  </button>
                   <button className="profile-menu-item" onClick={() => { onSignOut?.(); closeMenu(); }}>
                     <span className="profile-menu-icon">🚪</span>
                     <span>Sign Out</span>
@@ -266,6 +271,10 @@ export default function LogoBar({
                   <span className="profile-menu-icon">👤</span>
                   <span className="profile-menu-email">{user.email || 'Signed in'}</span>
                 </div>
+                <button className="profile-menu-item" onClick={() => { onOpenAccount?.(); closeMenu(); }}>
+                  <span className="profile-menu-icon">⚙️</span>
+                  <span>Account</span>
+                </button>
                 <button className="profile-menu-item" onClick={() => { onSignOut?.(); closeMenu(); }}>
                   <span className="profile-menu-icon">🚲</span>
                   <span>Sign Out</span>

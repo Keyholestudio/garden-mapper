@@ -1,0 +1,165 @@
+/* AccountModal.css */
+
+.account-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.account-modal {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 360px;
+  padding: 0;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+  overflow: hidden;
+}
+
+.account-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.account-modal-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.account-modal-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #888;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  line-height: 1;
+}
+.account-modal-close:hover { background: #f5f5f5; color: #333; }
+
+.account-section {
+  padding: 16px 20px;
+}
+
+.account-section--links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 20px;
+}
+
+.account-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #999;
+  margin-bottom: 6px;
+}
+
+.account-email {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.account-divider {
+  height: 1px;
+  background: #f0f0f0;
+  margin: 0;
+}
+
+/* Subscription status */
+.account-sub-active {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.account-sub-badge {
+  background: #11502A;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.account-sub-plan {
+  font-size: 13px;
+  color: #444;
+  font-weight: 500;
+}
+
+.account-sub-free {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.account-sub-loading {
+  font-size: 13px;
+  color: #bbb;
+}
+
+/* Buttons */
+.account-btn {
+  width: 100%;
+  padding: 11px 16px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.account-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.account-btn--manage {
+  background: #f5f5f5;
+  color: #333;
+}
+.account-btn--manage:hover:not(:disabled) { background: #eaeaea; }
+
+.account-btn--upgrade {
+  background: #11502A;
+  color: #fff;
+}
+.account-btn--upgrade:hover:not(:disabled) { background: #0d3f21; }
+
+.account-error {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #c0392b;
+}
+
+/* Help links */
+.account-link {
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: #11502A;
+  cursor: pointer;
+  padding: 4px 0;
+  text-align: left;
+  text-decoration: none;
+}
+.account-link:hover { text-decoration: underline; }

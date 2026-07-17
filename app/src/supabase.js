@@ -157,6 +157,26 @@ export async function fetchSubscriptionStatus(userId) {
   return data?.subscription_flag === true;
 }
 
+/**
+ * Fetch full subscription details for the Account modal.
+ * Returns { subscription_flag, plan, stripe_customer_id, subscription_source } or null.
+ */
+export async function fetchSubscriptionDetails(userId) {
+  if (!userId) return null;
+  const { data, error } = await supabase
+    .from('user_subscriptions')
+    .select('subscription_flag, plan, stripe_customer_id, subscription_source')
+    .eq('user_id', userId)
+    .single();
+  if (error) {
+    if (error.code !== 'PGRST116') {
+      console.error('[Supabase] fetchSubscriptionDetails error:', error);
+    }
+    return null;
+  }
+  return data;
+}
+
 // ── Legacy compat (used nowhere new — remove after Session B) ─────────────────
 /** @deprecated Use fetchCloudGardens instead */
 export async function fetchCloudGarden(userId) {

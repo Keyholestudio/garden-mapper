@@ -17,6 +17,7 @@ import { saveGarden, loadGarden, createNewGarden, readGardens, readLastGardenInd
 import { useAuth } from '../hooks/useAuth'
 import { useStripe } from '../hooks/useStripe'
 import SubscribeModal from './SubscribeModal'
+import AccountModal   from './AccountModal'
 import RestorePrompt from './RestorePrompt'
 import { seedDreamGarden, fetchDreamGardenUpdate } from '../hooks/useDreamGarden'
 import { addRectStruct, isFreeMode, applyColourOrTexture, tryMergeRects } from '../utils/drawUtils'
@@ -130,6 +131,7 @@ export default function GardenEditor() {
   // ── Stripe web billing ──────────────────────────────────────────
   const { isSubscribed, openCheckout, checkoutLoading, error: stripeError } = useStripe(user?.id)
   const [subscribeModalOpen, setSubscribeModalOpen] = useState(false)
+  const [accountModalOpen, setAccountModalOpen] = useState(false)
 
   // ── Image loading ──
   const [loadedImages, setLoadedImages] = useState({})
@@ -1212,9 +1214,16 @@ export default function GardenEditor() {
         isOpen={subscribeModalOpen}
         onClose={() => setSubscribeModalOpen(false)}
         onSubscribe={(plan) => { setSubscribeModalOpen(false); openCheckout(plan) }}
-        loading={checkoutLoading}
-        error={stripeError}
       />
+
+      {/* Account modal */}
+      {accountModalOpen && (
+        <AccountModal
+          user={user}
+          onClose={() => setAccountModalOpen(false)}
+          onSubscribe={() => { setAccountModalOpen(false); setSubscribeModalOpen(true) }}
+        />
+      )}
       {showRestorePrompt && cloudGardenData && (
         <RestorePrompt
           mode="restore"
@@ -1309,6 +1318,7 @@ export default function GardenEditor() {
         onSignIn={signInWithGoogle}
         onSignOut={signOut}
         syncStatus={syncStatus}
+        onOpenAccount={() => setAccountModalOpen(true)}
       />
 
       {/* Clear All confirm modal */}
