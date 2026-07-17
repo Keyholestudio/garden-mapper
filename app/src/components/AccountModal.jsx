@@ -35,7 +35,8 @@ export default function AccountModal({ user, onClose, onSubscribe }) {
 
   // ── Manage Subscription — platform-aware ─────────────────────────────
   async function handleManage() {
-    const source = subDetails?.subscription_source ?? (subDetails?.stripe_customer_id ? 'stripe' : null);
+    // subscription_source column added later — fall back to stripe if customer_id present
+    const source = subDetails?.stripe_customer_id ? 'stripe' : null;
 
     if (source === 'stripe') {
       await openStripePortal();
@@ -87,7 +88,7 @@ export default function AccountModal({ user, onClose, onSubscribe }) {
 
   // ── Platform for the manage button label ──────────────────────────────
   function manageBtnLabel() {
-    const source = subDetails?.subscription_source ?? (subDetails?.stripe_customer_id ? 'stripe' : null);
+    const source = subDetails?.stripe_customer_id ? 'stripe' : null;
     if (source === 'google_play') return 'Manage on Google Play';
     if (source === 'apple')       return 'Manage on App Store';
     return 'Manage Subscription';

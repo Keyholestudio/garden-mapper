@@ -63,7 +63,7 @@ export default function GardenSwitcher({
   // Free tier: 1 user garden (Dream Garden doesn't count toward limit)
   const MAX_USER_GARDENS = 1
   const userGardens = gardens.filter((g) => !isDream(g))
-  const atLimit = userGardens.length >= MAX_USER_GARDENS
+  const atLimit = !isSubscribed && userGardens.length >= MAX_USER_GARDENS
 
   // Ghost CTA: recheck on every render based on current garden count
   const ghostCTA = (ghostItem) => {

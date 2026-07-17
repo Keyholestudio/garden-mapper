@@ -165,7 +165,7 @@ export async function fetchSubscriptionDetails(userId) {
   if (!userId) return null;
   const { data, error } = await supabase
     .from('user_subscriptions')
-    .select('subscription_flag, plan, stripe_customer_id, subscription_source')
+    .select('subscription_flag, plan, stripe_customer_id')
     .eq('user_id', userId)
     .single();
   if (error) {
