@@ -26,7 +26,7 @@ function isDreamGarden(g) {
 export function useAuth({ getLocalGardens, setLocalGardens }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [debugMsg, setDebugMsg] = useState('');
+
 
   // ── Restore prompt (new device — cloud gardens not in local) ──────
   const [showRestorePrompt, setShowRestorePrompt] = useState(false);
@@ -538,9 +538,7 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
   // ── Handle deep-link callback ─────────────────────────────────────
   useEffect(() => {
     const handleAppUrl = async ({ url }) => {
-      setDebugMsg('appUrlOpen fired');
       if (!url.startsWith('ca.gardenmapper.app')) {
-        setDebugMsg('URL mismatch: ' + url.substring(0, 40));
         return;
       }
       try { await Browser.close(); } catch (e) { /* ignore */ }
@@ -552,21 +550,15 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
       const refreshToken = params.get('refresh_token');
       const code = params.get('code');
 
-      setDebugMsg(`token:${accessToken ? 'yes' : 'no'} code:${code ? 'yes' : 'no'}`);
-
       if (accessToken) {
-        const { data, error } = await supabase.auth.setSession({
+        const { data } = await supabase.auth.setSession({
           access_token: accessToken,
           refresh_token: refreshToken || '',
         });
-        setDebugMsg(data?.session?.user?.email ?? error?.message ?? 'setSession no result');
         if (data?.session?.user) setUser(data.session.user);
       } else if (code) {
-        const { data, error } = await supabase.auth.exchangeCodeForSession(url);
-        setDebugMsg(data?.session?.user?.email ?? error?.message ?? 'exchange no result');
+        const { data } = await supabase.auth.exchangeCodeForSession(url);
         if (data?.session?.user) setUser(data.session.user);
-      } else {
-        setDebugMsg('no token or code in URL: ' + hashPart.substring(0, 60));
       }
     };
     let handle;
@@ -582,7 +574,6 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
   return {
     user,
     loading,
-    debugMsg,
     // Restore prompt (new device)
     showRestorePrompt,
     cloudGardenData,

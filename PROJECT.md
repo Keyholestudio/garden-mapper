@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-07-16 (session 8 — UX fixes, restore bugs, Dream Garden workflow)_
+_Last updated: 2026-07-16 (Session C — Stripe web billing complete, isSubscribed live)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -117,7 +117,7 @@ cd projects/garden-planner/app && npm run dev
 - **Pack architecture** — 63 pack files defined (WORKFLOWS.md). Create on demand as plants are added. Core migration deferred.
 
 ### 🔲 Deferred
-- **Wire `isSubscribed` from RevenueCat** — currently hardcoded `false` in GardenEditor.jsx (2 spots, marked TODO). When RevenueCat is live: import `useRevenueCat`, destructure `isSubscribed`, pass to `RestorePrompt` + `GardenSwitcher`. This controls: Load vs Subscribe buttons, garden limit label, ghost garden CTA, free tier cap in `restoreFromCloud`.
+- **Wire `isSubscribed` from RevenueCat (Android)** — web billing live via Stripe. Android: wire `useRevenueCat().isSubscribed` when Play Billing is set up (Session D).
 - **Google Sign-In** — Supabase `unexpected_failure`, needs device + USB to debug Auth logs.
 - **Google Play Developer account** — ✅ complete (2026-07-16, $25 paid)
 - **Capacitor.js Android/iOS** — deferred until catalog expansion stable.
@@ -157,10 +157,11 @@ cd projects/garden-planner/app && npm run dev
 - **Project ID:** oxecjcdxkmtdgmdxlxyt
 - **URL:** https://oxecjcdxkmtdgmdxlxyt.supabase.co
 - **Anon key:** in `app/src/supabase.js`
-- **Table:** `gardens` — `user_id`, `garden_json`, `subscription_flag`, `updated_at`
-- **RLS:** on — users can only access their own rows
+- **Tables:** `gardens` (per-garden sync) + `user_subscriptions` (billing flag)
+- **RLS:** on — users read own rows; service role writes via `SVC_ROLE_KEY` secret
 - **Dashboard:** https://supabase.com/dashboard/project/oxecjcdxkmtdgmdxlxyt
 - **Sync policy:** `SYNC-POLICY.md` — read before touching any auth/storage code
+- **Billing archive:** `memory/deep/garden-planner/stripe-supabase-setup.md` — full setup notes, issues, SQL
 
 ## ⚠️ Large File Warnings — Confirm Before Loading
 | File | Size | Rule |

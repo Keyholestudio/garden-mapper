@@ -169,6 +169,7 @@ _Separate session. Do not start until Phases 1–3 are confirmed working._
 - Project ID: `a8a11c30`
 - Dashboard: https://app.revenuecat.com/projects/a8a11c30
 - SDK key (sandbox): `test_YCKSQRAwYqZVvgVNVCijNPLzEbS`
+- **Secret API key:** `sk_qKzylJIQUiuVAQFdKFmvWCHwtefKL` *(server-side use only — not in client code)*
 - SDK: `@revenuecat/purchases-capacitor` v13.2.2 — installed
 - Hook: `app/src/hooks/useRevenueCat.js`
 - Entitlement: `Garden Mapper Pro` (REST ID: `centl71cfe4f3a4`)

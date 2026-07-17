@@ -102,7 +102,7 @@ export default function GardenEditor() {
   const loadGardenFromCloudRef = useRef(null)
 
   const {
-    user, debugMsg,
+    user,
     showRestorePrompt, cloudGardenData, restoreFromCloud, dismissRestore,
     showConflictPrompt, conflictGardens, resolveConflictLoadCloud, resolveConflictKeepLocal,
     ghostGardens, loadGhostGarden, deleteGhostGarden,
