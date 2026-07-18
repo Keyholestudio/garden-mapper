@@ -292,8 +292,13 @@
 | Oregano | Origanum vulgare | Lamiaceae | CA US FR GB AU | S | pack-herbs-culinary | herb-culinary_oregano_S_CA-US-FR-GB-AU | perennial, herb, culinary, mediterranean | oregano, origanum, wild marjoram | none | |
 | Lemon Balm | Melissa officinalis | Lamiaceae | CA US FR GB AU | M | pack-herbs-culinary | herb-culinary_lemon-balm_M_CA-US-FR-GB-AU | perennial, herb, fragrant, lemon | lemon balm, melissa, sweet balm | none | |
 | Tarragon | Artemisia dracunculus | Asteraceae | CA US FR GB AU | M | pack-herbs-culinary | herb-culinary_tarragon_M_CA-US-FR-GB-AU | perennial, herb, culinary, french | tarragon, french tarragon | none | |
+| Chervil | Anthriscus cerefolium | Apiaceae | CA US FR GB AU | M | pack-herbs-culinary | herb-culinary_chervil_M_CA-US-FR-GB-AU | annual, herb, culinary, shade | chervil, anthriscus, garden chervil | none | FR classic |
+| Fennel | Foeniculum vulgare | Apiaceae | CA US FR GB AU | XL | pack-herbs-culinary | herb-culinary_fennel_XL_CA-US-FR-GB-AU | perennial, herb, culinary, anise, feathery | fennel, foeniculum, florence fennel | planned | green/bronze forms |
+| Caraway | Carum carvi | Apiaceae | CA US FR GB AU | M | pack-herbs-culinary | herb-culinary_caraway_M_CA-US-FR-GB-AU | biennial, herb, seed, european | caraway, carum | none | |
+| Lovage | Levisticum officinale | Apiaceae | CA US FR GB AU | XL | pack-herbs-culinary | herb-culinary_lovage_XL_CA-US-FR-GB-AU | perennial, herb, celery-flavour, tall | lovage, levisticum, love parsley | none | |
+| Anise | Pimpinella anisum | Apiaceae | CA US FR GB AU | M | pack-herbs-culinary | herb-culinary_anise_M_CA-US-FR-GB-AU | annual, herb, seed, fragrant | anise, pimpinella, aniseed | none | |
 
 ---
 
-*Total entries: 173 plants (168 previous + 5 culinary herbs)*
-*Last updated: 2026-07-18 — added pack-herbs-culinary.js (Dill, Cilantro, Oregano, Lemon Balm, Tarragon)*
+*Total entries: 178 plants (173 previous + 5 culinary herbs)*
+*Last updated: 2026-07-18 — added Chervil, Fennel, Caraway, Lovage, Anise to pack-herbs-culinary.js*
