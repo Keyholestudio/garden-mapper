@@ -303,6 +303,15 @@ PLANT_LOOKUP = {
 
     # ── Perennials ──────────────────────────────────────────────────────────────────────
     "feverfew":          ("flower-daisy_feverfew",       "S",  160, "Perennial", "plant", "bright white petals #F8F8F0, vivid yellow centre #FFD700, mid green #4A8A5A, pale green #8ABF6A, dark outline #0A1A0A", "Compact bushy plant with masses of small white daisy-like flowers with bright yellow button centres, ferny aromatic foliage."),
+
+    # ── Herbs — Culinary ─────────────────────────────────────────────────────────────────
+    "dill":              ("herb-culinary_dill",          "M",  256, "Herb", "plant", "bright yellow-green #C8E04A, mid-green #6A9A2A, soft olive #8FA040, golden yellow #E8C050, dark stem #3A5A10", "Fully grown bushy plant. Feathery delicate fronds with umbrella-like yellow flower clusters, stems at bottom and leafy florals at the top."),
+    "cilantro":          ("herb-culinary_cilantro",       "S",  160, "Herb", "plant", "bright green #5AAF2A, mid-green #3A8A10, pale green #8FD060, soft white flower #F0F0E0, dark stem #2A5010", "Fully grown bushy plant. Delicate lacy flat leaves fanning out with tiny white flower clusters at tips, stems at bottom and leafy florals at the top."),
+    "coriander":         ("herb-culinary_cilantro",       "S",  160, "Herb", "plant", "bright green #5AAF2A, mid-green #3A8A10, pale green #8FD060, soft white flower #F0F0E0, dark stem #2A5010", "Fully grown bushy plant. Delicate lacy flat leaves fanning out with tiny white flower clusters at tips, stems at bottom and leafy florals at the top."),
+    "oregano":           ("herb-culinary_oregano",        "S",  160, "Herb", "plant", "mid-green #5A8A2A, deep green #2A5A10, olive green #7A9040, soft purple flower #B070C0, warm brown stem #6A4020", "Small bushy herb. Compact mound of small oval leaves with tiny purple flower clusters at tips, stems at bottom and leafy florals at the top."),
+    "lemon balm":        ("herb-culinary_lemon-balm",     "M",  256, "Herb", "plant", "bright yellow-green #A8D040, mid-green #5A9020, pale lemon #E0EF80, deep green #2A5A10, warm brown stem #7A5030", "Bushy rounded herb mound with crinkled textured leaves and small white flower clusters, stems at bottom and leafy florals at the top."),
+    "tarragon":          ("herb-culinary_tarragon",       "M",  256, "Herb", "plant", "grey-green #7A9A60, mid-green #4A7A30, pale silver-green #A8C090, deep green #2A5010, warm brown stem #6A4020", "Small bushy herb. Upright slim plant with narrow lance-shaped leaves along arching stems, stems at bottom and leafy florals at the top."),
+    "french tarragon":   ("herb-culinary_tarragon",       "M",  256, "Herb", "plant", "grey-green #7A9A60, mid-green #4A7A30, pale silver-green #A8C090, deep green #2A5010, warm brown stem #6A4020", "Small bushy herb. Upright slim plant with narrow lance-shaped leaves along arching stems, stems at bottom and leafy florals at the top."),
 }
 
 def p(*a): print(*a, flush=True)

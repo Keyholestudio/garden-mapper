@@ -55,21 +55,33 @@ _Archived workflows (1, 3, pack list): `memory/deep/garden-planner/workflows-arc
 | File | Purpose | When used |
 |------|---------|----------|
 | `research/PLANT-PACK-RESEARCH.md` | Full researched plant lists per pack — counts + names only | Reference only. Never edit directly during sticker work. |
-| `research/PLANT-STAGING.md` | Full schema rows for all researched plants, not yet in app | Source of truth before a sticker is made. Pick plants from here. |
+| `research/PLANT-STAGING-*.md` | Full schema rows for all researched plants, not yet in app — split by category | Source of truth before a sticker is made. Pick plants from here. |
 | `research/PLANT-DATABASE.md` | Plants that exist in the app (sticker generated + committed) | Destination. A row arrives here only after sticker is approved + committed. |
 
+### Staging file map (load only the one you need)
+
+| File | Contents |
+|------|----------|
+| `PLANT-STAGING-trees.md` | Deciduous, Evergreen, Coniferous, Broadleaf Evergreen trees |
+| `PLANT-STAGING-shrubs.md` | Deciduous, Evergreen, Flowering, Coniferous, Broadleaf Evergreen shrubs |
+| `PLANT-STAGING-flowers-grasses-climbers-groundcovers.md` | Perennials, Bulbs, Cottage, Wildflowers, Evergreen Perennials, all Grasses, all Climbers, all Groundcovers |
+| `PLANT-STAGING-succulents-cacti.md` | Succulents (Rosette, Trailing), Cacti (Columnar, Barrel, Paddle, Shrubby) |
+| `PLANT-STAGING-edibles.md` | All Herbs, all Vegetables, all Fruit |
+
 **The flow:**
-1. Rob says "let's do [pack name]" → find the section in `PLANT-STAGING.md`
-2. Pick plants for that pack (start with 3–5 per session)
-3. Generate stickers via Workflow 2 (lazy pack) or Workflow 1 (core)
-4. After approval + commit: **move the row** from `PLANT-STAGING.md` → `PLANT-DATABASE.md` (fill in Sticker ID)
-5. Delete the migrated row from `PLANT-STAGING.md`
+1. Rob says "let's do [pack name]" → identify which staging file contains that pack
+2. Read **only that file** — do not load staging files you don't need
+3. Pick plants for that pack (batch of 5 per session)
+4. Generate stickers via Workflow 2 (lazy pack) or Workflow 1 (core)
+5. After approval + commit: **move the row** from the staging file → `PLANT-DATABASE.md` (fill in Sticker ID)
+6. Delete the migrated row from the staging file
 
 **Rules:**
 - Never add a plant to `PLANT-DATABASE.md` without a Sticker ID
-- Never skip `PLANT-STAGING.md` — it is the duplicate-check gate before generation
+- Never skip the staging file — it is the duplicate-check gate before generation
 - `PLANT-PACK-RESEARCH.md` is read-only reference — update it only when adding new packs
-- Check `PLANT-STAGING.md` first before any sticker generation (same as old PLANT-DATABASE check)
+- Check the correct staging file first before any sticker generation
+- The old monolithic `PLANT-STAGING.md` is now archived — do not use it
 
 ---
 
@@ -79,11 +91,12 @@ _Archived workflows (1, 3, pack list): `memory/deep/garden-planner/workflows-arc
 
 > ⚠️ **PLANT-STAGING.md is checked BEFORE anything else. No exceptions. No generation until the check is complete.**
 
-**Step 1 — Check PLANT-STAGING.md and PLANT-DATABASE.md first**
-- Search `research/PLANT-STAGING.md` for the plant by common name AND latin name
+**Step 1 — Check staging file and PLANT-DATABASE.md first**
+- Identify which `PLANT-STAGING-*.md` file covers this pack (see Workflow 0 staging file map)
+- Search that file for the plant by common name AND latin name
 - **If found in staging with no Sticker ID:** row is ready — confirm the pack column and proceed from Step 3
 - **If not in staging:** check `research/PLANT-DATABASE.md` — if Sticker ID is filled, it's already in the app — stop
-- **If in neither:** add the row to `PLANT-STAGING.md` now with all fields before proceeding. This is the gate.
+- **If in neither:** add the row to the correct staging file now with all fields before proceeding. This is the gate.
 
 **Step 2 — Duplicate check (3 places)**
 1. `research/PLANT-DATABASE.md` — already covered in Step 1
@@ -104,19 +117,25 @@ _Archived workflows (1, 3, pack list): `memory/deep/garden-planner/workflows-arc
 - PNG lands in `stickers/generated/pending/<key>.png`
 - Open the folder for Rob to review
 
-**Step 6 — Approval gate**
-- Rob says "Approve [name]" → proceed
-- Rob says "Redo [name]" → regenerate with updated prompt
-- Rob says "Skip [name]" → discard, do not commit
+**Step 6 — Batch approval gate**
+- After generating a batch of up to 5 stickers, provide the pending folder path:
+  `C:\Users\RG\.openclaw\workspace\projects\garden-planner\stickers\generated\pending\`
+- Rob reviews all PNGs in the folder, then replies with approvals/redos:
+  - "Approve all" → commit all
+  - "Approve [name], redo [name2]" → commit approved, regenerate redo
+  - "Skip [name]" → discard, do not commit
+- Do not commit any sticker until Rob's approval is confirmed
+- Commit all approved stickers in a single git commit (not one per sticker)
 
 **Step 7 — Commit (only after approval)**
-1. Copy PNG → `app/public/stickers/<key>.png` AND `stickers/<key>.png`
-2. Add entry to the correct pack file — **NEVER to `usePlantCatalog.js`**
-   - `key`, `label`, `size`, `latinName`, `searchTerms[]`, `traits[]` — use PLANT-DATABASE.md as the source
+1. Copy all approved PNGs → `app/public/stickers/<key>.png` AND `stickers/<key>.png`
+2. Add entries to the correct pack file — **NEVER to `usePlantCatalog.js`**
+   - `key`, `label`, `size`, `latinName`, `searchTerms[]`, `traits[]` — use staging file as the source
 3. Run `pwsh tools/validate-tray.ps1` — must show 0 errors before committing
-4. Update `research/PLANT-DATABASE.md` → fill in the Sticker ID column
-5. `git add -A && git commit -m "Sticker: add [Name] ([key]) to [pack name]"`
-6. `git push` → Vercel auto-deploys in ~15s
+4. Update `research/PLANT-DATABASE.md` → fill in the Sticker ID column for each approved plant
+5. Delete the committed rows from the staging file
+6. `git add -A && git commit -m "Sticker: add [Name1], [Name2] ([pack name])"` — batch in one commit
+7. `git push` → Vercel auto-deploys in ~15s
 
 **Duplication rule:** A key must appear in exactly ONE file — core catalog OR one pack. Never both. The validator catches this but the database check should catch it first.
 

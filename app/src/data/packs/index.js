@@ -150,6 +150,14 @@ export const PACK_REGISTRY = [
     loader: () => import('./pack-fruit-nuts.js'),
     families: ['Nut'],
   },
+  // Herbs
+  {
+    id: 'herbs-culinary',
+    label: 'Culinary Herbs',
+    eager: false,
+    loader: () => import('./pack-herbs-culinary.js'),
+    families: ['Herb'],
+  },
   // Ferns
   {
     id: 'ferns-woodland',

@@ -227,8 +227,8 @@ User subscribes (any platform)
 | 5 | Restore prompt + conflict prompt UI | Session B | ✅ 2026-07-14 |
 | 6 | Ghost entry list + dynamic CTA | Session B | ✅ 2026-07-14 |
 | 7 | Test: new device, conflict, ghost, backup | Session B | ✅ 2026-07-14 |
-| 8 | Stripe integration (web) | Session C | 🔲 |
-| 9 | Subscription flag enforcement in UI | Session C | 🔲 |
+| 8 | Stripe integration (web) | Session C | ✅ 2026-07-16 |
+| 9 | Subscription flag enforcement in UI + Account modal + Stripe Portal | Session C | ✅ 2026-07-17 |
 | 10 | Google Play Billing + RevenueCat | Session D | 🔲 |
 | 11 | Apple StoreKit via RevenueCat | Session E (future) | 🔲 |
 
