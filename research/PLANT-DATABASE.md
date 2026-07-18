@@ -281,5 +281,19 @@
 
 ---
 
-*Total entries: 168 plants (139 original + 25 ferns + 4 pome fruit)*
-*Last updated: 2026-06-18 — added pack-fruit-pome.js (Quince, Medlar, Loquat, Nashi Pear)*
+---
+
+## 🌿 Herbs — Culinary
+
+| Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Dill | Anethum graveolens | Apiaceae | CA US FR GB AU | M | pack-herbs-culinary | herb-culinary_dill_M_CA-US-FR-GB-AU | annual, herb, culinary, feathery | dill, anethum, dill weed | none | |
+| Cilantro / Coriander | Coriandrum sativum | Apiaceae | CA US FR GB AU | S | pack-herbs-culinary | herb-culinary_cilantro_S_CA-US-FR-GB-AU | annual, herb, culinary, seed | cilantro, coriander, coriandrum | none | leaf + seed herb |
+| Oregano | Origanum vulgare | Lamiaceae | CA US FR GB AU | S | pack-herbs-culinary | herb-culinary_oregano_S_CA-US-FR-GB-AU | perennial, herb, culinary, mediterranean | oregano, origanum, wild marjoram | none | |
+| Lemon Balm | Melissa officinalis | Lamiaceae | CA US FR GB AU | M | pack-herbs-culinary | herb-culinary_lemon-balm_M_CA-US-FR-GB-AU | perennial, herb, fragrant, lemon | lemon balm, melissa, sweet balm | none | |
+| Tarragon | Artemisia dracunculus | Asteraceae | CA US FR GB AU | M | pack-herbs-culinary | herb-culinary_tarragon_M_CA-US-FR-GB-AU | perennial, herb, culinary, french | tarragon, french tarragon | none | |
+
+---
+
+*Total entries: 173 plants (168 previous + 5 culinary herbs)*
+*Last updated: 2026-07-18 — added pack-herbs-culinary.js (Dill, Cilantro, Oregano, Lemon Balm, Tarragon)*

@@ -14,16 +14,12 @@ _Then and only then does the row move to PLANT-DATABASE.md with the Sticker ID f
 
 | Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Dill | Anethum graveolens | Apiaceae | CA US FR GB AU | M | pack-herbs-culinary | | annual, herb, culinary, feathery | dill, anethum, dill weed | none | |
-| Cilantro / Coriander | Coriandrum sativum | Apiaceae | CA US FR GB AU | S | pack-herbs-culinary | | annual, herb, culinary, seed | cilantro, coriander, coriandrum | none | leaf + seed herb |
-| Tarragon | Artemisia dracunculus | Asteraceae | CA US FR GB AU | M | pack-herbs-culinary | | perennial, herb, culinary, french | tarragon, french tarragon | none | |
 | Chervil | Anthriscus cerefolium | Apiaceae | CA US FR GB AU | M | pack-herbs-culinary | | annual, herb, culinary, shade | chervil, anthriscus, garden chervil | none | FR classic |
-| Lemon Balm | Melissa officinalis | Lamiaceae | CA US FR GB AU | M | pack-herbs-culinary | | perennial, herb, fragrant, lemon | lemon balm, melissa, sweet balm | none | |
 | Fennel | Foeniculum vulgare | Apiaceae | CA US FR GB AU | XL | pack-herbs-culinary | | perennial, herb, culinary, anise | fennel, foeniculum, florence fennel | planned | green/bronze forms |
 | Caraway | Carum carvi | Apiaceae | CA US FR GB AU | M | pack-herbs-culinary | | biennial, herb, seed, european | caraway, carum | none | |
 | Lovage | Levisticum officinale | Apiaceae | CA US FR GB AU | XL | pack-herbs-culinary | | perennial, herb, celery-flavour, tall | lovage, levisticum, love parsley | none | |
 | Anise | Pimpinella anisum | Apiaceae | CA US FR GB AU | M | pack-herbs-culinary | | annual, herb, seed, fragrant | anise, pimpinella, aniseed | none | |
-| Oregano | Origanum vulgare | Lamiaceae | CA US FR GB AU | S | pack-herbs-culinary | | perennial, herb, culinary, mediterranean | oregano, origanum, wild marjoram | none | |
+
 | Horseradish | Armoracia rusticana | Brassicaceae | CA US FR GB AU | M | pack-herbs-culinary | | perennial, herb, pungent, edible | horseradish, armoracia | none | |
 | Garlic Chives | Allium tuberosum | Amaryllidaceae | CA US FR GB AU | S | pack-herbs-culinary | | perennial, herb, culinary, edible-flower | allium tuberosum, garlic chives, chinese chives | none | |
 | Vietnamese Coriander | Persicaria odorata | Polygonaceae | US AU FR CA | S | pack-herbs-culinary | | perennial, herb, culinary, tropical | persicaria odorata, vietnamese mint | none | |
