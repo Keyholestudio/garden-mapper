@@ -39,13 +39,12 @@ TEMPLATES = {
         "Aerial side view. Art style: watercolor painting - "
         "tasteful simplified representation of this plant with crisp edges, focusing on "
         "a primary characteristics of the plant, bold flat icon. "
-        "Dark outline 2-3px. No shadows. No background showing in the center of the plant. Centered, 75% "
-        "canvas fill. Vibrant and iconic."
+        "Dark outline 2-3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic."
     ),
     "cedar": (
         "Aerial side view. Art style: watercolor painting - tasteful simplified representation of this plant with crisp edges, "
         "focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2-3px. No shadows. "
-        "No background showing in the center of the plant. Centered, 75% canvas fill. Vibrant and iconic."
+        "Centered, 75% canvas fill. Vibrant and iconic."
     ),
     "deciduous": (
         "Side aerial view. Art style: Watercolor painting - "
@@ -57,15 +56,13 @@ TEMPLATES = {
         "Aerial side view. Art style: watercolor painting - "
         "tasteful simplified representation of this plant with crisp edges, focusing on "
         "a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2-3px. "
-        "No shadows. No background showing in the center of the plant. Centered, 75% "
-        "canvas fill. Vibrant and iconic."
+        "No shadows. Centered, 75% canvas fill. Vibrant and iconic."
     ),
     "rootveg": (
         "Side aerial view. Art style: watercolor painting - "
         "tasteful simplified representation of this plant with crisp edges, focusing on "
         "a primary characteristics of the plant, bold flat icon. Dark outline 2-3px. "
-        "Line texturing. No shadows. No background showing in the center of the plant. "
-        "Centered, 75% canvas fill. Vibrant and iconic."
+        "Line texturing. No shadows. Centered, 75% canvas fill. Vibrant and iconic."
     ),
 }
 
@@ -317,6 +314,16 @@ PLANT_LOOKUP = {
     "caraway":           ("herb-culinary_caraway",        "M",  256, "Herb", "plant", "mid-green #5A8A2A, bright green #7ABF4A, pale green #A8D870, soft white flower #F0F0E0, dark stem #2A5010", "Small bush. Upright plant with finely cut ferny leaves and small white umbrella flower clusters, stems at bottom and leafy florals at the top."),
     "lovage":            ("herb-culinary_lovage",         "XL", 512, "Herb", "plant", "deep glossy green #2A6A1A, mid-green #4A8A2A, bright green #6AAF3A, golden yellow flower #E8C050, dark stem #1A3A10", "Small bush. Tall robust plant with large divided celery-like glossy leaves and flat yellow-green flower umbels at top, stems at bottom and leafy florals at the top."),
     "anise":             ("herb-culinary_anise",          "M",  256, "Herb", "plant", "mid-green #5A8A2A, bright green #7ABF4A, pale green #A8D870, creamy white flower #F5F0E0, dark stem #2A5010", "Small bush. Upright plant with rounded lower leaves and finely divided upper leaves, small creamy-white umbrella flower clusters at tips, stems at bottom and leafy florals at the top."),
+    "horseradish":       ("herb-culinary_horseradish",     "M",  256, "Herb", "plant", "deep glossy green #2A6A1A, bright green #4AAF2A, mid-green #5A8A2A, pale green #8ABF6A, dark stem #1A3A10", "Small bush. Natural full grown plant. Bold upright clump of very large broad strap-like wrinkled glossy leaves, stems at bottom and leafy growth filling the frame."),
+    "garlic chives":     ("herb-culinary_garlic-chives",   "S",  160, "Herb", "plant", "bright green #5AB83A, mid-green #3A8A10, pale green #8FD060, white flower cluster #F5F5F0, dark stem #2A5010", "Small bush. Natural full grown plant. Upright clump of flat narrow strap leaves topped with globe-shaped white flower clusters, stems at bottom and florals at the top."),
+    "vietnamese coriander": ("herb-culinary_vietnamese-coriander", "S", 160, "Herb", "plant", "mid-green #5A8A2A, deep green #2A5A10, burgundy-red leaf markings #8B1A2A, pale green #8FD060, dark stem #2A5010", "Small bush. Natural full grown plant. Spreading clump of narrow pointed leaves with distinctive dark V-shaped chevron markings, stems at bottom and leafy growth at the top."),
+    "cumin":             ("herb-culinary_cumin",           "S",  160, "Herb", "plant", "mid-green #5A8A2A, bright green #7ABF4A, pale green #A8D870, white-pink flower #F0E8E0, dark stem #2A5010", "Small bush. Natural full grown plant. Slender upright plant with fine thread-like leaves and small white-pink umbrella flower clusters at tips, stems at bottom and leafy florals at the top."),
+    "st johns wort":     ("herb-medicinal_st-johns-wort",  "M",  256, "Herb", "plant", "bright yellow #FFD700, golden yellow #E8C050, mid-green #5A8A2A, deep green #2A5A10, dark stem #3A5A10", "Small bush. Natural full grown plant. Bushy upright plant with small oval leaves and masses of bright five-petalled yellow star-shaped flowers, stems at bottom and florals at the top."),
+    "valerian":          ("herb-medicinal_valerian",       "L",  384, "Herb", "plant", "pale pink flower #F0B8C8, mid-green #5A8A2A, deep green #2A5A10, white flower clusters #F5F5F0, dark stem #2A5010", "Small bush. Natural full grown plant. Tall upright plant with pinnate feathery leaves and large domed clusters of tiny pale pink-white flowers at the top, stems at bottom and florals at the top."),
+    "german chamomile":  ("herb-medicinal_german-chamomile", "S", 160, "Herb", "plant", "bright white petals #F8F8F0, vivid yellow centre #FFD700, mid-green #5A8A2A, pale green #8ABF6A, dark stem #2A5010", "Small bush. Natural full grown plant. Compact branching plant with finely divided ferny leaves and masses of small white daisy flowers with bright yellow centres, stems at bottom and florals at the top."),
+    "comfrey":           ("herb-medicinal_comfrey",         "L",  384, "Herb", "plant", "soft purple #9070C0, mid purple #7A50A0, mid-green #5A8A2A, deep green #2A5A10, dark stem #2A5010", "Small bush. Natural full grown plant. Bold large-leaved plant with rough hairy leaves and drooping clusters of tubular purple-pink bell-shaped flowers on arching stems, stems at bottom and florals at the top."),
+    "hyssop":            ("herb-medicinal_hyssop",          "M",  256, "Herb", "plant", "vivid blue-violet #5535A8, mid blue #6A50C0, mid-green #5A8A2A, deep green #2A5A10, dark stem #2A5010", "Small bush. Natural full grown plant. Upright woody herb with narrow dark green leaves and dense spikes of vivid blue-violet tubular flowers running up the stems, stems at bottom and florals at the top."),
+    "lemon verbena":     ("herb-medicinal_lemon-verbena",   "M",  256, "Herb", "plant", "pale lilac flower #D0B8E8, bright green #5AB83A, mid-green #3A8A10, pale green #8FD060, dark stem #2A5010", "Small bush. Natural full grown plant. Upright woody shrub with long lance-shaped bright green lemon-scented leaves and small pale lilac flower spikes at tips, stems at bottom and leafy growth at the top."),
 }
 
 def p(*a): print(*a, flush=True)

@@ -158,6 +158,13 @@ export const PACK_REGISTRY = [
     loader: () => import('./pack-herbs-culinary.js'),
     families: ['Herb'],
   },
+  {
+    id: 'herbs-medicinal',
+    label: 'Medicinal Herbs',
+    eager: false,
+    loader: () => import('./pack-herbs-medicinal.js'),
+    families: ['Medicinal Herb'],
+  },
   // Ferns
   {
     id: 'ferns-woodland',
