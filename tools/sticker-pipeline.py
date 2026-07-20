@@ -12,7 +12,7 @@ import numpy as np
 import os, sys
 
 CHROMA     = np.array([255, 0, 255], dtype=np.float32)  # Magenta
-TOLERANCE  = 100
+TOLERANCE  = 145
 SOFT_RANGE = 55
 OUT_SIZE   = 512
 
@@ -42,7 +42,7 @@ def remove_chroma(input_path, output_path):
     avg_g_of_rb = g  # G channel is the neutral reference for magenta
     rb_excess_r = r - g  # how much R is above G
     rb_excess_b = b - g  # how much B is above G
-    spill = edge_mask & (rb_excess_r > 15) & (rb_excess_b > 15)
+    spill = edge_mask & (rb_excess_r > 4) & (rb_excess_b > 4)
     # Reduce R and B toward G on spill pixels
     data[:,:,0] = np.where(spill, g, r)
     data[:,:,2] = np.where(spill, g, b)

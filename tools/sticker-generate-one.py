@@ -33,7 +33,7 @@ IMAGE_WAIT  = 240
 os.makedirs(OUT_DIR, exist_ok=True)
 
 # -- Prompt templates (SOURCE OF TRUTH: research/STICKER-PROMPT-GUIDE.md) ---------------------
-# Do not modify without updating STICKER-PROMPT-GUIDE.md first. Last synced: 2026-06-18
+# Do not modify without updating STICKER-PROMPT-GUIDE.md first. Last synced: 2026-07-20
 TEMPLATES = {
     "plant": (
         "Aerial side view. Art style: watercolor painting - "
@@ -324,6 +324,10 @@ PLANT_LOOKUP = {
     "comfrey":           ("herb-medicinal_comfrey",         "L",  384, "Herb", "plant", "soft purple #9070C0, mid purple #7A50A0, mid-green #5A8A2A, deep green #2A5A10, dark stem #2A5010", "Small bush. Natural full grown plant. Bold large-leaved plant with rough hairy leaves and drooping clusters of tubular purple-pink bell-shaped flowers on arching stems, stems at bottom and florals at the top."),
     "hyssop":            ("herb-medicinal_hyssop",          "M",  256, "Herb", "plant", "vivid blue-violet #5535A8, mid blue #6A50C0, mid-green #5A8A2A, deep green #2A5A10, dark stem #2A5010", "Small bush. Natural full grown plant. Upright woody herb with narrow dark green leaves and dense spikes of vivid blue-violet tubular flowers running up the stems, stems at bottom and florals at the top."),
     "lemon verbena":     ("herb-medicinal_lemon-verbena",   "M",  256, "Herb", "plant", "pale lilac flower #D0B8E8, bright green #5AB83A, mid-green #3A8A10, pale green #8FD060, dark stem #2A5010", "Small bush. Natural full grown plant. Upright woody shrub with long lance-shaped bright green lemon-scented leaves and small pale lilac flower spikes at tips, stems at bottom and leafy growth at the top."),
+    "sweet marjoram":    ("herb-medicinal_sweet-marjoram",   "S",  160, "Herb", "plant", "soft green #6A9A3A, mid-green #4A7A20, pale green #9AD060, tiny white-pink flowers #F0EAE8, dark stem #2A5010", "Small bush. Fully grown bushy plant. Compact mounding herb with small rounded soft grey-green leaves and tiny clusters of white-pink knot-like flower buds at tips, stems at bottom and leafy bushy growth at the top."),
+    "mugwort":           ("herb-medicinal_mugwort",          "L",  384, "Herb", "plant", "deep green #3A6A20, silver-grey underside #B8C8B0, pale grey-green #8AAA7A, dark stem #2A4A10, tiny pale flower #D8D8C8", "Small bush. Fully grown bushy plant. Tall upright branching plant with deeply lobed dark green leaves with silver-grey undersides and small clusters of tiny pale yellowish flowers along arching stems, stems at bottom and leafy growth at the top."),
+    "rue":               ("herb-medicinal_rue",              "M",  256, "Herb", "plant", "blue-grey green #7A9A7A, mid grey-green #5A7A5A, soft yellow flower #E8D860, pale blue-green #A8C0A0, dark stem #3A5A30", "Small bush. Fully grown bushy plant. Compact rounded shrubby plant with distinctive blue-grey deeply divided fan-shaped leaves and small bright yellow four-petalled flowers at tips, stems at bottom and leafy growth at the top."),
+    "wormwood":          ("herb-medicinal_wormwood",         "L",  384, "Herb", "plant", "silver-grey #B8C8B0, pale grey-green #A0B890, soft grey #C8D0C0, dark stem #4A5A40, tiny yellow flower #D8C850", "Small bush. Fully grown bushy plant. Tall silvery-grey aromatic plant with deeply divided silky silver leaves and tall branching stems with small round pale yellow button flowers, stems at bottom and silvery-grey leafy growth at the top."),
 }
 
 def p(*a): print(*a, flush=True)
