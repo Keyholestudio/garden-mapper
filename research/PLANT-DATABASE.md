@@ -300,5 +300,29 @@
 
 ---
 
-*Total entries: 178 plants (173 previous + 5 culinary herbs)*
-*Last updated: 2026-07-18 — added Chervil, Fennel, Caraway, Lovage, Anise to pack-herbs-culinary.js*
+*Total entries: 193 plants (178 previous + 15 herbs: culinary batch 3 + medicinal batch 1)*
+*Last updated: 2026-07-20 — added Horseradish, Garlic Chives, Vietnamese Coriander, Cumin; created pack-herbs-medicinal.js (St John's Wort, Valerian, German Chamomile, Comfrey, Hyssop, Lemon Verbena)*
+
+---
+
+## 🌿 Herbs — Culinary (batch 3)
+
+| Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Horseradish | Armoracia rusticana | Brassicaceae | CA US FR GB AU | M | pack-herbs-culinary | herb-culinary_horseradish_M_CA-US-FR-GB-AU | perennial, herb, pungent, edible | horseradish, armoracia | none | |
+| Garlic Chives | Allium tuberosum | Amaryllidaceae | CA US FR GB AU | S | pack-herbs-culinary | herb-culinary_garlic-chives_S_CA-US-FR-GB-AU | perennial, herb, culinary, edible-flower | garlic chives, allium tuberosum, chinese chives | none | |
+| Vietnamese Coriander | Persicaria odorata | Polygonaceae | US AU FR CA | S | pack-herbs-culinary | herb-culinary_vietnamese-coriander_S_CA-US-FR-GB-AU | perennial, herb, culinary, tropical | vietnamese coriander, persicaria odorata, vietnamese mint | none | |
+| Cumin | Cuminum cyminum | Apiaceae | CA US FR GB AU | S | pack-herbs-culinary | herb-culinary_cumin_S_CA-US-FR-GB-AU | annual, herb, seed, spice | cumin, cuminum, comino | none | |
+
+---
+
+## 🌿 Herbs — Medicinal
+
+| Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| St John's Wort | Hypericum perforatum | Hypericaceae | CA US FR GB AU | M | pack-herbs-medicinal | herb-medicinal_st-johns-wort_M_CA-US-FR-GB-AU | perennial, medicinal, yellow-flower | st john's wort, hypericum perforatum | none | |
+| Valerian | Valeriana officinalis | Caprifoliaceae | CA US FR GB AU | L | pack-herbs-medicinal | herb-medicinal_valerian_L_CA-US-FR-GB-AU | perennial, medicinal, fragrant | valerian, valeriana, garden valerian | none | |
+| German Chamomile | Matricaria chamomilla | Asteraceae | CA US FR GB AU | S | pack-herbs-medicinal | herb-medicinal_german-chamomile_S_CA-US-FR-GB-AU | annual, medicinal, fragrant | german chamomile, matricaria, wild chamomile | none | |
+| Comfrey | Symphytum officinale | Boraginaceae | CA US FR GB AU | L | pack-herbs-medicinal | herb-medicinal_comfrey_L_CA-US-FR-GB-AU | perennial, medicinal, wildlife | comfrey, symphytum, knitbone | planned | purple/pink/cream forms |
+| Hyssop | Hyssopus officinalis | Lamiaceae | CA US FR GB AU | M | pack-herbs-medicinal | herb-medicinal_hyssop_M_CA-US-FR-GB-AU | perennial, medicinal, pollinator | hyssop, hyssopus | planned | blue/pink/white forms |
+| Lemon Verbena | Aloysia citriodora | Verbenaceae | CA US FR GB AU | M | pack-herbs-medicinal | herb-medicinal_lemon-verbena_M_CA-US-FR-GB-AU | perennial, medicinal, fragrant, lemon | lemon verbena, aloysia | none | |

@@ -16,10 +16,7 @@ _Then and only then does the row move to PLANT-DATABASE.md with the Sticker ID f
 |---|---|---|---|---|---|---|---|---|---|---|
 
 
-| Horseradish | Armoracia rusticana | Brassicaceae | CA US FR GB AU | M | pack-herbs-culinary | | perennial, herb, pungent, edible | horseradish, armoracia | none | |
-| Garlic Chives | Allium tuberosum | Amaryllidaceae | CA US FR GB AU | S | pack-herbs-culinary | | perennial, herb, culinary, edible-flower | allium tuberosum, garlic chives, chinese chives | none | |
-| Vietnamese Coriander | Persicaria odorata | Polygonaceae | US AU FR CA | S | pack-herbs-culinary | | perennial, herb, culinary, tropical | persicaria odorata, vietnamese mint | none | |
-| Cumin | Cuminum cyminum | Apiaceae | CA US FR GB AU | S | pack-herbs-culinary | | annual, herb, seed, spice | cumin, cuminum, comino | none | |
+
 
 ---
 
@@ -27,12 +24,7 @@ _Then and only then does the row move to PLANT-DATABASE.md with the Sticker ID f
 
 | Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|
-| St John's Wort | Hypericum perforatum | Hypericaceae | CA US FR GB AU | M | pack-herbs-medicinal | | perennial, medicinal, yellow-flower | st john's wort, hypericum perforatum | none | |
-| Valerian | Valeriana officinalis | Caprifoliaceae | CA US FR GB AU | L | pack-herbs-medicinal | | perennial, medicinal, fragrant | valerian, valeriana, garden valerian | none | |
-| German Chamomile | Matricaria chamomilla | Asteraceae | CA US FR GB AU | S | pack-herbs-medicinal | | annual, medicinal, fragrant | german chamomile, matricaria, wild chamomile | none | |
-| Comfrey | Symphytum officinale | Boraginaceae | CA US FR GB AU | L | pack-herbs-medicinal | | perennial, medicinal, wildlife | comfrey, symphytum, knitbone | planned | purple/pink/cream forms |
-| Hyssop | Hyssopus officinalis | Lamiaceae | CA US FR GB AU | M | pack-herbs-medicinal | | perennial, medicinal, pollinator | hyssop, hyssopus | planned | blue/pink/white forms |
-| Lemon Verbena | Aloysia citriodora | Verbenaceae | CA US FR GB AU | M | pack-herbs-medicinal | | perennial, medicinal, fragrant, lemon | lemon verbena, aloysia | none | |
+
 | Sweet Marjoram | Origanum majorana | Lamiaceae | CA US FR GB AU | S | pack-herbs-medicinal | | perennial, culinary-medicinal, fragrant | sweet marjoram, origanum majorana | none | |
 | Mugwort | Artemisia vulgaris | Asteraceae | CA US FR GB AU | L | pack-herbs-medicinal | | perennial, medicinal, aromatic | mugwort, artemisia, common mugwort | none | |
 | Rue | Ruta graveolens | Rutaceae | CA US FR GB AU | M | pack-herbs-medicinal | | perennial, medicinal, aromatic | rue, ruta, herb of grace | none | photosensitive |
