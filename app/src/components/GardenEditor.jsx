@@ -161,6 +161,18 @@ export default function GardenEditor() {
     }))).then(() => {
       newEntries.forEach(p => { loadedPackKeysRef.current[p.key] = true })
       setLoadedImages(prev => ({ ...prev, ...result }))
+      // Swap placeholder images on already-placed plants whose pack just loaded
+      const plantLayer = layersRef.current.plantLayer
+      if (!plantLayer) return
+      let needsDraw = false
+      plantLayer.find('Group').forEach(group => {
+        const id = group.id()
+        const d  = state.plantDataRef.current[id]
+        if (!d || !result[d.key]) return
+        const konvaImg = group.findOne('Image')
+        if (konvaImg) { konvaImg.image(result[d.key]); needsDraw = true }
+      })
+      if (needsDraw) plantLayer.batchDraw()
     })
   }, [lazyPacksProps.loaded])
 
