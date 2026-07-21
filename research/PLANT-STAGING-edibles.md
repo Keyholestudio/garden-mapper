@@ -25,10 +25,7 @@ _Then and only then does the row move to PLANT-DATABASE.md with the Sticker ID f
 | Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|
 
-| Sweet Marjoram | Origanum majorana | Lamiaceae | CA US FR GB AU | S | pack-herbs-medicinal | | perennial, culinary-medicinal, fragrant | sweet marjoram, origanum majorana | none | |
-| Mugwort | Artemisia vulgaris | Asteraceae | CA US FR GB AU | L | pack-herbs-medicinal | | perennial, medicinal, aromatic | mugwort, artemisia, common mugwort | none | |
-| Rue | Ruta graveolens | Rutaceae | CA US FR GB AU | M | pack-herbs-medicinal | | perennial, medicinal, aromatic | rue, ruta, herb of grace | none | photosensitive |
-| Wormwood | Artemisia absinthium | Asteraceae | CA US FR GB AU | M | pack-herbs-medicinal | | perennial, medicinal, silver, bitter | artemisia absinthium, wormwood, absinthe | none | |
+
 
 ---
 

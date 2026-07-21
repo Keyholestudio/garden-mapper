@@ -145,7 +145,7 @@ A cron runs daily at 9 AM ET (topic 3954) via `tools/validate-tray.ps1`. It chec
 ---
 
 ## L025 — Sticker continuity: never delete a key, only replace/alias/retire
-**Date:** 2026-06-09
+**Date:** 2026-06-09 | Updated 2026-07-21
 Saved gardens store **keys**, not paths. Missing key = silent broken image.
 - **Replace:** overwrite PNG in-place (both `app/public/stickers/` + `stickers/`), key unchanged. Commit: `"Stickers: replace [name] image in-place"`
 - **Rename:** keep old key pointing to new file + add new key alongside
@@ -153,6 +153,21 @@ Saved gardens store **keys**, not paths. Missing key = silent broken image.
 - **Missing PNG:** shows grey `?` tile — restore via `git checkout HEAD -- stickers/<file>.png app/public/stickers/<file>.png`, then Ctrl+Shift+R
 - **Adding:** follow L023 checklist
 - **What broke June 9:** deleted `decor_pot-s/m/l` keys → broken images in any garden with old pots
+
+### ✅ Pre-commit checklist for any sticker update/reprocess
+Run this before every sticker commit — reprocess or new:
+
+1. **Key unchanged** — confirm the `key` field in the pack/catalog JS is identical before and after. Never rename a key.
+2. **Both paths updated** — PNG replaced in both `app/public/stickers/` AND `stickers/`. Missing either = broken on web or broken in pipeline.
+3. **Pack entry exists** — run `Select-String -Path "app/src/data/packs/*.js" -Pattern "<key>"` to confirm the key is registered. New PNGs without a pack entry = invisible plant.
+4. **Key/src consistency** — if a pack entry uses a short key (e.g. `herb-culinary_oregano`), the `src` field must point to the full filename. Never rely on `key` → filename inference alone.
+5. **Run the validator** — `node tools/validate-stickers.js`. Check for MISSING entries (broken) not just ORPHAN files (harmless).
+6. **Approve before commit** — send PNG to Rob via Telegram. Wait for explicit approval. No auto-commit on reprocesses.
+7. **Test on live garden** — after deploy, hard-refresh and confirm the updated plants render (not `?` tiles) in a saved garden that already contains them.
+
+### Root causes from July 2026 incident
+- 4 new stickers (Mugwort, Rue, Sweet Marjoram, Wormwood) committed to `app/public/stickers/` with no pack JS entry → invisible
+- Pre-existing race condition: pack images loaded async after garden restore → plants placed with placeholder, never swapped. Fixed 2026-07-21: pack image loader now swaps placeholders on canvas after each pack resolves.
 
 ---
 

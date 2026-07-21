@@ -1,5 +1,5 @@
 # Garden Mapper — Sticker Prompt Guide
-_Last updated: 2026-07-20 (removed "No background showing in the center of the plant" from all templates) — Rob's master edition_
+_Last updated: 2026-07-21 — Rob's master edition_
 
 ---
 
@@ -12,7 +12,7 @@ Use the correct template for the plant type. Rob's wording is intentional — do
 ### Pines
 
 ```
-Aerial side view. Art style: watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2–3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Aerial side view. Art style: watercolor painting or Plants vs. Zombies — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline ~3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: [PLANT NAME], stubby [TYPE OF PLANT], no trunk.
 Canvas: [SIZE]px square.
@@ -25,7 +25,7 @@ Shape: Correct proportions.
 ### Plants (herbs, flowers, shrubs, perennials)
 
 ```
-Aerial side view. Art style: watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Aerial side view. Art style: watercolor painting or Plants vs. Zombies — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline ~3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: [PLANT NAME], [TYPE OF PLANT].
 Canvas: [SIZE]px square.
@@ -38,7 +38,7 @@ Shape: [Primary characteristics], stems at bottom and leafy florals at the top. 
 ### Root Vegetables
 
 ```
-Side aerial view. Art style: watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px. Line texturing. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Side aerial view. Art style: watercolor painting or Plants vs. Zombies — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline ~3px. Line texturing. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: [PLANT NAME], [TYPE OF PLANT].
 Canvas: [SIZE]px square.
@@ -51,7 +51,7 @@ Shape: [PLANT NAME] and tops peeking from a plant wide soil line. Only show the 
 ### Deciduous Trees
 
 ```
-Side aerial view. Art style: Watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on primary characteristics of the plant, leafy canopy only, NO TRUNK, NO STEM, NO BARK VISIBLE. Dark outline 2-3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Side aerial view. Art style: watercolor painting or Plants vs. Zombies — tasteful simplified representation of this plant with crisp edges, focusing on primary characteristics of the plant, leafy canopy only, NO TRUNK, NO STEM, NO BARK VISIBLE. Dark outline ~3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: [PLANT NAME], large broad deciduous tree. NO TRUNK. Canopy only. Small leaves.
 Canvas: [SIZE]px square.

@@ -64,4 +64,45 @@ export const entries = [
     src: '/stickers/herb-medicinal_lemon-verbena_M_CA-US-FR-GB-AU.png',
   },
 
+
+  {
+    key: 'herb-medicinal_sweet-marjoram',
+    label: 'Sweet Marjoram',
+    size: 'S',
+    latinName: 'Origanum majorana',
+    searchTerms: ['sweet marjoram', 'origanum majorana'],
+    traits: ['perennial', 'culinary-medicinal', 'fragrant'],
+    src: '/stickers/herb-medicinal_sweet-marjoram_S_CA-US-FR-GB-AU.png',
+  },
+
+  {
+    key: 'herb-medicinal_mugwort',
+    label: 'Mugwort',
+    size: 'L',
+    latinName: 'Artemisia vulgaris',
+    searchTerms: ['mugwort', 'artemisia', 'common mugwort'],
+    traits: ['perennial', 'medicinal', 'aromatic'],
+    src: '/stickers/herb-medicinal_mugwort_L_CA-US-FR-GB-AU.png',
+  },
+
+  {
+    key: 'herb-medicinal_rue',
+    label: 'Rue',
+    size: 'M',
+    latinName: 'Ruta graveolens',
+    searchTerms: ['rue', 'ruta', 'herb of grace'],
+    traits: ['perennial', 'medicinal', 'aromatic'],
+    src: '/stickers/herb-medicinal_rue_M_CA-US-FR-GB-AU.png',
+  },
+
+  {
+    key: 'herb-medicinal_wormwood',
+    label: 'Wormwood',
+    size: 'L',
+    latinName: 'Artemisia absinthium',
+    searchTerms: ['wormwood', 'artemisia absinthium', 'absinthe'],
+    traits: ['perennial', 'medicinal', 'silver', 'bitter'],
+    src: '/stickers/herb-medicinal_wormwood_L_CA-US-FR-GB-AU.png',
+  },
+
 ];

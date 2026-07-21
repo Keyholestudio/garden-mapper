@@ -326,3 +326,7 @@
 | Comfrey | Symphytum officinale | Boraginaceae | CA US FR GB AU | L | pack-herbs-medicinal | herb-medicinal_comfrey_L_CA-US-FR-GB-AU | perennial, medicinal, wildlife | comfrey, symphytum, knitbone | planned | purple/pink/cream forms |
 | Hyssop | Hyssopus officinalis | Lamiaceae | CA US FR GB AU | M | pack-herbs-medicinal | herb-medicinal_hyssop_M_CA-US-FR-GB-AU | perennial, medicinal, pollinator | hyssop, hyssopus | planned | blue/pink/white forms |
 | Lemon Verbena | Aloysia citriodora | Verbenaceae | CA US FR GB AU | M | pack-herbs-medicinal | herb-medicinal_lemon-verbena_M_CA-US-FR-GB-AU | perennial, medicinal, fragrant, lemon | lemon verbena, aloysia | none | |
+| Sweet Marjoram | Origanum majorana | Lamiaceae | CA US FR GB AU | S | pack-herbs-medicinal | herb-medicinal_sweet-marjoram_S_CA-US-FR-GB-AU | perennial, culinary-medicinal, fragrant | sweet marjoram, origanum majorana | none | |
+| Mugwort | Artemisia vulgaris | Asteraceae | CA US FR GB AU | L | pack-herbs-medicinal | herb-medicinal_mugwort_L_CA-US-FR-GB-AU | perennial, medicinal, aromatic | mugwort, artemisia, common mugwort | none | |
+| Rue | Ruta graveolens | Rutaceae | CA US FR GB AU | M | pack-herbs-medicinal | herb-medicinal_rue_M_CA-US-FR-GB-AU | perennial, medicinal, aromatic | rue, ruta, herb of grace | none | photosensitive |
+| Wormwood | Artemisia absinthium | Asteraceae | CA US FR GB AU | L | pack-herbs-medicinal | herb-medicinal_wormwood_L_CA-US-FR-GB-AU | perennial, medicinal, silver, bitter | wormwood, artemisia absinthium, absinthe | none | |
