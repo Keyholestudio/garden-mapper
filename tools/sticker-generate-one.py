@@ -33,35 +33,35 @@ IMAGE_WAIT  = 240
 os.makedirs(OUT_DIR, exist_ok=True)
 
 # -- Prompt templates (SOURCE OF TRUTH: research/STICKER-PROMPT-GUIDE.md) ---------------------
-# Do not modify without updating STICKER-PROMPT-GUIDE.md first. Last synced: 2026-07-21
+# Do not modify without updating STICKER-PROMPT-GUIDE.md first. Last synced: 2026-07-22
 TEMPLATES = {
     "plant": (
-        "Aerial side view. Art style: watercolor painting or Plants vs. Zombies - "
+        "Aerial side view. Art style: moderately detailed watercolor painting - "
         "tasteful simplified representation of this plant with crisp edges, focusing on "
         "a primary characteristics of the plant, bold flat icon. "
-        "Dark outline ~3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic."
+        "Dark outline 2-3px max. No shadows. Centered, 75% canvas fill. Vibrant and iconic."
     ),
     "cedar": (
-        "Aerial side view. Art style: watercolor painting or Plants vs. Zombies - tasteful simplified representation of this plant with crisp edges, "
-        "focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline ~3px. No shadows. "
+        "Aerial side view. Art style: moderately detailed watercolor painting - tasteful simplified representation of this plant with crisp edges, "
+        "focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2-3px max. No shadows. "
         "Centered, 75% canvas fill. Vibrant and iconic."
     ),
     "deciduous": (
-        "Side aerial view. Art style: watercolor painting or Plants vs. Zombies - "
+        "Side aerial view. Art style: moderately detailed watercolor painting - "
         "tasteful simplified representation of this plant with crisp edges, focusing on "
         "primary characteristics of the plant, leafy canopy only, NO TRUNK, NO STEM, NO BARK VISIBLE. "
-        "Dark outline ~3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic."
+        "Dark outline 2-3px max. No shadows. Centered, 75% canvas fill. Vibrant and iconic."
     ),
     "pine": (
-        "Aerial side view. Art style: watercolor painting or Plants vs. Zombies - "
+        "Aerial side view. Art style: moderately detailed watercolor painting - "
         "tasteful simplified representation of this plant with crisp edges, focusing on "
-        "a primary characteristics of the plant, no trunk, bold flat icon. Dark outline ~3px. "
+        "a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2-3px max. "
         "No shadows. Centered, 75% canvas fill. Vibrant and iconic."
     ),
     "rootveg": (
-        "Side aerial view. Art style: watercolor painting or Plants vs. Zombies - "
+        "Side aerial view. Art style: moderately detailed watercolor painting - "
         "tasteful simplified representation of this plant with crisp edges, focusing on "
-        "a primary characteristics of the plant, bold flat icon. Dark outline ~3px. "
+        "a primary characteristics of the plant, bold flat icon. Dark outline 2-3px max. "
         "Line texturing. No shadows. Centered, 75% canvas fill. Vibrant and iconic."
     ),
 }
@@ -523,15 +523,15 @@ def main():
             f"{prefix}\n\n"
             f"Subject: {plant_name}, No trunk.\n"
             f"Canvas: {size_px}px square.\n"
-            f"Colours: {colours}, flat solid magenta background (#FF00FF)\n"
-            f"Shape: Natural leafy canopy. {shape}"
+            f"Suggested Colours: {colours}, flat solid magenta background (#FF00FF)\n"
+            f"Shape: Natural full leafy canopy, distinctive lobed leaf shapes visible. No trunk. No branches. Canopy fills the frame. Spring/summer only. No fall colours."
         )
     elif template == "rootveg":
         prompt = (
             f"{prefix}\n\n"
             f"Subject: {plant_name}, vegetable.\n"
             f"Canvas: {size_px}px square.\n"
-            f"Colours: {colours}, flat solid magenta background (#FF00FF)\n"
+            f"Suggested Colours: {colours}, flat solid magenta background (#FF00FF)\n"
             f"Shape: {shape} Natural proportions."
         )
     elif template == "cedar":
@@ -539,7 +539,7 @@ def main():
             f"{prefix}\n\n"
             f"Subject: Cedar Thuja Conical Tree, no trunk.\n"
             f"Canvas: {size_px}px square.\n"
-            f"Colours: {colours}, flat solid magenta background (#FF00FF)\n"
+            f"Suggested Colours: {colours}, flat solid magenta background (#FF00FF)\n"
             f"Shape: Correct proportions."
         )
     elif template == "pine":
@@ -547,7 +547,7 @@ def main():
             f"{prefix}\n\n"
             f"Subject: {plant_name}, no trunk.\n"
             f"Canvas: {size_px}px square.\n"
-            f"Colours: {colours}, flat solid magenta background (#FF00FF)\n"
+            f"Suggested Colours: {colours}, flat solid magenta background (#FF00FF)\n"
             f"Shape: Correct proportions."
         )
     else:
@@ -555,8 +555,8 @@ def main():
             f"{prefix}\n\n"
             f"Subject: {plant_name}.\n"
             f"Canvas: {size_px}px square.\n"
-            f"Colours: {colours}, flat solid magenta background (#FF00FF)\n"
-            f"Shape: {shape} Only a few leaves and flowers, small plant. Correct proportions."
+            f"Suggested Colours: {colours}, flat solid magenta background (#FF00FF)\n"
+            f"Shape: Correct proportions. No roots."
         )
 
     # ── Ensure Gemini is open ────────────────────────────────

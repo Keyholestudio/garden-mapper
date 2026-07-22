@@ -1,5 +1,5 @@
 # Garden Mapper — Sticker Prompt Guide
-_Last updated: 2026-07-21 — Rob's master edition_
+_Last updated: 2026-07-22 — Rob's master edition_
 
 ---
 
@@ -12,25 +12,25 @@ Use the correct template for the plant type. Rob's wording is intentional — do
 ### Pines
 
 ```
-Aerial side view. Art style: watercolor painting or Plants vs. Zombies — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline ~3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Aerial side view. Art style: moderately detailed watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2–3px max. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: [PLANT NAME], stubby [TYPE OF PLANT], no trunk.
 Canvas: [SIZE]px square.
-Colours: [4-5 colours or hex codes], flat solid magenta background (#FF00FF)
-Shape: Correct proportions.
+Suggested Colours: [4-5 colours or hex codes], flat solid magenta background (#FF00FF)
+Shape: Correct proportions. No roots.
 ```
 
 ---
 
-### Plants (herbs, flowers, shrubs, perennials)
+### Plants (herbs, flowers, shrubs, perennials, ferns, groundcovers)
 
 ```
-Aerial side view. Art style: watercolor painting or Plants vs. Zombies — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline ~3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Aerial side view. Art style: moderately detailed watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px max. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: [PLANT NAME], [TYPE OF PLANT].
 Canvas: [SIZE]px square.
-Colours: [4-5 colours or hex codes], flat solid magenta background (#FF00FF)
-Shape: [Primary characteristics], stems at bottom and leafy florals at the top. Only a few leaves and flowers, small plant. Correct proportions.
+Suggested Colours: [4-5 colours or hex codes], flat solid magenta background (#FF00FF)
+Shape: Correct proportions. No roots.
 ```
 
 ---
@@ -38,11 +38,11 @@ Shape: [Primary characteristics], stems at bottom and leafy florals at the top. 
 ### Root Vegetables
 
 ```
-Side aerial view. Art style: watercolor painting or Plants vs. Zombies — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline ~3px. Line texturing. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Side aerial view. Art style: moderately detailed watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px max. Line texturing. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: [PLANT NAME], [TYPE OF PLANT].
 Canvas: [SIZE]px square.
-Colours: [4-5 colours or hex codes], flat solid magenta background (#FF00FF)
+Suggested Colours: [4-5 colours or hex codes], flat solid magenta background (#FF00FF)
 Shape: [PLANT NAME] and tops peeking from a plant wide soil line. Only show the top of the root/plant above the minimal soil line. [Basic plant description] shoulders visible above the soil, root at bottom and leafy tops. Natural proportions. Root crown only — do NOT show the full root extracted from soil or hanging in the air.
 ```
 
@@ -51,11 +51,11 @@ Shape: [PLANT NAME] and tops peeking from a plant wide soil line. Only show the 
 ### Deciduous Trees
 
 ```
-Side aerial view. Art style: watercolor painting or Plants vs. Zombies — tasteful simplified representation of this plant with crisp edges, focusing on primary characteristics of the plant, leafy canopy only, NO TRUNK, NO STEM, NO BARK VISIBLE. Dark outline ~3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Side aerial view. Art style: moderately detailed watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on primary characteristics of the plant, leafy canopy only, NO TRUNK, NO STEM, NO BARK VISIBLE. Dark outline 2–3px max. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
 
 Subject: [PLANT NAME], large broad deciduous tree. NO TRUNK. Canopy only. Small leaves.
 Canvas: [SIZE]px square.
-Colours: [4-5 colours or hex codes], flat solid magenta background (#FF00FF)
+Suggested Colours: [4-5 colours or hex codes], flat solid magenta background (#FF00FF)
 Shape: Natural full leafy canopy, distinctive lobed leaf shapes visible. No trunk. No branches. Canopy fills the frame. Spring/summer only. No fall colours.
 ```
 
