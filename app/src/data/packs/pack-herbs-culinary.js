@@ -20,7 +20,7 @@ export const entries = [
   {
     key: 'herb-culinary_cilantro',
     label: 'Cilantro',
-    size: 'S',
+    size: 'M',
     latinName: 'Coriandrum sativum',
     searchTerms: ['cilantro', 'coriander', 'coriandrum'],
     traits: ['annual', 'herb', 'culinary', 'seed'],
@@ -29,7 +29,7 @@ export const entries = [
   {
     key: 'herb-culinary_oregano',
     label: 'Oregano',
-    size: 'S',
+    size: 'M',
     latinName: 'Origanum vulgare',
     searchTerms: ['oregano', 'origanum', 'wild marjoram'],
     traits: ['perennial', 'herb', 'culinary', 'mediterranean'],
@@ -66,7 +66,7 @@ export const entries = [
   {
     key: 'herb-culinary_fennel',
     label: 'Fennel',
-    size: 'XL',
+    size: 'M',
     latinName: 'Foeniculum vulgare',
     searchTerms: ['fennel', 'foeniculum', 'florence fennel'],
     traits: ['perennial', 'herb', 'culinary', 'anise', 'feathery'],
@@ -84,7 +84,7 @@ export const entries = [
   {
     key: 'herb-culinary_lovage',
     label: 'Lovage',
-    size: 'XL',
+    size: 'M',
     latinName: 'Levisticum officinale',
     searchTerms: ['lovage', 'levisticum', 'love parsley'],
     traits: ['perennial', 'herb', 'celery-flavour', 'tall'],
@@ -111,7 +111,7 @@ export const entries = [
   {
     key: 'herb-culinary_garlic-chives',
     label: 'Garlic Chives',
-    size: 'S',
+    size: 'M',
     latinName: 'Allium tuberosum',
     searchTerms: ['garlic chives', 'allium tuberosum', 'chinese chives'],
     traits: ['perennial', 'herb', 'culinary', 'edible-flower'],
@@ -120,7 +120,7 @@ export const entries = [
   {
     key: 'herb-culinary_vietnamese-coriander',
     label: 'Vietnamese Coriander',
-    size: 'S',
+    size: 'M',
     latinName: 'Persicaria odorata',
     searchTerms: ['vietnamese coriander', 'persicaria odorata', 'vietnamese mint'],
     traits: ['perennial', 'herb', 'culinary', 'tropical'],
@@ -129,7 +129,7 @@ export const entries = [
   {
     key: 'herb-culinary_cumin',
     label: 'Cumin',
-    size: 'S',
+    size: 'M',
     latinName: 'Cuminum cyminum',
     searchTerms: ['cumin', 'cuminum', 'comino'],
     traits: ['annual', 'herb', 'seed', 'spice'],

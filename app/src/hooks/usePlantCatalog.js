@@ -104,12 +104,12 @@ export const PLANT_CATALOG = [
   { key:'ground-cover_vinca',              label:'Vinca',               family:'Ground Cover',         src:'/stickers/ground-cover_vinca_XS_CA-US-FR-GB-AU.png',              size:'XS' },
 
   // ── Herbs ─────────────────────────────────────────────────────────────────────
-  { key:'herb-small_basil',                label:'Basil',               family:'Herb',                 src:'/stickers/herb-small_basil_S_CA-US-FR-GB-AU.png',                 size:'S' },
-  { key:'herb-small_chives',               label:'Chives',              family:'Herb',                 src:'/stickers/herb-small_chives_S_CA-US-FR-GB-AU.png',                size:'S' },
-  { key:'herb-small_mint',                 label:'Mint',                family:'Herb',                 src:'/stickers/herb-small_mint_S_CA-US-FR-GB-AU.png',                  size:'S' },
-  { key:'herb-small_parsley',              label:'Parsley',             family:'Herb',                 src:'/stickers/herb-small_parsley_S_CA-US-FR-GB-AU.png',               size:'S' },
+  { key:'herb-small_basil',                label:'Basil',               family:'Herb',                 src:'/stickers/herb-small_basil_S_CA-US-FR-GB-AU.png',                 size:'M' },
+  { key:'herb-small_chives',               label:'Chives',              family:'Herb',                 src:'/stickers/herb-small_chives_S_CA-US-FR-GB-AU.png',                size:'M' },
+  { key:'herb-small_mint',                 label:'Mint',                family:'Herb',                 src:'/stickers/herb-small_mint_S_CA-US-FR-GB-AU.png',                  size:'M' },
+  { key:'herb-small_parsley',              label:'Parsley',             family:'Herb',                 src:'/stickers/herb-small_parsley_S_CA-US-FR-GB-AU.png',               size:'M' },
   { key:'herb-small_rosemary',             label:'Rosemary',            family:'Herb',                 src:'/stickers/herb-small_rosemary_M_US-FR-GB-AU.png',                 size:'M' },
-  { key:'herb-small_sage',                 label:'Sage',                family:'Herb',                 src:'/stickers/herb-small_sage_S_CA-US-FR-GB-AU.png',                  size:'S' },
+  { key:'herb-small_sage',                 label:'Sage',                family:'Herb',                 src:'/stickers/herb-small_sage_S_CA-US-FR-GB-AU.png',                  size:'M' },
 
   // ── Shrubs ────────────────────────────────────────────────────────────────────
   { key:'shrub-flowering_azalea',          label:'Azalea',              family:'Shrub',                src:'/stickers/shrub-flowering_azalea_M_CA-US-FR-GB-AU.png', size:'M' },
@@ -186,7 +186,7 @@ export const PLANT_CATALOG = [
   { key:'vine-leaf_wisteria',              label:'Wisteria',            family:'Climber',              src:'/stickers/vine-leaf_wisteria_XL_US-FR-GB-AU.png',                 size:'XL' },
 
   // ── New additions
-  { key:'herb-small_thyme_S_CA-US-FR-GB-AU', label:'Thyme', family:'Herb', src:'/stickers/herb-small_thyme_S_CA-US-FR-GB-AU.png', size:'S' },
+  { key:'herb-small_thyme_S_CA-US-FR-GB-AU', label:'Thyme', family:'Herb', src:'/stickers/herb-small_thyme_S_CA-US-FR-GB-AU.png', size:'M' },
 
   // ── New additions
   { key:'flower-cluster_phlox_M_CA-US-FR-GB-AU', label:'Phlox', family:'Perennial Flower', src:'/stickers/flower-cluster_phlox_M_CA-US-FR-GB-AU.png', size:'M' },

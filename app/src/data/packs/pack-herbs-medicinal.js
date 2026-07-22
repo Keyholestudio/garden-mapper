@@ -21,7 +21,7 @@ export const entries = [
   {
     key: 'herb-medicinal_valerian',
     label: 'Valerian',
-    size: 'L',
+    size: 'M',
     latinName: 'Valeriana officinalis',
     searchTerms: ['valerian', 'valeriana', 'garden valerian'],
     traits: ['perennial', 'medicinal', 'fragrant'],
@@ -30,7 +30,7 @@ export const entries = [
   {
     key: 'herb-medicinal_german-chamomile',
     label: 'German Chamomile',
-    size: 'S',
+    size: 'M',
     latinName: 'Matricaria chamomilla',
     searchTerms: ['german chamomile', 'matricaria', 'wild chamomile'],
     traits: ['annual', 'medicinal', 'fragrant'],
@@ -39,7 +39,7 @@ export const entries = [
   {
     key: 'herb-medicinal_comfrey',
     label: 'Comfrey',
-    size: 'L',
+    size: 'M',
     latinName: 'Symphytum officinale',
     searchTerms: ['comfrey', 'symphytum', 'knitbone'],
     traits: ['perennial', 'medicinal', 'wildlife'],
@@ -68,7 +68,7 @@ export const entries = [
   {
     key: 'herb-medicinal_sweet-marjoram',
     label: 'Sweet Marjoram',
-    size: 'S',
+    size: 'M',
     latinName: 'Origanum majorana',
     searchTerms: ['sweet marjoram', 'origanum majorana'],
     traits: ['perennial', 'culinary-medicinal', 'fragrant'],
@@ -78,7 +78,7 @@ export const entries = [
   {
     key: 'herb-medicinal_mugwort',
     label: 'Mugwort',
-    size: 'L',
+    size: 'M',
     latinName: 'Artemisia vulgaris',
     searchTerms: ['mugwort', 'artemisia', 'common mugwort'],
     traits: ['perennial', 'medicinal', 'aromatic'],
@@ -98,7 +98,7 @@ export const entries = [
   {
     key: 'herb-medicinal_wormwood',
     label: 'Wormwood',
-    size: 'L',
+    size: 'M',
     latinName: 'Artemisia absinthium',
     searchTerms: ['wormwood', 'artemisia absinthium', 'absinthe'],
     traits: ['perennial', 'medicinal', 'silver', 'bitter'],
