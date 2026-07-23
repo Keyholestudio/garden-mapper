@@ -16,7 +16,7 @@ export const entries = [
 
   // 🌿 Tropical Trees & Plants ────────────────────────────────────────────────
   { key:'tree-tropical_banana_XL_CA-US-FR-GB-AU',           label:'Banana Tree',           family:'Tropical', src:'/stickers/tree-tropical_banana_XL_CA-US-FR-GB-AU.png',           size:'XL'  },
-  { key:'tree-tropical_bird-of-paradise_XL_CA-US-FR-GB-AU', label:'Bird of Paradise Tree', family:'Tropical', src:'/stickers/tree-tropical_bird-of-paradise_XL_CA-US-FR-GB-AU.png', size:'XL'  },
+  { key:'tree-tropical_bird-of-paradise_XL_CA-US-FR-GB-AU', label:'Bird of Paradise Tree', family:'Tropical', src:'/stickers/tree-tropical_bird-of-paradise_XL_CA-US-FR-GB-AU.png', size:'M'   },
   { key:'tree-tropical_bougainvillea_XL_CA-US-FR-GB-AU',    label:'Bougainvillea',         family:'Tropical', src:'/stickers/tree-tropical_bougainvillea_XL_CA-US-FR-GB-AU.png',    size:'XL'  },
   { key:'tree-tropical_jacaranda_XXL_CA-US-FR-GB-AU',       label:'Jacaranda Tree',        family:'Tropical', src:'/stickers/tree-tropical_jacaranda_XXL_CA-US-FR-GB-AU.png',       size:'XXL' },
   { key:'tree-tropical_plumeria_M_CA-US-FR-GB-AU',          label:'Plumeria (Frangipani)', family:'Tropical', src:'/stickers/tree-tropical_plumeria_M_CA-US-FR-GB-AU.png',          size:'M'   },
