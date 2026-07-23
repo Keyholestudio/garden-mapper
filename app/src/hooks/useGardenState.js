@@ -53,7 +53,6 @@ export const PLANT_VARIANTS = {
     { label: 'Pink',       name: 'Pink Impression',   colour: '#F5A8C8', src: '/stickers/bulb-spring_tulip_S_pink_CA-US-FR-GB-AU.png' },
     { label: 'Orange',     name: 'Orange Tulip',      colour: '#FF6B1A', src: '/stickers/bulb-spring_tulip_S_orange_CA-US-FR-GB-AU.png' },
     { label: 'Yellow',     name: 'Yellow Tulip',      colour: '#FFD700', src: '/stickers/bulb-spring_tulip_S_yellow_CA-US-FR-GB-AU.png' },
-    { label: 'Parrot',     name: 'Parrot Tulip',      colour: '#C41A0A', src: '/stickers/bulb-spring_tulip_S_parrot_CA-US-FR-GB-AU.png' },
     { label: 'Fosteriana', name: 'Emperor Tulip',     colour: '#F5F0E0', src: '/stickers/bulb-spring_tulip_S_fosteriana_CA-US-FR-GB-AU.png' },
     { label: 'Fringed',    name: 'Fringed Tulip',     colour: '#7B35C8', src: '/stickers/bulb-spring_tulip_S_fringed_CA-US-FR-GB-AU.png' },
   ],
