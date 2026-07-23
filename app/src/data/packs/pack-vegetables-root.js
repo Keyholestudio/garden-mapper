@@ -11,7 +11,7 @@ export const entries = [
   {
     key: 'vegetable-root_celeriac',
     label: 'Celeriac',
-    size: 'M',
+    size: 'S',
     latinName: 'Apium graveolens var. rapaceum',
     searchTerms: ['celeriac', 'celery root', 'turnip-rooted celery'],
     traits: ['biennial', 'root', 'celery-flavour'],
@@ -20,7 +20,7 @@ export const entries = [
   {
     key: 'vegetable-root_jerusalem-artichoke',
     label: 'Jerusalem Artichoke',
-    size: 'XL',
+    size: 'M',
     latinName: 'Helianthus tuberosus',
     searchTerms: ['jerusalem artichoke', 'sunchoke', 'topinambur'],
     traits: ['perennial', 'root', 'edible-tuber', 'tall'],
@@ -29,7 +29,7 @@ export const entries = [
   {
     key: 'vegetable-root_salsify',
     label: 'Salsify',
-    size: 'M',
+    size: 'S',
     latinName: 'Tragopogon porrifolius',
     searchTerms: ['salsify', 'oyster plant', 'vegetable oyster'],
     traits: ['biennial', 'root', 'heritage', 'oyster-flavour'],
@@ -38,7 +38,7 @@ export const entries = [
   {
     key: 'vegetable-root_scorzonera',
     label: 'Scorzonera',
-    size: 'M',
+    size: 'S',
     latinName: 'Scorzonera hispanica',
     searchTerms: ['scorzonera', 'black salsify'],
     traits: ['perennial', 'root', 'heritage'],
@@ -47,7 +47,7 @@ export const entries = [
   {
     key: 'vegetable-root_hamburg-parsley',
     label: 'Hamburg Parsley',
-    size: 'M',
+    size: 'S',
     latinName: 'Petroselinum crispum var. tuberosum',
     searchTerms: ['hamburg parsley', 'turnip-rooted parsley'],
     traits: ['biennial', 'root', 'parsley'],
@@ -56,7 +56,7 @@ export const entries = [
   {
     key: 'vegetable-root_sweet-potato',
     label: 'Sweet Potato',
-    size: 'M',
+    size: 'S',
     latinName: 'Ipomoea batatas',
     searchTerms: ['sweet potato', 'ipomoea', 'kumara'],
     traits: ['annual', 'root', 'tropical', 'spreading'],
@@ -74,7 +74,7 @@ export const entries = [
   {
     key: 'vegetable-root_skirret',
     label: 'Skirret',
-    size: 'M',
+    size: 'S',
     latinName: 'Sium sisarum',
     searchTerms: ['skirret', 'sium sisarum'],
     traits: ['perennial', 'root', 'heritage'],
@@ -83,7 +83,7 @@ export const entries = [
   {
     key: 'vegetable-root_yacon',
     label: 'Yacon',
-    size: 'XL',
+    size: 'S',
     latinName: 'Smallanthus sonchifolius',
     searchTerms: ['yacon', 'smallanthus', 'ground apple'],
     traits: ['perennial', 'root', 'edible-tuber', 'andean'],

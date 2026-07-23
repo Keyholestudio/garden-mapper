@@ -36,7 +36,7 @@ export const PLANT_CATALOG = [
   { key:'flower-cluster_verbena',           label:'Verbena',             family:'Annual Flower',        src:'/stickers/flower-cluster_verbena_S_CA-US-FR-GB-AU.png',             size:'S'  },
   { key:'flower-cluster_agapanthus',        label:'Agapanthus',          family:'Bulb / Perennial',     src:'/stickers/flower-cluster_agapanthus_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'flower-spike_liatris',             label:'Liatris',             family:'Perennial',            src:'/stickers/flower-spike_liatris_M_CA-US-FR-GB-AU.png',               size:'M'  },
-  { key:'flower-spike_hollyhock',           label:'Hollyhock',           family:'Biennial',             src:'/stickers/flower-spike_hollyhock_XL_CA-US-FR-GB-AU.png',            size:'XL' },
+  { key:'flower-spike_hollyhock',           label:'Hollyhock',           family:'Biennial',             src:'/stickers/flower-spike_hollyhock_XL_CA-US-FR-GB-AU.png',            size:'M'  },
   // New vegetables
   { key:'vegetable-leafy_cauliflower',      label:'Cauliflower',         family:'Vegetable',            src:'/stickers/vegetable-leafy_cauliflower_M_CA-US-FR-GB-AU.png',        size:'M'  },
   { key:'vegetable-tall_asparagus',         label:'Asparagus',           family:'Vegetable',            src:'/stickers/vegetable-tall_asparagus_M_CA-US-FR-GB-AU.png',           size:'M'  },
@@ -44,7 +44,7 @@ export const PLANT_CATALOG = [
   { key:'vegetable-leafy_pumpkin',          label:'Pumpkin',             family:'Vegetable',            src:'/stickers/vegetable-leafy_pumpkin_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'vegetable-leafy_squash',           label:'Squash',              family:'Vegetable',            src:'/stickers/vegetable-leafy_squash_M_CA-US-FR-GB-AU.png',             size:'M'  },
   { key:'vegetable-leafy_swiss-chard',      label:'Swiss Chard',         family:'Vegetable',            src:'/stickers/vegetable-leafy_swiss-chard_M_CA-US-FR-GB-AU.png',        size:'M'  },
-  { key:'vegetable-leafy_sweet-potato',     label:'Sweet Potato',        family:'Vegetable',            src:'/stickers/vegetable-leafy_sweet-potato_M_CA-US-FR-GB-AU.png',       size:'M'  },
+  { key:'vegetable-leafy_sweet-potato',     label:'Sweet Potato',        family:'Vegetable',            src:'/stickers/vegetable-leafy_sweet-potato_M_CA-US-FR-GB-AU.png',       size:'S'  },
   { key:'vegetable-root_onion',             label:'Onion',               family:'Root Vegetable',       src:'/stickers/vegetable-root_onion_S_CA-US-FR-GB-AU.png',               size:'S'  },
 
   // ── Aquatic ──────────────────────────────────────────────────────────────────
@@ -92,7 +92,7 @@ export const PLANT_CATALOG = [
   { key:'grass-clump_cattail',             label:'Cattail',             family:'Aquatic / Grass',      src:'/stickers/grass-clump_cattail_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'grass-clump_feather-grass',       label:'Feather Grass',       family:'Ornamental Grass',     src:'/stickers/grass-clump_feather-grass_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'grass-clump_ornamental-grass',    label:'Ornamental Grass',    family:'Ornamental Grass',     src:'/stickers/grass-clump_ornamental-grass_M_CA-US-FR-GB-AU.png', size:'M' },
-  { key:'grass-clump_pampas-grass',        label:'Pampas Grass',        family:'Ornamental Grass',     src:'/stickers/grass-clump_pampas-grass_XL_US-FR-GB-AU.png',           size:'XL' },
+  { key:'grass-clump_pampas-grass',        label:'Pampas Grass',        family:'Ornamental Grass',     src:'/stickers/grass-clump_pampas-grass_XL_US-FR-GB-AU.png',           size:'M'  },
 
   // ── Ground Cover ──────────────────────────────────────────────────────────────
   { key:'ground-cover_ajuga',              label:'Ajuga',               family:'Ground Cover',         src:'/stickers/ground-cover_ajuga_XS_CA-US-FR-GB-AU.png',              size:'XS' },
@@ -104,7 +104,7 @@ export const PLANT_CATALOG = [
   { key:'ground-cover_vinca',              label:'Vinca',               family:'Ground Cover',         src:'/stickers/ground-cover_vinca_XS_CA-US-FR-GB-AU.png',              size:'XS' },
 
   // ── Herbs ─────────────────────────────────────────────────────────────────────
-  { key:'herb-small_basil',                label:'Basil',               family:'Herb',                 src:'/stickers/herb-small_basil_S_CA-US-FR-GB-AU.png',                 size:'M' },
+  { key:'herb-small_basil',                label:'Basil',               family:'Herb',                 src:'/stickers/herb-small_basil_S_CA-US-FR-GB-AU.png',                 size:'S' },
   { key:'herb-small_chives',               label:'Chives',              family:'Herb',                 src:'/stickers/herb-small_chives_S_CA-US-FR-GB-AU.png',                size:'M' },
   { key:'herb-small_mint',                 label:'Mint',                family:'Herb',                 src:'/stickers/herb-small_mint_S_CA-US-FR-GB-AU.png',                  size:'M' },
   { key:'herb-small_parsley',              label:'Parsley',             family:'Herb',                 src:'/stickers/herb-small_parsley_S_CA-US-FR-GB-AU.png',               size:'M' },
@@ -166,7 +166,7 @@ export const PLANT_CATALOG = [
   { key:'vegetable-tall_broccoli',         label:'Broccoli',            family:'Vegetable',            src:'/stickers/vegetable-tall_broccoli_M_CA-US-FR-GB-AU.png',          size:'M' },
   { key:'vegetable-tall_cherry-tomato',    label:'Cherry Tomato',       family:'Vegetable',            src:'/stickers/vegetable-tall_cherry-tomato_M_CA-US-FR-GB-AU.png',     size:'M' },
   { key:'vegetable-tall_chilli',           label:'Chilli Pepper',       family:'Vegetable',            src:'/stickers/vegetable-tall_chilli_M_CA-US-FR-GB-AU.png',            size:'M' },
-  { key:'vegetable-tall_corn',             label:'Corn',                family:'Vegetable',            src:'/stickers/vegetable-tall_corn_XL_CA-US-FR-GB-AU.png',             size:'XL' },
+  { key:'vegetable-tall_corn',             label:'Corn',                family:'Vegetable',            src:'/stickers/vegetable-tall_corn_XL_CA-US-FR-GB-AU.png',             size:'M'  },
   { key:'vegetable-tall_eggplant',         label:'Eggplant',            family:'Vegetable',            src:'/stickers/vegetable-tall_eggplant_M_CA-US-FR-GB-AU.png',          size:'M' },
   { key:'vegetable-tall_french-bean',      label:'French Bean',         family:'Vegetable',            src:'/stickers/vegetable-tall_french-bean_S_CA-US-FR-GB-AU.png',       size:'S' },
   { key:'vegetable-tall_leek',             label:'Leek',                family:'Vegetable',            src:'/stickers/vegetable-tall_leek_M_CA-US-FR-GB-AU.png',              size:'M' },
@@ -183,7 +183,7 @@ export const PLANT_CATALOG = [
   { key:'vine-leaf_runner-bean',           label:'Runner Bean',         family:'Vegetable / Climber',  src:'/stickers/vine-leaf_runner-bean_M_CA-US-FR-GB-AU.png',            size:'M' },
   { key:'vine-leaf_sweet-pea',             label:'Sweet Pea',           family:'Annual Flower',        src:'/stickers/vine-leaf_sweet-pea_S_CA-US-FR-GB-AU.png',              size:'S' },
   { key:'vine-leaf_virginia-creeper',      label:'Virginia Creeper',    family:'Climber',              src:'/stickers/vine-leaf_virginia-creeper_M_CA-US-FR-GB-AU.png', size:'M' },
-  { key:'vine-leaf_wisteria',              label:'Wisteria',            family:'Climber',              src:'/stickers/vine-leaf_wisteria_XL_US-FR-GB-AU.png',                 size:'XL' },
+  { key:'vine-leaf_wisteria',              label:'Wisteria',            family:'Climber',              src:'/stickers/vine-leaf_wisteria_XL_US-FR-GB-AU.png',                 size:'M'  },
 
   // ── New additions
   { key:'herb-small_thyme_S_CA-US-FR-GB-AU', label:'Thyme', family:'Herb', src:'/stickers/herb-small_thyme_S_CA-US-FR-GB-AU.png', size:'M' },
