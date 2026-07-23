@@ -72,7 +72,7 @@ export const entries = [
     latinName: 'Origanum majorana',
     searchTerms: ['sweet marjoram', 'origanum majorana'],
     traits: ['perennial', 'culinary-medicinal', 'fragrant'],
-    src: '/stickers/herb-medicinal_sweet-marjoram_S_CA-US-FR-GB-AU.png',
+    src: '/stickers/herb-medicinal_sweet-marjoram_M_CA-US-FR-GB-AU.png',
   },
 
   {

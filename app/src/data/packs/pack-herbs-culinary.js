@@ -70,7 +70,7 @@ export const entries = [
     latinName: 'Foeniculum vulgare',
     searchTerms: ['fennel', 'foeniculum', 'florence fennel'],
     traits: ['perennial', 'herb', 'culinary', 'anise', 'feathery'],
-    src: '/stickers/herb-culinary_fennel_XL_CA-US-FR-GB-AU.png',
+    src: '/stickers/herb-culinary_fennel_M_CA-US-FR-GB-AU.png',
   },
   {
     key: 'herb-culinary_caraway',
