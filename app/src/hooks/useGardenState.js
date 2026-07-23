@@ -48,6 +48,12 @@ export const PLANT_VARIANTS = {
     { label: 'Purple',     name: 'Royal Red Maple', colour: '#6A1B9A', src: '/stickers/tree-deciduous_maple_XXL_purple-leaf.png' },
     { label: 'Japanese',   name: 'Japanese Maple',  colour: '#C0392B', src: '/stickers/tree-deciduous_japanese-maple_XXL_CA-US-FR-GB-AU.png' },
   ],
+  'flower-spike_iris': [
+    { label: 'Bearded',      name: 'Bearded Iris',      colour: '#7B35C8', src: '/stickers/flower-spike_iris_M_bearded_CA-US-FR-GB-AU.png' },
+    { label: 'Dwarf',        name: 'Dwarf Bearded Iris',colour: '#6B35B8', src: '/stickers/flower-spike_iris_M_dwarf_CA-US-FR-GB-AU.png' },
+    { label: 'Species',      name: 'Species Iris',      colour: '#FFD700', src: '/stickers/flower-spike_iris_M_species_CA-US-FR-GB-AU.png' },
+    { label: 'Peach',        name: 'Peach Iris',        colour: '#F5C090', src: '/stickers/flower-spike_iris_M_peach_CA-US-FR-GB-AU.png' },
+  ],
   'shrub-flowering_azalea': [
     { label: 'White', name: 'White Azalea', colour: '#F8F8F0', src: '/stickers/shrub-flowering_azalea_M_white_CA-US-FR-GB-AU.png' },
     { label: 'Pink',  name: 'Pink Azalea',  colour: '#F5A8C8', src: '/stickers/shrub-flowering_azalea_M_pink_CA-US-FR-GB-AU.png' },
