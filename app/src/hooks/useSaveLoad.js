@@ -550,9 +550,9 @@ export function loadGarden({
 
 // ── createNewGarden ───────────────────────────────────────────────────────────
 // Mirrors v8 newGarden(). Saves current, pushes new entry, returns new index.
-export function createNewGarden({ currentGardenIndex, stage, layers, state }) {
+export function createNewGarden({ currentGardenIndex, stage, layers, state, isSubscribed = false }) {
   const gardens = readGardens()
-  if (gardens.length >= MAX_GARDENS) return { limitReached: true }
+  if (!isSubscribed && gardens.length >= MAX_GARDENS) return { limitReached: true }
 
   // Save current garden first (same as v8)
   saveGarden({ stage, layers, state, currentGardenIndex })

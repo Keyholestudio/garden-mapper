@@ -1196,6 +1196,7 @@ export default function GardenEditor() {
       stage: stageRef.current,
       layers: layersRef.current,
       state,
+      isSubscribed,
     })
     if (result.limitReached) return
 
