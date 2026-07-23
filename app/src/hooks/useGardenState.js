@@ -48,6 +48,24 @@ export const PLANT_VARIANTS = {
     { label: 'Purple',     name: 'Royal Red Maple', colour: '#6A1B9A', src: '/stickers/tree-deciduous_maple_XXL_purple-leaf.png' },
     { label: 'Japanese',   name: 'Japanese Maple',  colour: '#C0392B', src: '/stickers/tree-deciduous_japanese-maple_XXL_CA-US-FR-GB-AU.png' },
   ],
+  'flower-daisy_dahlia': [
+    { label: 'Purple', name: 'Purple Dahlia', colour: '#7B35C8', src: '/stickers/flower-daisy_dahlia_M_purple_CA-US-FR-GB-AU.png' },
+    { label: 'Red',    name: 'Red Dahlia',    colour: '#D42B2B', src: '/stickers/flower-daisy_dahlia_M_red_CA-US-FR-GB-AU.png' },
+    { label: 'Yellow', name: 'Yellow Dahlia', colour: '#FFD700', src: '/stickers/flower-daisy_dahlia_M_yellow_CA-US-FR-GB-AU.png' },
+  ],
+  'flower-daisy_geranium': [
+    { label: 'Red Zonal',   name: 'Red Zonal Geranium',   colour: '#D42B2B', src: '/stickers/flower-daisy_geranium_S_red-zonal_CA-US-FR-GB-AU.png' },
+    { label: 'Pink Ivy',   name: 'Pink Ivy Geranium',    colour: '#F5A8C8', src: '/stickers/flower-daisy_geranium_S_pink-ivy_CA-US-FR-GB-AU.png' },
+    { label: 'Pink Angel', name: 'Angel Geranium',       colour: '#F5C8D8', src: '/stickers/flower-daisy_geranium_S_pink-angel_CA-US-FR-GB-AU.png' },
+    { label: 'Scented',    name: 'Scented Geranium',     colour: '#7A9A60', src: '/stickers/flower-daisy_geranium_S_scented_CA-US-FR-GB-AU.png' },
+    { label: 'Fancy Leaf', name: 'Fancy Leaf Geranium',  colour: '#D4A820', src: '/stickers/flower-daisy_geranium_S_fancy-leaf_CA-US-FR-GB-AU.png' },
+  ],
+  'flower-daisy_marigold': [
+    { label: 'Orange',  name: 'Orange Marigold',  colour: '#FF8C00', src: '/stickers/flower-daisy_marigold_S_orange_CA-US-FR-GB-AU.png' },
+    { label: 'Yellow',  name: 'Yellow Marigold',  colour: '#FFD700', src: '/stickers/flower-daisy_marigold_S_yellow_CA-US-FR-GB-AU.png' },
+    { label: 'Cream',   name: 'Cream Marigold',   colour: '#F5F0D8', src: '/stickers/flower-daisy_marigold_S_cream_CA-US-FR-GB-AU.png' },
+    { label: 'French',  name: 'French Marigold',  colour: '#FF6B00', src: '/stickers/flower-daisy_marigold_S_french_CA-US-FR-GB-AU.png' },
+  ],
   'flower-cluster_hydrangea': [
     { label: 'Arborescens', name: 'Hydrangea Arborescens', colour: '#F0EEE0', src: '/stickers/flower-cluster_hydrangea_M_arborescens_CA-US-FR-GB-AU.png' },
     { label: 'Nikko Blue',  name: 'Nikko Blue Hydrangea', colour: '#5B8DD9', src: '/stickers/flower-cluster_hydrangea_M_nikko-blue_CA-US-FR-GB-AU.png' },
