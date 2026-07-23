@@ -48,6 +48,16 @@ export const PLANT_VARIANTS = {
     { label: 'Purple',     name: 'Royal Red Maple', colour: '#6A1B9A', src: '/stickers/tree-deciduous_maple_XXL_purple-leaf.png' },
     { label: 'Japanese',   name: 'Japanese Maple',  colour: '#C0392B', src: '/stickers/tree-deciduous_japanese-maple_XXL_CA-US-FR-GB-AU.png' },
   ],
+  'shrub-flowering_azalea': [
+    { label: 'White', name: 'White Azalea', colour: '#F8F8F0', src: '/stickers/shrub-flowering_azalea_M_white_CA-US-FR-GB-AU.png' },
+    { label: 'Pink',  name: 'Pink Azalea',  colour: '#F5A8C8', src: '/stickers/shrub-flowering_azalea_M_pink_CA-US-FR-GB-AU.png' },
+    { label: 'Red',   name: 'Red Azalea',   colour: '#D42B2B', src: '/stickers/shrub-flowering_azalea_M_red_CA-US-FR-GB-AU.png' },
+  ],
+  'flower-spike_hollyhock': [
+    { label: 'Pink',  name: 'Pink Hollyhock',  colour: '#F5A8C8', src: '/stickers/flower-spike_hollyhock_XL_pink_CA-US-FR-GB-AU.png' },
+    { label: 'Red',   name: 'Red Hollyhock',   colour: '#D42B2B', src: '/stickers/flower-spike_hollyhock_XL_red_CA-US-FR-GB-AU.png' },
+    { label: 'White', name: 'White Hollyhock', colour: '#F8F8F0', src: '/stickers/flower-spike_hollyhock_XL_white_CA-US-FR-GB-AU.png' },
+  ],
   'flower-rose_peony': [
     { label: 'White', name: 'White Peony', colour: '#F8F8F0', src: '/stickers/flower-rose_peony_M_white_CA-US-FR-GB-AU.png' },
     { label: 'Pink',  name: 'Pink Peony',  colour: '#F5A8C8', src: '/stickers/flower-rose_peony_M_pink_CA-US-FR-GB-AU.png' },
