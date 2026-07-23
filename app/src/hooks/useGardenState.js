@@ -48,6 +48,14 @@ export const PLANT_VARIANTS = {
     { label: 'Purple',     name: 'Royal Red Maple', colour: '#6A1B9A', src: '/stickers/tree-deciduous_maple_XXL_purple-leaf.png' },
     { label: 'Japanese',   name: 'Japanese Maple',  colour: '#C0392B', src: '/stickers/tree-deciduous_japanese-maple_XXL_CA-US-FR-GB-AU.png' },
   ],
+  'flower-cluster_hydrangea': [
+    { label: 'Arborescens', name: 'Hydrangea Arborescens', colour: '#F0EEE0', src: '/stickers/flower-cluster_hydrangea_M_arborescens_CA-US-FR-GB-AU.png' },
+    { label: 'Nikko Blue',  name: 'Nikko Blue Hydrangea', colour: '#5B8DD9', src: '/stickers/flower-cluster_hydrangea_M_nikko-blue_CA-US-FR-GB-AU.png' },
+    { label: 'Blue Deckle', name: 'Blue Deckle Hydrangea', colour: '#7AAAD8', src: '/stickers/flower-cluster_hydrangea_M_blue-deckle_CA-US-FR-GB-AU.png' },
+    { label: 'Eldorado',    name: 'Eldorado Hydrangea',   colour: '#A8D840', src: '/stickers/flower-cluster_hydrangea_M_eldorado_CA-US-FR-GB-AU.png' },
+    { label: 'Unique',      name: 'Unique Hydrangea',     colour: '#F5D8D8', src: '/stickers/flower-cluster_hydrangea_M_unique_CA-US-FR-GB-AU.png' },
+    { label: 'Miss Saori',  name: 'Miss Saori Hydrangea', colour: '#C82860', src: '/stickers/flower-cluster_hydrangea_M_miss-saori_CA-US-FR-GB-AU.png' },
+  ],
   'bulb-spring_tulip': [
     { label: 'Red',        name: 'Red Tulip',         colour: '#D42B2B', src: '/stickers/bulb-spring_tulip_S_red_CA-US-FR-GB-AU.png' },
     { label: 'Pink',       name: 'Pink Impression',   colour: '#F5A8C8', src: '/stickers/bulb-spring_tulip_S_pink_CA-US-FR-GB-AU.png' },
