@@ -48,6 +48,13 @@ export const PLANT_VARIANTS = {
     { label: 'Purple',     name: 'Royal Red Maple', colour: '#6A1B9A', src: '/stickers/tree-deciduous_maple_XXL_purple-leaf.png' },
     { label: 'Japanese',   name: 'Japanese Maple',  colour: '#C0392B', src: '/stickers/tree-deciduous_japanese-maple_XXL_CA-US-FR-GB-AU.png' },
   ],
+  'herb-small_basil': [
+    { label: 'Green',   name: 'Sweet Basil',    colour: '#5AB83A', src: '/stickers/herb-small_basil_S_CA-US-FR-GB-AU.png' },
+    { label: 'Thai',    name: 'Thai Basil',     colour: '#2A5A1A', src: '/stickers/herb-small_basil_S_thai_CA-US-FR-GB-AU.png' },
+    { label: 'Purple',  name: 'Purple Basil',   colour: '#6A1A3A', src: '/stickers/herb-small_basil_S_purple_CA-US-FR-GB-AU.png' },
+    { label: 'Greek',   name: 'Greek Basil',    colour: '#4A7C2F', src: '/stickers/herb-small_basil_S_greek_CA-US-FR-GB-AU.png' },
+    { label: 'Opal',    name: 'Opal Basil',     colour: '#5A1A6A', src: '/stickers/herb-small_basil_S_opal_CA-US-FR-GB-AU.png' },
+  ],
   'flower-daisy_dahlia': [
     { label: 'Purple', name: 'Purple Dahlia', colour: '#7B35C8', src: '/stickers/flower-daisy_dahlia_M_purple_CA-US-FR-GB-AU.png' },
     { label: 'Red',    name: 'Red Dahlia',    colour: '#D42B2B', src: '/stickers/flower-daisy_dahlia_M_red_CA-US-FR-GB-AU.png' },
