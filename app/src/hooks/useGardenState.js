@@ -86,6 +86,11 @@ export const PLANT_VARIANTS = {
     { label: 'Greek',   name: 'Greek Basil',    colour: '#4A7C2F', src: '/stickers/herb-small_basil_S_greek_CA-US-FR-GB-AU.png' },
     { label: 'Opal',    name: 'Opal Basil',     colour: '#5A1A6A', src: '/stickers/herb-small_basil_S_opal_CA-US-FR-GB-AU.png' },
   ],
+  'flower-daisy_zinnia': [
+    { label: 'Orange', name: 'Orange Zinnia', colour: '#FF6B1A', src: '/stickers/flower-daisy_zinnia_S_orange_CA-US-FR-GB-AU.png' },
+    { label: 'Red',    name: 'Red Zinnia',    colour: '#D42B2B', src: '/stickers/flower-daisy_zinnia_S_red_CA-US-FR-GB-AU.png' },
+    { label: 'Pink',   name: 'Pink Zinnia',   colour: '#E8207A', src: '/stickers/flower-daisy_zinnia_S_pink_CA-US-FR-GB-AU.png' },
+  ],
   'flower-daisy_dahlia': [
     { label: 'Purple', name: 'Purple Dahlia', colour: '#7B35C8', src: '/stickers/flower-daisy_dahlia_M_purple_CA-US-FR-GB-AU.png' },
     { label: 'Red',    name: 'Red Dahlia',    colour: '#D42B2B', src: '/stickers/flower-daisy_dahlia_M_red_CA-US-FR-GB-AU.png' },
