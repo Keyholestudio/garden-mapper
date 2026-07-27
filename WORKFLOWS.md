@@ -1,6 +1,6 @@
 # Garden Mapper — Workflows
 _Central reference for how we do things. When in doubt, check here first._
-_Last updated: 2026-06-26_
+_Last updated: 2026-07-27_
 _Archived workflows (1, 3, pack list): `memory/deep/garden-planner/workflows-archive.md`_
 
 ---
@@ -9,6 +9,7 @@ _Archived workflows (1, 3, pack list): `memory/deep/garden-planner/workflows-arc
 
 0. [Plant pipeline: Staging → Database](#0-plant-pipeline-staging--database)
 0a. [Sticker prompt template sync](#0a-sticker-prompt-template-sync)
+0b. [Apply a prompt amendment to an existing sticker](#0b-apply-a-prompt-amendment-to-an-existing-sticker)
 2. [Add a new plant sticker (lazy pack)](#2-add-a-new-plant-sticker-lazy-pack)
 4. [Add a colour variant to an existing plant](#4-add-a-colour-variant-to-an-existing-plant)
 5. [Regenerate / replace an existing sticker](#5-regenerate--replace-an-existing-sticker)
@@ -82,6 +83,78 @@ _Archived workflows (1, 3, pack list): `memory/deep/garden-planner/workflows-arc
 - `PLANT-PACK-RESEARCH.md` is read-only reference — update it only when adding new packs
 - Check the correct staging file first before any sticker generation
 - The old monolithic `PLANT-STAGING.md` is now archived — do not use it
+
+---
+
+## 0b. Apply a prompt amendment to an existing sticker
+
+> **Trigger:** Rob says "regenerate X with [change]" — background colour change, added shape text, corrected colours, etc.
+
+### Step 1 — Locate the PLANT_LOOKUP entry
+Open `tools/sticker-generate-one.py` and find the plant's row in `PLANT_LOOKUP`. It has 7 fields:
+```
+"plant name": (sticker_prefix, size_tier, size_px, family, template, colours, shape)
+```
+
+### Step 2 — Apply the amendment to the correct field
+
+| Rob says | Which field to edit | Rule |
+|----------|-------------------|------|
+| "regenerate with cyan/magenta/yellow background" | `colours` | Remove any existing `flat solid X background (#XXXXXX)` from colours. Add the new one: `flat solid cyan background (#00FFFF)` |
+| "add to the prompt: [text]" | `shape` | Append or replace shape text. This lands verbatim in the Shape: line. |
+| "update the colours to [description]" | `colours` | Edit colour hex values and labels. Do NOT touch the background spec unless Rob said to. |
+| "remove [colour] from the colour options" | `colours` | Remove that colour entry. |
+
+**Critical rule — background colours:** The `colours` string must contain **exactly one** background spec. The prompt builder strips it out and rebuilds the BG line. If you change the BG colour:
+1. Remove the old `flat solid X background (#XXXXXX)` from the colours string entirely
+2. Add the new `flat solid Y background (#YYYYYY)` in its place
+3. Never leave two background specs in the colours string
+
+**Critical rule — shape text:** The `shape` field is used verbatim in the prompt. If Rob says "add to the prompt", that text goes in `shape`. Do NOT add it to `colours`.
+
+### Step 3 — Verify the assembled prompt before generating
+Print the final prompt to confirm it looks right:
+```powershell
+$PYTHON = "C:\Users\RG\AppData\Local\Python\bin\python3.exe"
+# Quick check: run the script with a dry-run or read the prompt build logic
+# Confirm colours_line has exactly one background spec
+# Confirm shape text appears correctly
+```
+At minimum: mentally trace the 7 fields and confirm no conflict exists before running.
+
+### Step 4 — Generate
+```powershell
+cd "C:\Users\RG\.openclaw\workspace\projects\garden-planner\tools"
+C:\Users\RG\AppData\Local\Python\bin\python3.exe sticker-generate-one.py "plant name" --force
+```
+
+### Step 5 — Fix the background removal
+The script auto-detects the background from image corners via `detect_background_chroma()`. Check the output:
+- If it reports `chroma: FF00FF` → magenta removal (correct for most plants)
+- If it reports `chroma: 00FFFF` → cyan removal
+- If corners show two different colours (split BG): the script runs two passes automatically
+
+If the output PNG still has background residue: sample the corners manually and re-run the pipeline with the correct `--chroma` flag (see L046).
+
+### Step 6 — Send preview to Rob
+```powershell
+# Script sends via Telegram automatically (or falls back to message tool)
+# If Telegram send fails, use message tool directly:
+# message action=send media=<pending path> caption="Plant name — [description]. Approve?"
+```
+
+### Step 7 — On approval: deploy
+```powershell
+$file = "<sticker-id>.png"
+Copy-Item "stickers\generated\pending\$file" "app\public\stickers\$file" -Force
+Copy-Item "stickers\generated\pending\$file" "stickers\$file" -Force
+git add -A
+git commit -m "Sticker: replace [Plant] ([what changed])"
+git push
+```
+
+### Step 8 — Update PROJECT.md open items
+Mark the item as resolved in the Batch 8 rework list.
 
 ---
 

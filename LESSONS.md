@@ -1,6 +1,52 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026, L027, L028 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L046 — Sticker prompt amendments: how to apply them correctly (2026-07-27)
+
+### The problem this fixes
+When Rob says "regenerate X with cyan background" or "add to the prompt: [text]", two bugs were occurring:
+1. **Duplicate background colours** — the prompt builder was hardcoding `flat solid magenta background (#FF00FF)` after the colours string, so if the colours string already contained a background spec (e.g. cyan), both ended up in the prompt. Gemini then generated split cyan+magenta backgrounds.
+2. **Shape text ignored** — the `else` branch in the prompt builder was hardcoding `"Correct proportions. No roots."` instead of using the `shape` field from PLANT_LOOKUP. So any custom shape text added to PLANT_LOOKUP was silently discarded.
+
+### Rules for applying prompt amendments
+
+**When Rob says "regenerate X with [colour] background":**
+1. Update PLANT_LOOKUP `colours` string — **remove any existing `flat solid X background (#XXXXXX)` spec** from the colours string entirely
+2. Do NOT add the background spec to the colours string. The prompt builder handles the BG line separately now.
+3. Update the background in the PLANT_LOOKUP `colours` string only if it affects plant colour decisions (e.g. "no magenta petals"). Otherwise leave colours alone.
+4. The correct place to set BG is: add a `flat solid X background (#XXXXXX)` note anywhere in the colours string — the builder will detect and isolate it cleanly.
+
+**When Rob says "add to the prompt: [text]":**
+1. That text goes into the `shape` field (7th element) of the PLANT_LOOKUP tuple, not the colours string
+2. Replace or append to the existing shape text — do not add it as a colour
+3. The `else` prompt template uses `{shape}` verbatim — whatever is in shape goes directly into the prompt
+4. Confirm the edit by printing the assembled prompt before generating
+
+**When Rob provides a corrected prompt from Gemini:**
+1. Cross-check it against the current PLANT_LOOKUP entry
+2. Identify any conflicts (duplicate BGs, missing additions, wrong text)
+3. Fix PLANT_LOOKUP to match Rob's intent — not just copy-paste the broken Gemini prompt back in
+
+### How the prompt builder works (as of 2026-07-27)
+```
+colours string (from PLANT_LOOKUP)
+  → strip any existing background spec
+  → if colours had a bg spec: use it
+  → else: append default magenta (#FF00FF)
+  → combine as single colours_line
+
+shape string (from PLANT_LOOKUP)
+  → inserted verbatim into Shape: field
+  → NOT overridden by template hardcoding
+```
+
+### Background removal: always auto-detect from raw image corners
+Do NOT rely on the colours string to decide which chroma to remove. Gemini doesn't reliably follow background colour instructions. Always sample the actual raw image corners to determine the background colour, then pass `--chroma RRGGBB` to the pipeline accordingly. See `detect_background_chroma()` in `sticker-generate-one.py`.
+
+**Split backgrounds (cyan + magenta):** Gemini sometimes generates a half-cyan half-magenta background. When corner sampling detects two distinct chromas, run the pipeline twice — magenta pass first, then cyan pass on the output.
+
+---
+
 ## L045 — Chroma key background colour system (2026-07-26)
 **The full process for generating stickers with different background colours:**
 
