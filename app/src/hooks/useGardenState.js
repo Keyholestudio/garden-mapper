@@ -50,7 +50,6 @@ export const PLANT_VARIANTS = {
   ],
   'flower-spike_iris': [
     { label: 'Bearded',      name: 'Bearded Iris',      colour: '#7B35C8', src: '/stickers/flower-spike_iris_M_bearded_CA-US-FR-GB-AU.png' },
-    { label: 'Dwarf',        name: 'Dwarf Bearded Iris',colour: '#6B35B8', src: '/stickers/flower-spike_iris_M_dwarf_CA-US-FR-GB-AU.png' },
     { label: 'Species',      name: 'Species Iris',      colour: '#FFD700', src: '/stickers/flower-spike_iris_M_species_CA-US-FR-GB-AU.png' },
     { label: 'Peach',        name: 'Peach Iris',        colour: '#F5C090', src: '/stickers/flower-spike_iris_M_peach_CA-US-FR-GB-AU.png' },
   ],

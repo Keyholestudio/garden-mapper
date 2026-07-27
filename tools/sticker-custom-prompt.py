@@ -7,7 +7,8 @@ import urllib.request
 import websocket
 
 WORKSPACE  = r"C:\Users\RG\.openclaw\workspace\projects\garden-planner"
-PIPELINE   = os.path.join(WORKSPACE, "tools", "sticker-pipeline.py")
+PIPELINE        = os.path.join(WORKSPACE, "tools", "sticker-pipeline.py")
+PIPELINE_CYAN   = os.path.join(WORKSPACE, "tools", "sticker-pipeline-cyan.py")
 PYTHON     = r"C:\Users\RG\AppData\Local\Python\bin\python3.exe"
 OUT_DIR    = os.path.join(WORKSPACE, "stickers", "generated", "pending")
 IMAGE_WAIT = 240
@@ -120,9 +121,12 @@ def main():
 
     # Pipeline
     p("Running pipeline...")
-    subprocess.run([PYTHON, PIPELINE, raw_path], check=True)
+    pipe = PIPELINE_CYAN if "--cyan" in sys.argv else PIPELINE
+    subprocess.run([PYTHON, pipe, raw_path], check=True)
     nobg = raw_path.replace(".png", "_nobg.png")
     if os.path.exists(nobg):
+        if os.path.exists(clean_path):
+            os.remove(clean_path)
         os.rename(nobg, clean_path)
     p(f"CLEAN saved: {os.path.basename(clean_path)}")
     p(f"\nPending: {clean_path}")

@@ -1,8 +1,9 @@
 """
-Chroma-key background remover v10
-- Removes #FF00FF magenta background (same logic as v4 green, ported to magenta)
-- Edge-only spill suppression (semi-transparent border pixels only)
-- Erases Gemini watermark in bottom-right 20% corner
+Chroma-key background remover v11
+- Default chroma: #FF00FF magenta
+- Supports --chroma RRGGBB flag: e.g. --chroma 00FFFF (cyan), --chroma FFFF00 (neon yellow)
+- Colour-aware edge spill suppression for magenta, cyan, and neon yellow
+- Erases Gemini watermark in bottom-right 15% corner
 - Crops to content bounding box
 - Resizes to 512x512
 - Outputs transparent PNG ready for Garden Mapper sticker folder
@@ -35,17 +36,32 @@ def remove_chroma(input_path, output_path):
     new_alpha = np.where(hard_transparent, 0,
                 np.where(soft_zone, soft_alpha, 255)).astype(np.uint8)
 
-    # ── Edge-only magenta spill suppression ────────────────────────────────────
-    # Only apply to semi-transparent edge pixels (same as v4 green approach).
-    # Magenta spill = R and B both elevated above G on edge pixels.
+    # ── Edge-only spill suppression (colour-aware) ────────────────────────────
+    # Suppress chroma bleed on semi-transparent edge pixels only.
     edge_mask = (new_alpha > 0) & (new_alpha < 255)
-    avg_g_of_rb = g  # G channel is the neutral reference for magenta
-    rb_excess_r = r - g  # how much R is above G
-    rb_excess_b = b - g  # how much B is above G
-    spill = edge_mask & (rb_excess_r > 4) & (rb_excess_b > 4)
-    # Reduce R and B toward G on spill pixels
-    data[:,:,0] = np.where(spill, g, r)
-    data[:,:,2] = np.where(spill, g, b)
+    chroma_r, chroma_g, chroma_b = CHROMA[0], CHROMA[1], CHROMA[2]
+    if chroma_r > 200 and chroma_b > 200 and chroma_g < 50:
+        # Magenta spill: R and B both elevated above G
+        spill = edge_mask & ((r - g) > 4) & ((b - g) > 4)
+        data[:,:,0] = np.where(spill, g, r)
+        data[:,:,2] = np.where(spill, g, b)
+    elif chroma_r > 200 and chroma_g > 200 and chroma_b < 50:
+        # Neon yellow spill: R and G both elevated above B
+        spill = edge_mask & ((r - b) > 4) & ((g - b) > 4)
+        data[:,:,0] = np.where(spill, b, r)
+        data[:,:,1] = np.where(spill, b, g)
+    elif chroma_g > 200 and chroma_r < 50 and chroma_b > 200:
+        # Cyan spill: G and B both elevated above R
+        spill = edge_mask & ((g - r) > 4) & ((b - r) > 4)
+        data[:,:,1] = np.where(spill, r, g)
+        data[:,:,2] = np.where(spill, r, b)
+    else:
+        # Generic: suppress all chroma channels toward the lowest channel
+        min_ch = np.minimum(np.minimum(r, g), b)
+        spill = edge_mask
+        data[:,:,0] = np.where(spill & (r > min_ch + 4), min_ch, r)
+        data[:,:,1] = np.where(spill & (g > min_ch + 4), min_ch, g)
+        data[:,:,2] = np.where(spill & (b > min_ch + 4), min_ch, b)
 
     data[:,:,3] = new_alpha
 
@@ -69,7 +85,15 @@ def remove_chroma(input_path, output_path):
     print(f"  Saved: {os.path.basename(output_path)}  ({square.width}x{square.height}px)")
 
 if __name__ == "__main__":
-    files = sys.argv[1:]
+    args = sys.argv[1:]
+    # Optional --chroma RRGGBB flag (e.g. --chroma 00FFFF for cyan)
+    if "--chroma" in args:
+        idx = args.index("--chroma")
+        hex_colour = args[idx + 1].lstrip("#")
+        r, g, b = int(hex_colour[0:2], 16), int(hex_colour[2:4], 16), int(hex_colour[4:6], 16)
+        CHROMA[:] = np.array([r, g, b], dtype=np.float32)
+        args = [a for i, a in enumerate(args) if i != idx and i != idx + 1]
+    files = args
     for f in files:
         out = os.path.splitext(f)[0] + "_nobg.png"
         print(f"Processing: {os.path.basename(f)}")

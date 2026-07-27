@@ -1,6 +1,83 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026, L027, L028 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L045 — Chroma key background colour system (2026-07-26)
+**The full process for generating stickers with different background colours:**
+
+### Background colour options
+| Background | Hex | Use when |
+|---|---|---|
+| Magenta | `#FF00FF` | Default. Any plant that does NOT have pink/red/purple petals or cyan tones |
+| Cyan | `#00FFFF` | Plants with pink, red, magenta, or purple petals (avoids colour bleed) |
+| Magenta | `#FF00FF` | Plants with cyan/blue tones (e.g. delphinium, foxglove, blue deckle hydrangea) |
+
+**Rule of thumb:** If the plant colour is close to magenta → use cyan. If close to cyan → use magenta.
+
+### How to generate with a specific BG colour
+**sticker-generate-one.py** — uses magenta by default. Prompt in PLANT_LOOKUP includes the BG hex.
+
+**sticker-custom-prompt.py** — supports `--cyan` flag:
+```powershell
+# Magenta BG (default)
+& $python sticker-custom-prompt.py "sticker-id" $prompt
+
+# Cyan BG
+& $python sticker-custom-prompt.py "sticker-id" $prompt --cyan
+```
+Include the BG colour in the prompt text too: `flat solid cyan background (#00FFFF)` or `flat solid magenta background (#FF00FF)`
+
+### Pipeline scripts
+- `tools/sticker-pipeline.py` — removes magenta `#FF00FF` background (default)
+- `tools/sticker-pipeline-cyan.py` — removes cyan `#00FFFF` background
+
+Both do: chroma key removal → edge spill suppression → watermark erase → crop → resize to 512px
+
+The cyan pipeline suppresses G+B spill (cyan spill = G and B elevated above R). The magenta pipeline suppresses R+B spill.
+
+### How sticker-custom-prompt.py picks the right pipeline
+The `--cyan` flag in `sticker-custom-prompt.py` routes to `sticker-pipeline-cyan.py` instead of the default:
+```python
+pipe = PIPELINE_CYAN if "--cyan" in sys.argv else PIPELINE
+subprocess.run([PYTHON, pipe, raw_path], check=True)
+```
+
+### Processing Rob's own Gemini images
+If Rob creates an image in Gemini and sends it via Telegram:
+1. Image lands in `C:\Users\RG\.openclaw\media\inbound\<filename>.jpg`
+2. Run the appropriate pipeline directly:
+```powershell
+$python = "C:\Users\RG\AppData\Local\Python\bin\python3.exe"
+$pipeline = "projects/garden-planner/tools/sticker-pipeline-cyan.py"  # or sticker-pipeline.py
+& $python $pipeline "path\to\inbound\file.jpg"
+# Output: file_nobg.png alongside the input
+```
+3. Copy `_nobg.png` to `app/public/stickers/<correct-name>.png`
+
+## L044 — Gemini CDP download doesn't save to disk (2026-07-26)
+**What:** Clicking Gemini's download button via CDP shows "Image downloaded" toast but no file appears in Downloads.
+**Why:** The blob URL expires immediately after the click; CDP click doesn't trigger Brave's native save dialog.
+**Fix:** Ask Rob to send the image via Telegram instead. Process it through `sticker-pipeline-cyan.py` directly from `C:\Users\RG\.openclaw\media\inbound\<filename>.jpg`.
+**Works perfectly** — confirmed with Rob's romaine lettuce (2026-07-26).
+
+## L043 — Lettuce colour variant filenames (2026-07-26)
+**What:** Lettuce colour variants in useGardenState.js use SHORT filenames without region codes (e.g., `_M_burgundy.png`) unlike all other colour picker variants which include `_CA-US-FR-GB-AU`.
+**Why:** Legacy from original setup before region codes were added.
+**Fix:** When deploying lettuce variants, always copy to the short filename path. New cyan-generated files have region codes — strip them when copying to `public/stickers/`.
+
+## L042 — Brave Debug: attach don't launch (2026-07-22)
+**What:** `sticker-generate-one.py` tries to open Gemini itself if it can't find a tab — which spawns a new Brave instance instead of attaching to the existing debug one.
+**Root cause:** Port 9222 responds but returns no tabs when Brave was launched without the debug flag on the main process.
+**Correct flow:**
+1. Rob opens **Brave (Debug)** shortcut on desktop and navigates to gemini.google.com — already logged in as contactsunsetpoetvintage@gmail.com
+2. I verify port 9222 is live: `Invoke-RestMethod http://127.0.0.1:9222/json/list`
+3. Run the sticker script — it attaches to the existing tab, no new windows opened
+**Rule:** Never kill or relaunch Brave when Rob says it's already open. Verify port 9222, then run. If tabs show empty, ask Rob to navigate to Gemini — don't open it myself.
+
+## L041 — Batch copy from pending/ must filter by prefix (2026-07-21)
+**What:** Batch-copying all `*.png` from `pending/` to `app/public/stickers/` accidentally deleted `plant-fern_lady-fern` because it was also in pending and got overwritten/removed.
+**Fix:** Always filter by the specific key prefix being committed (e.g. `herb-*` or `plant-fern_*`) — never copy the entire pending folder wholesale.
+**Rule:** `Get-ChildItem "$pendingDir\<prefix>-*.png" | Where-Object { $_.Name -notlike "*_raw*" -and $_.Name -notlike "*test*" }`
+
 ## L037 — MobileSheet and PlantTray are completely separate (2026-06-26)
 **What:** Fixes to PlantTray do nothing on mobile. On mobile (`isMobile=true`) the app renders MobileSheet, NOT PlantTray. They share no code.
 **Why it matters:** Lazy pack wiring, image loading logic, src fallbacks — any change must be made in BOTH components or it only works on one platform.
