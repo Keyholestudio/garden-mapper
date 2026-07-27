@@ -107,7 +107,7 @@ PLANT_LOOKUP = {
     "lupin":             ("flower-spike_lupin",             "M",  256, "Perennial",        "plant", "vivid purple #7B35C8, deep violet #5A1A9A, rich purple #9B45D8, mid-green palmate #4A7C2F, dark outline #0A1A0A, flat solid neon yellow background (#FFFF00)", "A cluster of purple lupin flowers. Tall dense vertical spikes of small pea-like flowers in vivid purple. Palmate leaves at base. NO blue, NO white flowers - flowers must be purple. Correct proportions. No roots."),
     # ── Shrubs ──────────────────────────────────────────────────────────────────
     "azalea":            ("shrub-flowering_azalea",         "M",  256, "Shrub",            "plant", "vivid coral-red #E84A2A, bright orange-red #D43A1A, mid-green #4A7C2F, deep green #2A5A1A, dark outline #0A1A0A", "Rounded flowering shrub covered in clusters of vivid funnel-shaped flowers. Dense leafy mound. Correct proportions. No roots."),
-    "buddleia":          ("shrub-flowering_buddleia",       "M",  256, "Shrub",            "plant", "vivid purple #7B35C8, deep violet #5A1A9A, pale lilac #C4A8E0, mid-green #4A7C2F, arching stems #6A4A2A, dark outline #0A1A0A", "A large bush of Buddleia flowers. Correct proportions. No roots."),
+    "buddleia":          ("shrub-flowering_buddleia",       "M",  256, "Shrub",            "plant", "vivid purple #7B35C8, deep violet #5A1A9A, pale lilac #C4A8E0, mid-green #4A7C2F, arching stems #6A4A2A, dark outline #0A1A0A, flat solid cyan background (#00FFFF)", "A large bush of Buddleia flowers. Correct proportions. No roots."),
     "forsythia":         ("shrub-flowering_forsythia",      "M",  256, "Shrub",            "plant", "vivid golden yellow #FFD700, deep yellow #E8B020, bright gold #FFA500, bare brown stems #6A4A1A, dark outline #0A1A0A, flat solid cyan background (#00FFFF)", "Arching shrub with bare stems covered in masses of bright golden-yellow four-petalled flowers before leaves emerge. Correct proportions. No roots."),
     "spirea":            ("shrub-flowering_spiraea",        "M",  256, "Shrub",            "plant", "vivid pink #E8407A, deep rose #C41260, pale pink #F5A8C8, mid-green #4A7C2F, arching stems #4A3A2A, dark outline #0A1A0A, flat solid cyan background (#00FFFF)", "a cluster of Rounded arching bush covered in masses of small PINK flower clusters along arching stems. Flowers are pink - NO white, NO cream flowers. Correct proportions. No roots."),
     "weigela":           ("shrub-flowering_weigela",        "M",  256, "Shrub",            "plant", "vivid pink #E8407A, deep rose #C41260, pale pink #F5A8C8, mid-green #4A7C2F, arching stems #4A3A2A, dark outline #0A1A0A, flat solid cyan background (#00FFFF)", "a cluster of Rounded arching shrub with clusters of tubular bell-shaped pink flowers along stems. Correct proportions. No roots."),
@@ -603,12 +603,14 @@ def main():
     # Rule: if the colours string already contains a background spec, use it as-is.
     # Otherwise, append the default magenta background.
     import re as _re
-    _bg_pattern = _re.compile(r',?\s*flat solid \w+ background \(#[0-9A-Fa-f]{6}\)', _re.IGNORECASE)
-    colours_has_bg = bool(_bg_pattern.search(colours))
+    # Match: "flat solid <any words> background (#RRGGBB)" — handles multi-word colour names like "neon yellow"
+    _bg_pattern = _re.compile(r',?\s*flat solid [\w\s]+ background \(#[0-9A-Fa-f]{6}\)', _re.IGNORECASE)
+    _bg_match = _bg_pattern.search(colours)
+    colours_has_bg = bool(_bg_match)
     colours_clean = _bg_pattern.sub('', colours).strip().rstrip(',')
     # Determine background line: use what's in colours if specified, else default magenta
     if colours_has_bg:
-        bg_spec = _bg_pattern.search(colours).group(0).strip().lstrip(',')
+        bg_spec = _bg_match.group(0).strip().lstrip(',')
     else:
         bg_spec = 'flat solid magenta background (#FF00FF)'
     colours_line = f"{colours_clean}, {bg_spec}"
