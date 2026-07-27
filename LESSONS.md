@@ -18,9 +18,11 @@ When Rob says "regenerate X with cyan background" or "add to the prompt: [text]"
 
 **When Rob says "add to the prompt: [text]":**
 1. That text goes into the `shape` field (7th element) of the PLANT_LOOKUP tuple, not the colours string
-2. Replace or append to the existing shape text — do not add it as a colour
-3. The `else` prompt template uses `{shape}` verbatim — whatever is in shape goes directly into the prompt
-4. Confirm the edit by printing the assembled prompt before generating
+2. Append Rob's exact words to the existing shape text — do NOT add extra descriptive sentences of your own
+3. The standard shape ending is always "Correct proportions. No roots." — keep it. Only prepend Rob's addition before it.
+4. **Never expand or embellish Rob's addition.** If Rob says "A cluster of purple lupin flowers", write exactly that — not "Tall dense vertical spikes of small pea-like flowers in vivid purple. Palmate leaves at base. NO blue, NO white flowers."
+5. The `else` prompt template uses `{shape}` verbatim — whatever is in shape goes directly into the prompt
+6. Confirm the edit by printing the assembled prompt before generating
 
 **When Rob provides a corrected prompt from Gemini:**
 1. Cross-check it against the current PLANT_LOOKUP entry
@@ -39,6 +41,9 @@ shape string (from PLANT_LOOKUP)
   → inserted verbatim into Shape: field
   → NOT overridden by template hardcoding
 ```
+
+### Neon yellow BG is incompatible with green-foliage plants
+Neon yellow (`#FFFF00`) sits too close to plant green in colour space. The chroma removal erases or damages green leaves. **Never use neon yellow BG for any plant with green foliage.** Use cyan instead. Yellow BG may be viable only for purely purple/blue/red plants with no green — but cyan is always the safer choice.
 
 ### Background removal: always auto-detect from raw image corners
 Do NOT rely on the colours string to decide which chroma to remove. Gemini doesn't reliably follow background colour instructions. Always sample the actual raw image corners to determine the background colour, then pass `--chroma RRGGBB` to the pipeline accordingly. See `detect_background_chroma()` in `sticker-generate-one.py`.

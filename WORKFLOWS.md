@@ -101,7 +101,7 @@ Open `tools/sticker-generate-one.py` and find the plant's row in `PLANT_LOOKUP`.
 | Rob says | Which field to edit | Rule |
 |----------|-------------------|------|
 | "regenerate with cyan/magenta/yellow background" | `colours` | Remove any existing `flat solid X background (#XXXXXX)` from colours. Add the new one: `flat solid cyan background (#00FFFF)` |
-| "add to the prompt: [text]" | `shape` | Append or replace shape text. This lands verbatim in the Shape: line. |
+| "add to the prompt: [text]" | `shape` | Prepend Rob's exact words before "Correct proportions. No roots." — copy verbatim, no embellishment, no extra sentences. |
 | "update the colours to [description]" | `colours` | Edit colour hex values and labels. Do NOT touch the background spec unless Rob said to. |
 | "remove [colour] from the colour options" | `colours` | Remove that colour entry. |
 
