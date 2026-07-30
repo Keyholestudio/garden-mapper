@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-07-26 (Massive sticker regen + colour picker session)_
+_Last updated: 2026-07-30 (Pan tool + colour picker fix + sticker cleanup)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -105,9 +105,9 @@ cd projects/garden-planner/app && npm run dev
 - ~~**Remove debug banner**~~ - ✅ done 2026-07-17
 - **Dream Garden resize** - Rob wants to resize canvas. Pull current JSON from local:5200, update w/h, re-lock dimensions. Do as part of next Dream Garden update trigger.
 - **Asparagus deploy** - vertical stalks version in `stickers/generated/pending/vegetable-tall_asparagus_M_CA-US-FR-GB-AU.png` — copy to public/stickers + git commit
-- **Batch 8 rework** - lupin, buddleia, forsythia, spirea, weigela (all flagged for regen)
+- ~~**Batch 8 rework**~~ - ✅ done 2026-07-27 (lupin, buddleia, forsythia, spirea, weigela, iris)
 - **Echinacea + Water Lily** - regen with cyan BG (magenta pipeline removed petals)
-- **Batch 6 leftover** - hollyhock base sticker regen, onion regen
+- ~~**Batch 6 leftover**~~ - ✅ done 2026-07-27 (hollyhock, onion)
 
 ### 🟡 In Progress
 - **Plant catalog expansion** - full research complete for all 63 packs (~600 plants). See `research/PLANT-PACK-RESEARCH.md` for counts, `research/PLANT-STAGING.md` for schema rows ready to generate.
