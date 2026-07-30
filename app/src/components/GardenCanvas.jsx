@@ -67,6 +67,7 @@ export default function GardenCanvas({
   const gardenUnitRef   = useRef(gardenUnit)
   const isMobileRef     = useRef(isMobile)
   const editingShapeRef = useRef(editingShapeId ?? null) // kept current via effect below
+  const panModeRef      = useRef(panMode)     // kept current — read by stage click handler
 
   // ── Init Konva stage ──────────────────────────────────
   useEffect(() => {
@@ -317,7 +318,8 @@ export default function GardenCanvas({
     // are used to add points — do NOT propagate to onCanvasClick which would clear selection.
     // During pinch-to-zoom, suppress all tap/click so objects aren't selected or moved.
     stage.on('click tap', e => {
-      if (isPinching) return  // pinch in progress — ignore all taps
+      if (isPinching) return          // pinch in progress — ignore all taps
+      if (panModeRef.current) return  // pan mode — suppress all click/tap events
       if (e.target === stage) {
         if (editingShapeRef.current) return  // edit-points mode: ignore background tap
         const pos = stage.getRelativePointerPosition()
@@ -358,11 +360,16 @@ export default function GardenCanvas({
   useEffect(() => { seasonRef.current = currentSeason }, [currentSeason])
   useEffect(() => { gardenUnitRef.current = gardenUnit }, [gardenUnit])
   useEffect(() => { editingShapeRef.current = editingShapeId ?? null }, [editingShapeId])
-  // Pan mode cursor — show grab hand when pan mode is active
+  // Pan mode — update ref, cursor, and layer listening
   useEffect(() => {
+    panModeRef.current = panMode
     const wrap = containerRef.current
     if (!wrap) return
     wrap.style.cursor = panMode ? 'grab' : ''
+    // Disable layer listening in pan mode so clicks/taps never reach shapes
+    const { plantLayer, structLayer } = layersRef.current
+    if (plantLayer)  plantLayer.listening(!panMode)
+    if (structLayer) structLayer.listening(!panMode)
   }, [panMode])
 
   // ── Dream Garden overlay — reactive ──────────────────────────────────
