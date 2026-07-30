@@ -948,13 +948,15 @@ export default function GardenEditor() {
   const handlePlantVariantChange = (variantSrc) => {
     const sel = state.selectedPlant; if (!sel) return
     const d = state.plantDataRef.current[sel.id]
-    d.variantSrc = variantSrc
+    // null = default swatch selected — clear variantSrc, resolve to base catalog src
+    d.variantSrc = variantSrc || null
+    const resolvedSrc = variantSrc || sel.src
     const img = new window.Image()
     img.onload = () => {
       const konvaImg = sel.group.findOne('Image')
       if (konvaImg) { konvaImg.image(img); layersRef.current.plantLayer?.batchDraw() }
     }
-    img.src = variantSrc
+    img.src = resolvedSrc
     state.setSelectedPlant({ ...sel })
     triggerAutoSave()
   }

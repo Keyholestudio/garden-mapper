@@ -123,15 +123,15 @@ export default function RightPanel({
             <button className="panel-undo-btn" onClick={() => onUndo?.()}>↩</button>
           </div>
           <div className="panel-h2">{d.label || 'Plant'}</div>
-          <div className="panel-sub">{PLANT_VARIANTS[d.key]?.find(v => v.src === d.variantSrc)?.name || d.family || ''}</div>
+          <div className="panel-sub">{PLANT_VARIANTS[d.key]?.find(v => v.src === (d.variantSrc || null))?.name || PLANT_VARIANTS[d.key]?.[0]?.name || d.family || ''}</div>
           {PLANT_VARIANTS[d.key] && (
             <>
               <div className="panel-title" style={{marginTop:8}}>COLOUR</div>
               <div className="colour-swatch-row">
                 {PLANT_VARIANTS[d.key].map(v => (
                   <div
-                    key={v.src}
-                    className={`colour-swatch${d.variantSrc === v.src ? ' selected' : ''}`}
+                    key={v.label}
+                    className={`colour-swatch${(d.variantSrc || null) === v.src ? ' selected' : ''}`}
                     style={{ background: v.colour }}
                     title={v.label}
                     onClick={() => onPlantVariantChange?.(v.src)}

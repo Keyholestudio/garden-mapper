@@ -327,15 +327,15 @@ export default function MobileSheet({
     return (
       <>
         <div className="mobile-edit-title">{d.label || 'Plant'}</div>
-        {d.family && <div className="mobile-edit-subtitle">{PLANT_VARIANTS[d.key]?.find(v => v.src === d.variantSrc)?.name || d.family}</div>}
+        {d.family && <div className="mobile-edit-subtitle">{PLANT_VARIANTS[d.key]?.find(v => v.src === (d.variantSrc || null))?.name || PLANT_VARIANTS[d.key]?.[0]?.name || d.family}</div>}
         {PLANT_VARIANTS[d.key] && (
           <>
             <div className="mobile-edit-label" style={{marginTop:8}}>COLOUR</div>
             <div className="mobile-colour-swatch-row">
               {PLANT_VARIANTS[d.key].map(v => (
                 <div
-                  key={v.src}
-                  className={`mobile-colour-swatch${d.variantSrc === v.src ? ' selected' : ''}`}
+                  key={v.label}
+                  className={`mobile-colour-swatch${(d.variantSrc || null) === v.src ? ' selected' : ''}`}
                   style={{ background: v.colour }}
                   title={v.label}
                   onClick={() => onPlantVariantChange?.(v.src)}
