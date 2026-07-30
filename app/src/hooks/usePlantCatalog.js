@@ -141,7 +141,7 @@ export const PLANT_CATALOG = [
   // ── Fruit Trees ───────────────────────────────────────────────────────────────
   { key:'tree-fruit_apple',                label:'Apple Tree',          family:'Fruit Tree',           src:'/stickers/tree-fruit_apple_XXL_CA-US-FR-GB-AU.png',                size:'XXL' },
   { key:'tree-fruit_cherry',               label:'Cherry Tree',         family:'Fruit Tree',           src:'/stickers/tree-fruit_cherry_XXL_CA-US-FR-GB-AU.png',               size:'XXL' },
-  { key:'tree-fruit_lemon',                label:'Lemon Tree',          family:'Fruit Tree',           src:'/stickers/tree-fruit_lemon_XXL_US-FR-AU.png',                      size:'XXL' },
+  { key:'tree-fruit_lemon',                label:'Lemon Tree',          family:'Fruit Tree',           src:'/stickers/tree-fruit_lemon_XXL_CA-US-FR-GB-AU.png',                size:'XXL' },
   { key:'tree-fruit_peach',                label:'Peach Tree',          family:'Fruit Tree',           src:'/stickers/tree-fruit_peach_XXL_CA-US-FR-AU.png',                   size:'XXL' },
   { key:'tree-fruit_pear',                 label:'Pear Tree',           family:'Fruit Tree',           src:'/stickers/tree-fruit_pear_XXL_CA-US-FR-GB-AU.png',                 size:'XXL' },
   { key:'tree-fruit_plum',                 label:'Plum Tree',           family:'Fruit Tree',           src:'/stickers/tree-fruit_plum_XXL_CA-US-FR-GB-AU.png',                 size:'XXL' },
