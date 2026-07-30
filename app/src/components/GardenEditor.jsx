@@ -1414,7 +1414,7 @@ export default function GardenEditor() {
           <GardenCanvas
             gardenName={state.gardenName} gardenW={state.gardenW}
             gardenH={state.gardenH}       gardenUnit={state.gardenUnit}
-            currentSeason={state.currentSeason} showGrid={state.showGrid}
+            currentSeason={state.currentSeason} showGrid={state.showGrid} panMode={state.panMode}
             propBoundsRef={state.propBoundsRef}
             pendingPlantRef={pendingPlantRef}
             onStageReady={handleStageReady}
@@ -1548,6 +1548,7 @@ export default function GardenEditor() {
               waterSubTool={state.waterSubTool} onWaterSubTool={state.setWaterSubTool}
               decorSubTool={state.decorSubTool} onDecorSubTool={state.setDecorSubTool}
               showGrid={state.showGrid}         onToggleGrid={() => state.setShowGrid(v => !v)}
+              panMode={state.panMode}            onTogglePan={() => state.setPanMode(v => !v)}
               onResetView={handleResetView}     onClearAll={handleClearAll}
             />
           )}
@@ -1571,6 +1572,7 @@ export default function GardenEditor() {
           waterSubTool={state.waterSubTool}       onWaterSubTool={state.setWaterSubTool}
           decorSubTool={state.decorSubTool}       onDecorSubTool={state.setDecorSubTool}
           showGrid={state.showGrid}               onToggleGrid={() => state.setShowGrid(v => !v)}
+          panMode={state.panMode}                  onTogglePan={() => state.setPanMode(v => !v)}
           onResetView={handleResetView}
           onClearAll={handleClearAll}
           onDeletePlant={() => { state.selectedPlant?.group.destroy(); delete state.plantDataRef.current[state.selectedPlant?.id]; layersRef.current.plantLayer?.batchDraw(); clearSelection(); triggerAutoSave() }}

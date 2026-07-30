@@ -172,6 +172,7 @@ export function useGardenState() {
 
   // Canvas / view
   const [showGrid, setShowGrid]       = useState(false)
+  const [panMode, setPanMode]           = useState(false)
   const [currentSeason, setCurrentSeason] = useState(0)
   const propBoundsRef                 = useRef(null) // {x,y,w,h} — set after Konva init
 
@@ -241,6 +242,7 @@ export function useGardenState() {
 
     // View
     showGrid, setShowGrid,
+    panMode, setPanMode,
     currentSeason, setCurrentSeason,
 
     // Tools

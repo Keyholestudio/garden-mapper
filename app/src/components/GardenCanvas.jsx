@@ -46,7 +46,7 @@ function loadTexture(src) {
 
 export default function GardenCanvas({
   gardenName, gardenW, gardenH, gardenUnit,
-  currentSeason, showGrid,
+  currentSeason, showGrid, panMode,
   propBoundsRef,
   onStageReady,    // callback(stage, layers) — parent gets refs after init
   onCanvasClick,   // callback({x,y}) — world coords of click on empty canvas
@@ -358,6 +358,12 @@ export default function GardenCanvas({
   useEffect(() => { seasonRef.current = currentSeason }, [currentSeason])
   useEffect(() => { gardenUnitRef.current = gardenUnit }, [gardenUnit])
   useEffect(() => { editingShapeRef.current = editingShapeId ?? null }, [editingShapeId])
+  // Pan mode cursor — show grab hand when pan mode is active
+  useEffect(() => {
+    const wrap = containerRef.current
+    if (!wrap) return
+    wrap.style.cursor = panMode ? 'grab' : ''
+  }, [panMode])
 
   // ── Dream Garden overlay — reactive ──────────────────────────────────
   // Rebuilds whenever isDreamGarden changes (garden switch). On non-dream gardens

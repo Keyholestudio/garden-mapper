@@ -214,6 +214,7 @@ export function ToolMenu({
   bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool, decorSubTool,
   onBedSubTool, onFenceSubTool, onFenceType, onPathSubTool, onBuildingSubTool, onWaterSubTool, onDecorSubTool,
   showGrid, onToggleGrid, onResetView, onClearAll,
+  panMode, onTogglePan,
   extraClass = '',
 }) {
   const [openGroup, setOpenGroup] = useState(null)
@@ -324,6 +325,12 @@ export function ToolMenu({
           <span className="tool-menu-emoji">⊞</span>
           <span className="tool-menu-label">Grid {showGrid ? 'On' : 'Off'}</span>
         </button>
+        {onTogglePan && (
+          <button className={`tool-menu-btn utility${panMode ? ' active' : ''}`} onClick={onTogglePan}>
+            <span className="tool-menu-emoji">✋</span>
+            <span className="tool-menu-label">Pan {panMode ? 'On' : 'Off'}</span>
+          </button>
+        )}
         <button className="tool-menu-btn utility" onClick={onResetView}>
           <span className="tool-menu-emoji">⊙</span>
           <span className="tool-menu-label">Reset View</span>

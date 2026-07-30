@@ -241,8 +241,15 @@ export function useDrawTools({
 
     // ── Mouse down: pan (select mode) | rect drag | circle drag ──
     const onMouseDown = (e) => {
-      if (e.target !== stage) return
       const s = sRef.current
+
+      // Pan mode — always pan regardless of what's under the cursor
+      if (s.panMode) {
+        stage.fire('pan:start')
+        return
+      }
+
+      if (e.target !== stage) return
       const free = isFreeMode(s.currentMode, s.bedSubTool, s.fenceSubTool, s.fenceType, s.buildingSubTool, s.waterSubTool, s.pathSubTool)
 
       // Select mode — hand off to canvas pan handler

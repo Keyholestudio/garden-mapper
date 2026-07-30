@@ -54,6 +54,7 @@ export default function RightPanel({
   bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool, decorSubTool,
   onBedSubTool, onFenceSubTool, onFenceType, onPathSubTool, onBuildingSubTool, onWaterSubTool, onDecorSubTool,
   showGrid, onToggleGrid, onResetView, onClearAll,
+  panMode, onTogglePan,
 }) {
   const pxPerUnit = UNIT_PX * (gardenUnit === 'm' ? 3.281 : 1)
 
@@ -374,6 +375,8 @@ export default function RightPanel({
         onDecorSubTool={onDecorSubTool}
         showGrid={showGrid}
         onToggleGrid={onToggleGrid}
+        panMode={panMode}
+        onTogglePan={onTogglePan}
         onResetView={onResetView}
         onClearAll={onClearAll}
       />
