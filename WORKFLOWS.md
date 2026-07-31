@@ -1,6 +1,6 @@
 # Garden Mapper — Workflows
 _Central reference for how we do things. When in doubt, check here first._
-_Last updated: 2026-07-27_
+_Last updated: 2026-07-31_
 _Archived workflows (1, 3, pack list): `memory/deep/garden-planner/workflows-archive.md`_
 
 ---
@@ -10,6 +10,7 @@ _Archived workflows (1, 3, pack list): `memory/deep/garden-planner/workflows-arc
 0. [Plant pipeline: Staging → Database](#0-plant-pipeline-staging--database)
 0a. [Sticker prompt template sync](#0a-sticker-prompt-template-sync)
 0b. [Apply a prompt amendment to an existing sticker](#0b-apply-a-prompt-amendment-to-an-existing-sticker)
+0c. [Promote a colour variant to default tray sticker](#0c-promote-a-colour-variant-to-default-tray-sticker)
 2. [Add a new plant sticker (lazy pack)](#2-add-a-new-plant-sticker-lazy-pack)
 4. [Add a colour variant to an existing plant](#4-add-a-colour-variant-to-an-existing-plant)
 5. [Regenerate / replace an existing sticker](#5-regenerate--replace-an-existing-sticker)
@@ -155,6 +156,70 @@ git push
 
 ### Step 8 — Update PROJECT.md open items
 Mark the item as resolved in the Batch 8 rework list.
+
+---
+
+## 0c. Promote a colour variant to default tray sticker
+
+> **Trigger:** Rob says "remove the default [plant] sticker" or "promote [variant] as the new default".
+> Use when the base/v1 sticker is outdated (wrong art style, old format) and a colour variant should replace it.
+
+### Step 1 — Identify what changes
+- Which plant? What is its current base PNG filename? (check `usePlantCatalog.js` `src` field)
+- Which variant becomes the new default? (confirm with Rob if not specified)
+- Show Rob the current base + candidate variants via image tool before proceeding if there’s any ambiguity
+
+### Step 2 — Update `usePlantCatalog.js`
+Change the `src` field for the plant to point to the promoted variant’s PNG:
+```js
+// Before:
+{ key:'bulb-spring_tulip', src:'/stickers/bulb-spring_tulip_S_CA-US-FR-GB-AU.png' }
+// After:
+{ key:'bulb-spring_tulip', src:'/stickers/bulb-spring_tulip_S_red_CA-US-FR-GB-AU.png' }
+```
+
+### Step 3 — Update `PLANT_VARIANTS` in `useGardenState.js`
+- The `src: null` default swatch entry stays (it now resolves to the new catalog src automatically)
+- **Remove** the promoted variant’s explicit entry from the variants array (it’s now the default — having it in both causes duplication)
+- Leave all other variant entries unchanged
+
+```js
+// Before (Red was a variant):
+{ label: 'Bulb', name: 'Tulip',     colour: '#D42B2B', src: null },
+{ label: 'Red',  name: 'Red Tulip', colour: '#D42B2B', src: '/stickers/...red.png' },  // ← remove this
+{ label: 'Pink', name: 'Pink Tulip', ... },
+
+// After:
+{ label: 'Bulb', name: 'Tulip',     colour: '#D42B2B', src: null },  // now resolves to red PNG
+{ label: 'Pink', name: 'Pink Tulip', ... },
+```
+
+### Step 4 — Delete the old base PNG
+Remove from both locations:
+```powershell
+Remove-Item "app/public/stickers/<old-base-filename>.png" -Force
+Remove-Item "stickers/<old-base-filename>.png" -Force  # if it exists separately
+```
+**Do NOT delete** the promoted variant’s PNG — it is now the tray icon and the default swatch.
+
+### Step 5 — Run the validator
+```powershell
+pwsh tools/validate-tray.ps1
+```
+Must show **0 MISSING PNG** errors before committing. Orphan warnings for the deleted file are fine.
+
+### Step 6 — Commit and push
+```powershell
+git add -A
+git commit -m "Fix: promote [Variant] [Plant] as default tray sticker, remove old base PNG"
+git push
+```
+
+### Rules
+- Never delete the promoted variant’s PNG — it’s now doing double duty as tray icon + default swatch
+- Always run the validator before committing
+- Saved gardens that used the old base sticker will show the new default on next load (graceful fallback via key lookup)
+- The `src: null` default swatch in PLANT_VARIANTS always resolves to whatever `usePlantCatalog.js` points to — no further changes needed in the colour picker code
 
 ---
 
