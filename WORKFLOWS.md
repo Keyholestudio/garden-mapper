@@ -373,9 +373,14 @@ git push
 3. On approval: overwrite PNG in-place at BOTH locations:
    - `app/public/stickers/<key>.png`
    - `stickers/<key>.png`
-4. Key stays unchanged — saved gardens continue working (L025)
-5. Run validator — 0 errors
-6. `git add -A && git commit -m "Sticker: replace [Name] image (v2)"`
+4. **Check for old region-code variants (L047):** Search for any other file with the same key but a different region suffix:
+   ```powershell
+   Get-ChildItem "app/public/stickers/" | Where-Object { $_.Name -match "<key>" }
+   ```
+   If more than one file exists: delete the old one and confirm `usePlantCatalog.js` `src` points to the new filename.
+5. Key stays unchanged — saved gardens continue working (L025)
+6. Run validator — 0 errors
+7. `git add -A && git commit -m "Sticker: replace [Name] image (v2)"`
 
 **Never:** delete the key, rename the key, or delete the PNG while it's still referenced.
 
@@ -462,6 +467,11 @@ Before `/new` or closing the session:
 
 - [ ] `git status` — nothing uncommitted
 - [ ] `pwsh tools/validate-tray.ps1` — 0 errors
+- [ ] **Duplicate region-code check** — run this after any regen session:
+  ```powershell
+  Get-ChildItem "app/public/stickers/" | Group-Object { $_.Name -replace "_(CA|US|FR|GB|AU|-)+\.png$", "" } | Where-Object { $_.Count -gt 1 } | Select-Object Name, Count
+  ```
+  If any key has >1 file: check which is current, delete the old one, update catalog `src` if needed.
 - [ ] `research/PLANT-DATABASE.md` — Sticker ID filled in for anything added this session
 - [ ] `REVISION-LOG.md` — new entries marked ✅
 - [ ] `PROJECT.md` — Open Items updated if anything changed status
