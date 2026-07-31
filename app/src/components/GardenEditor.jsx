@@ -950,7 +950,8 @@ export default function GardenEditor() {
     const d = state.plantDataRef.current[sel.id]
     // null = default swatch selected — clear variantSrc, resolve to base catalog src
     d.variantSrc = variantSrc || null
-    const resolvedSrc = variantSrc || sel.src
+    const baseSrc = PLANT_CATALOG.find(p => p.key === d.key)?.src
+    const resolvedSrc = variantSrc || baseSrc
     const img = new window.Image()
     img.onload = () => {
       const konvaImg = sel.group.findOne('Image')
