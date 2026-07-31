@@ -60,7 +60,7 @@ export const PLANT_CATALOG = [
   { key:'flower-cluster_hydrangea',        label:'Hydrangea',           family:'Shrub',                src:'/stickers/flower-cluster_hydrangea_M_CA-US-FR-GB-AU.png', size:'M' },
 
   // ── Daisy-type Flowers ────────────────────────────────────────────────────────
-  { key:'flower-daisy_black-eyed-susan',   label:'Black-eyed Susan',    family:'Perennial',            src:'/stickers/flower-daisy_black-eyed-susan_M_CA-US.png',             size:'M' },
+  { key:'flower-daisy_black-eyed-susan',   label:'Black-eyed Susan',    family:'Perennial',            src:'/stickers/flower-daisy_black-eyed-susan_M_CA-US-FR-GB-AU.png',    size:'M' },
   { key:'flower-daisy_cosmos',             label:'Cosmos',              family:'Annual Flower',        src:'/stickers/flower-daisy_cosmos_M_CA-US-FR-GB-AU.png',              size:'M' },
   { key:'flower-daisy_dahlia',             label:'Dahlia',              family:'Bulb / Annual',        src:'/stickers/flower-daisy_dahlia_M_CA-US-FR-GB-AU.png',              size:'M' },
   { key:'flower-daisy_echinacea',          label:'Echinacea',           family:'Perennial',            src:'/stickers/flower-daisy_echinacea_M_CA-US-FR-GB-AU.png',           size:'M' },
@@ -71,7 +71,7 @@ export const PLANT_CATALOG = [
   { key:'flower-daisy_pansy',              label:'Pansy',               family:'Annual Flower',        src:'/stickers/flower-daisy_pansy_S_CA-US-FR-GB-AU.png',               size:'S' },
   { key:'flower-daisy_petunia',            label:'Petunia',             family:'Annual Flower',        src:'/stickers/flower-daisy_petunia_S_CA-US-FR-GB-AU.png',             size:'S' },
   { key:'flower-daisy_portulaca',          label:'Portulaca',           family:'Annual Flower',        src:'/stickers/flower-daisy_portulaca_XS_CA-US-FR-GB-AU.png',          size:'XS' },
-  { key:'flower-daisy_zinnia',             label:'Zinnia',              family:'Annual Flower',        src:'/stickers/flower-daisy_zinnia_S_CA-US-FR-AU.png',                 size:'S' },
+  { key:'flower-daisy_zinnia',             label:'Zinnia',              family:'Annual Flower',        src:'/stickers/flower-daisy_zinnia_S_CA-US-FR-GB-AU.png',                 size:'S' },
 
   // ── Rose-type Flowers ─────────────────────────────────────────────────────────
   { key:'flower-rose_climbing-rose',       label:'Climbing Rose',       family:'Shrub / Rose',         src:'/stickers/flower-rose_climbing-rose_M_CA-US-FR-GB-AU.png',        size:'M'  },
@@ -79,8 +79,8 @@ export const PLANT_CATALOG = [
   { key:'flower-rose_rose',                label:'Rose',                family:'Shrub / Rose',         src:'/stickers/flower-rose_rose_M_CA-US-FR-GB-AU.png',                 size:'M' },
 
   // ── Spike Flowers ─────────────────────────────────────────────────────────────
-  { key:'flower-spike_delphinium',         label:'Delphinium',          family:'Perennial',            src:'/stickers/flower-spike_delphinium_M_CA-US-FR-GB.png', size:'M' },
-  { key:'flower-spike_foxglove',           label:'Foxglove',            family:'Biennial',             src:'/stickers/flower-spike_foxglove_M_CA-US-FR-GB.png', size:'M' },
+  { key:'flower-spike_delphinium',         label:'Delphinium',          family:'Perennial',            src:'/stickers/flower-spike_delphinium_M_CA-US-FR-GB-AU.png', size:'M' },
+  { key:'flower-spike_foxglove',           label:'Foxglove',            family:'Biennial',             src:'/stickers/flower-spike_foxglove_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'flower-spike_gladiolus',          label:'Gladiolus',           family:'Bulb',                 src:'/stickers/flower-spike_gladiolus_M_CA-US-FR-GB-AU.png',           size:'M' },
   { key:'flower-spike_iris',               label:'Iris',                family:'Perennial',            src:'/stickers/flower-spike_iris_M_bearded_CA-US-FR-GB-AU.png',         size:'M' },
   { key:'flower-spike_lupin',              label:'Lupin',               family:'Perennial',            src:'/stickers/flower-spike_lupin_M_CA-US-FR-GB-AU.png', size:'M' },
@@ -115,12 +115,12 @@ export const PLANT_CATALOG = [
   { key:'shrub-flowering_azalea',          label:'Azalea',              family:'Shrub',                src:'/stickers/shrub-flowering_azalea_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'shrub-flowering_blueberry',       label:'Blueberry Bush',      family:'Shrub / Fruit',        src:'/stickers/shrub-flowering_blueberry_M_CA-US-FR-GB-AU.png',        size:'M' },
   { key:'shrub-flowering_buddleia',        label:'Buddleia',            family:'Shrub',                src:'/stickers/shrub-flowering_buddleia_M_CA-US-FR-GB-AU.png', size:'M' },
-  { key:'shrub-flowering_forsythia',       label:'Forsythia',           family:'Shrub',                src:'/stickers/shrub-flowering_forsythia_M_CA-US-FR-GB.png', size:'M' },
+  { key:'shrub-flowering_forsythia',       label:'Forsythia',           family:'Shrub',                src:'/stickers/shrub-flowering_forsythia_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'shrub-flowering_lilac',           label:'Lilac',               family:'Shrub',                src:'/stickers/shrub-flowering_lilac_M_CA-US-FR-GB.png', size:'M' },
   { key:'shrub-flowering_rhododendron',    label:'Rhododendron',        family:'Shrub',                src:'/stickers/shrub-flowering_rhododendron_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'shrub-flowering_saskatoon',       label:'Saskatoon Berry',     family:'Shrub / Fruit',        src:'/stickers/shrub-flowering_saskatoon_M_CA-US.png',                 size:'M' },
-  { key:'shrub-flowering_spiraea',         label:'Spiraea',             family:'Shrub',                src:'/stickers/shrub-flowering_spiraea_M_CA-US-FR-GB.png', size:'M' },
-  { key:'shrub-flowering_weigela',         label:'Weigela',             family:'Shrub',                src:'/stickers/shrub-flowering_weigela_M_CA-US-FR-GB.png', size:'M' },
+  { key:'shrub-flowering_spiraea',         label:'Spiraea',             family:'Shrub',                src:'/stickers/shrub-flowering_spiraea_M_CA-US-FR-GB-AU.png', size:'M' },
+  { key:'shrub-flowering_weigela',         label:'Weigela',             family:'Shrub',                src:'/stickers/shrub-flowering_weigela_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'shrub-lavender_lavender',         label:'Lavender',            family:'Herb / Perennial',     src:'/stickers/shrub-lavender_lavender_M_CA-US-FR-GB-AU.png',          size:'M' },
   { key:'shrub-round_boxwood',             label:'Boxwood',             family:'Shrub',                src:'/stickers/shrub-round_boxwood_M_CA-US-FR-GB-AU.png', size:'M' },
 
