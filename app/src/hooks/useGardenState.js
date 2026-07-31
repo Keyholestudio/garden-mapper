@@ -116,7 +116,6 @@ export const PLANT_VARIANTS = {
   ],
   'flower-daisy_marigold': [
     { label: 'Annual Flower', name: 'Marigold',        colour: '#FF8C00', src: null },
-    { label: 'Orange',        name: 'Orange Marigold', colour: '#FF8C00', src: '/stickers/flower-daisy_marigold_S_orange_CA-US-FR-GB-AU.png' },
     { label: 'Yellow',        name: 'Yellow Marigold', colour: '#FFD700', src: '/stickers/flower-daisy_marigold_S_yellow_CA-US-FR-GB-AU.png' },
     { label: 'Cream',         name: 'Cream Marigold',  colour: '#F5F0D8', src: '/stickers/flower-daisy_marigold_S_cream_CA-US-FR-GB-AU.png' },
     { label: 'French',        name: 'French Marigold', colour: '#FF6B00', src: '/stickers/flower-daisy_marigold_S_french_CA-US-FR-GB-AU.png' },
@@ -132,7 +131,6 @@ export const PLANT_VARIANTS = {
   ],
   'bulb-spring_tulip': [
     { label: 'Bulb',       name: 'Tulip',           colour: '#D42B2B', src: null },
-    { label: 'Red',        name: 'Red Tulip',        colour: '#D42B2B', src: '/stickers/bulb-spring_tulip_S_red_CA-US-FR-GB-AU.png' },
     { label: 'Pink',       name: 'Pink Impression',  colour: '#F5A8C8', src: '/stickers/bulb-spring_tulip_S_pink_CA-US-FR-GB-AU.png' },
     { label: 'Orange',     name: 'Orange Tulip',     colour: '#FF6B1A', src: '/stickers/bulb-spring_tulip_S_orange_CA-US-FR-GB-AU.png' },
     { label: 'Yellow',     name: 'Yellow Tulip',     colour: '#FFD700', src: '/stickers/bulb-spring_tulip_S_yellow_CA-US-FR-GB-AU.png' },

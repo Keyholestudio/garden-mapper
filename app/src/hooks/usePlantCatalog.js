@@ -53,7 +53,7 @@ export const PLANT_CATALOG = [
   // ── Bulbs ─────────────────────────────────────────────────────────────────────
   { key:'bulb-spring_daffodil',            label:'Daffodil',            family:'Bulb',                 src:'/stickers/bulb-spring_daffodil_S_CA-US-FR-GB-AU.png',             size:'S' },
   { key:'bulb-spring_hyacinth',            label:'Hyacinth',            family:'Bulb',                 src:'/stickers/bulb-spring_hyacinth_S_CA-US-FR-GB-AU.png',             size:'S' },
-  { key:'bulb-spring_tulip',               label:'Tulip',               family:'Bulb',                 src:'/stickers/bulb-spring_tulip_S_CA-US-FR-GB-AU.png',                size:'S' },
+  { key:'bulb-spring_tulip',               label:'Tulip',               family:'Bulb',                 src:'/stickers/bulb-spring_tulip_S_red_CA-US-FR-GB-AU.png',            size:'S' },
 
   // ── Flower Clusters ───────────────────────────────────────────────────────────
   { key:'flower-cluster_allium',           label:'Allium',              family:'Ornamental Bulb',      src:'/stickers/flower-cluster_allium_M_CA-US-FR-GB-AU.png',            size:'M' },
@@ -66,7 +66,7 @@ export const PLANT_CATALOG = [
   { key:'flower-daisy_echinacea',          label:'Echinacea',           family:'Perennial',            src:'/stickers/flower-daisy_echinacea_M_CA-US-FR-GB.png',              size:'M' },
   { key:'flower-daisy_geranium',           label:'Geranium',            family:'Annual Flower',        src:'/stickers/flower-daisy_geranium_S_CA-US-FR-GB-AU.png',            size:'S' },
   { key:'flower-daisy_lobelia',            label:'Lobelia',             family:'Annual Flower',        src:'/stickers/flower-daisy_lobelia_XS_CA-US-FR-GB-AU.png',            size:'XS' },
-  { key:'flower-daisy_marigold',           label:'Marigold',            family:'Annual Flower',        src:'/stickers/flower-daisy_marigold_S_CA-US-FR-GB-AU.png',            size:'S' },
+  { key:'flower-daisy_marigold',           label:'Marigold',            family:'Annual Flower',        src:'/stickers/flower-daisy_marigold_S_orange_CA-US-FR-GB-AU.png',     size:'S' },
   { key:'flower-daisy_nasturtium',         label:'Nasturtium',          family:'Annual Flower',        src:'/stickers/flower-daisy_nasturtium_S_CA-US-FR-GB-AU.png',          size:'S' },
   { key:'flower-daisy_pansy',              label:'Pansy',               family:'Annual Flower',        src:'/stickers/flower-daisy_pansy_S_CA-US-FR-GB-AU.png',               size:'S' },
   { key:'flower-daisy_petunia',            label:'Petunia',             family:'Annual Flower',        src:'/stickers/flower-daisy_petunia_S_CA-US-FR-GB-AU.png',             size:'S' },
