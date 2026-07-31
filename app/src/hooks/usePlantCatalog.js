@@ -63,7 +63,7 @@ export const PLANT_CATALOG = [
   { key:'flower-daisy_black-eyed-susan',   label:'Black-eyed Susan',    family:'Perennial',            src:'/stickers/flower-daisy_black-eyed-susan_M_CA-US.png',             size:'M' },
   { key:'flower-daisy_cosmos',             label:'Cosmos',              family:'Annual Flower',        src:'/stickers/flower-daisy_cosmos_M_CA-US-FR-GB-AU.png',              size:'M' },
   { key:'flower-daisy_dahlia',             label:'Dahlia',              family:'Bulb / Annual',        src:'/stickers/flower-daisy_dahlia_M_CA-US-FR-GB-AU.png',              size:'M' },
-  { key:'flower-daisy_echinacea',          label:'Echinacea',           family:'Perennial',            src:'/stickers/flower-daisy_echinacea_M_CA-US-FR-GB.png',              size:'M' },
+  { key:'flower-daisy_echinacea',          label:'Echinacea',           family:'Perennial',            src:'/stickers/flower-daisy_echinacea_M_CA-US-FR-GB-AU.png',           size:'M' },
   { key:'flower-daisy_geranium',           label:'Geranium',            family:'Annual Flower',        src:'/stickers/flower-daisy_geranium_S_CA-US-FR-GB-AU.png',            size:'S' },
   { key:'flower-daisy_lobelia',            label:'Lobelia',             family:'Annual Flower',        src:'/stickers/flower-daisy_lobelia_XS_CA-US-FR-GB-AU.png',            size:'XS' },
   { key:'flower-daisy_marigold',           label:'Marigold',            family:'Annual Flower',        src:'/stickers/flower-daisy_marigold_S_orange_CA-US-FR-GB-AU.png',     size:'S' },
