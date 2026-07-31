@@ -101,7 +101,7 @@ cd projects/garden-planner/app && npm run dev
 ## Open Items
 
 ### 🔴 Immediate
-- **Maple Green + Red Leaf** - v1 stickers, need regen (watercolor style, no trunk). Resume when sticker limits reset.
+- ~~**Maple Green + Red Leaf**~~ - ✅ resolved (confirmed not needed 2026-07-31)
 - ~~**Remove debug banner**~~ - ✅ done 2026-07-17
 - **Dream Garden resize** - Rob wants to resize canvas. Pull current JSON from local:5200, update w/h, re-lock dimensions. Do as part of next Dream Garden update trigger.
 - **Asparagus deploy** - vertical stalks version in `stickers/generated/pending/vegetable-tall_asparagus_M_CA-US-FR-GB-AU.png` — copy to public/stickers + git commit
