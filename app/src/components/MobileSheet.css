@@ -356,14 +356,18 @@
 
 /* Edit handle - Back · ↓ · Undo in one row */
 .mobile-sheet-handle--edit {
+  position: relative;
   display: flex;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
-  padding: 5px 16px 5px;
+  padding: 5px 0 5px;
 }
 
-.mobile-edit-back-inline,
-.mobile-edit-undo-inline {
+.mobile-edit-back-inline {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
   background: none;
   border: none;
   color: #11502A;
@@ -375,8 +379,23 @@
   line-height: 1;
   white-space: nowrap;
 }
-.mobile-edit-back-inline:hover,
-.mobile-edit-undo-inline:hover { text-decoration: underline; }
+
+.mobile-edit-undo-inline {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #11502A;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 2px;
+  font-family: inherit;
+  line-height: 1;
+  white-space: nowrap;
+}
 
 .mobile-edit-title {
   font-size: 20px;
