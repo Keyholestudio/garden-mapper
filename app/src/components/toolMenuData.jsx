@@ -292,7 +292,9 @@ export function ToolMenu({
       <div className={`panel-content tool-menu ${extraClass}`}>
         <div className="panel-back-row">
           <button className="panel-back-btn" onClick={() => { onModeChange('select'); setOpenGroup(null) }}>← Back</button>
-          <button className="panel-undo-btn" style={{visibility: canUndo ? 'visible' : 'hidden'}} onClick={() => onUndo?.()} title="Undo">↩</button>
+          {!extraClass.includes('mobile-tool-menu') && (
+            <button className="panel-undo-btn" style={{visibility: canUndo ? 'visible' : 'hidden'}} onClick={() => onUndo?.()} title="Undo">↩</button>
+          )}
         </div>
         <div className="panel-h2" style={{ marginTop: 2, flexShrink: 0 }}>
           {TOP_TOOLS.find(t => t.id === currentMode)?.svg ?? TOP_TOOLS.find(t => t.id === currentMode)?.emoji}{' '}
@@ -311,7 +313,9 @@ export function ToolMenu({
     <div className={`panel-content tool-menu ${extraClass}`}>
       <div className="panel-back-row" style={{ marginBottom: 2 }}>
         <div className="panel-h2" style={{ flexShrink: 0 }}>Tools</div>
-        <button className="panel-undo-btn" style={{visibility: canUndo ? 'visible' : 'hidden'}} onClick={() => onUndo?.()} title="Undo">↩</button>
+        {!extraClass.includes('mobile-tool-menu') && (
+          <button className="panel-undo-btn" style={{visibility: canUndo ? 'visible' : 'hidden'}} onClick={() => onUndo?.()} title="Undo">↩</button>
+        )}
       </div>
       <div className="tool-menu-items">
         {TOP_TOOLS.map(t => (
