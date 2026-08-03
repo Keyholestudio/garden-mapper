@@ -46,6 +46,7 @@ export default function RightPanel({
   onSeasonsChange,
   onClearSelection,
   onUndo,
+  canUndo,
   onPlantVariantChange,
   addingPt, onToggleAddPt,
   removingPt, onToggleRemovePt,
@@ -68,7 +69,7 @@ export default function RightPanel({
         <div className="panel-content">
           <div className="panel-back-row">
             <button className="panel-back-btn" onClick={() => onExitEdit?.()}>← Back</button>
-            <button className="panel-undo-btn" onClick={() => onUndo?.()}>↩</button>
+            <button className="panel-undo-btn" style={{visibility: canUndo ? 'visible' : 'hidden'}} onClick={() => onUndo?.()}>↩</button>
           </div>
           <div className="panel-h2">✏️ {d?.label || 'Shape'}</div>
           <div className="panel-sub" style={{fontSize:10,opacity:.65,textAlign:'left'}}>
@@ -121,7 +122,7 @@ export default function RightPanel({
         <div className="panel-content">
           <div className="panel-back-row">
             <button className="panel-back-btn" onClick={() => onClearSelection?.()}>← Back</button>
-            <button className="panel-undo-btn" onClick={() => onUndo?.()}>↩</button>
+            <button className="panel-undo-btn" style={{visibility: canUndo ? 'visible' : 'hidden'}} onClick={() => onUndo?.()}>↩</button>
           </div>
           <div className="panel-h2">{d.label || 'Plant'}</div>
           <div className="panel-sub">{PLANT_VARIANTS[d.key]?.find(v => v.src === (d.variantSrc || null))?.name || PLANT_VARIANTS[d.key]?.[0]?.name || d.family || ''}</div>
@@ -223,7 +224,7 @@ export default function RightPanel({
         <div className="panel-content">
           <div className="panel-back-row">
             <button className="panel-back-btn" onClick={() => onClearSelection?.()}>← Back</button>
-            <button className="panel-undo-btn" onClick={() => onUndo?.()}>↩</button>
+            <button className="panel-undo-btn" style={{visibility: canUndo ? 'visible' : 'hidden'}} onClick={() => onUndo?.()}>↩</button>
           </div>
           <div className="panel-h2">{TYPE_NAMES[d.type] || d.type || 'Object'}</div>
           <input
@@ -380,6 +381,7 @@ export default function RightPanel({
         onResetView={onResetView}
         onClearAll={onClearAll}
         onUndo={onUndo}
+        canUndo={canUndo}
       />
     </div>
   )

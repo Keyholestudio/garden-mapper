@@ -310,6 +310,7 @@ export default function MobileSheet({
                   showGrid={showGrid}               onToggleGrid={onToggleGrid}
                   onResetView={onResetView}         onClearAll={onClearAll}
                   onUndo={onUndo}
+                  canUndo={canUndo}
                   extraClass="mobile-tool-menu"
                 />
               </div>
