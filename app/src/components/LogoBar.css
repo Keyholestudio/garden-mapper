@@ -39,7 +39,7 @@
   pointer-events: none;
 }
 .logo-img {
-  height: 44px;
+  height: 53px;
   object-fit: contain;
   /* White bg + bottom padding lets the logo visually bridge the dark green border */
   background: #fff;
@@ -167,7 +167,7 @@
   justify-content: center;
 }
 .logo-img-mobile {
-  height: 36px;
+  height: 43px;
 }
 .logo-mobile-right {
   position: absolute;
