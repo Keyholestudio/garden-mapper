@@ -359,9 +359,14 @@ export default function MobileSheet({
           <button className="mobile-edit-btn" onClick={() => onLayerMove?.('plant','up')}>▲ Forward</button>
           <button className="mobile-edit-btn" onClick={() => onLayerMove?.('plant','down')}>▼ Back</button>
         </div>
-        <button className="mobile-edit-btn full" onClick={onTransparentPlant}>
-          👁 {d.transparent ? 'Restore Opacity' : 'Make Transparent'}
-        </button>
+        <div className="mobile-edit-row">
+          <button className="mobile-edit-btn" onClick={onTransparentPlant}>
+            👁 {d.transparent ? 'Restore Opacity' : 'Make Transparent'}
+          </button>
+          <button className="mobile-edit-btn danger" onClick={onDeletePlant}>
+            🗑 {isDecor ? 'Delete' : 'Remove Plant'}
+          </button>
+        </div>
 
         {!isDecor && (
           <>
@@ -384,11 +389,6 @@ export default function MobileSheet({
             </div>
           </>
         )}
-
-        <div className="mobile-edit-sep" />
-        <button className="mobile-edit-btn danger full" onClick={onDeletePlant}>
-          🗑 {isDecor ? 'Delete' : 'Remove Plant'}
-        </button>
 
         {!isDecor && (
           <>

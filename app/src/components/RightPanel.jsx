@@ -158,6 +158,9 @@ export default function RightPanel({
           <button className="btn-panel" onClick={onTransparentPlant}>
             👁 {d.transparent ? 'Restore Opacity' : 'Make Transparent'}
           </button>
+          <button className="btn-panel danger" onClick={onDeletePlant}>
+            🗑 {isDecor ? 'Delete' : 'Remove Plant'}
+          </button>
           {!isDecor && (
             <>
               <div className="panel-sep" />
@@ -178,10 +181,7 @@ export default function RightPanel({
               </div>
             </>
           )}
-          <div className="panel-sep" />
-          <button className="btn-panel danger" onClick={onDeletePlant}>
-            🗑 {isDecor ? 'Delete' : 'Remove Plant'}
-          </button>
+
           {!isDecor && (
             <>
               <div className="panel-sep" />
