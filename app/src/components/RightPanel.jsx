@@ -356,9 +356,6 @@ export default function RightPanel({
   // ── Idle: tool menu ───────────────────────────────────────
   return (
     <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
-      <div className="panel-idle-undo-row">
-        <button className="panel-undo-btn" onClick={() => onUndo?.()} title="Undo">↩</button>
-      </div>
       <ToolMenu
         currentMode={currentMode}
         onModeChange={onModeChange}
@@ -382,6 +379,7 @@ export default function RightPanel({
         onTogglePan={onTogglePan}
         onResetView={onResetView}
         onClearAll={onClearAll}
+        onUndo={onUndo}
       />
     </div>
   )
