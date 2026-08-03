@@ -511,6 +511,13 @@ export function loadGarden({
       vImg.src = entry.variantSrc
     }
     group._family = entry.family || ''  // stamp family for zone-aware layer stepping
+    group.on('dragmove', () => {
+      if (showGridRef?.current) {
+        const SNAP_CELL = 16
+        group.x(Math.round(group.x() / SNAP_CELL) * SNAP_CELL)
+        group.y(Math.round(group.y() / SNAP_CELL) * SNAP_CELL)
+      }
+    })
     group.on('click tap', () => onSelectPlant(entry.id, group))
     plantLayer?.add(group)
   })
