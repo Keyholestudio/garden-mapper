@@ -7,6 +7,8 @@ import { useState, useCallback } from 'react'
 const LS_KEY     = 'gardenRecentPlants'
 const LS_HIDDEN  = 'gardenRecentPlantsHidden'
 const MAX_RECENT = 5
+// Non-plant families that should never appear in the recently-used list
+const NON_PLANT_FAMILIES = ['Decor', 'Water Feature']
 
 function readLS() {
   try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]') } catch { return [] }
@@ -23,6 +25,8 @@ export function useRecentPlants() {
   const [hidden,  setHidden]  = useState(() => readHidden())
 
   const addRecent = useCallback((entry, { defer } = {}) => {
+    // Skip non-plant entries (decor, water features, etc.)
+    if (NON_PLANT_FAMILIES.includes(entry?.family)) return
     // Store only what's needed for display (no Konva/Image objects — those can't be serialised)
     const slim = { key: entry.key, label: entry.label, family: entry.family, src: entry.src, size: entry.size, seasons: entry.seasons }
     // Always write to localStorage immediately so it persists even if the state update is deferred.
