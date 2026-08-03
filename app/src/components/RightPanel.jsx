@@ -329,8 +329,6 @@ export default function RightPanel({
           <button className="btn-panel" onClick={onTransparentStruct}>
             👁 {d.transparent ? 'Restore' : 'Make Transparent'}
           </button>
-
-          <div className="panel-sep" />
           <button className="btn-panel danger" onClick={onDeleteStruct}>🗑 Delete</button>
 
           {(isBed || isUG) && (
