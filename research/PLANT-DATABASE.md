@@ -26,24 +26,23 @@
 | Australian Tree Fern | Cyathea cooperi | Cyatheaceae | AU US | XL | pack-ferns-tree | | tree-fern, large, humid | cyathea cooperi, lacy tree fern | none | fast-growing, tropical feel |
 | Tasmanian Tree Fern | Dicksonia fibrosa | Dicksoniaceae | AU GB | L | pack-ferns-tree | | tree-fern, compact | dicksonia fibrosa, wheki-ponga | none | smaller than Dicksonia antarctica |
 | Dwarf Tree Fern | Blechnum gibbum | Blechnaceae | AU US FR | M | pack-ferns-tree | | tree-fern, compact, container | blechnum, miniature tree fern, dwarf fern | none | good for pots |
-| Lady Fern | Athyrium filix-femina | Athyriaceae | CA US FR GB AU | M | pack-ferns-woodland | | woodland, feathery, deciduous, shade | athyrium, lacy fern, common lady fern | none | most common garden fern |
-| Japanese Painted Fern | Athyrium niponicum | Athyriaceae | CA US FR GB AU | M | pack-ferns-woodland | | woodland, feathery, shade | athyrium niponicum, painted fern, silver fern | planned | silver/purple frond colouring |
-| Ostrich Fern | Matteuccia struthiopteris | Onocleaceae | CA US FR GB | L | pack-ferns-moisture | | deciduous, moisture, stream | matteuccia, shuttlecock fern, fiddlehead fern | none | vase-shaped, edible fiddleheads |
-| Sensitive Fern | Onoclea sensibilis | Onocleaceae | CA US FR GB | M | pack-ferns-moisture | | deciduous, bog, stream | onoclea, bead fern | none | dies back at first frost |
-| Cinnamon Fern | Osmundastrum cinnamomeum | Osmundaceae | CA US FR GB | L | pack-ferns-moisture | | deciduous, moisture, bog | osmunda cinnamomea, cinnamon fern | none | cinnamon-coloured fertile fronds |
-| Royal Fern | Osmunda regalis | Osmundaceae | CA US FR GB AU | L | pack-ferns-moisture | | deciduous, moisture, bog, stream | osmunda, flowering fern | none | large architectural fern |
-| Interrupted Fern | Claytosmunda claytoniana | Osmundaceae | CA US | L | pack-ferns-woodland | | woodland, deciduous | osmunda claytoniana, clayton fern | none | distinctive interrupted fronds |
-| Maidenhair Fern | Adiantum pedatum | Pteridaceae | CA US FR GB | M | pack-ferns-woodland | | woodland, feathery, deciduous, shade | adiantum, five-fingered fern, northern maidenhair | none | delicate fan-shaped fronds |
-| Marsh Fern | Thelypteris palustris | Thelypteridaceae | CA US FR GB | M | pack-ferns-moisture | | moisture, bog, stream | thelypteris, marsh fern | none | spreads in wet conditions |
-| Hay-scented Fern | Dennstaedtia punctilobula | Dennstaedtiaceae | CA US | M | pack-ferns-woodland | | woodland, deciduous, dry-shade | dennstaedtia, hay fern | none | tolerates dry shade |
-| Boston Fern | Nephrolepis exaltata | Lomariopsidaceae | US AU | M | pack-ferns-woodland | | humid, container | nephrolepis, sword fern, hanging basket fern | none | annual in cold climates |
-| Autumn Fern | Dryopteris erythrosora | Dryopteridaceae | CA US FR GB AU | M | pack-ferns-evergreen | | evergreen, glossy, shade | dryopteris, japanese shield fern, copper shield fern | none | bronze new fronds |
-| Male Fern | Dryopteris filix-mas | Dryopteridaceae | CA US FR GB AU | M | pack-ferns-evergreen | | evergreen, tough, shade, dry-shade | dryopteris, common male fern | none | very hardy, tolerates dry shade |
-| Buckler Fern | Dryopteris dilatata | Dryopteridaceae | CA US FR GB AU | M | pack-ferns-evergreen | | evergreen, tough, shade | dryopteris, broad buckler fern | none | wide arching fronds |
-| Soft Shield Fern | Polystichum setiferum | Dryopteridaceae | CA US FR GB AU | M | pack-ferns-evergreen | | evergreen, feathery, low | polystichum, soft shield fern | none | soft feathery texture, low mound |
-| Hard Shield Fern | Polystichum aculeatum | Dryopteridaceae | CA US FR GB AU | M | pack-ferns-evergreen | | evergreen, tough, shade | polystichum, prickly shield fern | none | glossy tough fronds |
-| Christmas Fern | Polystichum acrostichoides | Dryopteridaceae | CA US | M | pack-ferns-evergreen | | evergreen, tough, low | polystichum, dagger fern | none | stays green through winter |
-| Hart's Tongue Fern | Asplenium scolopendrium | Aspleniaceae | CA US FR GB AU | S | pack-ferns-rock | | evergreen, glossy, low, rock | asplenium, tongue fern, phyllitis | none | strap-shaped undivided fronds |
+| Lady Fern | Athyrium filix-femina | Athyriaceae | CA US FR GB AU | M | pack-ferns-woodland | plant-fern_lady-fern_M_CA-US-FR-GB-AU | woodland, feathery, deciduous, shade | athyrium, lacy fern, common lady fern | none | ✅ sticker live |
+| Japanese Painted Fern | Athyrium niponicum | Athyriaceae | CA US FR GB AU | M | pack-ferns-woodland | plant-fern_japanese-painted-fern_M_CA-US-FR-GB-AU | woodland, feathery, shade | athyrium niponicum, painted fern, silver fern | planned | ✅ sticker live |
+| Ostrich Fern | Matteuccia struthiopteris | Onocleaceae | CA US FR GB | L | pack-ferns-woodland | plant-fern_ostrich-fern_L_CA-US-FR-GB-AU | deciduous, moisture, stream | matteuccia, shuttlecock fern, fiddlehead fern | none | ✅ sticker live (also M size on disk) |
+| Sensitive Fern | Onoclea sensibilis | Onocleaceae | CA US FR GB | M | pack-ferns-woodland | plant-fern_sensitive-fern_M_CA-US-FR-GB-AU | deciduous, bog, stream | onoclea, bead fern | none | ✅ sticker live |
+| Cinnamon Fern | Osmundastrum cinnamomeum | Osmundaceae | CA US FR GB | L | pack-ferns-woodland | plant-fern_cinnamon-fern_L_CA-US-FR-GB-AU | deciduous, moisture, bog | osmunda cinnamomea, cinnamon fern | none | ✅ sticker live (also M size on disk) |
+| Royal Fern | Osmunda regalis | Osmundaceae | CA US FR GB AU | L | pack-ferns-woodland | plant-fern_royal-fern_XL_CA-US-FR-GB-AU | deciduous, moisture, bog, stream | osmunda, flowering fern | none | ✅ sticker live (M + XL sizes on disk) |
+| Interrupted Fern | Claytosmunda claytoniana | Osmundaceae | CA US | L | pack-ferns-woodland | plant-fern_interrupted-fern_L_CA-US-FR-GB-AU | woodland, deciduous | osmunda claytoniana, clayton fern | none | ✅ sticker live |
+| Maidenhair Fern | Adiantum pedatum | Pteridaceae | CA US FR GB | M | pack-ferns-woodland | plant-fern_maidenhair-fern_M_CA-US-FR-GB-AU | woodland, feathery, deciduous, shade | adiantum, five-fingered fern, northern maidenhair | none | ✅ sticker live |
+| Marsh Fern | Thelypteris palustris | Thelypteridaceae | CA US FR GB | M | pack-ferns-woodland | | moisture, bog, stream | thelypteris, marsh fern | none | ⚠️ no sticker on disk yet |
+| Hay-scented Fern | Dennstaedtia punctilobula | Dennstaedtiaceae | CA US | M | pack-ferns-woodland | | woodland, deciduous, dry-shade | dennstaedtia, hay fern | none | ⚠️ no sticker on disk yet |
+| Boston Fern | Nephrolepis exaltata | Lomariopsidaceae | US AU | M | pack-ferns-woodland | | humid, container | nephrolepis, sword fern, hanging basket fern | none | ⚠️ no sticker on disk yet |
+| Male Fern | Dryopteris filix-mas | Dryopteridaceae | CA US FR GB AU | M | pack-ferns-woodland | plant-fern_male-fern_M_CA-US-FR-GB-AU | evergreen, tough, shade, dry-shade | dryopteris, common male fern | none | ✅ sticker live (also L size on disk) |
+| Broad Buckler Fern | Dryopteris dilatata | Dryopteridaceae | CA US FR GB AU | M | pack-ferns-woodland | plant-fern_broad-buckler-fern_M_CA-US-FR-GB-AU | evergreen, tough, shade | dryopteris, broad buckler fern | none | ✅ sticker live (also L size on disk) |
+| Soft Shield Fern | Polystichum setiferum | Dryopteridaceae | CA US FR GB AU | M | pack-ferns-woodland | plant-fern_soft-shield-fern_M_CA-US-FR-GB-AU | evergreen, feathery, low | polystichum, soft shield fern | none | ✅ sticker live (also L size on disk) |
+| Hart's Tongue Fern | Asplenium scolopendrium | Aspleniaceae | CA US FR GB AU | S | pack-ferns-woodland | plant-fern_harts-tongue-fern_M_CA-US-FR-GB-AU | evergreen, glossy, low, rock | asplenium, tongue fern, phyllitis | none | ✅ sticker live |
+| Hard Shield Fern | Polystichum aculeatum | Dryopteridaceae | CA US FR GB AU | M | pack-ferns-woodland | | evergreen, tough, shade | polystichum, prickly shield fern | none | ⚠️ no sticker on disk — future pack |
+| Christmas Fern | Polystichum acrostichoides | Dryopteridaceae | CA US | M | pack-ferns-woodland | | evergreen, tough, low | polystichum, dagger fern | none | ⚠️ no sticker on disk — future pack |
 | Maidenhair Spleenwort | Asplenium trichomanes | Aspleniaceae | CA US FR GB AU | XS | pack-ferns-rock | | evergreen, rock, crevice | asplenium trichomanes, wall fern, spleenwort | none | tiny fern for wall crevices |
 | Common Polypody | Polypodium vulgare | Polypodiaceae | CA US FR GB AU | S | pack-ferns-rock | | evergreen, rock, dry-shade | polypodium, rock fern, wall polypody | none | grows on rocks and walls |
 
@@ -300,8 +299,7 @@
 
 ---
 
-*Total entries: 193 plants (178 previous + 15 herbs: culinary batch 3 + medicinal batch 1)*
-*Last updated: 2026-07-20 — added Horseradish, Garlic Chives, Vietnamese Coriander, Cumin; created pack-herbs-medicinal.js (St John's Wort, Valerian, German Chamomile, Comfrey, Hyssop, Lemon Verbena)*
+*Total entries: ~253 plants — updated 2026-08-05 (fern sticker IDs filled, veg-root/leafy + cacti/succulents/tropical backfilled)*
 
 ---
 
@@ -330,3 +328,97 @@
 | Mugwort | Artemisia vulgaris | Asteraceae | CA US FR GB AU | L | pack-herbs-medicinal | herb-medicinal_mugwort_L_CA-US-FR-GB-AU | perennial, medicinal, aromatic | mugwort, artemisia, common mugwort | none | |
 | Rue | Ruta graveolens | Rutaceae | CA US FR GB AU | M | pack-herbs-medicinal | herb-medicinal_rue_M_CA-US-FR-GB-AU | perennial, medicinal, aromatic | rue, ruta, herb of grace | none | photosensitive |
 | Wormwood | Artemisia absinthium | Asteraceae | CA US FR GB AU | L | pack-herbs-medicinal | herb-medicinal_wormwood_L_CA-US-FR-GB-AU | perennial, medicinal, silver, bitter | wormwood, artemisia absinthium, absinthe | none | |
+
+---
+
+## 🥥 Vegetables — Leafy (pack-vegetables-leafy)
+_Backfilled 2026-08-05 from sticker files on disk. All stickers live._
+
+| Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Arugula / Rocket | Eruca vesicaria | Brassicaceae | CA US FR GB AU | S | pack-vegetables-leafy | vegetable-leafy_arugula_S_CA-US-FR-GB-AU | annual, leafy, peppery, fast | arugula, rocket, rucola, roquette | none | |
+| Radicchio | Cichorium intybus var. foliosum | Asteraceae | CA US FR GB AU | S | pack-vegetables-leafy | vegetable-leafy_radicchio_S_CA-US-FR-GB-AU | annual, leafy, bitter, red | radicchio, red chicory, cichorium intybus | planned | |
+| Endive | Cichorium endivia | Asteraceae | CA US FR GB AU | S | pack-vegetables-leafy | vegetable-leafy_endive_S_CA-US-FR-GB-AU | annual, leafy, bitter, curly | endive, escarole, frisee | planned | |
+| Red Amaranth | Amaranthus tricolor | Amaranthaceae | CA US FR GB AU | M | pack-vegetables-leafy | vegetable-leafy_red-amaranth_M_CA-US-FR-GB-AU | annual, leafy, ornamental, heat-tolerant | red amaranth, joseph's coat | planned | |
+| Lamb's Lettuce / Mâche | Valerianella locusta | Caprifoliaceae | CA US FR GB AU | XS | pack-vegetables-leafy | vegetable-leafy_lambs-lettuce_XS_CA-US-FR-GB-AU | annual, leafy, mild, cool-season | lamb's lettuce, mache, corn salad | none | |
+| New Zealand Spinach | Tetragonia tetragonioides | Aizoaceae | CA US FR GB AU | M | pack-vegetables-leafy | vegetable-leafy_nz-spinach_M_CA-US-FR-GB-AU | perennial, leafy, heat-tolerant, spreading | new zealand spinach, tetragonia, warrigal greens | none | |
+| Malabar Spinach | Basella alba | Basellaceae | CA US FR GB AU | M | pack-vegetables-leafy | vegetable-leafy_malabar-spinach_M_CA-US-FR-GB-AU | annual, climbing, leafy, tropical | malabar spinach, basella, indian spinach | planned | |
+| Good King Henry | Chenopodium bonus-henricus | Amaranthaceae | CA US FR GB AU | M | pack-vegetables-leafy | vegetable-leafy_good-king-henry_M_CA-US-FR-GB-AU | perennial, leafy, woodland, edible | good king henry, goosefoot, wild spinach | none | |
+| Silverbeet | Beta vulgaris subsp. cicla | Amaranthaceae | AU CA US FR GB | M | pack-vegetables-leafy | vegetable-leafy_silverbeet_M_CA-US-FR-GB-AU | perennial, leafy, colourful stems | silverbeet, swiss chard, beta vulgaris cicla | planned | |
+
+---
+
+## 🥕 Vegetables — Root (pack-vegetables-root)
+_Backfilled 2026-08-05 from sticker files on disk. All stickers live._
+
+| Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Celeriac | Apium graveolens var. rapaceum | Apiaceae | CA US FR GB AU | M | pack-vegetables-root | vegetable-root_celeriac_M_CA-US-FR-GB-AU | biennial, root, celery-flavour | celeriac, celery root, turnip-rooted celery | none | |
+| Jerusalem Artichoke | Helianthus tuberosus | Asteraceae | CA US FR GB AU | XL | pack-vegetables-root | vegetable-root_jerusalem-artichoke_XL_CA-US-FR-GB-AU | perennial, tuber, spreading | jerusalem artichoke, sunchoke | none | |
+| Salsify | Tragopogon porrifolius | Asteraceae | CA US FR GB AU | M | pack-vegetables-root | vegetable-root_salsify_M_CA-US-FR-GB-AU | biennial, root, oyster-flavour | salsify, oyster plant, tragopogon | none | |
+| Scorzonera | Scorzonera hispanica | Asteraceae | CA US FR GB AU | M | pack-vegetables-root | vegetable-root_scorzonera_M_CA-US-FR-GB-AU | perennial, root, black-skin | scorzonera, black salsify | none | |
+| Hamburg Parsley | Petroselinum crispum var. tuberosum | Apiaceae | CA US FR GB AU | M | pack-vegetables-root | vegetable-root_hamburg-parsley_M_CA-US-FR-GB-AU | biennial, root, parsley-flavour | hamburg parsley, root parsley | none | |
+| Sweet Potato | Ipomoea batatas | Convolvulaceae | CA US FR GB AU | M | pack-vegetables-root | vegetable-root_sweet-potato_M_CA-US-FR-GB-AU | annual, tuber, climbing, tropical | sweet potato, ipomoea batatas, kumara | planned | |
+| Oca | Oxalis tuberosa | Oxalidaceae | CA US FR GB AU | S | pack-vegetables-root | vegetable-root_oca_S_CA-US-FR-GB-AU | perennial, tuber, bright colours | oca, new zealand yam, oxalis tuberosa | planned | |
+| Skirret | Sium sisarum | Apiaceae | CA US FR GB AU | M | pack-vegetables-root | vegetable-root_skirret_M_CA-US-FR-GB-AU | perennial, root, sweet, old-fashioned | skirret, sium sisarum | none | |
+| Yacon | Smallanthus sonchifolius | Asteraceae | CA US FR GB AU | XL | pack-vegetables-root | vegetable-root_yacon_XL_CA-US-FR-GB-AU | perennial, tuber, sweet | yacon, peruvian ground apple | none | |
+
+---
+
+## 🌵 Cacti (pack-cacti-succulents)
+_Backfilled 2026-08-05 — stickers were generated before the database workflow existed._
+
+| Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Saguaro Cactus | Carnegiea gigantea | Cactaceae | CA US FR GB AU | XL | pack-cacti-succulents | cactus_saguaro_XL_CA-US-FR-GB-AU | tall, columnar, desert, spiky | saguaro, giant cactus, carnegiea | none | |
+| Barrel Cactus | Ferocactus spp. | Cactaceae | CA US FR GB AU | M | pack-cacti-succulents | cactus_barrel_M_CA-US-FR-GB-AU | round, compact, desert, spiky | barrel cactus, ferocactus, golden barrel | none | |
+| Prickly Pear Cactus | Opuntia spp. | Cactaceae | CA US FR GB AU | L | pack-cacti-succulents | cactus_prickly-pear_L_CA-US-FR-GB-AU | flat, desert, edible, spiky | prickly pear, opuntia, paddle cactus, nopal | none | |
+| Organ Pipe Cactus | Stenocereus thurberi | Cactaceae | CA US FR GB AU | XL | pack-cacti-succulents | cactus_organ-pipe_XL_CA-US-FR-GB-AU | tall, columnar, desert, spiky | organ pipe, stenocereus | none | |
+| Cholla Cactus | Cylindropuntia spp. | Cactaceae | CA US FR GB AU | L | pack-cacti-succulents | cactus_cholla_L_CA-US-FR-GB-AU | branching, desert, spiky | cholla, cylindropuntia, jumping cactus | none | |
+| Fishhook Cactus | Mammillaria spp. | Cactaceae | CA US FR GB AU | S | pack-cacti-succulents | cactus_fishhook_S_CA-US-FR-GB-AU | small, round, compact, desert | fishhook cactus, mammillaria, pincushion | none | |
+| Christmas Cactus | Schlumbergera spp. | Cactaceae | CA US FR GB AU | M | pack-cacti-succulents | cactus_christmas_M_CA-US-FR-GB-AU | trailing, indoor, pink, seasonal | christmas cactus, schlumbergera, holiday cactus | none | |
+| Golden Barrel Cactus | Echinocactus grusonii | Cactaceae | CA US FR GB AU | M | pack-cacti-succulents | cactus_golden-barrel_M_CA-US-FR-GB-AU | round, yellow, compact, desert | golden barrel, echinocactus, mother in law seat | none | |
+| Hedgehog Cactus | Echinocereus spp. | Cactaceae | CA US FR GB AU | S | pack-cacti-succulents | cactus_hedgehog_S_CA-US-FR-GB-AU | small, compact, desert, pink | hedgehog cactus, echinocereus | none | |
+| Bunny Ears Cactus | Opuntia microdasys | Cactaceae | CA US FR GB AU | M | pack-cacti-succulents | cactus_bunny-ears_M_CA-US-FR-GB-AU | round, flat, compact, desert | bunny ears, opuntia microdasys, polka dot cactus | none | |
+| Old Man Cactus | Cephalocereus senilis | Cactaceae | CA US FR GB AU | M | pack-cacti-succulents | cactus_old-man_M_CA-US-FR-GB-AU | columnar, white, hairy, desert | old man cactus, cephalocereus | none | |
+| Moon Cactus | Gymnocalycium mihanovichii | Cactaceae | CA US FR GB AU | S | pack-cacti-succulents | cactus_moon_S_CA-US-FR-GB-AU | small, colourful, red, yellow | moon cactus, gymnocalycium, ruby ball | none | |
+| Totem Pole Cactus | Lophocereus schottii | Cactaceae | CA US FR GB AU | XL | pack-cacti-succulents | cactus_totem-pole_XL_CA-US-FR-GB-AU | tall, columnar, smooth, desert | totem pole cactus, lophocereus | none | |
+| Star Cactus | Astrophytum asterias | Cactaceae | CA US FR GB AU | S | pack-cacti-succulents | cactus_star_S_CA-US-FR-GB-AU | small, round, flat, desert | star cactus, astrophytum, sand dollar cactus | none | |
+| Bishops Cap Cactus | Astrophytum myriostigma | Cactaceae | CA US FR GB AU | S | pack-cacti-succulents | cactus_bishops-cap_S_CA-US-FR-GB-AU | small, round, ribbed, desert | bishops cap, astrophytum myriostigma | none | |
+
+---
+
+## 🌱 Succulents (pack-cacti-succulents)
+_Backfilled 2026-08-05 — stickers were generated before the database workflow existed._
+
+| Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Aloe Vera | Aloe barbadensis | Asphodelaceae | CA US FR GB AU | M | pack-cacti-succulents | succulent_aloe-vera_M_CA-US-FR-GB-AU | spiky, green, medicinal, drought-tolerant | aloe vera, aloe, medicinal plant | none | |
+| Echeveria | Echeveria spp. | Crassulaceae | CA US FR GB AU | S | pack-cacti-succulents | succulent_echeveria_S_CA-US-FR-GB-AU | rosette, compact, pink, purple | echeveria, hen and chicks, rosette succulent | none | |
+| Jade Plant | Crassula ovata | Crassulaceae | CA US FR GB AU | S | pack-cacti-succulents | succulent_jade-plant_S_CA-US-FR-GB-AU | compact, green, tree-like, lucky | jade plant, crassula, money plant | none | |
+| Haworthia | Haworthia spp. | Asphodelaceae | CA US FR GB AU | S | pack-cacti-succulents | succulent_haworthia_S_CA-US-FR-GB-AU | small, striped, rosette, indoor | haworthia, zebra plant, zebra cactus | none | |
+| Sedum (Succulent) | Sedum spp. | Crassulaceae | CA US FR GB AU | S | pack-cacti-succulents | succulent_sedum-succulent_S_CA-US-FR-GB-AU | compact, ground-cover, drought-tolerant | sedum, stonecrop | none | |
+| Agave | Agave spp. | Asparagaceae | CA US FR GB AU | L | pack-cacti-succulents | succulent_agave_L_CA-US-FR-GB-AU | spiky, large, architectural, blue-grey | agave, century plant | none | |
+| String of Pearls | Senecio rowleyanus | Asteraceae | CA US FR GB AU | S | pack-cacti-succulents | succulent_string-of-pearls_S_CA-US-FR-GB-AU | trailing, hanging, green, indoor | string of pearls, senecio, string of beads | none | |
+| Hens and Chicks | Sempervivum spp. | Crassulaceae | CA US FR GB AU | S | pack-cacti-succulents | succulent_hens-and-chicks_S_CA-US-FR-GB-AU | rosette, compact, hardy, drought-tolerant | hens and chicks, sempervivum, houseleek | none | |
+| Lithops | Lithops spp. | Aizoaceae | CA US FR GB AU | S | pack-cacti-succulents | succulent_lithops_S_CA-US-FR-GB-AU | tiny, unusual, stone-like, desert | lithops, living stones, pebble plant | none | |
+| Burro's Tail | Sedum morganianum | Crassulaceae | CA US FR GB AU | S | pack-cacti-succulents | succulent_burros-tail_S_CA-US-FR-GB-AU | trailing, hanging, blue-green, indoor | burros tail, donkeys tail, sedum morganianum | none | |
+
+---
+
+## 🌴 Tropical & Palms (pack-tropical)
+_Backfilled 2026-08-05 — stickers were generated before the database workflow existed._
+
+| Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Coconut Palm | Cocos nucifera | Arecaceae | AU US FR GB | XXL | pack-tropical | tree-palm_coconut_XXL_CA-US-FR-GB-AU | tall, tropical, palm | coconut palm, cocos nucifera | none | |
+| Royal Palm | Roystonea regia | Arecaceae | AU US FR GB | XXL | pack-tropical | tree-palm_royal_XXL_CA-US-FR-GB-AU | tall, tropical, formal, palm | royal palm, roystonea | none | |
+| Washingtonia Palm | Washingtonia robusta | Arecaceae | AU US FR GB | XXL | pack-tropical | tree-palm_washingtonia_XXL_CA-US-FR-GB-AU | tall, tropical, fan-palm | washingtonia, mexican fan palm | none | |
+| Date Palm | Phoenix dactylifera | Arecaceae | AU US FR GB | XXL | pack-tropical | tree-palm_date_XXL_CA-US-FR-GB-AU | tall, tropical, edible, palm | date palm, phoenix, medjool | none | |
+| Bismarck Palm | Bismarckia nobilis | Arecaceae | AU US FR GB | XXL | pack-tropical | tree-palm_bismarck_XXL_CA-US-FR-GB-AU | tall, tropical, silver, fan-palm | bismarck palm, bismarckia | none | |
+| Traveller's Palm | Ravenala madagascariensis | Strelitziaceae | AU US FR GB | XXL | pack-tropical | tree-palm_travellers_XXL_CA-US-FR-GB-AU | tall, tropical, architectural, fan | travellers palm, ravenala | none | |
+| Banana Tree | Musa spp. | Musaceae | AU US FR GB | XL | pack-tropical | tree-tropical_banana_XL_CA-US-FR-GB-AU | tropical, large-leaf, edible | banana tree, musa, plantain | none | |
+| Bird of Paradise Tree | Strelitzia nicolai | Strelitziaceae | AU US FR GB | XL | pack-tropical | tree-tropical_bird-of-paradise_XL_CA-US-FR-GB-AU | tropical, architectural, white-flower | bird of paradise, strelitzia | none | |
+| Bougainvillea | Bougainvillea spp. | Nyctaginaceae | AU US FR GB | XL | pack-tropical | tree-tropical_bougainvillea_XL_CA-US-FR-GB-AU | tropical, climbing, vivid-colour | bougainvillea | planned | |
+| Jacaranda Tree | Jacaranda mimosifolia | Bignoniaceae | AU US FR GB | XXL | pack-tropical | tree-tropical_jacaranda_XXL_CA-US-FR-GB-AU | tropical, purple-flower, deciduous | jacaranda, jacaranda mimosifolia | none | |
+| Plumeria / Frangipani | Plumeria spp. | Apocynaceae | AU US FR GB | M | pack-tropical | tree-tropical_plumeria_M_CA-US-FR-GB-AU | tropical, fragrant, flower | plumeria, frangipani | planned | |

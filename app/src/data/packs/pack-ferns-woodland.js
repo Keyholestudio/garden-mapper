@@ -18,6 +18,7 @@ export const entries = [
     latinName: 'Athyrium filix-femina',
     searchTerms: ['lady fern', 'athyrium', 'woodland fern'],
     traits: ['shade', 'deciduous-fern', 'delicate'],
+    src: '/stickers/plant-fern_lady-fern_M_CA-US-FR-GB-AU.png',
   },
 
   {
@@ -27,6 +28,7 @@ export const entries = [
     latinName: 'Dryopteris filix-mas',
     searchTerms: ['male fern', 'dryopteris', 'buckler fern'],
     traits: ['shade', 'semi-evergreen', 'robust'],
+    src: '/stickers/plant-fern_male-fern_M_CA-US-FR-GB-AU.png',
   },
 
   {
@@ -36,6 +38,7 @@ export const entries = [
     latinName: 'Matteuccia struthiopteris',
     searchTerms: ['ostrich fern', 'matteuccia', 'shuttlecock fern'],
     traits: ['shade', 'deciduous-fern', 'vase-shaped'],
+    src: '/stickers/plant-fern_ostrich-fern_L_CA-US-FR-GB-AU.png',
   },
 
   {
@@ -45,6 +48,7 @@ export const entries = [
     latinName: 'Athyrium niponicum',
     searchTerms: ['japanese painted fern', 'athyrium niponicum', 'silver fern'],
     traits: ['shade', 'deciduous-fern', 'ornamental', 'silver'],
+    src: '/stickers/plant-fern_japanese-painted-fern_M_CA-US-FR-GB-AU.png',
   },
 
   {
@@ -54,6 +58,7 @@ export const entries = [
     latinName: 'Asplenium scolopendrium',
     searchTerms: ["hart's tongue fern", 'asplenium scolopendrium'],
     traits: ['shade', 'evergreen', 'strap-leafed'],
+    src: '/stickers/plant-fern_harts-tongue-fern_M_CA-US-FR-GB-AU.png',
   },
 
   {
@@ -63,6 +68,7 @@ export const entries = [
     latinName: 'Adiantum pedatum',
     searchTerms: ['maidenhair fern', 'adiantum', 'venus hair'],
     traits: ['shade', 'deciduous-fern', 'delicate'],
+    src: '/stickers/plant-fern_maidenhair-fern_M_CA-US-FR-GB-AU.png',
   },
 
   {
@@ -72,6 +78,7 @@ export const entries = [
     latinName: 'Polystichum setiferum',
     searchTerms: ['soft shield fern', 'polystichum setiferum'],
     traits: ['shade', 'semi-evergreen', 'soft'],
+    src: '/stickers/plant-fern_soft-shield-fern_M_CA-US-FR-GB-AU.png',
   },
 
   {
@@ -81,6 +88,7 @@ export const entries = [
     latinName: 'Dryopteris dilatata',
     searchTerms: ['broad buckler fern', 'dryopteris dilatata'],
     traits: ['shade', 'semi-evergreen', 'spreading'],
+    src: '/stickers/plant-fern_broad-buckler-fern_M_CA-US-FR-GB-AU.png',
   },
 
   {
@@ -90,6 +98,7 @@ export const entries = [
     latinName: 'Osmunda regalis',
     searchTerms: ['royal fern', 'osmunda', 'flowering fern'],
     traits: ['shade', 'wetland', 'tall', 'deciduous-fern'],
+    src: '/stickers/plant-fern_royal-fern_XL_CA-US-FR-GB-AU.png',
   },
 
   {
@@ -99,6 +108,7 @@ export const entries = [
     latinName: 'Osmunda claytoniana',
     searchTerms: ['interrupted fern', 'osmunda claytoniana'],
     traits: ['shade', 'deciduous-fern', 'unusual'],
+    src: '/stickers/plant-fern_interrupted-fern_L_CA-US-FR-GB-AU.png',
   },
 
   {
@@ -108,6 +118,7 @@ export const entries = [
     latinName: 'Osmundastrum cinnamomeum',
     searchTerms: ['cinnamon fern', 'osmundastrum', 'fertile fronds'],
     traits: ['shade', 'wetland', 'deciduous-fern', 'cinnamon'],
+    src: '/stickers/plant-fern_cinnamon-fern_L_CA-US-FR-GB-AU.png',
   },
 
   {
@@ -117,6 +128,7 @@ export const entries = [
     latinName: 'Onoclea sensibilis',
     searchTerms: ['sensitive fern', 'onoclea', 'bead fern'],
     traits: ['shade', 'wetland', 'deciduous-fern'],
+    src: '/stickers/plant-fern_sensitive-fern_M_CA-US-FR-GB-AU.png',
   },
 
 ];

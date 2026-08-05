@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-07-31 (Duplicate region-code purge + default swatch fix + promoted variants)_
+_Last updated: 2026-08-05 (bug fix — decor items excluded from Recently Used list)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -103,8 +103,8 @@ cd projects/garden-planner/app && npm run dev
 ### 🔴 Immediate
 - ~~**Maple Green + Red Leaf**~~ - ✅ resolved (confirmed not needed 2026-07-31)
 - ~~**Remove debug banner**~~ - ✅ done 2026-07-17
+- **Android APK rebuild** — all fixes from 2026-08-03 + 2026-08-05 not yet on device. Needs USB connect + deploy-android.bat.
 - **Dream Garden resize** - Rob wants to resize canvas. Pull current JSON from local:5200, update w/h, re-lock dimensions. Do as part of next Dream Garden update trigger.
-- **Asparagus deploy** - vertical stalks version in `stickers/generated/pending/vegetable-tall_asparagus_M_CA-US-FR-GB-AU.png` — copy to public/stickers + git commit
 - ~~**Batch 8 rework**~~ - ✅ done 2026-07-27 (lupin, buddleia, forsythia, spirea, weigela, iris)
 - ~~**Echinacea + Water Lily**~~ - ✅ done 2026-07-31
 - ~~**Batch 6 leftover**~~ - ✅ done 2026-07-27 (hollyhock, onion)
@@ -116,6 +116,9 @@ cd projects/garden-planner/app && npm run dev
 - **Completed:** `pack-ferns-woodland.js` - 12/12 stickers done, live on web + Android ✅
 - **Sticker template fix** - TEMPLATES dict synced to STICKER-PROMPT-GUIDE.md (2026-06-18). Workflow 0a enforces this going forward.
 - **Colour variant rollout** - plan in `COLOUR-VARIANTS.md`. Chunk 1 next: Ornamental Cherry + Magnolia.
+- **In-app icon updates** — bed icons, printer icon etc (from Garden Organizer doc)
+- **Gift cards** — $13/yr, $25/2yr purchasable gift cards (from Garden Organizer doc)
+- **RevenueCat Pub/Sub API** — GCP service account needs Pub/Sub permissions (from Garden Organizer doc)
 - **Fern pack files** - `pack-ferns-woodland.js` ✅ done. Still needed: `pack-ferns-tree.js` (5), `pack-ferns-evergreen.js` (8). Plants in PLANT-STAGING.md.
 - **Core catalog searchMeta** - add `latinName`, `searchTerms`, `traits` to `usePlantCatalog.js` entries. Tropical pack needs same update.
 - **Pack architecture** - 63 pack files defined (WORKFLOWS.md). Create on demand as plants are added. Core migration deferred.
