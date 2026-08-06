@@ -1,6 +1,26 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026, L027, L028 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L051 — Raw files in app/public: how they got there + the fix (2026-08-06)
+**What happened:** `_raw.png` files (AI-generated source images, ~1.5MB each) accumulated in `app/public/stickers/` and were deployed to Vercel. Never referenced by the app but added ~250MB+ of CDN bloat and slowed deploys.
+**Root cause:** The commit workflow copied everything from `stickers/generated/pending/` including both the clean `.png` and the `_raw.png`. No one noticed because raws cause no visible app error.
+**Fix:**
+- Both sticker scripts now auto-move `_raw` to `stickers/raw-archive/` immediately after pipeline runs
+- `.gitignore` blocks both `stickers/raw-archive/` and `app/public/stickers/raw-archive/`
+- WORKFLOWS.md has a ⚠️ Raw File Rule section at the top and all copy steps say "clean PNG only"
+**Rule:** Never copy `_raw` files to `app/public/`. If you see one there, remove it immediately.
+
+## L052 — Texture scaling: resize source image, don't use fillPatternScale (2026-08-06)
+**What happened:** Applied a 1080px watercolor texture as a Konva bed fill using `fillPatternScale: 0.185`. Result was blurry — Konva's bilinear interpolation at small scale loses sharpness.
+**Fix:** Resize the source image to the target tile size (256px) using Pillow/Lanczos before dropping it in `app/public/textures/`. Set `fillPatternScale` to nothing (tile at 1:1). Output is crisp.
+**Rule:** For tileable textures, always pre-resize to the intended tile size. Never rely on runtime scaling for sharpness.
+
+## L053 — Konva texture beds + tryMergeRects = black fill (2026-08-06)
+**What happened:** Two texture-filled beds (colour = `#TX:soil-brown`) merged via `tryMergeRects`. The merged group's child rects got `fill: d.colour + 'CC'` = `#TX:soil-brownCC` — not a valid CSS colour. Konva rendered it black.
+**Root cause:** `tryMergeRects` uses `d.colour` directly as a CSS fill. `applyColourOrTexture` is never called on merged group children.
+**Fix options (deferred):** Either exclude texture beds from `MERGE_TYPES`, or call `applyColourOrTexture` on each child rect after merging.
+**Status:** HIGH PRIORITY — logged in PROJECT.md open items.
+
 ## L047 — Duplicate sticker files: catalog pointing to old region-code filename (2026-07-31)
 
 **What happened:** Echinacea had two PNG files:
