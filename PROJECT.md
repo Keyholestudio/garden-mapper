@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-08-05 (bug fix — decor items excluded from Recently Used list)_
+_Last updated: 2026-08-06 (ferns woodland complete, generator bugs fixed, DB audit)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -101,6 +101,8 @@ cd projects/garden-planner/app && npm run dev
 ## Open Items
 
 ### 🔴 Immediate
+- **[HIGH] Texture opacity not applying on live/cached site** — 10% opacity set in `drawUtils.js` but not rendering correctly on mobile. Suspected cache issue but needs verification on fresh browser. Also check Dream Garden baked JSON needs updating.
+- **[HIGH] Merging textured beds goes black** — `tryMergeRects` creates a Konva.Group with child rects using `d.colour + 'CC'` where colour is `#TX:soil-brown` — not valid CSS, renders black. `applyColourOrTexture` never called on merged children. Fix: either exclude texture beds from merge, or apply texture to each child rect individually.
 - ~~**Maple Green + Red Leaf**~~ - ✅ resolved (confirmed not needed 2026-07-31)
 - ~~**Remove debug banner**~~ - ✅ done 2026-07-17
 - **Android APK rebuild** — all fixes from 2026-08-03 + 2026-08-05 not yet on device. Needs USB connect + deploy-android.bat.
@@ -113,13 +115,13 @@ cd projects/garden-planner/app && npm run dev
 - **Plant catalog expansion** - full research complete for all 63 packs (~600 plants). See `research/PLANT-PACK-RESEARCH.md` for counts, `research/PLANT-STAGING.md` for schema rows ready to generate.
 - **Plant pipeline** - PLANT-STAGING.md (~617 plants, all 63 packs). Workflow 0 + 0a in WORKFLOWS.md. Generate pack-by-pack with Rob's approval.
 - **Completed packs:** `pack-fruit-pome.js` (4 stickers) ✅
-- **Completed:** `pack-ferns-woodland.js` - 12/12 stickers done, live on web + Android ✅
+- **Completed:** `pack-ferns-woodland.js` - 14/14 stickers done ✅ (Hay-scented + Boston Fern added 2026-08-06; Marsh Fern retired)
 - **Sticker template fix** - TEMPLATES dict synced to STICKER-PROMPT-GUIDE.md (2026-06-18). Workflow 0a enforces this going forward.
 - **Colour variant rollout** - plan in `COLOUR-VARIANTS.md`. Chunk 1 next: Ornamental Cherry + Magnolia.
 - **In-app icon updates** — bed icons, printer icon etc (from Garden Organizer doc)
 - **Gift cards** — $13/yr, $25/2yr purchasable gift cards (from Garden Organizer doc)
 - **RevenueCat Pub/Sub API** — GCP service account needs Pub/Sub permissions (from Garden Organizer doc)
-- **Fern pack files** - `pack-ferns-woodland.js` ✅ done. Still needed: `pack-ferns-tree.js` (5), `pack-ferns-evergreen.js` (8). Plants in PLANT-STAGING.md.
+- **Fern pack files** - `pack-ferns-woodland.js` ✅ complete (14 stickers). Still needed: `pack-ferns-tree.js` (5), `pack-ferns-evergreen.js` (8). Plants in PLANT-STAGING.md.
 - **Core catalog searchMeta** - add `latinName`, `searchTerms`, `traits` to `usePlantCatalog.js` entries. Tropical pack needs same update.
 - **Pack architecture** - 63 pack files defined (WORKFLOWS.md). Create on demand as plants are added. Core migration deferred.
 

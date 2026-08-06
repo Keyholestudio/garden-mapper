@@ -2,7 +2,7 @@
 Send a fully custom prompt to Gemini and run the sticker pipeline.
 Usage: python sticker-custom-prompt.py "plant-id" "full prompt text"
 """
-import json, base64, time, os, sys, subprocess
+import json, base64, time, os, sys, subprocess, shutil
 import urllib.request
 import websocket
 
@@ -11,8 +11,10 @@ PIPELINE        = os.path.join(WORKSPACE, "tools", "sticker-pipeline.py")
 PIPELINE_CYAN   = os.path.join(WORKSPACE, "tools", "sticker-pipeline-cyan.py")
 PYTHON     = r"C:\Users\RG\AppData\Local\Python\bin\python3.exe"
 OUT_DIR    = os.path.join(WORKSPACE, "stickers", "generated", "pending")
+RAW_ARCHIVE = os.path.join(WORKSPACE, "stickers", "raw-archive")  # local-only, never committed to git
 IMAGE_WAIT = 240
 os.makedirs(OUT_DIR, exist_ok=True)
+os.makedirs(RAW_ARCHIVE, exist_ok=True)
 
 def p(msg): print(msg, flush=True)
 
@@ -129,6 +131,13 @@ def main():
             os.remove(clean_path)
         os.rename(nobg, clean_path)
     p(f"CLEAN saved: {os.path.basename(clean_path)}")
+
+    # ── Archive raw file (move out of pending, never goes to app/public or git) ──
+    raw_archive_path = os.path.join(RAW_ARCHIVE, os.path.basename(raw_path))
+    if os.path.exists(raw_path):
+        shutil.move(raw_path, raw_archive_path)
+        p(f"RAW archived: stickers/raw-archive/{os.path.basename(raw_path)}")
+
     p(f"\nPending: {clean_path}")
 
 if __name__ == "__main__":

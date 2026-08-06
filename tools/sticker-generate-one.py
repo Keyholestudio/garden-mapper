@@ -26,11 +26,13 @@ PIPELINE   = os.path.join(WORKSPACE, "tools", "sticker-pipeline.py")
 PYTHON     = r"C:\Users\RG\AppData\Local\Python\bin\python3.exe"
 OUT_DIR    = os.path.join(WORKSPACE, "stickers", "generated", "pending")
 DEST       = os.path.join(WORKSPACE, "app", "public", "stickers")
+RAW_ARCHIVE = os.path.join(WORKSPACE, "stickers", "raw-archive")  # local-only, never committed to git
 CATALOG    = os.path.join(WORKSPACE, "app", "src", "hooks", "usePlantCatalog.js")
 GEMINI_URL = "https://gemini.google.com/app"
 ROB_ACCOUNT = "contactsunsetpoetvintage"   # substring to match in signed-in account
 IMAGE_WAIT  = 240
 os.makedirs(OUT_DIR, exist_ok=True)
+os.makedirs(RAW_ARCHIVE, exist_ok=True)
 
 # -- Prompt templates (SOURCE OF TRUTH: research/STICKER-PROMPT-GUIDE.md) ---------------------
 # Do not modify without updating STICKER-PROMPT-GUIDE.md first. Last synced: 2026-07-22
@@ -780,6 +782,12 @@ def main():
     if os.path.exists(clean_path): os.remove(clean_path)
     os.rename(tmp_nobg, clean_path)
     p(f"CLEAN saved: {os.path.basename(clean_path)}")
+
+    # ── Archive raw file (move out of pending, never goes to app/public or git) ──
+    raw_archive_path = os.path.join(RAW_ARCHIVE, os.path.basename(raw_path))
+    if os.path.exists(raw_path):
+        shutil.move(raw_path, raw_archive_path)
+        p(f"RAW archived: stickers/raw-archive/{os.path.basename(raw_path)}")
 
     # ── Send Telegram preview ────────────────────────────────
     p("\nSending Telegram preview to Rob...")

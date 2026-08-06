@@ -397,6 +397,19 @@ Vite auto-increments port if the target is occupied. Without a fixed port, Garde
 
 ---
 
+## L049 — Sticker generator: CDP tab re-fetch bug (2026-08-06)
+**What:** `sticker-generate-one.py` wait loop called `get_brave_tab("gemini.google.com")` on every poll cycle. With multiple Gemini tabs open, this grabbed the wrong tab (e.g. Rob's test chat) and never detected the image.
+**Fix:** Wait loop now holds the same `ws_url` that was used to send the prompt. Only re-fetch if that connection drops.
+**Also:** `navigate_fresh()` clicks "New chat" link which navigates to a new URL = new CDP target. Fixed to re-fetch tab after click and return the fresh `ws_url`.
+**Rule:** When a CDP ws_url is acquired, hold it — don't re-fetch mid-operation unless you need to recover from a dropped connection.
+
+## L050 — Pipeline watermark wipe clips plant fronds (2026-08-06)
+**What:** `sticker-pipeline.py` blanked the bottom-right 15% corner to erase the Gemini watermark. After crop+resize, this zone often overlapped with plant fronds, creating missing sections.
+**Fix:** Reduced wipe zone from 15% to 8%. The Gemini sparkle watermark is small and sits right in the corner — 8% is sufficient.
+**Rule:** If a plant sticker has a missing chunk in the lower-right area, check the pipeline wipe zone first before regenerating.
+
+---
+
 ## L012 — Reference v8 before solving any canvas/visual/coordinate problem
 **Date:** 2026-05-31
 v8 has working Konva math. The React scaffold is a port of v8, not a rewrite. Before writing any positioning, coordinate conversion, drawing, or visual behaviour — read v8 first. If v8 has it, copy it exactly and adapt for React.
