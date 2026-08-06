@@ -1,7 +1,22 @@
 # Garden Mapper — Workflows
 _Central reference for how we do things. When in doubt, check here first._
-_Last updated: 2026-07-31_
+_Last updated: 2026-08-06_
 _Archived workflows (1, 3, pack list): `memory/deep/garden-planner/workflows-archive.md`_
+
+---
+
+## ⚠️ Raw File Rule (read this first)
+
+**`_raw` files are NEVER copied to `app/public/stickers/` or committed to git.**
+
+| File type | Where it lives | Goes to Vercel? |
+|---|---|---|
+| `<key>.png` | `app/public/stickers/` + `stickers/` | ✅ Yes — this is the app asset |
+| `<key>_raw.png` | `stickers/raw-archive/` only | ❌ No — local machine only |
+
+- The sticker scripts (`sticker-generate-one.py`, `sticker-custom-prompt.py`) automatically move `_raw` files to `stickers/raw-archive/` after the pipeline runs
+- `stickers/raw-archive/` is in `.gitignore` — git will never pick it up
+- If you ever see a `_raw` file in `app/public/stickers/`, remove it immediately — it should not be there
 
 ---
 
@@ -147,8 +162,10 @@ If the output PNG still has background residue: sample the corners manually and 
 ### Step 7 — On approval: deploy
 ```powershell
 $file = "<sticker-id>.png"
+# Copy ONLY the clean PNG — never copy _raw files to app/public
 Copy-Item "stickers\generated\pending\$file" "app\public\stickers\$file" -Force
 Copy-Item "stickers\generated\pending\$file" "stickers\$file" -Force
+# The _raw file was automatically moved to stickers/raw-archive/ by the script
 git add -A
 git commit -m "Sticker: replace [Plant] ([what changed])"
 git push
@@ -266,7 +283,9 @@ git push
 - Commit all approved stickers in a single git commit (not one per sticker)
 
 **Step 7 — Commit (only after approval)**
-1. Copy all approved PNGs → `app/public/stickers/<key>.png` AND `stickers/<key>.png`
+1. Copy **only the clean PNG** (never `_raw`) → `app/public/stickers/<key>.png` AND `stickers/<key>.png`
+   - The `_raw` file is automatically moved to `stickers/raw-archive/` by the script — do not touch it
+   - **Never copy `_raw` files to `app/public/` — they are local-only source files, not app assets**
 2. Add entries to the correct pack file — **NEVER to `usePlantCatalog.js`**
    - `key`, `label`, `size`, `latinName`, `searchTerms[]`, `traits[]` — use staging file as the source
 3. Run `pwsh tools/validate-tray.ps1` — must show 0 errors before committing
@@ -329,7 +348,7 @@ git push
 - Do not commit any swatch until its approval is confirmed
 
 **Step 6 — Commit**
-1. Copy each approved PNG → `app/public/stickers/` AND `stickers/`
+1. Copy **only the clean PNG** (never `_raw`) → `app/public/stickers/` AND `stickers/`
 2. Add (or update) the `PLANT_VARIANTS` entry in `app/src/hooks/useGardenState.js`:
    ```js
    'plant_key': [
@@ -369,10 +388,11 @@ git push
 > Use when a sticker needs a visual update but the key stays the same.
 
 1. Run `sticker-generate-one.py "[Name]"` — no `--force`
-2. Open folder → show Rob the new PNG
-3. On approval: overwrite PNG in-place at BOTH locations:
+2. Open folder → show Rob the new PNG (clean PNG only — `_raw` is auto-archived by the script)
+3. On approval: overwrite **clean PNG only** in-place at BOTH locations:
    - `app/public/stickers/<key>.png`
    - `stickers/<key>.png`
+   - **Never copy `_raw` files to `app/public/` — they live in `stickers/raw-archive/` only**
 4. **Check for old region-code variants (L047):** Search for any other file with the same key but a different region suffix:
    ```powershell
    Get-ChildItem "app/public/stickers/" | Where-Object { $_.Name -match "<key>" }
