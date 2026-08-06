@@ -16,7 +16,8 @@ export function applyColourOrTexture(shape, colour, layer, TEXTURE_MAP) {
       shape.fillPriority('pattern')
       shape.fillPatternImage(img)
       shape.fillPatternRepeat('repeat')
-      shape.fillPatternOpacity(0.5)
+      shape.fillPatternOpacity(1.0)
+      shape.fillPatternScale({ x: 0.185, y: 0.185 })
       layer?.batchDraw()
     }
     img.src = TEXTURE_MAP[colour].src
