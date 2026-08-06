@@ -406,7 +406,7 @@ export function loadGarden({
         data: entry.svgPath,
         x: (entry.lx || 0) + dX, y: (entry.ly || 0) + dY,
         fill: isUG ? 'transparent' : entry.colour + 'CC',
-        stroke: (isUG || entry.type === 'path') ? entry.colour : '#3A2A10',
+        stroke: (isUG || entry.type === 'path') ? entry.colour : (entry.type === 'bed') ? 'transparent' : '#3A2A10',
         strokeWidth: 2,
         strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round', draggable: true,
       })
@@ -430,7 +430,7 @@ export function loadGarden({
         tension: entry.tension || 0,
         closed: cl,
         fill: (isPath || isFenceType || isUG) ? 'transparent' : isTxLine ? 'transparent' : entry.colour + 'CC',
-        stroke: (isPath || isFenceType || isUG) ? entry.colour : '#3A2A10',
+        stroke: (isPath || isFenceType || isUG) ? entry.colour : (entry.type === 'bed') ? 'transparent' : '#3A2A10',
         strokeWidth: isPath ? (entry.pathWidth || 18) : isFenceType ? 6 : isUG ? ugWidth : 2,
         strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round', draggable: true,
         hitStrokeWidth: isPath ? (entry.pathWidth || 18) + 10 : isUG ? ugWidth + 10 : undefined,
@@ -444,7 +444,7 @@ export function loadGarden({
         id: entry.id,
         x: entry.rx + dX, y: entry.ry + dY,
         width: entry.rw, height: entry.rh,
-        fill: isTxRect ? 'transparent' : entry.colour + 'CC', stroke: '#3A2A10', strokeWidth: 2,
+        fill: isTxRect ? 'transparent' : entry.colour + 'CC', stroke: (entry.type === 'bed' || entry.type === 'bed-square') ? 'transparent' : '#3A2A10', strokeWidth: 2,
         cornerRadius: cornerR, draggable: true, strokeScaleEnabled: false,
       })
       shape.on('transformend', () => {
