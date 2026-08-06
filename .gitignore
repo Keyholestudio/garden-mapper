@@ -24,3 +24,4 @@ app/public/stickers/generated/
 
 # Raw AI-generated source images (local archive only — never deploy)
 stickers/raw-archive/
+app/public/stickers/raw-archive/
