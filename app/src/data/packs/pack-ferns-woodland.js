@@ -9,6 +9,9 @@ export const entries = [
   // 🌿 Woodland Ferns ─────────────────────────────────────────────────────────
   // Lady Fern, Male Fern, Ostrich Fern, Japanese Painted Fern,
   // Hart's Tongue, Maidenhair, Soft Shield, Broad Buckler,
+  // Royal Fern, Interrupted Fern, Cinnamon Fern, Sensitive Fern,
+  // Hay-scented Fern, Boston Fern
+  // Hart's Tongue, Maidenhair, Soft Shield, Broad Buckler,
   // Royal Fern, Interrupted Fern, Cinnamon Fern, Sensitive Fern
 
   {
@@ -129,6 +132,26 @@ export const entries = [
     searchTerms: ['sensitive fern', 'onoclea', 'bead fern'],
     traits: ['shade', 'wetland', 'deciduous-fern'],
     src: '/stickers/plant-fern_sensitive-fern_M_CA-US-FR-GB-AU.png',
+  },
+
+  {
+    key: 'plant-fern_hay-scented-fern_M_CA-US-FR-GB-AU',
+    label: 'Hay-scented Fern',
+    size: 'M',
+    latinName: 'Dennstaedtia punctilobula',
+    searchTerms: ['hay-scented fern', 'dennstaedtia', 'hay fern'],
+    traits: ['shade', 'deciduous-fern', 'dry-shade', 'spreading'],
+    src: '/stickers/plant-fern_hay-scented-fern_M_CA-US-FR-GB-AU.png',
+  },
+
+  {
+    key: 'plant-fern_boston-fern_M_CA-US-FR-GB-AU',
+    label: 'Boston Fern',
+    size: 'M',
+    latinName: 'Nephrolepis exaltata',
+    searchTerms: ['boston fern', 'nephrolepis', 'sword fern', 'hanging basket fern'],
+    traits: ['humid', 'container', 'cascading'],
+    src: '/stickers/plant-fern_boston-fern_M_CA-US-FR-GB-AU.png',
   },
 
 ];

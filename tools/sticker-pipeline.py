@@ -66,7 +66,7 @@ def remove_chroma(input_path, output_path):
     data[:,:,3] = new_alpha
 
     # ── Erase Gemini watermark (bottom-right 15% of image) ─────────────────────
-    data[int(h * 0.85):, int(w * 0.85):, 3] = 0
+    data[int(h * 0.92):, int(w * 0.92):, 3] = 0  # reduced from 15% to 8% to avoid clipping plant fronds
 
     result = Image.fromarray(np.clip(data, 0, 255).astype(np.uint8), 'RGBA')
 

@@ -101,6 +101,9 @@ PLANT_LOOKUP = {
     "interrupted fern":  ("plant-fern_interrupted-fern",  "M",  256, "Fern / Groundcover", "plant", "mid green #4A8A3A, bright green #5AB83A, dark brown fertile pinnules #6A3A1A, pale green #8ABF6A, dark outline #0A1A0A", "Distinctive fern with pinnate fronds interrupted midway along by pairs of shrivelled dark brown fertile pinnules, creating a gap in the otherwise green frond — the unique interrupted appearance."),
     "cinnamon fern":     ("plant-fern_cinnamon-fern",     "M",  256, "Fern / Groundcover", "plant", "vivid green #5AB83A, deep green #2A6A3A, warm cinnamon-brown #A85A2A, mid green #4A8A5A, dark outline #0A1A0A", "Vase-shaped fern with cinnamon-colored fertile fronds prominently upright in the center, surrounded by large spreading bright green sterile fronds arching outward — the warm cinnamon-brown fertile fronds are the focal point at the heart of the plant."),
     "sensitive fern":    ("plant-fern_sensitive-fern",    "M",  256, "Fern / Groundcover", "plant", "mid green #4A8A3A, bright green #5AB83A, pale green lobed fronds #8ABF6A, warm brown bead fronds #8A5A2A, dark outline #0A1A0A", "Spreading fern with broadly triangular fronds divided into broad rounded lobes along a central rachis, separate upright stiff brown bead-like fertile fronds persist through winter alongside the green sterile fronds."),
+    "marsh fern":        ("plant-fern_marsh-fern",        "M",  256, "Fern / Groundcover", "plant", "bright green #5AB83A, mid green #4A8A3A, yellow-green frond tips #A8D870, pale green undersides #8ABF6A, dark outline #0A1A0A", "Delicate spreading fern with finely pinnate fronds, each frond lance-shaped with opposite rounded pinnules that taper toward the frond tip, light airy texture, fronds spreading outward in a loose open clump. Plant fills 60% of canvas."),
+    "hay-scented fern":  ("plant-fern_hay-scented-fern",  "M",  256, "Fern / Groundcover", "plant", "yellow-green #A8D848, bright green #5AB83A, pale lime fronds #C8E870, mid green #4A8A3A, dark outline #0A1A0A", "Spreading colony-forming fern with finely divided lacy fronds that are broadly lance-shaped and taper at both ends, fronds are a distinctive yellow-green colour, light feathery texture, fronds arch outward forming a dense spreading mat. Plant fills 60% of canvas."),
+    "boston fern":       ("plant-fern_boston-fern",       "M",  256, "Fern / Groundcover", "plant", "vivid green #5AB83A, deep green #2A6A3A, bright lime #7AC83A, mid green #4A8A5A, dark outline #0A1A0A", "Classic arching fern with long sword-shaped fronds that arch gracefully outward and downward, each frond densely covered in opposite rounded pinnules creating a lush feathery texture, full cascading clump perfect for hanging baskets."),
     # ── Aquatic ──────────────────────────────────────────────────────────────────────
     # ── Perennials / Spikes ───────────────────────────────────────────────────────
     "iris":              ("flower-spike_iris",             "M",  256, "Perennial",        "plant", "vivid purple #7B35C8, deep violet #5A1A9A, golden yellow falls #E8C020, pale lavender #C4A8E0, mid-green strap #4A7C3A, dark outline #0A1A0A, flat solid cyan background (#00FFFF)", "a cluster of Bearded iris. Bold upright strap leaves with one or two large iris flowers. Ruffled upright standards and drooping falls with yellow beard. Correct proportions. No roots."),
@@ -459,7 +462,11 @@ def navigate_fresh(ws_url):
     })()"""
     result = cdp(ws_url, click_js, timeout=8)
     p(f"New chat: {result}")
-    time.sleep(2)
+    time.sleep(3)  # wait for navigation to complete
+    # Re-fetch tab after navigation (New chat link navigates to new URL = new CDP target)
+    fresh = get_brave_tab("gemini.google.com")
+    if fresh:
+        return fresh["webSocketDebuggerUrl"]
     return ws_url
 
 def send_telegram_preview(image_path, plant_name):
@@ -696,11 +703,10 @@ def main():
     # ── Wait for image ───────────────────────────────────────
     deadline = time.time() + IMAGE_WAIT
     found = False
+    # Use the same ws_url we sent to — don't re-fetch (would grab wrong Gemini tab)
     while time.time() < deadline:
         time.sleep(5)
         try:
-            tab = get_brave_tab("gemini.google.com")
-            ws_url = tab["webSocketDebuggerUrl"]
             src_now = cdp(ws_url, img_js) or ""
             if src_now and src_now != src_before:
                 found = True; time.sleep(2); break
