@@ -9,8 +9,8 @@ import './GardenCanvas.css'
 const SEASON_BG = {
   spring: '#C8E7BA',
   summer: '#B2D798',
-  fall:   '#ADB681',
-  winter: '#F0E4CD',
+  fall:   '#a4c49b',
+  winter: '#e0deba',
 }
 const SEASON_GRID = {
   spring: 'rgba(56,142,60,0.25)',
