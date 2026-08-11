@@ -8,4 +8,6 @@ export const entries = [
 
   // 🌱 Stem Vegetables ─────────────────────────────────────────────────────────
 
+  { key: 'vegetable-stem_globe-artichoke_M_CA-US-FR-GB-AU', label: 'Globe Artichoke', size: 'M', latinName: 'Cynara cardunculus var. scolymus', searchTerms: ['globe artichoke', 'cynara scolymus', 'artichoke'], traits: ['perennial', 'stem', 'edible-flower-bud', 'architectural'] },
+
 ];

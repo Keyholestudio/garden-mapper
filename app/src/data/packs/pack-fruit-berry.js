@@ -6,6 +6,8 @@ export const PACK_ID = 'fruit-berry';
 
 export const entries = [
 
+  { key: 'fruit-berry_strawberry_XS_CA-US-FR-GB-AU', label: 'Strawberry', size: 'XS', latinName: 'Fragaria × ananassa', searchTerms: ['strawberry', 'fragaria', 'garden strawberry'], traits: ['fruit', 'berry', 'ground-cover', 'edible'] },
+
   // 🫐 Berry Fruit ─────────────────────────────────────────────────────────────
 
 ];
