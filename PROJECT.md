@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-08-11 (sticker batch + global prompt update)_
+_Last updated: 2026-08-11 (icons, Dream Garden v4, cloud delete fix, bundle perf)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -101,7 +101,7 @@ cd projects/garden-planner/app && npm run dev
 ## Open Items
 
 ### 🔴 Immediate
-- **[HIGH] Bundle performance** — 1,201 KB main chunk. Options: (1) lazy-load html2canvas, (2) manualChunks vendor split, (3) lazy plant tray. Saved to Garden Organizer doc. Do 1+2 first (config-only). See `memory/2026-08-07.md`.
+- ~~**[HIGH] Bundle performance**~~ ✅ Done 2026-08-11. Main chunk 1,244→443 KB. Vendor chunks split (konva/supabase/stripe/pdf/capacitor). ExportModal + jsPDF/html2canvas lazy-loaded (599 KB only on Export open).
 - **[HIGH] Texture opacity not applying on live/cached site** — 10% opacity set in `drawUtils.js` but not rendering correctly on mobile. Suspected cache issue but needs verification on fresh browser. Also check Dream Garden baked JSON needs updating.
 - **[HIGH] Merging textured beds goes black** — `tryMergeRects` creates a Konva.Group with child rects using `d.colour + 'CC'` where colour is `#TX:soil-brown` — not valid CSS, renders black. `applyColourOrTexture` never called on merged children. Fix: either exclude texture beds from merge, or apply texture to each child rect individually.
 - ~~**Maple Green + Red Leaf**~~ - ✅ resolved (confirmed not needed 2026-07-31)

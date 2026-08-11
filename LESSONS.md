@@ -1,6 +1,12 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026, L027, L028 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L054 — Vite 8 / rolldown: manualChunks must be a function (2026-08-11)
+**What happened:** Used object syntax for `manualChunks` in `vite.config.js`. Build gave a warning then hard-failed: `manualChunks is not a function`.
+**Why:** Vite 8 uses rolldown internally, which requires `manualChunks` to be a function `(id) => chunkName | undefined`. Rollup-style object syntax is not supported.
+**Fix:** `manualChunks: (id) => { if (id.includes('konva')) return 'vendor-konva'; ... }`
+**Rule:** Always use function form for `manualChunks` in Vite 8+ projects.
+
 ## L051 — Raw files in app/public: how they got there + the fix (2026-08-06)
 **What happened:** `_raw.png` files (AI-generated source images, ~1.5MB each) accumulated in `app/public/stickers/` and were deployed to Vercel. Never referenced by the app but added ~250MB+ of CDN bloat and slowed deploys.
 **Root cause:** The commit workflow copied everything from `stickers/generated/pending/` including both the clean `.png` and the `_raw.png`. No one noticed because raws cause no visible app error.

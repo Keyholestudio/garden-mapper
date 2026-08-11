@@ -79,6 +79,13 @@ export const FENCE_ITEMS = [
       { id: 'straight', label: 'Straight Hedge', hint: 'Angular hedge line' },
     ],
   },
+  {
+    id: '__rockborders', label: 'Rock Borders', emoji: '🪨', group: true,
+    children: [
+      { id: 'rock-border-straight', label: 'Straight Border', hint: 'Click points · Enter to finish' },
+      { id: 'rock-border-curved',   label: 'Curved Border',   hint: 'Click points · Enter to finish' },
+    ],
+  },
 ]
 
 export const PATH_SUBS = [
@@ -198,6 +205,7 @@ export function handleSubChange(id, currentMode, { onBedSubTool, onFenceType, on
     if (id === null)    { onFenceType(null); onFenceSubTool(null); return }
     if (id === 'fence') { onFenceType('fence'); return }
     if (id === 'gate')  { onFenceType('gate');  return }
+    if (id === 'rock-border-straight' || id === 'rock-border-curved') { onFenceType('rock-border'); onFenceSubTool(id); return }
     onFenceType('hedge'); onFenceSubTool(id); return
   }
   if (currentMode === 'paths')    { onPathSubTool(id); return }

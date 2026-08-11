@@ -121,7 +121,7 @@ export function useDrawTools({
     const isPath = s.currentMode === 'paths'
     const isUG   = (s.currentMode === 'building' && (s.buildingSubTool === 'underground-electrical' || s.buildingSubTool === 'underground-plumbing')) ||
                    (s.currentMode === 'water' && s.waterSubTool === 'underground-plumbing')
-    const isFenceOrGate = s.currentMode === 'fences' && (s.fenceType === 'fence' || s.fenceType === 'gate')
+    const isFenceOrGate = s.currentMode === 'fences' && (s.fenceType === 'fence' || s.fenceType === 'gate' || s.fenceType === 'rock-border')
     const minPts = (isPath || isUG || isFenceOrGate) ? 2 : 3
     if (pts.length < minPts) {
       // Not enough points — show hint but don't close
@@ -184,16 +184,18 @@ export function useDrawTools({
       if (free && freePts.length > 0) {
         const pos = stage.getRelativePointerPosition()
         const pts = [...freePts.flatMap(p => [p.x, p.y]), pos.x, pos.y]
-        const isFences = s.currentMode === 'fences'
+        const isFences     = s.currentMode === 'fences'
+        const isRockBorder = s.currentMode === 'fences' && s.fenceType === 'rock-border'
         const isPath   = s.currentMode === 'paths'
         const isGate   = s.currentMode === 'paths' && s.pathSubTool === 'gate'
         const isWater  = s.currentMode === 'water'
         const isBldg   = s.currentMode === 'building'
-        const strokeC  = isFences ? '#4CAF50' : isPath ? '#D7CCC8' : isWater ? '#1976D2' : isBldg ? DECKING_COLOURS[0] : '#558B2F'
+        const strokeC  = isRockBorder ? '#9E9E9E' : isFences ? '#4CAF50' : isPath ? '#D7CCC8' : isWater ? '#1976D2' : isBldg ? DECKING_COLOURS[0] : '#558B2F'
         const previewTension =
           (s.currentMode === 'beds'     && s.bedSubTool === 'straight') ||
           (s.currentMode === 'fences'   && s.fenceSubTool === 'straight') ||
           (s.currentMode === 'fences'   && s.fenceType === 'fence') ||
+          (s.currentMode === 'fences'   && s.fenceSubTool === 'rock-border-straight') ||
           (s.currentMode === 'building' && s.buildingSubTool === 'deck-straight') ? 0 : 0.4
         // Gate + path preview: always dashed thin line, never scaled with path width
         const previewStrokeW = (isPath && !isGate) ? s.defaultPathWidth / stage.scaleX() : 1.5 / stage.scaleX()

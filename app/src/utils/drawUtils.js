@@ -44,6 +44,7 @@ export function isFreeMode(currentMode, bedSubTool, fenceSubTool, fenceType, bui
   // null sub-tool = no tool selected yet, never freeform
   if (currentMode === 'beds'     && bedSubTool && bedSubTool !== 'square') return true
   if (currentMode === 'fences'   && (fenceType === 'fence' || fenceType === 'gate')) return true
+  if (currentMode === 'fences'   && fenceType === 'rock-border') return true
   if (currentMode === 'fences'   && fenceSubTool && fenceSubTool !== 'square') return true
   if (currentMode === 'paths'    && pathSubTool) return true
   if (currentMode === 'water'    && waterSubTool === 'pond') return true
@@ -176,11 +177,47 @@ export function closeFreeShape({
   const isPath       = currentMode === 'paths'
   const isGate       = currentMode === 'paths' && pathSubTool === 'gate'
   const isFenceOpen  = currentMode === 'fences' && fenceType === 'fence'
+  const isRockBorder = currentMode === 'fences' && fenceType === 'rock-border'
   const isUnderground= (currentMode === 'building' && (buildingSubTool === 'underground' || buildingSubTool === 'underground-electrical' || buildingSubTool === 'underground-plumbing'))
                      || (currentMode === 'water' && waterSubTool === 'underground-plumbing')
   const isDeckFree   = currentMode === 'building' && (buildingSubTool === 'deck-curved' || buildingSubTool === 'deck-straight')
   const isWaterPond  = currentMode === 'water'    && waterSubTool === 'pond'
-  const closedShape  = !isPath && !isGate && !isFenceOpen && !isUnderground
+  const closedShape  = !isPath && !isGate && !isFenceOpen && !isUnderground && !isRockBorder
+
+  // ── Rock border: early exit — special struct, own rendering path ──────────
+  if (isRockBorder) {
+    const isCurved = fenceSubTool === 'rock-border-curved'
+    const tension  = isCurved ? 0.4 : 0
+    const flat     = freePts.flatMap(p => [p.x, p.y])
+    const id       = 'struct_' + structIdCtr.current++
+    structDataRef.current[id] = {
+      type: 'rock-border',
+      label: 'Rock Border',
+      colour: '#888888',
+      tension,
+      rockVariant: 'grey',   // grey | brown | white | mixed
+    }
+    // Invisible guide line — GardenCanvas draws the stones on top
+    const shape = new Konva.Line({
+      id, points: flat, tension, closed: false,
+      stroke: 'rgba(100,100,100,0.25)', strokeWidth: 1,
+      strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round',
+      draggable: true,
+      hitStrokeWidth: 20,
+    })
+    shape.on('dragmove', () => {
+      if (showGrid && snapCell) {
+        shape.x(Math.round(shape.x() / snapCell) * snapCell)
+        shape.y(Math.round(shape.y() / snapCell) * snapCell)
+      }
+    })
+    shape.on('click tap', e => { if (onSelect) onSelect(id, shape, e) })
+    structLayer.add(shape)
+    structLayer.batchDraw()
+    if (onSelect) onSelect(id, shape)
+    if (onModeChange) onModeChange('select')
+    return id
+  }
 
   // Tension
   let tension = 0.45

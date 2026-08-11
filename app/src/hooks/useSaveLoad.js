@@ -251,6 +251,7 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
       transparent: d.transparent || false,
       locked: d.locked || false,
       zIndex: s.getZIndex(),
+      ...(d.rockVariant ? { rockVariant: d.rockVariant } : {}),
     }
     if (s instanceof Konva.Rect) {
       entry.rx = s.x(); entry.ry = s.y()
@@ -395,9 +396,27 @@ export function loadGarden({
       locked: entry.locked || false,
       notes: entry.notes || '',
       family: entry.family || '',
+      rockVariant: entry.rockVariant || 'grey',
     }
 
     let shape
+
+    // ── Rock border restore — invisible guide line; stones drawn by GardenCanvas ──
+    if (entry.type === 'rock-border' && entry.points !== undefined) {
+      shape = new Konva.Line({
+        id: entry.id,
+        points: entry.points,
+        x: (entry.lx || 0) + dX, y: (entry.ly || 0) + dY,
+        tension: entry.tension || 0,
+        closed: false,
+        stroke: 'rgba(100,100,100,0.25)', strokeWidth: 1,
+        strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round',
+        draggable: true, hitStrokeWidth: 20,
+      })
+      shape.on('click tap', e => { if (!state.editingShapeIdRef?.current) onSelectStruct(entry.id, shape, e) })
+      structLayer?.add(shape)
+      return  // skip the generic restore path below
+    }
 
     if (entry.svgPath !== undefined) {
       const isUG = entry.type === 'underground-electrical' || entry.type === 'underground-plumbing'

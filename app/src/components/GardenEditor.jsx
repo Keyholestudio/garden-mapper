@@ -22,6 +22,7 @@ import RestorePrompt from './RestorePrompt'
 import { seedDreamGarden, fetchDreamGardenUpdate } from '../hooks/useDreamGarden'
 import { softDeleteCloudGarden } from '../supabase'
 import { addRectStruct, isFreeMode, applyColourOrTexture, tryMergeRects } from '../utils/drawUtils'
+import { drawRockBorders } from '../utils/rockBorderUtils'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import { useRecentPlants } from '../hooks/useRecentPlants'
 import LogoBar        from './LogoBar'
@@ -374,6 +375,7 @@ export default function GardenEditor() {
         state.setWaterSubTool(null)
         state.setDecorSubTool(null)
         triggerAutoSave()  // struct/shape just placed
+        drawRockBorders(layersRef.current.structLayer, state.structDataRef, Konva)
       }
     },
   })
@@ -581,7 +583,10 @@ export default function GardenEditor() {
       })
     }
     // Auto-save on any drag or resize completing — catches all shapes without per-shape wiring
-    stage.on('dragend', () => triggerAutoSave())
+    stage.on('dragend', () => {
+      triggerAutoSave()
+      drawRockBorders(layers.structLayer, state.structDataRef, Konva)
+    })
     stage.on('transformend', () => triggerAutoSave())
     stageReadyRef.current = true
     setStageReady(true)
@@ -1098,6 +1103,8 @@ export default function GardenEditor() {
     })
     currentGardenIndexRef.current = lastIdx
     setCurrentGardenIndex(lastIdx)
+    // Draw rock borders after garden loads
+    drawRockBorders(layersRef.current.structLayer, state.structDataRef, Konva)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stageReady, loadedImagesCount])
 
@@ -1162,6 +1169,7 @@ export default function GardenEditor() {
       currentGardenIndexRef.current = idx
       setCurrentGardenIndex(idx)
       writeLastGardenIndex(idx)
+      drawRockBorders(layersRef.current.structLayer, state.structDataRef, Konva)
     }
   }
 
@@ -1190,6 +1198,7 @@ export default function GardenEditor() {
     })
     currentGardenIndexRef.current = loadIdx
     setCurrentGardenIndex(loadIdx)
+    drawRockBorders(layersRef.current.structLayer, state.structDataRef, Konva)
   }
 
   // ── Phase 5: New garden (mirrors v8 newGarden exactly) ──
