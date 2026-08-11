@@ -9,7 +9,7 @@
 //   overlap = -0.4  → stones have a 40% gap (stepping stone feel)
 
 export const ROCK_BORDER_PRESETS = {
-  'rock-border':   { stoneSize: 28, overlap: 0.35 },
+  'rock-border':   { stoneSize: 28, overlap: 0.10 },  // reduced from 0.35 — looser, more natural
   'stepping-path': { stoneSize: 48, overlap: -0.40 },
   'picket-fence':  { stoneSize: 24, overlap: 0.0  },
 }
@@ -137,6 +137,28 @@ function loadRockImage(src) {
   })
 }
 
+// ── Seeded pseudo-random (mulberry32) ────────────────────────────────────
+// Same seed = same shuffle every redraw (stable look across save/load/drag)
+function seededRandom(seed) {
+  let s = seed >>> 0
+  return () => {
+    s += 0x6D2B79F5
+    let t = Math.imul(s ^ (s >>> 15), 1 | s)
+    t ^= t + Math.imul(t ^ (t >>> 7), 61 | t)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+// Fisher-Yates shuffle using seeded rng
+function shuffleIndexes(n, rng) {
+  const arr = Array.from({ length: n }, (_, i) => i)
+  for (let i = n - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr
+}
+
 // ── Draw all rock border structs on the given structLayer ─────────────────────
 // Call this after loadGarden and after any struct dragend.
 // It removes all existing stone image groups (id starts with '__rb_')
@@ -183,15 +205,22 @@ export async function drawRockBorders(structLayer, structDataRef, Konva) {
     // One Konva.Group per border — holds all stone images
     const group = new Konva.Group({ id: groupId, listening: false })
 
-    for (let i = 0; i < positions.length; i++) {
-      const { x, y, angle } = positions[i]
+    // Seed from the struct id so shuffle is stable across redraws
+    const seed = id.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
+    const rng = seededRandom(seed)
+    const drawOrder = shuffleIndexes(positions.length, rng)
+
+    // Build stones in shuffled order — later-added = higher z — creates natural overlap
+    for (let i = 0; i < drawOrder.length; i++) {
+      const { x, y, angle } = positions[drawOrder[i]]
+      // Small random rotation offset per stone for organic feel (+/- 25 deg)
+      const rotJitter = (rng() - 0.5) * 50
       const stone = new Konva.Image({
         image: img,
-        x: x - stoneSize / 2,
-        y: y - stoneSize / 2,
+        x, y,
         width: stoneSize,
         height: stoneSize,
-        rotation: (angle * 180 / Math.PI),
+        rotation: (angle * 180 / Math.PI) + rotJitter,
         offsetX: stoneSize / 2,
         offsetY: stoneSize / 2,
         listening: false,
