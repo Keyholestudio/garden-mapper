@@ -15,6 +15,7 @@ export default function GardenSwitcher({
   ghostGardens = [],        // cloud-only gardens (array of cloud rows)
   onLoadGhost,              // (ghostItem) => void — load a ghost into local
   onDeleteGhost,            // (ghostItem) => void — soft-delete a ghost from cloud
+  onDeleteLocal,            // (garden_id) => void — soft-delete a local garden from cloud after local removal
   isSubscribed = false,     // subscription status
   onSubscribe,              // () => void — open the subscribe modal
 }) {
@@ -53,9 +54,13 @@ export default function GardenSwitcher({
   }
 
   const confirmDelete = () => {
-    const updated = deleteGarden(confirmDeleteIdx)
+    const { gardens: updated, deletedGardenId } = deleteGarden(confirmDeleteIdx)
     setGardens([...updated])
     setConfirmDeleteIdx(null)
+    // Soft-delete from cloud so it doesn't resurface on next sync
+    if (deletedGardenId && onDeleteLocal) {
+      onDeleteLocal(deletedGardenId)
+    }
   }
 
   // Dream Garden is always index 0 (_isDreamGarden flag)

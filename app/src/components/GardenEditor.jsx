@@ -20,6 +20,7 @@ import SubscribeModal from './SubscribeModal'
 import AccountModal   from './AccountModal'
 import RestorePrompt from './RestorePrompt'
 import { seedDreamGarden, fetchDreamGardenUpdate } from '../hooks/useDreamGarden'
+import { softDeleteCloudGarden } from '../supabase'
 import { addRectStruct, isFreeMode, applyColourOrTexture, tryMergeRects } from '../utils/drawUtils'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import { useRecentPlants } from '../hooks/useRecentPlants'
@@ -1390,6 +1391,7 @@ export default function GardenEditor() {
           }, 50)
         }}
         onDeleteGhost={deleteGhostGarden}
+        onDeleteLocal={(gardenId) => { if (gardenId) softDeleteCloudGarden(gardenId) }}
         isSubscribed={isSubscribed}
         onSubscribe={() => setSubscribeModalOpen(true)}
       />

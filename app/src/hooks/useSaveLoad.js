@@ -581,10 +581,12 @@ export function createNewGarden({ currentGardenIndex, stage, layers, state, isSu
 }
 
 // ── deleteGarden ──────────────────────────────────────────────────────────────
+// Returns { gardens, deletedGardenId } so caller can soft-delete from cloud
 export function deleteGarden(idx) {
   const gardens = readGardens()
+  const deletedGardenId = gardens[idx]?.garden_id ?? null
   gardens.splice(idx, 1)
   writeGardens(gardens)
-  return [...gardens]
+  return { gardens: [...gardens], deletedGardenId }
 }
 
