@@ -5,7 +5,7 @@
 // Consider whether the needed logic can be found via targeted offset/limit read or grep first.
 // Candidate for future splitting: state management, event handlers, and render could be separate files.
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, lazy, Suspense } from 'react'
 import Konva from 'konva'
 import { useGardenState, TEXTURE_MAP, PLANT_VARIANTS }  from '../hooks/useGardenState'
 import { useDrawTools }    from '../hooks/useDrawTools'
@@ -32,7 +32,7 @@ import RightPanel    from './RightPanel'
 import SetupOverlay  from './SetupOverlay'
 import GardenSwitcher from './GardenSwitcher'
 import PromoBanner from './PromoBanner'
-import ExportModal from './ExportModal'
+const ExportModal = lazy(() => import('./ExportModal'))
 import MobileSheet from './MobileSheet'
 import './GardenEditor.css'
 
@@ -1364,15 +1364,17 @@ export default function GardenEditor() {
         </div>
       )}
 
-      <ExportModal
-        open={exportOpen}
-        onClose={() => setExportOpen(false)}
-        stage={stageRef.current}
-        plantLayer={layersRef.current.plantLayer}
-        plantDataRef={state.plantDataRef}
-        propBoundsRef={state.propBoundsRef}
-        gardenName={state.gardenName}
-      />
+      <Suspense fallback={null}>
+        <ExportModal
+          open={exportOpen}
+          onClose={() => setExportOpen(false)}
+          stage={stageRef.current}
+          plantLayer={layersRef.current.plantLayer}
+          plantDataRef={state.plantDataRef}
+          propBoundsRef={state.propBoundsRef}
+          gardenName={state.gardenName}
+        />
+      </Suspense>
 
       <GardenSwitcher
         open={switcherOpen}
