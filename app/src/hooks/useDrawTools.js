@@ -83,7 +83,8 @@ export function useDrawTools({
     // Close-on-click-near-start
     const freePts = freePtsRef.current
     const T = 22 / scale
-    if (freePts.length >= 3 && s.currentMode !== 'paths') {
+    const isOpenLine = s.currentMode === 'paths' || s.fenceType === 'fence' || s.fenceType === 'rock-border'
+    if (freePts.length >= 3 && !isOpenLine) {
       const first = freePts[0]
       if (Math.hypot(pos.x - first.x, pos.y - first.y) < T * 1.2) {
         doClose()

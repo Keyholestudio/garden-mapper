@@ -409,7 +409,7 @@ export function loadGarden({
         x: (entry.lx || 0) + dX, y: (entry.ly || 0) + dY,
         tension: entry.tension || 0,
         closed: false,
-        stroke: 'rgba(100,100,100,0.25)', strokeWidth: 1,
+        stroke: 'rgba(0,0,0,0)', strokeWidth: 0,
         strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round',
         draggable: true, hitStrokeWidth: 20,
       })

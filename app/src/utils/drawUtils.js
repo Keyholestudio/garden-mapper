@@ -200,7 +200,7 @@ export function closeFreeShape({
     // Invisible guide line — GardenCanvas draws the stones on top
     const shape = new Konva.Line({
       id, points: flat, tension, closed: false,
-      stroke: 'rgba(100,100,100,0.25)', strokeWidth: 1,
+      stroke: 'rgba(0,0,0,0)', strokeWidth: 0,
       strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round',
       draggable: true,
       hitStrokeWidth: 20,
