@@ -423,6 +423,21 @@ Vite auto-increments port if the target is occupied. Without a fixed port, Garde
 **Also:** `navigate_fresh()` clicks "New chat" link which navigates to a new URL = new CDP target. Fixed to re-fetch tab after click and return the fresh `ws_url`.
 **Rule:** When a CDP ws_url is acquired, hold it — don't re-fetch mid-operation unless you need to recover from a dropped connection.
 
+## L054 — Gemini white border artifact (2026-08-11)
+**What:** Some Gemini generations have a white rectangular frame baked inside the magenta/cyan BG (~26–55px wide on all sides). The chroma key doesn't remove it — it's white, not the chroma colour — leaving a visible white ring on the sticker.
+**Fix:** Detect by sampling corners of the raw. If corners are white (R,G,B > 230) rather than chroma colour, crop that border before running the pipeline. Crop amount varies (typically 30–55px on a 1024px raw).
+**Rule:** If a sticker has a white ring after pipeline, check raw corners first — it's a Gemini border artifact, not a pipeline bug.
+
+## L055 — Cyan BG requires wider chroma tolerance (2026-08-11)
+**What:** Cyan-background stickers left visible edge fringing at default tolerance (80/120). The pipeline's chroma key was written for magenta and the default tolerances are too tight for cyan.
+**Fix:** Use hard=120, soft=180 for cyan BG stickers (vs 80/120 for magenta). This kills the fringing without eating into plant colours.
+**Rule:** When processing a cyan-BG raw, always widen chroma tolerance.
+
+## L056 — 75% canvas fill instruction in shape field is ignored by Gemini (2026-08-11)
+**What:** Putting "65% canvas fill" or "75% canvas fill" in the shape field has no effect — Gemini ignores it and fills the frame.
+**Fix:** The fill instruction must be explicit and descriptive: "The plant must be Centered — occupying only X% of the canvas width and height, leaving a wide empty background area around all sides." This phrasing works reliably.
+**Rule:** Never use shorthand "X% canvas fill" — always use the full descriptive sentence. Updated in STICKER-PROMPT-GUIDE.md and TEMPLATES dict.
+
 ## L050 — Pipeline watermark wipe clips plant fronds (2026-08-06)
 **What:** `sticker-pipeline.py` blanked the bottom-right 15% corner to erase the Gemini watermark. After crop+resize, this zone often overlapped with plant fronds, creating missing sections.
 **Fix:** Reduced wipe zone from 15% to 8%. The Gemini sparkle watermark is small and sits right in the corner — 8% is sufficient.

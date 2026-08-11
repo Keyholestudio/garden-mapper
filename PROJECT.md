@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-08-07 (bundle performance analysis, no code changes)_
+_Last updated: 2026-08-11 (sticker batch + global prompt update)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
