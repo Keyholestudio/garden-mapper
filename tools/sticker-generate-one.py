@@ -36,35 +36,44 @@ os.makedirs(RAW_ARCHIVE, exist_ok=True)
 
 # -- Prompt templates (SOURCE OF TRUTH: research/STICKER-PROMPT-GUIDE.md) ---------------------
 # Do not modify without updating STICKER-PROMPT-GUIDE.md first. Last synced: 2026-07-22
+# Last synced: 2026-08-11
 TEMPLATES = {
     "plant": (
         "Aerial side view. Art style: moderately detailed watercolor painting - "
         "tasteful simplified representation of this plant with crisp edges, focusing on "
         "a primary characteristics of the plant, bold flat icon. "
-        "Dark outline 2-3px max. No shadows. Centered, 75% canvas fill. Vibrant and iconic."
+        "Dark outline 2-3px max. No shadows. "
+        "The plant must be Centered - occupying only 75% of the canvas width and height, "
+        "leaving a wide empty background area around all sides. Vibrant and iconic."
     ),
     "cedar": (
         "Aerial side view. Art style: moderately detailed watercolor painting - tasteful simplified representation of this plant with crisp edges, "
         "focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2-3px max. No shadows. "
-        "Centered, 75% canvas fill. Vibrant and iconic."
+        "The plant must be Centered - occupying only 75% of the canvas width and height, "
+        "leaving a wide empty background area around all sides. Vibrant and iconic."
     ),
     "deciduous": (
         "Side aerial view. Art style: moderately detailed watercolor painting - "
         "tasteful simplified representation of this plant with crisp edges, focusing on "
         "primary characteristics of the plant, leafy canopy only, NO TRUNK, NO STEM, NO BARK VISIBLE. "
-        "Dark outline 2-3px max. No shadows. Centered, 75% canvas fill. Vibrant and iconic."
+        "Dark outline 2-3px max. No shadows. "
+        "The plant must be Centered - occupying only 75% of the canvas width and height, "
+        "leaving a wide empty background area around all sides. Vibrant and iconic."
     ),
     "pine": (
         "Aerial side view. Art style: moderately detailed watercolor painting - "
         "tasteful simplified representation of this plant with crisp edges, focusing on "
         "a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2-3px max. "
-        "No shadows. Centered, 75% canvas fill. Vibrant and iconic."
+        "No shadows. The plant must be Centered - occupying only 75% of the canvas width and height, "
+        "leaving a wide empty background area around all sides. Vibrant and iconic."
     ),
     "rootveg": (
         "Side aerial view. Art style: moderately detailed watercolor painting - "
         "tasteful simplified representation of this plant with crisp edges, focusing on "
         "a primary characteristics of the plant, bold flat icon. Dark outline 2-3px max. "
-        "Line texturing. No shadows. Centered, 75% canvas fill. Vibrant and iconic."
+        "Line texturing. No shadows. "
+        "The plant must be Centered - occupying only 75% of the canvas width and height, "
+        "leaving a wide empty background area around all sides. Vibrant and iconic."
     ),
 }
 
@@ -647,7 +656,7 @@ def main():
             f"Subject: Cedar Thuja Conical Tree, no trunk.\n"
             f"Canvas: {size_px}px square.\n"
             f"Suggested Colours: {colours_line}\n"
-            f"Shape: Correct proportions."
+            f"Shape: Correct proportions. Viewed from a 3/4 overhead angle, slight perspective depth."
         )
     elif template == "pine":
         prompt = (
@@ -655,7 +664,7 @@ def main():
             f"Subject: {plant_name}, no trunk.\n"
             f"Canvas: {size_px}px square.\n"
             f"Suggested Colours: {colours_line}\n"
-            f"Shape: Correct proportions."
+            f"Shape: Correct proportions. Viewed from a 3/4 overhead angle, slight perspective depth."
         )
     else:
         prompt = (
@@ -663,7 +672,7 @@ def main():
             f"Subject: {plant_name}.\n"
             f"Canvas: {size_px}px square.\n"
             f"Suggested Colours: {colours_line}\n"
-            f"Shape: {shape}"
+            f"Shape: {shape} Viewed from a 3/4 overhead angle, slight perspective depth."
         )
 
     # ── Ensure Gemini is open ────────────────────────────────

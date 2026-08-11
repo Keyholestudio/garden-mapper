@@ -1,5 +1,5 @@
 # Garden Mapper — Sticker Prompt Guide
-_Last updated: 2026-07-22 — Rob's master edition_
+_Last updated: 2026-08-11 — Rob's master edition_
 
 ---
 
@@ -12,12 +12,12 @@ Use the correct template for the plant type. Rob's wording is intentional — do
 ### Pines
 
 ```
-Aerial side view. Art style: moderately detailed watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2–3px max. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Aerial side view. Art style: moderately detailed watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, no trunk, bold flat icon. Dark outline 2–3px max. No shadows. The plant must be Centered — occupying only 75% of the canvas width and height, leaving a wide empty background area around all sides. Vibrant and iconic.
 
 Subject: [PLANT NAME], stubby [TYPE OF PLANT], no trunk.
 Canvas: [SIZE]px square.
 Suggested Colours: [4-5 colours or hex codes], flat solid magenta background (#FF00FF)
-Shape: Correct proportions. No roots.
+Shape: Correct proportions. No roots. Viewed from a 3/4 overhead angle, slight perspective depth.
 ```
 
 ---
@@ -25,12 +25,12 @@ Shape: Correct proportions. No roots.
 ### Plants (herbs, flowers, shrubs, perennials, ferns, groundcovers)
 
 ```
-Aerial side view. Art style: moderately detailed watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px max. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Aerial side view. Art style: moderately detailed watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px max. No shadows. The plant must be Centered — occupying only 75% of the canvas width and height, leaving a wide empty background area around all sides. Vibrant and iconic.
 
 Subject: [PLANT NAME], [TYPE OF PLANT].
 Canvas: [SIZE]px square.
 Suggested Colours: [4-5 colours or hex codes], flat solid magenta background (#FF00FF)
-Shape: Correct proportions. No roots.
+Shape: Correct proportions. No roots. Viewed from a 3/4 overhead angle, slight perspective depth.
 ```
 
 ---
@@ -38,7 +38,7 @@ Shape: Correct proportions. No roots.
 ### Root Vegetables
 
 ```
-Side aerial view. Art style: moderately detailed watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px max. Line texturing. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Side aerial view. Art style: moderately detailed watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on a primary characteristics of the plant, bold flat icon. Dark outline 2–3px max. Line texturing. No shadows. The plant must be Centered — occupying only 75% of the canvas width and height, leaving a wide empty background area around all sides. Vibrant and iconic.
 
 Subject: [PLANT NAME], [TYPE OF PLANT].
 Canvas: [SIZE]px square.
@@ -51,7 +51,7 @@ Shape: [PLANT NAME] and tops peeking from a plant wide soil line. Only show the 
 ### Deciduous Trees
 
 ```
-Side aerial view. Art style: moderately detailed watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on primary characteristics of the plant, leafy canopy only, NO TRUNK, NO STEM, NO BARK VISIBLE. Dark outline 2–3px max. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Side aerial view. Art style: moderately detailed watercolor painting — tasteful simplified representation of this plant with crisp edges, focusing on primary characteristics of the plant, leafy canopy only, NO TRUNK, NO STEM, NO BARK VISIBLE. Dark outline 2–3px max. No shadows. The plant must be Centered — occupying only 75% of the canvas width and height, leaving a wide empty background area around all sides. Vibrant and iconic.
 
 Subject: [PLANT NAME], large broad deciduous tree. NO TRUNK. Canopy only. Small leaves.
 Canvas: [SIZE]px square.
