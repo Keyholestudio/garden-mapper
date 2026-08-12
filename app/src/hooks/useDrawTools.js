@@ -8,6 +8,7 @@ import {
   addRectStruct, addCircleStruct, getBoundaryClosure, getShapeStyle,
 } from '../utils/drawUtils'
 import { PATH_COLOURS, WATER_COLOURS, HEDGE_COLOURS, DECKING_COLOURS } from './useGardenState'
+import { addStonesToGroup } from '../utils/rockBorderUtils'
 
 export function useDrawTools({
   stage, layers, propBoundsRef, state, onStructSelect, onModeChange, onPushUndo, onEnterEdit, onAddPointDone,
@@ -353,7 +354,11 @@ export function useDrawTools({
       // Add-point mode: insert point on nearest segment, rebuild handles
       if (s.editingShapeId && s.addingPt) {
         const pos = stage.getRelativePointerPosition()
-        const shape = structLayer.findOne('#' + s.editingShapeId)
+        let shape = structLayer.findOne('#' + s.editingShapeId)
+        // Rock border: editingShapeId points to the Group — resolve to inner hit line
+        const isRockBorderGroup = shape instanceof Konva.Group && s.structDataRef?.current[s.editingShapeId]?.type === 'rock-border'
+        const rockGroup = isRockBorderGroup ? shape : null
+        if (isRockBorderGroup) shape = shape.getChildren(c => c instanceof Konva.Line)[0]
         if (shape && shape instanceof Konva.Line) {
           // pointToSegmentDist — mirrors v8 exactly
           const ptSeg = (p, a, b) => {
@@ -362,23 +367,31 @@ export function useDrawTools({
             const t = Math.max(0, Math.min(1, ((p.x-a.x)*dx + (p.y-a.y)*dy) / len2))
             return Math.hypot(p.x-(a.x+t*dx), p.y-(a.y+t*dy))
           }
+          // For rock border: click pos is in world space, line points are in group-local space
+          const localPos = rockGroup
+            ? { x: pos.x - rockGroup.x(), y: pos.y - rockGroup.y() }
+            : pos
           const flat = shape.points()
           const n = flat.length / 2
           let bestIdx = 0, bestDist = Infinity
           for (let i = 0; i < n - 1; i++) {
-            const d = ptSeg(pos,
+            const d = ptSeg(localPos,
               { x: flat[i*2],     y: flat[i*2+1]     },
               { x: flat[(i+1)*2], y: flat[(i+1)*2+1] })
             if (d < bestDist) { bestDist = d; bestIdx = i }
           }
-          // Closing segment (last → first) for closed shapes — fix from v8
           if (shape.closed()) {
-            const d = ptSeg(pos,
+            const d = ptSeg(localPos,
               { x: flat[(n-1)*2], y: flat[(n-1)*2+1] },
               { x: flat[0],       y: flat[1]          })
             if (d < bestDist) { bestDist = d; bestIdx = n - 1 }
           }
-          shape.points([...flat.slice(0,(bestIdx+1)*2), pos.x, pos.y, ...flat.slice((bestIdx+1)*2)])
+          shape.points([...flat.slice(0,(bestIdx+1)*2), localPos.x, localPos.y, ...flat.slice((bestIdx+1)*2)])
+          // Rock border: refresh stones after point insertion
+          if (rockGroup) {
+            const d = s.structDataRef?.current[s.editingShapeId]
+            addStonesToGroup(rockGroup, shape.points(), shape.tension(), d?.rockVariant, s.editingShapeId, Konva)
+          }
           structLayer.batchDraw()
           if (onAddPointDone) onAddPointDone(s.editingShapeId)
         }
