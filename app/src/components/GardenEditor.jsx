@@ -593,6 +593,21 @@ export default function GardenEditor() {
       drawRockBorders(layers.structLayer, state.structDataRef, Konva)
     })
     stage.on('transformend', () => triggerAutoSave())
+
+    // ── Patch structLayer.batchDraw to auto-redraw rock borders ──────────────
+    // This catches point edits, handle drags, and any other batchDraw call
+    // without needing to touch every callsite in useSelection / drawUtils.
+    const _origBatchDraw = layers.structLayer.batchDraw.bind(layers.structLayer)
+    let _rbTimer = null
+    layers.structLayer.batchDraw = (...args) => {
+      _origBatchDraw(...args)
+      // Debounce: redraw rock borders 80ms after the last batchDraw burst
+      if (_rbTimer) clearTimeout(_rbTimer)
+      _rbTimer = setTimeout(() => {
+        _rbTimer = null
+        drawRockBorders(layers.structLayer, state.structDataRef, Konva)
+      }, 80)
+    }
     stageReadyRef.current = true
     setStageReady(true)
   }
