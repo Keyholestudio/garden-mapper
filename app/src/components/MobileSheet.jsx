@@ -111,6 +111,7 @@ export default function MobileSheet({
     const d = structDataRef?.current[editingShapeId]
     const editShape = layers?.structLayer?.findOne('#' + editingShapeId)
     const isLine = editShape instanceof Konva.Line
+      || (editShape instanceof Konva.Group && d?.type === 'rock-border')
     return (
       <div className="mobile-sheet mobile-sheet--edit" onPointerDown={e => e.stopPropagation()}>
         <div className="mobile-sheet-handle mobile-sheet-handle--edit">

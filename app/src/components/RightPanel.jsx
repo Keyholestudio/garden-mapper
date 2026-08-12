@@ -65,6 +65,7 @@ export default function RightPanel({
     const d = structDataRef?.current[editingShapeId]
     const editShape = layers?.structLayer?.findOne('#' + editingShapeId)
     const isLine = editShape instanceof Konva.Line
+      || (editShape instanceof Konva.Group && d?.type === 'rock-border')
     return (
       <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
         <div className="panel-content">
