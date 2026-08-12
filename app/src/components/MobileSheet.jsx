@@ -439,7 +439,26 @@ export default function MobileSheet({
               />
             ))}
           </div>
-          <button className="mobile-edit-btn danger" onClick={onDeleteStruct}>🗑 Delete</button>
+          <div className="mobile-edit-sep" />
+          <button className="mobile-edit-btn full" onClick={() => onEnterEdit?.(selectedStruct.id)}>✏️ Edit Shape</button>
+          <div className="mobile-edit-sep" />
+          <div className="mobile-edit-row">
+            <button className="mobile-edit-btn" onClick={onCopyStruct}>⧉ Copy</button>
+            <button
+              className={`mobile-edit-btn${d.locked ? ' mobile-edit-btn--locked' : ''}`}
+              onClick={onLockStruct}
+            >{d.locked ? '🔒 Locked' : '🔓 Unlocked'}</button>
+          </div>
+          <div className="mobile-edit-row">
+            <button className="mobile-edit-btn" onClick={() => onLayerMove?.('struct','up')}>▲ Forward</button>
+            <button className="mobile-edit-btn" onClick={() => onLayerMove?.('struct','down')}>▼ Back</button>
+          </div>
+          <div className="mobile-edit-row">
+            <button className="mobile-edit-btn" onClick={onTransparentStruct}>
+              👁 {d.transparent ? 'Restore' : 'Make Transparent'}
+            </button>
+            <button className="mobile-edit-btn danger" onClick={onDeleteStruct}>🗑 Delete</button>
+          </div>
         </>
       )
     }

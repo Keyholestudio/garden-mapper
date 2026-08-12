@@ -1,7 +1,7 @@
-// GardenEditor.jsx — Top-level layout shell
+// GardenEditor.jsx - Top-level layout shell
 // Phase 5: save/load localStorage, garden switcher
 // Phase 7: responsive breakpoints
-// ⚠️ TOKEN WARNING (72 KB) — Confirm with Rob before loading this file in full.
+// ⚠️ TOKEN WARNING (72 KB) - Confirm with Rob before loading this file in full.
 // Consider whether the needed logic can be found via targeted offset/limit read or grep first.
 // Candidate for future splitting: state management, event handlers, and render could be separate files.
 
@@ -22,7 +22,7 @@ import RestorePrompt from './RestorePrompt'
 import { seedDreamGarden, fetchDreamGardenUpdate } from '../hooks/useDreamGarden'
 import { softDeleteCloudGarden } from '../supabase'
 import { addRectStruct, isFreeMode, applyColourOrTexture, tryMergeRects } from '../utils/drawUtils'
-import { drawRockBorders } from '../utils/rockBorderUtils'
+import { drawRockBorders, buildRockBorderGroup } from '../utils/rockBorderUtils'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import { useRecentPlants } from '../hooks/useRecentPlants'
 import LogoBar        from './LogoBar'
@@ -39,8 +39,8 @@ import './GardenEditor.css'
 
 // ── Layer zone constants ─────────────────────────────────────────
 // Within plantLayer (bottom → top):
-//   TREE_ZONE  : 0 – 999   — trees render below plants/decor
-//   PLANT_ZONE : 1000–1999 — plants + decor render above trees
+//   TREE_ZONE  : 0 - 999   - trees render below plants/decor
+//   PLANT_ZONE : 1000-1999 - plants + decor render above trees
 const TREE_FAMILIES  = new Set(['Conifer Tree', 'Deciduous Tree', 'Fruit Tree'])
 const TREE_ZONE_MAX  = 999
 const PLANT_ZONE_MIN = 1000
@@ -72,7 +72,7 @@ export default function GardenEditor() {
   const { recents, addRecent, removeRecent, clearRecents, hidden: recentsHidden, setHidden: setRecentsHidden } = useRecentPlants()
   const { loadPack, getPackEntries, isPackLoaded, isPackLoading, PACK_REGISTRY } = useLazyPacks()
 
-  // Load all lazy packs on mount — ensures packs are available on mobile
+  // Load all lazy packs on mount - ensures packs are available on mobile
   // where the PlantTray scroll trigger never fires
   useEffect(() => {
     PACK_REGISTRY.filter(p => !p.eager).forEach(p => loadPack(p.id))
@@ -97,11 +97,11 @@ export default function GardenEditor() {
   const [saveFlash, setSaveFlash] = useState(false)
   // Ref so save always reads the latest index without stale closures
   const currentGardenIndexRef = useRef(0)
-  // Auto-save: debounced timer ref — fires 1.5s after last placement/change
+  // Auto-save: debounced timer ref - fires 1.5s after last placement/change
   const autoSaveTimerRef = useRef(null)
 
   // ── Auth + cloud sync ────────────────────────────────────────────
-  // Ref-based callback — set after all handlers are defined, avoids stale closure
+  // Ref-based callback - set after all handlers are defined, avoids stale closure
   const loadGardenFromCloudRef = useRef(null)
 
   const {
@@ -115,7 +115,7 @@ export default function GardenEditor() {
     getLocalGardens: () => readGardens(),
     setLocalGardens: (gardens, loadIdx = 0) => {
       localStorage.setItem('gardenData', JSON.stringify(gardens))
-      // Delegate to the ref — set after all handlers are defined below
+      // Delegate to the ref - set after all handlers are defined below
       // If stage isn't ready yet, retry every 200ms until it is (max 5s)
       const tryLoad = (attemptsLeft) => {
         if (loadGardenFromCloudRef.current && stageReadyRef.current) {
@@ -186,7 +186,7 @@ export default function GardenEditor() {
   // This also catches window resize events (e.g. restoring from snap, browser
   // zoom-out) so the Konva stage remeasures its container.
   // NOTE (#32): browser zoom-IN on Chrome/Brave does not reliably fire resize
-  // events — zooming in clips the right panel until page is refreshed.
+  // events - zooming in clips the right panel until page is refreshed.
   // Zoom-out works fine. Known limitation, deferred.
   useEffect(() => {
     if (!stageReady) return
@@ -207,7 +207,7 @@ export default function GardenEditor() {
     return () => window.removeEventListener('resize', updateStage)
   }, [stageReady])
 
-  // ── Season visibility — mirrors v8 updatePlantVisibility() ──
+  // ── Season visibility - mirrors v8 updatePlantVisibility() ──
   // Runs whenever season changes. Fades plants not visible in the current season.
   useEffect(() => {
     const { plantLayer } = layersRef.current
@@ -270,19 +270,19 @@ export default function GardenEditor() {
     state.setRemovingPt(false)
   }
 
-  // ── Plant selection handler (shared) — handles Ctrl+click multi-select ──
+  // ── Plant selection handler (shared) - handles Ctrl+click multi-select ──
   // Returns true if any draw/place tool is currently active (not idle select)
   const isDrawToolActive = () =>
     state.currentMode !== 'select' || pendingPlantRef.current !== null
 
   // Returns true specifically when freeform drawing is active (bed, path, fence, hedge, etc.)
-  // In this case, clicks on plants/structs should be silently swallowed — draw tool handles them.
+  // In this case, clicks on plants/structs should be silently swallowed - draw tool handles them.
   const isFreeToolActive = () =>
     isFreeMode(state.currentMode, state.bedSubTool, state.fenceSubTool, state.fenceType,
                state.buildingSubTool, state.waterSubTool, state.pathSubTool)
 
   const handlePlantSelect = (id, group, evt) => {
-    // Freeform drawing active: swallow click silently — useDrawTools onClick places the point
+    // Freeform drawing active: swallow click silently - useDrawTools onClick places the point
     if (isFreeToolActive()) return
     // Other draw tool active (tap-to-place rect/circle, pending plant): redirect to canvas handler
     if (isDrawToolActive()) {
@@ -408,7 +408,7 @@ export default function GardenEditor() {
     'decor-stairs-cement':{ key: 'decor_stairs-cement_M_CA-US-FR-GB-AU',label: 'Cement Stairs',   family: 'Decor', size: 'M',  src: '/stickers/decor_stairs-cement_M_CA-US-FR-GB-AU.png'},
     'decor-arch-wood':    { key: 'decor_arch-wood_XL_CA-US-FR-GB-AU',    label: 'Wood Arch',       family: 'Decor', size: 'XL', src: '/stickers/decor_arch-wood_XL_CA-US-FR-GB-AU.png'    },
     'decor-arch-metal':   { key: 'decor_arch-metal_XL_CA-US-FR-GB-AU',   label: 'Metal Arch',      family: 'Decor', size: 'XL', src: '/stickers/decor_arch-metal_XL_CA-US-FR-GB-AU.png'   },
-    // Fountains — merged from FOUNTAIN_CATALOG (same placement flow as decor stickers)
+    // Fountains - merged from FOUNTAIN_CATALOG (same placement flow as decor stickers)
     'fountain-sm': { key: 'water-feature_fountain-sm_S_CA-US-FR-GB-AU', label: 'Small Fountain',  family: 'Water Feature', size: 'S', src: '/stickers/water-feature_fountain-sm_S_CA-US-FR-GB-AU.png' },
     'fountain-md': { key: 'water-feature_fountain-md_M_CA-US-FR-GB-AU', label: 'Medium Fountain', family: 'Water Feature', size: 'M', src: '/stickers/water-feature_fountain-md_M_CA-US-FR-GB-AU.png' },
     'fountain-lg': { key: 'water-feature_fountain-lg_L_CA-US-FR-GB-AU', label: 'Large Fountain',  family: 'Water Feature', size: 'L', src: '/stickers/water-feature_fountain-lg_L_CA-US-FR-GB-AU.png' },
@@ -417,7 +417,7 @@ export default function GardenEditor() {
   // When a decor sub-tool is clicked, load the image and queue it for placement (same as plant click-to-place)
   useEffect(() => {
     const id = state.decorSubTool
-    // Explicit deselect (null while in decor mode) — cancel pending placement
+    // Explicit deselect (null while in decor mode) - cancel pending placement
     if (id === null && state.currentMode === 'decor') {
       pendingPlantRef.current = null
       return
@@ -425,7 +425,7 @@ export default function GardenEditor() {
     if (!id || state.currentMode !== 'decor') return
     const entry = DECOR_CATALOG[id]
     if (!entry) return
-    // Do NOT clear decorSubTool here — keep it set so the button stays highlighted
+    // Do NOT clear decorSubTool here - keep it set so the button stays highlighted
     // It will be cleared after placement or when mode changes
     pendingPlantRef.current = null  // cancel any previous pending decor
     const img = new Image()
@@ -533,7 +533,7 @@ export default function GardenEditor() {
     }
   }
 
-  // Compute scale label — mirrors v8 updateScaleDisplay()
+  // Compute scale label - mirrors v8 updateScaleDisplay()
   const updateScaleLabel = (stage, gardenUnit) => {
     const CELL_PX = 8, CELL_IN = 3
     const sc = stage.scaleX()
@@ -552,7 +552,7 @@ export default function GardenEditor() {
     setScaleLabel(lbl)
   }
 
-  // Shared pinch flag — set by GardenCanvas touch handlers, read by transformer
+  // Shared pinch flag - set by GardenCanvas touch handlers, read by transformer
   const isPinchingRef = useRef(false)
 
   // ── Dream Garden overlay ──────────────────────────────────────────────────
@@ -560,12 +560,12 @@ export default function GardenEditor() {
   // the sandbox zone. sandboxBoundsRef holds the world-coord bounds of the editable
   // sandbox area so drop/click guards can check before placing anything.
   const isDreamGarden = currentGardenIndex === 0
-  const sandboxBoundsRef = useRef(null) // { x, y, w, h } in world coords — set by GardenCanvas
+  const sandboxBoundsRef = useRef(null) // { x, y, w, h } in world coords - set by GardenCanvas
 
   // Returns true if a world-coord point is inside the sandbox zone
   const isInSandbox = (wx, wy) => {
     const sb = sandboxBoundsRef.current
-    if (!sb) return true // not yet set — allow
+    if (!sb) return true // not yet set - allow
     return wx >= sb.x && wx <= sb.x + sb.w && wy >= sb.y && wy <= sb.y + sb.h
   }
 
@@ -573,7 +573,7 @@ export default function GardenEditor() {
     stageRef.current  = stage
     layersRef.current = layers
     // Block transformer from starting a resize/scale during pinch-to-zoom.
-    // Check the raw touch event directly — if 2+ fingers are present when
+    // Check the raw touch event directly - if 2+ fingers are present when
     // transformstart fires, it's a pinch not a deliberate resize, so abort it.
     if (layers.tr) {
       layers.tr.on('transformstart', (e) => {
@@ -582,7 +582,7 @@ export default function GardenEditor() {
         }
       })
     }
-    // Auto-save on any drag or resize completing — catches all shapes without per-shape wiring
+    // Auto-save on any drag or resize completing - catches all shapes without per-shape wiring
     stage.on('dragend', () => triggerAutoSave())
     stage.on('transformend', () => triggerAutoSave())
     stageReadyRef.current = true
@@ -683,7 +683,7 @@ export default function GardenEditor() {
     const noFill = ['path','fence','gate','underground-electrical','underground-plumbing'].includes(d.type)
     const isTexture = colour?.startsWith('#TX:')
     if (isTexture) {
-      // Texture fill — works on any shape type
+      // Texture fill - works on any shape type
       applyColourOrTexture(shape, colour, layersRef.current.structLayer, TEXTURE_MAP)
     } else if (shape instanceof Konva.Rect)        { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(colour + 'CC') }
     else if (shape instanceof Konva.Circle) { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(colour + 'CC'); shape.stroke(colour) }
@@ -696,7 +696,7 @@ export default function GardenEditor() {
   const handleDeleteStruct = () => {
     const sel = state.selectedStruct; if (!sel) return
     const id = sel.id
-    sel.shape.destroy()  // for rock-border this IS the Group — destroys everything
+    sel.shape.destroy()  // for rock-border this IS the Group - destroys everything
     delete state.structDataRef.current[id]
     layersRef.current.structLayer?.batchDraw()
     clearSelection()
@@ -745,7 +745,7 @@ export default function GardenEditor() {
   // jumps directly to the nearest overlapping sibling in the requested direction.
   // If nothing overlaps, does nothing (Option B).
   const handleLayerMove = (kind, dir) => {
-    const TOUCH_PAD = 2 // px tolerance — catches items that are flush/touching
+    const TOUCH_PAD = 2 // px tolerance - catches items that are flush/touching
 
     if (kind === 'plant' && state.selectedPlant) {
       const target = state.selectedPlant.group
@@ -798,7 +798,8 @@ export default function GardenEditor() {
       if (!layer) return
 
       // Exclude non-data shapes (propBounds, propLabel) from consideration
-      const siblings = layer.find('Line,Rect,Circle,Path').filter(s =>
+      // Include Groups (rock borders, connected buildings) in z-order stepping
+      const siblings = layer.find('Line,Rect,Circle,Path,Group').filter(s =>
         s !== target && !!state.structDataRef.current[s.id()]
       )
       const tBox = target.getClientRect()
@@ -914,8 +915,41 @@ export default function GardenEditor() {
         fillPatternRepeat: shape.fillPatternRepeat() || undefined,
         fillPatternScale: shape.fillPatternScale() || undefined,
       })
+    } else if (shape instanceof Konva.Group && d.type === 'rock-border') {
+      // Rock border: rebuild a new Group from the hit line's points
+      const hitLine = shape.getChildren(c => c instanceof Konva.Line)[0]
+      if (!hitLine) return
+      const flatPts = hitLine.points()
+      state.structDataRef.current[newId] = { ...d, label: d.label ? d.label + ' (copy)' : '' }
+      const { structLayer: sl } = layersRef.current
+      const grp = buildRockBorderGroup({
+        id: newId,
+        flatPoints: flatPts,
+        tension: hitLine.tension(),
+        variant: d.rockVariant || 'grey',
+        x: shape.x() + OFFSET, y: shape.y() + OFFSET,
+        Konva, showGrid: state.showGrid, snapCell: state.snapCell,
+        onSelect: (id2, g) => {
+          if (isFreeToolActive() || isDrawToolActive()) return
+          state.setMultiSelection([])
+          state.setSelectedPlant(null)
+          state.setSelectedStruct({ id: id2, shape: g, ...state.structDataRef.current[id2] })
+        },
+        onReady: () => sl?.batchDraw(),
+      })
+      sl.add(grp)
+      grp.moveToTop()
+      sl.batchDraw()
+      state.setSelectedStruct({ id: newId, shape: grp, ...state.structDataRef.current[newId] })
+      state.pushUndo(() => {
+        grp.destroy()
+        delete state.structDataRef.current[newId]
+        sl?.batchDraw()
+      })
+      triggerAutoSave()
+      return
     } else {
-      return // Groups (connected buildings) — not supported for copy
+      return // Other Groups (connected buildings) - not supported for copy
     }
     // Copy data
     state.structDataRef.current[newId] = { ...d, label: d.label ? d.label + ' (copy)' : '' }
@@ -972,7 +1006,7 @@ export default function GardenEditor() {
   const handlePlantVariantChange = (variantSrc) => {
     const sel = state.selectedPlant; if (!sel) return
     const d = state.plantDataRef.current[sel.id]
-    // null = default swatch selected — clear variantSrc, resolve to base catalog src
+    // null = default swatch selected - clear variantSrc, resolve to base catalog src
     d.variantSrc = variantSrc || null
     const baseSrc = PLANT_CATALOG.find(p => p.key === d.key)?.src
     const resolvedSrc = variantSrc || baseSrc
@@ -1087,12 +1121,12 @@ export default function GardenEditor() {
   const loadedImagesCount = Object.keys(loadedImages).length
   useEffect(() => {
     if (!stageReady || loadedImagesCount === 0) return
-    if (hasAutoLoaded.current) return  // already fired — ignore subsequent loadedImages batch updates
+    if (hasAutoLoaded.current) return  // already fired - ignore subsequent loadedImages batch updates
     hasAutoLoaded.current = true
-    seedDreamGarden()  // no-op if already seeded; seeds only Dream Garden on first run (no blank garden — restore prompt handles cloud gardens)
+    seedDreamGarden()  // no-op if already seeded; seeds only Dream Garden on first run (no blank garden - restore prompt handles cloud gardens)
     const gardens = readGardens()
-    if (gardens.length === 0) return  // still empty after seed — show setup overlay (shouldn't happen)
-    fetchDreamGardenUpdate()  // silent background fetch — updates dream garden if newer version available
+    if (gardens.length === 0) return  // still empty after seed - show setup overlay (shouldn't happen)
+    fetchDreamGardenUpdate()  // silent background fetch - updates dream garden if newer version available
     const lastIdx = Math.min(readLastGardenIndex(), gardens.length - 1)
     loadGarden({
       idx: lastIdx,
@@ -1127,10 +1161,10 @@ export default function GardenEditor() {
   }, [stageReady, loadedImagesCount])
 
   // ── Phase 5: Save ──
-  // Plain function (not useCallback) — closes over refs so always reads latest values
+  // Plain function (not useCallback) - closes over refs so always reads latest values
   const handleSave = () => {
     if (!stageRef.current) return
-    // Dream Garden is read-only on web/mobile — never overwrite index 0 from user interaction
+    // Dream Garden is read-only on web/mobile - never overwrite index 0 from user interaction
     if (isDreamGarden && typeof window !== 'undefined' && window.location.hostname !== 'localhost') return
     saveGarden({
       stage: stageRef.current,
@@ -1140,7 +1174,7 @@ export default function GardenEditor() {
     })
     setSaveFlash(true)
     setTimeout(() => setSaveFlash(false), 500)
-    // Cloud sync — push after every local save if user is signed in
+    // Cloud sync - push after every local save if user is signed in
     syncToCloud(readGardens())
   }
 
@@ -1298,7 +1332,7 @@ export default function GardenEditor() {
           </div>
         </div>
       )}
-      {/* AUTH debug banner removed — login working */}
+      {/* AUTH debug banner removed - login working */}
       <PromoBanner />
       {!state.isSetup && (
         <SetupOverlay
@@ -1335,7 +1369,7 @@ export default function GardenEditor() {
                 fontSize: 11, fontStyle: 'bold', fill: '#558B2F', opacity: 0.65, listening: false,
               }))
               structLayer.batchDraw()
-              // Apply lawn texture (disabled — set LAWN_TEXTURES_ENABLED=true in GardenCanvas.jsx + useSaveLoad.js to restore)
+              // Apply lawn texture (disabled - set LAWN_TEXTURES_ENABLED=true in GardenCanvas.jsx + useSaveLoad.js to restore)
               // const sName = SEASON_NAMES[state.currentSeason] || 'spring'
               // const texImg = new window.Image()
               // texImg.onload = () => { boundsRect.fillPriority('pattern'); boundsRect.fillPatternImage(texImg); boundsRect.fillPatternRepeat('repeat'); boundsRect.opacity(LAWN_OPACITY[sName] ?? 1.0); structLayer.batchDraw() }
@@ -1426,7 +1460,7 @@ export default function GardenEditor() {
       />
 
       <div className="editor-body">
-        {/* Plant tray — desktop/tablet only */}
+        {/* Plant tray - desktop/tablet only */}
         {!isMobile && (
           <PlantTray
             loadedImages={loadedImages}
@@ -1586,7 +1620,7 @@ export default function GardenEditor() {
             />
           )}
         </div>
-        {/* Right panel — desktop/tablet only */}
+        {/* Right panel - desktop/tablet only */}
         {!isMobile && <RightPanel
           selectedPlant={state.selectedPlant}
           selectedStruct={state.selectedStruct}
@@ -1706,7 +1740,7 @@ export default function GardenEditor() {
         />}
       </div>
 
-      {/* Season slider (desktop/tablet only — mobile uses MobileSheet) */}
+      {/* Season slider (desktop/tablet only - mobile uses MobileSheet) */}
       {!isMobile && (
         <BottomBar
           currentSeason={state.currentSeason} onSeasonChange={state.setCurrentSeason}

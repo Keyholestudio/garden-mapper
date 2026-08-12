@@ -203,6 +203,7 @@ export function closeFreeShape({
       onReady: () => structLayer.batchDraw(),
     })
     structLayer.add(group)
+    group.moveToTop()  // rock borders render above beds/water by default
     structLayer.batchDraw()
     if (onSelect) onSelect(id, group)
     if (onModeChange) onModeChange('select')

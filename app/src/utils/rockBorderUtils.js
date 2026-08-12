@@ -243,6 +243,7 @@ export async function drawRockBorders(structLayer, structDataRef, Konva) {
     const img = await loadRockImage(src)
     if (!img) continue
     addStonesToGroup(group, hitLine.points(), hitLine.tension(), d?.rockVariant, id, Konva)
+    group.moveToTop()  // rock borders render above beds/water
   }
   structLayer.batchDraw()
 }

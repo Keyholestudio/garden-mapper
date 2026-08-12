@@ -101,6 +101,11 @@ cd projects/garden-planner/app && npm run dev
 ## Open Items
 
 ### 🔴 Immediate
+- **Rock border colour variants** — brown, white, sandstone PNGs needed. Colour picker in panel wired but all variants use grey sticker for now. Generate next session.
+- **Rock border save/load mobile test** — not yet tested on device. Needs USB deploy.
+- **Stepping stone path** — same Group architecture, different preset (stoneSize: 48, overlap: -0.40). Add to Fences menu under Rock Borders.
+- **Picket fence** — same system, bottom-edge anchor calc different from centre-anchor stones.
+
 - ~~**[HIGH] Bundle performance**~~ ✅ Done 2026-08-11. Main chunk 1,244→443 KB. Vendor chunks split (konva/supabase/stripe/pdf/capacitor). ExportModal + jsPDF/html2canvas lazy-loaded (599 KB only on Export open).
 - **[HIGH] Texture opacity not applying on live/cached site** — 10% opacity set in `drawUtils.js` but not rendering correctly on mobile. Suspected cache issue but needs verification on fresh browser. Also check Dream Garden baked JSON needs updating.
 - **[HIGH] Merging textured beds goes black** — `tryMergeRects` creates a Konva.Group with child rects using `d.colour + 'CC'` where colour is `#TX:soil-brown` — not valid CSS, renders black. `applyColourOrTexture` never called on merged children. Fix: either exclude texture beds from merge, or apply texture to each child rect individually.

@@ -238,8 +238,30 @@ export default function RightPanel({
                 />
               ))}
             </div>
-            <div className="panel-title">ACTIONS</div>
-            <button className="btn-panel btn-danger" onClick={() => onDeleteStruct?.()}>🗑 Delete Border</button>
+            <button className="btn-panel" onClick={() => onEnterEdit?.(selectedStruct.id)}>✏️ Edit Shape</button>
+
+            <div className="panel-sep" />
+
+            <div style={{ display:'flex', gap:4 }}>
+              <button className="btn-panel" style={{flex:1}} onClick={onCopyStruct}>⧉ Copy</button>
+              <button
+                className={`btn-panel${d.locked ? ' btn-panel--locked' : ''}`}
+                style={{flex:1}}
+                onClick={onLockStruct}
+              >{d.locked ? '🔒 Locked' : '🔓 Unlocked'}</button>
+            </div>
+
+            <div style={{ display:'flex', gap:4 }}>
+              <button className="btn-panel" style={{flex:1}} onClick={() => onLayerMove?.('struct','up')}>▲ Forward</button>
+              <button className="btn-panel" style={{flex:1}} onClick={() => onLayerMove?.('struct','down')}>▼ Back</button>
+            </div>
+
+            <button className="btn-panel" onClick={onTransparentStruct}>
+              👁 {d.transparent ? 'Restore Opacity' : 'Make Transparent'}
+            </button>
+
+            <div className="panel-sep" />
+            <button className="btn-panel danger" onClick={() => onDeleteStruct?.()}>🗑 Delete Border</button>
           </div>
         </div>
       )

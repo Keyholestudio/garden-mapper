@@ -1,6 +1,28 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026, L027, L028 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L057 — Custom struct types: use Konva.Group containing all children, never two separate objects (2026-08-12)
+**What happened:** Rock border v1 used an invisible `Konva.Line` + a separate `Konva.Group` of stone images. Any move of the line left the stone group behind as a ghost. Spent ~2 hours on async cancel tokens, dragstart/dragend listeners, batchDraw patches — all failed.
+**Root cause:** Two separate Konva objects can never be kept in perfect sync across async redraws, drag events, and point edits.
+**Fix:** Single `Konva.Group` with the hit line AND stone images as children. Group is draggable — everything moves together. No sync code needed.
+**Rule:** If a custom struct type has a visual representation that must move with a guide line — put both inside one `Konva.Group`. Never maintain two separate top-level objects.
+
+## L058 — Konva.Line inside a Group: world coord offset must include parent Group position (2026-08-12)
+**What happened:** Point edit handles placed at wrong positions. `getShapeWorldPts(hitLine)` returned coords in group-local space, not world space.
+**Fix:** `const ox = shape.x() + (shape.parent instanceof Konva.Group ? shape.parent.x() : 0)` — add parent Group offset whenever a Line lives inside a Group.
+**Also:** Handle dragmove write-back subtracts same Group offset: `lx = shape.x() + (parent Group x)`. Add-point click pos also needs Group offset subtracted before segment search.
+**Rule:** Any time you pass a shape's children to a system that expects world coords (edit handles, add-point), account for all ancestor transforms.
+
+## L059 — Konva click falls through transparent shapes to stage (2026-08-12)
+**What happened:** Rock border hit line had `listening:false`. Stone images had `listening:false`. Every click passed through to the stage background → `e.target === stage` → pan mode triggered. Cursor showed grab hand instead of pointer.
+**Fix:** Hit line `listening:true` so clicks are absorbed by the Group and don't reach the stage.
+**Rule:** In any clickable Konva.Group, at least one child must have `listening:true` to prevent clicks falling through to the stage.
+
+## L060 — `useSelection` transformer attaches to all Konva.Groups — exclude custom line tools (2026-08-12)
+**What happened:** Rock border Group got scale/skew transformer handles — looked like an image resize box.
+**Fix:** Check `d?.type === 'rock-border'` before attaching transformer: `if (sel && !structLocked && !isRockBorder && (shape instanceof Konva.Rect || shape instanceof Konva.Group))`.
+**Rule:** Any new Group-based struct type must be explicitly excluded from the transformer in `useSelection`. The transformer should only attach to rect/circle structs and merged bed groups.
+
 ## L054 — Vite 8 / rolldown: manualChunks must be a function (2026-08-11)
 **What happened:** Used object syntax for `manualChunks` in `vite.config.js`. Build gave a warning then hard-failed: `manualChunks is not a function`.
 **Why:** Vite 8 uses rolldown internally, which requires `manualChunks` to be a function `(id) => chunkName | undefined`. Rollup-style object syntax is not supported.
