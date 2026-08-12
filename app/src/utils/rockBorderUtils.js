@@ -216,13 +216,9 @@ export async function drawRockBorders(structLayer, structDataRef, Konva) {
     structLayer.add(group)
     group.moveToTop()
 
-    // ── Hide stones during drag, redraw on dragend ───────────────────────────
-    // Simpler than trying to sync the async group during drag — hide while
-    // dragging, then drawRockBorders (called from GardenEditor dragend) redraws
-    // at the new position. No ghost possible.
-    guideShape.off('dragstart.rb dragmove.rb dragend.rb')
-    guideShape.on('dragstart.rb', () => { group.visible(false); structLayer.batchDraw() })
-    guideShape.on('dragend.rb',   () => { group.visible(true);  structLayer.batchDraw() })
+    // No per-shape drag listeners needed.
+    // GardenEditor's stage dragstart hides ALL __rb_ groups;
+    // stage dragend calls drawRockBorders which redraws from scratch.
   }
 
   if (myGen === _drawGeneration) structLayer.batchDraw()

@@ -583,6 +583,11 @@ export default function GardenEditor() {
       })
     }
     // Auto-save on any drag or resize completing — catches all shapes without per-shape wiring
+    stage.on('dragstart', () => {
+      // Hide all stone groups immediately so no ghost lingers during drag
+      layers.structLayer?.find('[id^=__rb_]').forEach(n => n.visible(false))
+      layers.structLayer?.batchDraw()
+    })
     stage.on('dragend', () => {
       triggerAutoSave()
       drawRockBorders(layers.structLayer, state.structDataRef, Konva)
