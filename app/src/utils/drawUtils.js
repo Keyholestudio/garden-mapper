@@ -203,7 +203,7 @@ export function closeFreeShape({
       stroke: 'rgba(0,0,0,0)', strokeWidth: 0,
       strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round',
       draggable: true,
-      hitStrokeWidth: 20,
+      hitStrokeWidth: 40,  // wide hit area — stones are ~28px each side of the line
     })
     shape.on('dragmove', () => {
       if (showGrid && snapCell) {

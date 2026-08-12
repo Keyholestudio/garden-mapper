@@ -9,7 +9,7 @@
 //   overlap = -0.4  → stones have a 40% gap (stepping stone feel)
 
 export const ROCK_BORDER_PRESETS = {
-  'rock-border':   { stoneSize: 28, overlap: 0.10 },  // reduced from 0.35 — looser, more natural
+  'rock-border':   { stoneSize: 28, overlap: -0.15 },  // negative = gap between stones
   'stepping-path': { stoneSize: 48, overlap: -0.40 },
   'picket-fence':  { stoneSize: 24, overlap: 0.0  },
 }
@@ -228,9 +228,32 @@ export async function drawRockBorders(structLayer, structDataRef, Konva) {
       group.add(stone)
     }
 
-    // Insert the stone group immediately ABOVE the guide line
+    // Insert stone group above the guide line
     structLayer.add(group)
     group.moveToTop()
+
+    // ── Sync stone group position during drag ───────────────────────────────
+    // The guide line moves on drag; stone group is positioned in world space
+    // so we need to translate it by the same delta each dragmove tick.
+    if (guideShape) {
+      // Remove any old dragmove listener first (avoid stacking on redraws)
+      guideShape.off('dragmove.rb')
+      let lastDragX = 0, lastDragY = 0
+      guideShape.on('dragstart.rb', () => {
+        lastDragX = guideShape.x()
+        lastDragY = guideShape.y()
+      })
+      guideShape.off('dragmove.rb')
+      guideShape.on('dragmove.rb', () => {
+        const dx = guideShape.x() - lastDragX
+        const dy = guideShape.y() - lastDragY
+        group.x(group.x() + dx)
+        group.y(group.y() + dy)
+        lastDragX = guideShape.x()
+        lastDragY = guideShape.y()
+        structLayer.batchDraw()
+      })
+    }
   }
 
   structLayer.batchDraw()

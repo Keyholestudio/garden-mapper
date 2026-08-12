@@ -696,6 +696,30 @@ export default function GardenEditor() {
     triggerAutoSave()
   }
 
+  const handleDeleteStruct = () => {
+    const sel = state.selectedStruct; if (!sel) return
+    const id = sel.id
+    // Remove stone group if this is a rock border
+    const stoneGroup = layersRef.current.structLayer?.findOne('#__rb_' + id)
+    if (stoneGroup) stoneGroup.destroy()
+    sel.shape.destroy()
+    delete state.structDataRef.current[id]
+    layersRef.current.structLayer?.batchDraw()
+    clearSelection()
+    triggerAutoSave()
+  }
+
+  const handleRockVariantChange = (variant) => {
+    const sel = state.selectedStruct; if (!sel) return
+    const d = state.structDataRef.current[sel.id]
+    if (!d || d.type !== 'rock-border') return
+    d.rockVariant = variant
+    // Redraw stones with new variant
+    drawRockBorders(layersRef.current.structLayer, state.structDataRef, Konva)
+    state.setSelectedStruct({ ...sel, rockVariant: variant })
+    triggerAutoSave()
+  }
+
   const handlePathWidthChange = (w) => {
     const sel = state.selectedStruct; if (!sel) return
     state.structDataRef.current[sel.id].pathWidth = w
@@ -1470,7 +1494,7 @@ export default function GardenEditor() {
               gardenUnit={state.gardenUnit}
               // Edit handlers
               onDeletePlant={() => { state.selectedPlant?.group.destroy(); delete state.plantDataRef.current[state.selectedPlant?.id]; layersRef.current.plantLayer?.batchDraw(); clearSelection(); triggerAutoSave() }}
-              onDeleteStruct={() => { state.selectedStruct?.shape.destroy(); delete state.structDataRef.current[state.selectedStruct?.id]; layersRef.current.structLayer?.batchDraw(); clearSelection(); triggerAutoSave() }}
+              onDeleteStruct={handleDeleteStruct}
               onTransparentPlant={handleTransparentPlant}
               onLockPlant={handleLockPlant}
               onLockStruct={handleLockStruct}
@@ -1499,6 +1523,7 @@ export default function GardenEditor() {
               canUndo={state.canUndo}
               onPlantVariantChange={handlePlantVariantChange}
               onColourChange={handleColourChange}
+              onRockVariantChange={handleRockVariantChange}
               onPathWidthChange={handlePathWidthChange}
               onDimRectApply={handleDimRectApply}
               onDimCircleApply={handleDimCircleApply}
@@ -1590,7 +1615,7 @@ export default function GardenEditor() {
           onResetView={handleResetView}
           onClearAll={handleClearAll}
           onDeletePlant={() => { state.selectedPlant?.group.destroy(); delete state.plantDataRef.current[state.selectedPlant?.id]; layersRef.current.plantLayer?.batchDraw(); clearSelection(); triggerAutoSave() }}
-          onDeleteStruct={() => { state.selectedStruct?.shape.destroy(); delete state.structDataRef.current[state.selectedStruct?.id]; layersRef.current.structLayer?.batchDraw(); clearSelection(); triggerAutoSave() }}
+          onDeleteStruct={handleDeleteStruct}
           onDeleteMulti={deleteSelected}
           onTransparentPlant={handleTransparentPlant}
           onLockPlant={handleLockPlant}
@@ -1637,6 +1662,7 @@ export default function GardenEditor() {
           }}
           onPlantVariantChange={handlePlantVariantChange}
           onColourChange={handleColourChange}
+          onRockVariantChange={handleRockVariantChange}
           onPathWidthChange={handlePathWidthChange}
           onEnterEdit={enterEdit}
           onExitEdit={exitEdit}

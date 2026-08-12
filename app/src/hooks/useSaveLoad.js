@@ -411,7 +411,7 @@ export function loadGarden({
         closed: false,
         stroke: 'rgba(0,0,0,0)', strokeWidth: 0,
         strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round',
-        draggable: true, hitStrokeWidth: 20,
+        draggable: true, hitStrokeWidth: 40,
       })
       shape.on('click tap', e => { if (!state.editingShapeIdRef?.current) onSelectStruct(entry.id, shape, e) })
       structLayer?.add(shape)

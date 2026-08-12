@@ -17,6 +17,7 @@ const TYPE_NAMES = {
   path: 'Path', hedge: 'Hedge', 'hedge-sq': 'Hedge', fence: 'Fence', gate: 'Gate',
   pond: 'Pond', 'water-fountain': 'Fountain', 'pool-sq': 'Pool', 'pool-circle': 'Pool',
   deck: 'Deck', 'underground-electrical': 'Electrical', 'underground-plumbing': 'Plumbing',
+  'rock-border': 'Rock Border',
 }
 const TYPE_COLOURS = {
   bed: BED_COLOURS, 'bed-square': BED_COLOURS, building: BUILDING_COLOURS,
@@ -38,7 +39,7 @@ export default function RightPanel({
   onTransparentPlant, onCopyPlant,
   onLockPlant, onLockStruct,
   onCopyStruct,
-  onColourChange, onPathWidthChange,
+  onColourChange, onRockVariantChange, onPathWidthChange,
   onEnterEdit, onExitEdit,
   onDimRectApply, onDimCircleApply,
   onLayerMove,
@@ -207,6 +208,42 @@ export default function RightPanel({
   if (selectedStruct) {
     const d       = structDataRef?.current[selectedStruct.id] || {}
     const shape   = selectedStruct.shape
+
+    // ── Rock border panel ──────────────────────────────────────────────────
+    if (d.type === 'rock-border') {
+      const ROCK_VARIANTS = [
+        { id: 'grey',  label: 'Grey',  colour: '#9E9E9E' },
+        { id: 'brown', label: 'Brown', colour: '#8D6E63' },
+        { id: 'white', label: 'White', colour: '#F5F5F5' },
+        { id: 'mixed', label: 'Mixed', colour: 'linear-gradient(135deg,#9E9E9E 33%,#8D6E63 33% 66%,#F5F5F5 66%)' },
+      ]
+      return (
+        <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
+          <div className="panel-content">
+            <div className="panel-back-row">
+              <button className="panel-back-btn" onClick={() => onClearSelection?.()}>← Back</button>
+              <button className="panel-undo-btn" style={{visibility: canUndo ? 'visible' : 'hidden'}} onClick={() => onUndo?.()}>↩</button>
+            </div>
+            <div className="panel-h2">Rock Border</div>
+            <div className="panel-title">STONE COLOUR</div>
+            <div className="colour-row">
+              {ROCK_VARIANTS.map(v => (
+                <div
+                  key={v.id}
+                  className={`colour-swatch${(d.rockVariant || 'grey') === v.id ? ' selected' : ''}`}
+                  style={{ background: v.colour, border: v.id === 'white' ? '1px solid #ccc' : undefined }}
+                  title={v.label}
+                  onClick={() => onRockVariantChange?.(v.id)}
+                />
+              ))}
+            </div>
+            <div className="panel-title">ACTIONS</div>
+            <button className="btn-panel btn-danger" onClick={() => onDeleteStruct?.()}>🗑 Delete Border</button>
+          </div>
+        </div>
+      )
+    }
+
     const isRect  = shape instanceof Konva.Rect
     const isCircle= shape instanceof Konva.Circle
     const isGroup = shape instanceof Konva.Group
