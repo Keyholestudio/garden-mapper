@@ -2,6 +2,7 @@
 import { useEffect, useRef } from 'react'
 import Konva from 'konva'
 import { isFreeMode } from '../utils/drawUtils'
+import { addStonesToGroup } from '../utils/rockBorderUtils'
 
 export function useSelection({
   stage, layers, state,
@@ -23,7 +24,8 @@ export function useSelection({
     const { tr, structLayer } = layers
     const sel = state.selectedStruct
     const structLocked = sel && state.structDataRef?.current[sel.id]?.locked
-    if (sel && !structLocked && (sel.shape instanceof Konva.Rect || sel.shape instanceof Konva.Group)) {
+    const isRockBorder = sel && state.structDataRef?.current[sel.id]?.type === 'rock-border'
+    if (sel && !structLocked && !isRockBorder && (sel.shape instanceof Konva.Rect || sel.shape instanceof Konva.Group)) {
       tr.keepRatio(false)
       tr.enabledAnchors(['top-left','top-center','top-right','middle-left','middle-right','bottom-left','bottom-center','bottom-right'])
       tr.nodes([sel.shape])
@@ -77,7 +79,12 @@ export function useSelection({
       editHandlesRef.current.push(h)
     })
     shape.off('dragmove.edithandles')
-    shape.on('dragmove.edithandles', () => {
+    // For rock border: the draggable parent is the Group, not the Line
+    // Wire handle-position sync to whichever node actually moves
+    const dragTarget = (shape instanceof Konva.Line && shape.parent instanceof Konva.Group)
+      ? shape.parent : shape
+    dragTarget.off('dragmove.edithandles')
+    dragTarget.on('dragmove.edithandles', () => {
       const pts2 = getShapeWorldPts(shape)
       editHandlesRef.current.forEach((h, i) => {
         if (pts2[i]) { h.x(pts2[i].x); h.y(pts2[i].y) }
@@ -99,9 +106,10 @@ export function useSelection({
     h.on('dragmove', () => {
       if (removingPtRef.current) return  // don't drag when in remove mode
       // h.x/y are world coords; convert to local (shape-relative) for Line shapes
+      // Also subtract parent Group offset if line lives inside a Group (rock border)
       const cur = getShapeLocalPts(shape)
-      const lx  = shape instanceof Konva.Line ? shape.x() : 0
-      const ly  = shape instanceof Konva.Line ? shape.y() : 0
+      const lx  = shape instanceof Konva.Line ? shape.x() + (shape.parent instanceof Konva.Group ? shape.parent.x() : 0) : 0
+      const ly  = shape instanceof Konva.Line ? shape.y() + (shape.parent instanceof Konva.Group ? shape.parent.y() : 0) : 0
       cur[ptIdx] = { x: h.x() - lx, y: h.y() - ly }
       setShapePts(shape, cur)
       structLayer.batchDraw()
@@ -137,6 +145,24 @@ export function useSelection({
     // Locked shapes cannot be edited
     if (sRef.current.structDataRef?.current[id]?.locked) return
     if (onExitEditMode) onExitEditMode() // clear any prior edit
+
+    // Rock border: edit the inner hit line, refresh stones after each handle move
+    if (sRef.current.structDataRef?.current[id]?.type === 'rock-border' && shape instanceof Konva.Group) {
+      const hitLine = shape.getChildren(c => c instanceof Konva.Line)[0]
+      if (!hitLine) return
+      buildEditHandles(id, hitLine)
+      // After each handle drag, refresh stones inside the group
+      editHandlesRef.current.forEach(h => {
+        h.on('dragmove.rb', () => {
+          const d = sRef.current.structDataRef?.current[id]
+          addStonesToGroup(shape, hitLine.points(), hitLine.tension(), d?.rockVariant, id, Konva)
+          layers.structLayer?.batchDraw()
+        })
+      })
+      if (onEditMode) onEditMode(id)
+      return
+    }
+
     buildEditHandles(id, shape)
     if (onEditMode) onEditMode(id)
   }
@@ -145,7 +171,13 @@ export function useSelection({
     const id = sRef.current.editingShapeId
     if (id && layers?.structLayer) {
       const sh = layers.structLayer.findOne('#' + id)
-      if (sh) sh.off('dragmove.edithandles')
+      if (sh) {
+        sh.off('dragmove.edithandles')
+        // Rock border: also clean up listener on the Group
+        if (sh instanceof Konva.Group) sh.off('dragmove.edithandles')
+        // Rock border: clean Group listener when editing inner line
+        if (sh instanceof Konva.Line && sh.parent instanceof Konva.Group) sh.parent.off('dragmove.edithandles')
+      }
     }
     exitHandles()
     addingPtRef.current = false
@@ -215,9 +247,10 @@ export function getShapeLocalPts(shape) {
 // Returns points in world (stage) coords — used for placing handles
 export function getShapeWorldPts(shape) {
   const local = getShapeLocalPts(shape)
-  // Konva.Line stores points relative to shape.x/y — offset to world coords
   if (shape instanceof Konva.Line) {
-    const ox = shape.x(), oy = shape.y()
+    // Add shape offset + any parent Group offset (rock border hit line lives inside a Group)
+    const ox = shape.x() + (shape.parent instanceof Konva.Group ? shape.parent.x() : 0)
+    const oy = shape.y() + (shape.parent instanceof Konva.Group ? shape.parent.y() : 0)
     return local.map(p => ({ x: p.x + ox, y: p.y + oy }))
   }
   return local  // Rect/Circle/Group already use world coords
