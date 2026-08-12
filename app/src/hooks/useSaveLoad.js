@@ -6,6 +6,7 @@ import Konva from 'konva'
 import { SIZE_MAP, TEXTURE_MAP } from './useGardenState'
 import { makePlantGroup } from '../utils/plantUtils'
 import { applyColourOrTexture } from '../utils/drawUtils'
+import { buildRockBorderGroup } from '../utils/rockBorderUtils'
 import { getDeviceId, getDeviceLabel } from '../supabase'
 
 // Set to true to re-enable seasonal lawn textures on the property boundary
@@ -241,17 +242,35 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
 
   // Collect structs (from Konva layer — same as v8)
   const structs = []
+
+  // Rock border groups: serialise from the Group + its inner Line child
+  structLayer?.find('Group').forEach(g => {
+    const id = g.id()
+    if (!id || !state.structDataRef.current[id]) return
+    const d = state.structDataRef.current[id]
+    if (d.type !== 'rock-border') return
+    const hitLine = g.getChildren(c => c instanceof Konva.Line)[0]
+    if (!hitLine) return
+    structs.push({
+      id, type: d.type, colour: d.colour, label: d.label,
+      tension: d.tension, rockVariant: d.rockVariant || 'grey',
+      transparent: d.transparent || false, locked: d.locked || false,
+      points: hitLine.points(), lx: g.x(), ly: g.y(),
+      zIndex: g.getZIndex(),
+    })
+  })
+
   structLayer?.find('Line,Rect,Circle,Path').forEach(s => {
     const id = s.id()
     if (!id || !state.structDataRef.current[id]) return  // skips __propBounds, __propLabel
     const d = state.structDataRef.current[id]
+    if (d.type === 'rock-border') return  // already handled above via Group
     const entry = {
       id, type: d.type, colour: d.colour, label: d.label,
       pathWidth: d.pathWidth, tension: d.tension,
       transparent: d.transparent || false,
       locked: d.locked || false,
       zIndex: s.getZIndex(),
-      ...(d.rockVariant ? { rockVariant: d.rockVariant } : {}),
     }
     if (s instanceof Konva.Rect) {
       entry.rx = s.x(); entry.ry = s.y()
@@ -260,7 +279,7 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
       entry.svgPath = s.data(); entry.lx = s.x(); entry.ly = s.y()
     } else if (s instanceof Konva.Line) {
       entry.points = s.points(); entry.lx = s.x(); entry.ly = s.y()
-      entry.closed = s.closed()  // persist exact open/closed state — never re-infer on load
+      entry.closed = s.closed()
     } else if (s instanceof Konva.Circle) {
       entry.cx = s.x(); entry.cy = s.y(); entry.radius = s.radius()
     }
@@ -401,21 +420,22 @@ export function loadGarden({
 
     let shape
 
-    // ── Rock border restore — invisible guide line; stones drawn by GardenCanvas ──
+    // ── Rock border restore — Group with hit line + stone images ──────────
     if (entry.type === 'rock-border' && entry.points !== undefined) {
-      shape = new Konva.Line({
+      const group = buildRockBorderGroup({
         id: entry.id,
-        points: entry.points,
-        x: (entry.lx || 0) + dX, y: (entry.ly || 0) + dY,
+        flatPoints: entry.points,
         tension: entry.tension || 0,
-        closed: false,
-        stroke: 'rgba(0,0,0,0)', strokeWidth: 0,
-        strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round',
-        draggable: true, hitStrokeWidth: 40,
+        variant: entry.rockVariant || 'grey',
+        x: (entry.lx || 0) + dX,
+        y: (entry.ly || 0) + dY,
+        Konva,
+        showGrid: false, snapCell: 0,
+        onSelect: (id, shape, e) => { if (!state.editingShapeIdRef?.current) onSelectStruct(id, shape, e) },
+        onReady: () => structLayer?.batchDraw(),
       })
-      shape.on('click tap', e => { if (!state.editingShapeIdRef?.current) onSelectStruct(entry.id, shape, e) })
-      structLayer?.add(shape)
-      return  // skip the generic restore path below
+      structLayer?.add(group)
+      return
     }
 
     if (entry.svgPath !== undefined) {

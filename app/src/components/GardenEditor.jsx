@@ -583,31 +583,8 @@ export default function GardenEditor() {
       })
     }
     // Auto-save on any drag or resize completing — catches all shapes without per-shape wiring
-    stage.on('dragstart', () => {
-      // Hide all stone groups immediately so no ghost lingers during drag
-      layers.structLayer?.find('[id^=__rb_]').forEach(n => n.visible(false))
-      layers.structLayer?.batchDraw()
-    })
-    stage.on('dragend', () => {
-      triggerAutoSave()
-      drawRockBorders(layers.structLayer, state.structDataRef, Konva)
-    })
+    stage.on('dragend', () => triggerAutoSave())
     stage.on('transformend', () => triggerAutoSave())
-
-    // ── Patch structLayer.batchDraw to auto-redraw rock borders ──────────────
-    // This catches point edits, handle drags, and any other batchDraw call
-    // without needing to touch every callsite in useSelection / drawUtils.
-    const _origBatchDraw = layers.structLayer.batchDraw.bind(layers.structLayer)
-    let _rbTimer = null
-    layers.structLayer.batchDraw = (...args) => {
-      _origBatchDraw(...args)
-      // Debounce: redraw rock borders 80ms after the last batchDraw burst
-      if (_rbTimer) clearTimeout(_rbTimer)
-      _rbTimer = setTimeout(() => {
-        _rbTimer = null
-        drawRockBorders(layers.structLayer, state.structDataRef, Konva)
-      }, 80)
-    }
     stageReadyRef.current = true
     setStageReady(true)
   }
@@ -719,10 +696,7 @@ export default function GardenEditor() {
   const handleDeleteStruct = () => {
     const sel = state.selectedStruct; if (!sel) return
     const id = sel.id
-    // Remove stone group if this is a rock border
-    const stoneGroup = layersRef.current.structLayer?.findOne('#__rb_' + id)
-    if (stoneGroup) stoneGroup.destroy()
-    sel.shape.destroy()
+    sel.shape.destroy()  // for rock-border this IS the Group — destroys everything
     delete state.structDataRef.current[id]
     layersRef.current.structLayer?.batchDraw()
     clearSelection()

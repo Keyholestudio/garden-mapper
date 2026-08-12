@@ -1,57 +1,41 @@
-// rockBorderUtils.js — Utilities for rock border / stepping stone path tiling
-// Computes evenly-spaced positions + tangent angles along a polyline or Catmull-Rom curve
+// rockBorderUtils.js — Rock border / stepping stone path tiling
 
 // ── Config presets ─────────────────────────────────────────────────────────────
-// stoneSize: diameter of each stone in canvas px (at 1:1 scale = 1 px per canvas unit)
-// overlap:   fraction of stoneSize that adjacent stones overlap (negative = gap)
-//   overlap = 0.35  → stones overlap 35% (rock border feel)
-//   overlap = 0.0   → stones touch edge-to-edge (picket fence feel)
-//   overlap = -0.4  → stones have a 40% gap (stepping stone feel)
-
 export const ROCK_BORDER_PRESETS = {
-  'rock-border':   { stoneSize: 28, overlap: -0.15 },  // negative = gap between stones
+  'rock-border':   { stoneSize: 28, overlap: -0.15 },
   'stepping-path': { stoneSize: 48, overlap: -0.40 },
   'picket-fence':  { stoneSize: 24, overlap: 0.0  },
 }
 
-// ── Catmull-Rom sample ─────────────────────────────────────────────────────────
+// ── Catmull-Rom curve sampling ────────────────────────────────────────────────
 function catmullRomPoint(p0, p1, p2, p3, t, alpha = 0.5) {
   const t2 = t * t, t3 = t2 * t
   return {
     x: alpha * ((-p0.x + 3*p1.x - 3*p2.x + p3.x)*t3
               + (2*p0.x - 5*p1.x + 4*p2.x - p3.x)*t2
-              + (-p0.x + p2.x)*t)
-       + p1.x,
+              + (-p0.x + p2.x)*t) + p1.x,
     y: alpha * ((-p0.y + 3*p1.y - 3*p2.y + p3.y)*t3
               + (2*p0.y - 5*p1.y + 4*p2.y - p3.y)*t2
-              + (-p0.y + p2.y)*t)
-       + p1.y,
+              + (-p0.y + p2.y)*t) + p1.y,
   }
 }
 
-// ── Build a dense polyline from Konva flat points + tension ───────────────────
 function buildDensePath(flatPoints, tension, samplesPerSegment = 30) {
   const pts = []
-  for (let i = 0; i < flatPoints.length; i += 2) {
+  for (let i = 0; i < flatPoints.length; i += 2)
     pts.push({ x: flatPoints[i], y: flatPoints[i + 1] })
-  }
   if (pts.length < 2) return pts
   if (tension <= 0) return pts
-
   const dense = []
   for (let i = 0; i < pts.length - 1; i++) {
-    const p0 = pts[Math.max(0, i - 1)]
-    const p1 = pts[i]
-    const p2 = pts[i + 1]
-    const p3 = pts[Math.min(pts.length - 1, i + 2)]
-    for (let s = 0; s <= samplesPerSegment; s++) {
+    const p0 = pts[Math.max(0, i - 1)], p1 = pts[i]
+    const p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)]
+    for (let s = 0; s <= samplesPerSegment; s++)
       dense.push(catmullRomPoint(p0, p1, p2, p3, s / samplesPerSegment))
-    }
   }
   return dense
 }
 
-// ── Arc length table ──────────────────────────────────────────────────────────
 function buildArcLengthTable(densePts) {
   const table = [0]
   for (let i = 1; i < densePts.length; i++) {
@@ -62,10 +46,8 @@ function buildArcLengthTable(densePts) {
   return table
 }
 
-// ── Sample point + tangent at arc-length distance ─────────────────────────────
 function sampleAtDist(densePts, arcTable, dist) {
-  const total = arcTable[arcTable.length - 1]
-  const d = Math.min(dist, total)
+  const d = Math.min(dist, arcTable[arcTable.length - 1])
   let lo = 0, hi = arcTable.length - 1
   while (lo < hi - 1) {
     const mid = (lo + hi) >> 1
@@ -80,19 +62,14 @@ function sampleAtDist(densePts, arcTable, dist) {
   }
 }
 
-// ── Compute stone positions ────────────────────────────────────────────────────
 export function computeStonePositions(flatPoints, tension, type = 'rock-border') {
-  const preset = ROCK_BORDER_PRESETS[type] || ROCK_BORDER_PRESETS['rock-border']
-  const { stoneSize, overlap } = preset
+  const { stoneSize, overlap } = ROCK_BORDER_PRESETS[type] || ROCK_BORDER_PRESETS['rock-border']
   const spacing = stoneSize * (1 - overlap)
-
   const dense = buildDensePath(flatPoints, tension)
   if (dense.length < 2) return []
-
   const arcTable = buildArcLengthTable(dense)
   const totalLen = arcTable[arcTable.length - 1]
   if (totalLen < spacing / 2) return []
-
   const positions = []
   let dist = stoneSize / 2
   while (dist <= totalLen - stoneSize / 2) {
@@ -106,17 +83,16 @@ export function getStoneSize(type) {
   return (ROCK_BORDER_PRESETS[type] || ROCK_BORDER_PRESETS['rock-border']).stoneSize
 }
 
-// ── Rock sticker sources by variant ──────────────────────────────────────────
+// ── Image cache ───────────────────────────────────────────────────────────────
 const ROCK_SRCS = {
   grey:  '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',
-  brown: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',  // TODO: brown variant PNG
-  white: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',  // TODO: white variant PNG
-  mixed: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',  // TODO: mixed uses grey for now
+  brown: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',
+  white: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',
+  mixed: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',
 }
 
-// Image cache
 const _imgCache = {}
-function loadRockImage(src) {
+export function loadRockImage(src) {
   if (_imgCache[src]) return Promise.resolve(_imgCache[src])
   return new Promise((resolve) => {
     const img = new window.Image()
@@ -125,8 +101,15 @@ function loadRockImage(src) {
     img.src = src
   })
 }
+export function getRockImageCached(variant) {
+  const src = ROCK_SRCS[variant || 'grey'] || ROCK_SRCS.grey
+  return _imgCache[src] || null
+}
+export function getRockSrc(variant) {
+  return ROCK_SRCS[variant || 'grey'] || ROCK_SRCS.grey
+}
 
-// ── Seeded PRNG (mulberry32) ──────────────────────────────────────────────────
+// ── Seeded PRNG ───────────────────────────────────────────────────────────────
 function seededRandom(seed) {
   let s = seed >>> 0
   return () => {
@@ -136,7 +119,6 @@ function seededRandom(seed) {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296
   }
 }
-
 function shuffleIndexes(n, rng) {
   const arr = Array.from({ length: n }, (_, i) => i)
   for (let i = n - 1; i > 0; i--) {
@@ -146,80 +128,119 @@ function shuffleIndexes(n, rng) {
   return arr
 }
 
-// ── Generation counter — cancels stale async runs ────────────────────────────
-let _drawGeneration = 0
+// ── Build stone images inside a Konva.Group ───────────────────────────────────
+// Points are in the group's LOCAL coordinate space (no external offset needed).
+// The group itself is positioned/dragged by Konva — stones move with it for free.
+export function addStonesToGroup(group, flatPoints, tension, variant, id, Konva) {
+  const img = getRockImageCached(variant)
+  if (!img) return  // image not loaded yet — caller must await and call again
 
-// ── Draw all rock border structs ──────────────────────────────────────────────
-// Removes old stone groups synchronously FIRST (so delete is instant),
-// then re-draws only borders still in structDataRef.
-export async function drawRockBorders(structLayer, structDataRef, Konva) {
-  if (!structLayer || !structDataRef?.current) return
+  // Remove any existing stone images (keeping the guide line child)
+  group.getChildren(c => c instanceof Konva.Image).forEach(c => c.destroy())
 
-  // Bump generation — any older in-flight call will bail after its next await
-  const myGen = ++_drawGeneration
+  const positions = computeStonePositions(flatPoints, tension, 'rock-border')
+  if (positions.length === 0) return
 
-  // Remove all stone groups immediately (synchronous) — this is what makes delete instant
-  structLayer.find('[id^=__rb_]').forEach(n => n.destroy())
-  structLayer.batchDraw()
+  const stoneSize = getStoneSize('rock-border')
+  const seed = (id || '').split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
+  const rng  = seededRandom(seed)
+  const drawOrder = shuffleIndexes(positions.length, rng)
 
-  const entries = Object.entries(structDataRef.current)
-    .filter(([, d]) => d.type === 'rock-border')
+  for (let i = 0; i < drawOrder.length; i++) {
+    const { x, y, angle } = positions[drawOrder[i]]
+    const rotJitter = (rng() - 0.5) * 50
+    group.add(new Konva.Image({
+      image: img, x, y,
+      width: stoneSize, height: stoneSize,
+      rotation: (angle * 180 / Math.PI) + rotJitter,
+      offsetX: stoneSize / 2, offsetY: stoneSize / 2,
+      listening: false,
+    }))
+  }
+}
 
-  if (entries.length === 0) return
+// ── Build a complete rock border Konva.Group ──────────────────────────────────
+// Returns a draggable Konva.Group containing:
+//   - an invisible Konva.Line (hit target, id = structId)
+//   - Konva.Image stones (added synchronously if image cached, async otherwise)
+//
+// The group id = structId so existing select/save/delete wiring works unchanged.
+// onReady(group) called after async image load completes (if image wasn't cached).
+export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, Konva, showGrid, snapCell, onSelect, onReady }) {
+  const group = new Konva.Group({
+    id,
+    x: x || 0, y: y || 0,
+    draggable: true,
+  })
 
-  for (const [id, data] of entries) {
-    if (myGen !== _drawGeneration) return  // newer call started — bail
+  // Invisible hit line — local coords (no offset, group handles position)
+  const hitLine = new Konva.Line({
+    points: flatPoints,
+    tension, closed: false,
+    stroke: 'rgba(0,0,0,0)', strokeWidth: 0,
+    strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round',
+    hitStrokeWidth: 40,
+    listening: false,  // group handles clicks
+  })
+  group.add(hitLine)
 
-    const guideShape = structLayer.findOne('#' + id)
-    if (!guideShape) continue
-
-    const flatPoints = guideShape.points()
-    if (!flatPoints || flatPoints.length < 4) continue
-
-    // Apply guide line's current drag offset to get world-space points
-    const ox = guideShape.x(), oy = guideShape.y()
-    const offsetPts = []
-    for (let i = 0; i < flatPoints.length; i += 2) {
-      offsetPts.push(flatPoints[i] + ox, flatPoints[i+1] + oy)
+  // Grid snap on drag
+  group.on('dragmove', () => {
+    if (showGrid && snapCell) {
+      group.x(Math.round(group.x() / snapCell) * snapCell)
+      group.y(Math.round(group.y() / snapCell) * snapCell)
     }
+  })
 
-    const positions = computeStonePositions(offsetPts, data.tension || 0, 'rock-border')
-    if (positions.length === 0) continue
+  group.on('click tap', e => { if (onSelect) onSelect(id, group, e) })
+  group.on('dblclick dbltap', () => { /* point edit handled by useSelection */ })
 
-    const src = ROCK_SRCS[data.rockVariant || 'grey'] || ROCK_SRCS.grey
-    const img = await loadRockImage(src)
-
-    // Check after await — delete may have fired while image was loading
-    if (myGen !== _drawGeneration) return
-    if (!img || !structDataRef.current[id]) continue
-
-    const stoneSize = getStoneSize('rock-border')
-    const group = new Konva.Group({ id: '__rb_' + id, listening: false })
-
-    // Seeded shuffle for stable z-order across redraws
-    const seed = id.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0)
-    const rng = seededRandom(seed)
-    const drawOrder = shuffleIndexes(positions.length, rng)
-
-    for (let i = 0; i < drawOrder.length; i++) {
-      const { x, y, angle } = positions[drawOrder[i]]
-      const rotJitter = (rng() - 0.5) * 50  // ±25° organic rotation
-      group.add(new Konva.Image({
-        image: img, x, y,
-        width: stoneSize, height: stoneSize,
-        rotation: (angle * 180 / Math.PI) + rotJitter,
-        offsetX: stoneSize / 2, offsetY: stoneSize / 2,
-        listening: false,
-      }))
-    }
-
-    structLayer.add(group)
-    group.moveToTop()
-
-    // No per-shape drag listeners needed.
-    // GardenEditor's stage dragstart hides ALL __rb_ groups;
-    // stage dragend calls drawRockBorders which redraws from scratch.
+  // Add stones — synchronous if image cached, async otherwise
+  const src = getRockSrc(variant)
+  if (_imgCache[src]) {
+    addStonesToGroup(group, flatPoints, tension, variant, id, Konva)
+  } else {
+    loadRockImage(src).then(img => {
+      if (!img) return
+      addStonesToGroup(group, flatPoints, tension, variant, id, Konva)
+      group.getLayer()?.batchDraw()
+      if (onReady) onReady(group)
+    })
   }
 
-  if (myGen === _drawGeneration) structLayer.batchDraw()
+  return group
+}
+
+// ── Refresh stones in an existing rock border group ───────────────────────────
+// Call this after point editing changes the guide line shape.
+// Reads current points from the hit line child.
+export function refreshRockBorderGroup(group, structData, Konva) {
+  if (!group) return
+  const hitLine = group.getChildren(c => c instanceof Konva.Line)[0]
+  if (!hitLine) return
+  const flat    = hitLine.points()
+  const variant = structData?.rockVariant || 'grey'
+  const id      = group.id()
+  addStonesToGroup(group, flat, hitLine.tension(), variant, id, Konva)
+  group.getLayer()?.batchDraw()
+}
+
+// ── Redraw all rock borders (called after load) ───────────────────────────────
+// Only needed on garden load when images may not be cached yet.
+export async function drawRockBorders(structLayer, structDataRef, Konva) {
+  if (!structLayer || !structDataRef?.current) return
+  const entries = Object.entries(structDataRef.current)
+    .filter(([, d]) => d.type === 'rock-border')
+  for (const [id] of entries) {
+    const group = structLayer.findOne('#' + id)
+    if (!group || !(group instanceof Konva.Group)) continue
+    const hitLine = group.getChildren(c => c instanceof Konva.Line)[0]
+    if (!hitLine) continue
+    const d = structDataRef.current[id]
+    const src = getRockSrc(d?.rockVariant)
+    const img = await loadRockImage(src)
+    if (!img) continue
+    addStonesToGroup(group, hitLine.points(), hitLine.tension(), d?.rockVariant, id, Konva)
+  }
+  structLayer.batchDraw()
 }

@@ -4,6 +4,7 @@ import {
   BED_COLOURS, BUILDING_COLOURS, FENCE_COLOURS, HEDGE_COLOURS,
   PATH_COLOURS, WATER_COLOURS, DECKING_COLOURS, GATE_STYLES,
 } from '../hooks/useGardenState'
+import { buildRockBorderGroup } from './rockBorderUtils'
 
 // ── Texture helper ─────────────────────────────────────────
 // Apply a repeating texture (or solid fill) to any Konva shape based on colour token.
@@ -184,37 +185,26 @@ export function closeFreeShape({
   const isWaterPond  = currentMode === 'water'    && waterSubTool === 'pond'
   const closedShape  = !isPath && !isGate && !isFenceOpen && !isUnderground && !isRockBorder
 
-  // ── Rock border: early exit — special struct, own rendering path ──────────
+  // ── Rock border: Group containing hit line + stone images ────────────────
   if (isRockBorder) {
     const isCurved = fenceSubTool === 'rock-border-curved'
     const tension  = isCurved ? 0.4 : 0
     const flat     = freePts.flatMap(p => [p.x, p.y])
     const id       = 'struct_' + structIdCtr.current++
     structDataRef.current[id] = {
-      type: 'rock-border',
-      label: 'Rock Border',
-      colour: '#888888',
-      tension,
-      rockVariant: 'grey',   // grey | brown | white | mixed
+      type: 'rock-border', label: 'Rock Border',
+      colour: '#888888', tension, rockVariant: 'grey',
     }
-    // Invisible guide line — GardenCanvas draws the stones on top
-    const shape = new Konva.Line({
-      id, points: flat, tension, closed: false,
-      stroke: 'rgba(0,0,0,0)', strokeWidth: 0,
-      strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round',
-      draggable: true,
-      hitStrokeWidth: 40,  // wide hit area — stones are ~28px each side of the line
+    const group = buildRockBorderGroup({
+      id, flatPoints: flat, tension, variant: 'grey',
+      x: 0, y: 0, Konva,
+      showGrid, snapCell,
+      onSelect,
+      onReady: () => structLayer.batchDraw(),
     })
-    shape.on('dragmove', () => {
-      if (showGrid && snapCell) {
-        shape.x(Math.round(shape.x() / snapCell) * snapCell)
-        shape.y(Math.round(shape.y() / snapCell) * snapCell)
-      }
-    })
-    shape.on('click tap', e => { if (onSelect) onSelect(id, shape, e) })
-    structLayer.add(shape)
+    structLayer.add(group)
     structLayer.batchDraw()
-    if (onSelect) onSelect(id, shape)
+    if (onSelect) onSelect(id, group)
     if (onModeChange) onModeChange('select')
     return id
   }
