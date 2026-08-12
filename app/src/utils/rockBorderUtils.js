@@ -217,20 +217,18 @@ export async function drawRockBorders(structLayer, structDataRef, Konva) {
     group.moveToTop()
 
     // ── Wire drag sync on guide line ──────────────────────────────────────────
-    // Clear any stale listeners from previous drawRockBorders calls, then re-wire.
+    // Stone positions are baked in world space (ox/oy already applied),
+    // so group starts at x=0,y=0. On drag we move the group by the delta
+    // from the guide line's position at drag-start to its current position.
+    // We store the guide line's position at draw time as the baseline so
+    // repeated drags (each followed by a redraw) always start clean.
     guideShape.off('dragstart.rb dragmove.rb')
-    let lastDragX = 0, lastDragY = 0
-    guideShape.on('dragstart.rb', () => {
-      lastDragX = guideShape.x()
-      lastDragY = guideShape.y()
-    })
+    const baseX = guideShape.x()  // guide line position when stones were drawn
+    const baseY = guideShape.y()
     guideShape.on('dragmove.rb', () => {
-      const dx = guideShape.x() - lastDragX
-      const dy = guideShape.y() - lastDragY
-      group.x(group.x() + dx)
-      group.y(group.y() + dy)
-      lastDragX = guideShape.x()
-      lastDragY = guideShape.y()
+      // Group offset = how far guide line has moved since stones were drawn
+      group.x(guideShape.x() - baseX)
+      group.y(guideShape.y() - baseY)
       structLayer.batchDraw()
     })
   }
