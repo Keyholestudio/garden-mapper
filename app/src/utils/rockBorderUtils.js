@@ -173,14 +173,15 @@ export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, K
     draggable: true,
   })
 
-  // Invisible hit line — local coords (no offset, group handles position)
+  // Hit line — listening:true so clicks are absorbed by the Group, not the stage
+  // Wide hitStrokeWidth means you can click anywhere near the stone border
   const hitLine = new Konva.Line({
     points: flatPoints,
     tension, closed: false,
     stroke: 'rgba(0,0,0,0)', strokeWidth: 0,
     strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round',
     hitStrokeWidth: 40,
-    listening: false,  // group handles clicks
+    listening: true,
   })
   group.add(hitLine)
 
@@ -192,8 +193,9 @@ export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, K
     }
   })
 
+  // Clicks on the hit line bubble up to group — fire onSelect
+  hitLine.on('click tap', e => { if (onSelect) onSelect(id, group, e) })
   group.on('click tap', e => { if (onSelect) onSelect(id, group, e) })
-  group.on('dblclick dbltap', () => { /* point edit handled by useSelection */ })
 
   // Add stones — synchronous if image cached, async otherwise
   const src = getRockSrc(variant)
