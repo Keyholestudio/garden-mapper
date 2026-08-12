@@ -216,21 +216,13 @@ export async function drawRockBorders(structLayer, structDataRef, Konva) {
     structLayer.add(group)
     group.moveToTop()
 
-    // ── Wire drag sync on guide line ──────────────────────────────────────────
-    // Stone positions are baked in world space (ox/oy already applied),
-    // so group starts at x=0,y=0. On drag we move the group by the delta
-    // from the guide line's position at drag-start to its current position.
-    // We store the guide line's position at draw time as the baseline so
-    // repeated drags (each followed by a redraw) always start clean.
-    guideShape.off('dragstart.rb dragmove.rb')
-    const baseX = guideShape.x()  // guide line position when stones were drawn
-    const baseY = guideShape.y()
-    guideShape.on('dragmove.rb', () => {
-      // Group offset = how far guide line has moved since stones were drawn
-      group.x(guideShape.x() - baseX)
-      group.y(guideShape.y() - baseY)
-      structLayer.batchDraw()
-    })
+    // ── Hide stones during drag, redraw on dragend ───────────────────────────
+    // Simpler than trying to sync the async group during drag — hide while
+    // dragging, then drawRockBorders (called from GardenEditor dragend) redraws
+    // at the new position. No ghost possible.
+    guideShape.off('dragstart.rb dragmove.rb dragend.rb')
+    guideShape.on('dragstart.rb', () => { group.visible(false); structLayer.batchDraw() })
+    guideShape.on('dragend.rb',   () => { group.visible(true);  structLayer.batchDraw() })
   }
 
   if (myGen === _drawGeneration) structLayer.batchDraw()
