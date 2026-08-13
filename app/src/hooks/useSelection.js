@@ -150,6 +150,9 @@ export function useSelection({
     if (sRef.current.structDataRef?.current[id]?.type === 'rock-border' && shape instanceof Konva.Group) {
       const hitLine = shape.getChildren(c => c instanceof Konva.Line)[0]
       if (!hitLine) return
+      // Disable Group drag while editing points — prevents Group dragmove from
+      // firing during handle drags and repositioning all handles simultaneously
+      shape.draggable(false)
       buildEditHandles(id, hitLine)
       // After each handle drag, refresh stones inside the group
       editHandlesRef.current.forEach(h => {
@@ -173,10 +176,16 @@ export function useSelection({
       const sh = layers.structLayer.findOne('#' + id)
       if (sh) {
         sh.off('dragmove.edithandles')
-        // Rock border: also clean up listener on the Group
-        if (sh instanceof Konva.Group) sh.off('dragmove.edithandles')
+        // Rock border Group: clean up listener + re-enable drag
+        if (sh instanceof Konva.Group) {
+          sh.off('dragmove.edithandles')
+          if (!sRef.current.structDataRef?.current[id]?.locked) sh.draggable(true)
+        }
         // Rock border: clean Group listener when editing inner line
-        if (sh instanceof Konva.Line && sh.parent instanceof Konva.Group) sh.parent.off('dragmove.edithandles')
+        if (sh instanceof Konva.Line && sh.parent instanceof Konva.Group) {
+          sh.parent.off('dragmove.edithandles')
+          if (!sRef.current.structDataRef?.current[id]?.locked) sh.parent.draggable(true)
+        }
       }
     }
     exitHandles()
