@@ -200,8 +200,8 @@ export default function MobileSheet({
       {expanded && (
         <div className="mobile-sheet-body" onPointerDown={e => e.stopPropagation()}>
 
-          {/* Plant search */}
-          <input
+          {/* Plant grid + search — hidden when a tool sub-mode is active (fences, beds, water, etc.) */}
+          {currentMode === 'select' && <input
             className="mobile-plant-search"
             type="search"
             placeholder="Search plants..."
@@ -209,10 +209,10 @@ export default function MobileSheet({
             onChange={e => setQuery(e.target.value)}
             onFocus={() => setSearchFocused(true)}
             onBlur={() => setSearchFocused(false)}
-          />
+          />}
 
           {/* Recently used - horizontal scroll strip, hidden when searching */}
-          {recents?.length > 0 && !query && (
+          {currentMode === 'select' && recents?.length > 0 && !query && (
             <div className="mobile-recents-section">
               <div className="mobile-recents-header">
                 <span className="mobile-recents-label">Recently Used</span>
@@ -256,8 +256,8 @@ export default function MobileSheet({
             </div>
           )}
 
-          {/* Plant grid - expands to full height when search is focused */}
-          <div className={`mobile-plant-grid${searchFocused ? ' search-active' : ''}`}>
+          {/* Plant grid - only in select mode */}
+          {currentMode === 'select' && <div className={`mobile-plant-grid${searchFocused ? ' search-active' : ''}`}>
             {filtered.length === 0 && query.trim() && (
               <div className="mobile-no-results mobile-no-results--submit">
                 <span>No results for "{query}"</span>
@@ -293,7 +293,7 @@ export default function MobileSheet({
                 </div>
               )
             })}
-          </div>
+          </div>}
 
         </div>
       )}
