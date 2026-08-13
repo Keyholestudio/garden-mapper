@@ -1,4 +1,4 @@
-// MobileSheet.jsx — Mobile bottom sheet
+// MobileSheet.jsx - Mobile bottom sheet
 // Contains: ↑↓ toggle, plant search + 2-col grid, tool menu, edit panel
 // Season is now controlled by a tap-to-cycle button in LogoBar (top right)
 
@@ -134,7 +134,7 @@ export default function MobileSheet({
                 className={`mobile-edit-btn full${addingPt ? ' active' : ''}`}
                 onClick={() => onToggleAddPt?.()}
               >
-                + Add Point{addingPt ? ' — tap near segment' : ''}
+                + Add Point{addingPt ? ' - tap near segment' : ''}
               </button>
             )}
             {isLine && (
@@ -142,7 +142,7 @@ export default function MobileSheet({
                 className={`mobile-edit-btn full${removingPt ? ' active' : ''}`}
                 onClick={() => onToggleRemovePt?.()}
               >
-                − Remove Point{removingPt ? ' — tap a handle' : ''}
+                - Remove Point{removingPt ? ' - tap a handle' : ''}
               </button>
             )}
             <div className="mobile-edit-sep" />
@@ -211,7 +211,7 @@ export default function MobileSheet({
             onBlur={() => setSearchFocused(false)}
           />
 
-          {/* Recently used — horizontal scroll strip, hidden when searching */}
+          {/* Recently used - horizontal scroll strip, hidden when searching */}
           {recents?.length > 0 && !query && (
             <div className="mobile-recents-section">
               <div className="mobile-recents-header">
@@ -256,7 +256,7 @@ export default function MobileSheet({
             </div>
           )}
 
-          {/* Plant grid — expands to full height when search is focused */}
+          {/* Plant grid - expands to full height when search is focused */}
           <div className={`mobile-plant-grid${searchFocused ? ' search-active' : ''}`}>
             {filtered.length === 0 && query.trim() && (
               <div className="mobile-no-results mobile-no-results--submit">
@@ -295,31 +295,31 @@ export default function MobileSheet({
             })}
           </div>
 
-          {/* Tool menu — hidden while search keyboard is open */}
-          {!searchFocused && (
-            <>
-              <div className="mobile-sheet-divider" />
-              <div className="mobile-tool-section">
-                <ToolMenu
-                  currentMode={currentMode}         onModeChange={onModeChange}
-                  bedSubTool={bedSubTool}           onBedSubTool={onBedSubTool}
-                  fenceSubTool={fenceSubTool}       onFenceSubTool={onFenceSubTool}
-                  fenceType={fenceType}             onFenceType={onFenceType}
-                  pathSubTool={pathSubTool}         onPathSubTool={onPathSubTool}
-                  buildingSubTool={buildingSubTool} onBuildingSubTool={onBuildingSubTool}
-                  waterSubTool={waterSubTool}       onWaterSubTool={onWaterSubTool}
-                  decorSubTool={decorSubTool}       onDecorSubTool={onDecorSubTool}
-                  showGrid={showGrid}               onToggleGrid={onToggleGrid}
-                  onResetView={onResetView}         onClearAll={onClearAll}
-                  onUndo={onUndo}
-                  canUndo={canUndo}
-                  extraClass="mobile-tool-menu"
-                />
-              </div>
-            </>
-          )}
-
         </div>
+      )}
+
+      {/* Tool menu - pinned below scrollable body, always fully visible */}
+      {expanded && !searchFocused && (
+        <>
+          <div className="mobile-sheet-divider" />
+          <div className="mobile-tool-section" onPointerDown={e => e.stopPropagation()}>
+            <ToolMenu
+              currentMode={currentMode}         onModeChange={onModeChange}
+              bedSubTool={bedSubTool}           onBedSubTool={onBedSubTool}
+              fenceSubTool={fenceSubTool}       onFenceSubTool={onFenceSubTool}
+              fenceType={fenceType}             onFenceType={onFenceType}
+              pathSubTool={pathSubTool}         onPathSubTool={onPathSubTool}
+              buildingSubTool={buildingSubTool} onBuildingSubTool={onBuildingSubTool}
+              waterSubTool={waterSubTool}       onWaterSubTool={onWaterSubTool}
+              decorSubTool={decorSubTool}       onDecorSubTool={onDecorSubTool}
+              showGrid={showGrid}               onToggleGrid={onToggleGrid}
+              onResetView={onResetView}         onClearAll={onClearAll}
+              onUndo={onUndo}
+              canUndo={canUndo}
+              extraClass="mobile-tool-menu"
+            />
+          </div>
+        </>
       )}
     </div>
   )
@@ -417,7 +417,7 @@ export default function MobileSheet({
     const d       = structDataRef?.current[selectedStruct.id] || {}
     const shape   = selectedStruct.shape
 
-    // Rock border — simple dedicated panel
+    // Rock border - simple dedicated panel
     if (d.type === 'rock-border') {
       const ROCK_VARIANTS = [
         { id: 'grey',  label: 'Grey',  colour: '#9E9E9E' },
