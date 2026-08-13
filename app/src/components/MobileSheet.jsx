@@ -295,11 +295,32 @@ export default function MobileSheet({
             })}
           </div>}
 
+          {/* Tool menu inside body when sub-mode active - gets full scrollable height */}
+          {currentMode !== 'select' && !searchFocused && (
+            <div className="mobile-tool-section" onPointerDown={e => e.stopPropagation()}>
+              <ToolMenu
+                currentMode={currentMode}         onModeChange={onModeChange}
+                bedSubTool={bedSubTool}           onBedSubTool={onBedSubTool}
+                fenceSubTool={fenceSubTool}       onFenceSubTool={onFenceSubTool}
+                fenceType={fenceType}             onFenceType={onFenceType}
+                pathSubTool={pathSubTool}         onPathSubTool={onPathSubTool}
+                buildingSubTool={buildingSubTool} onBuildingSubTool={onBuildingSubTool}
+                waterSubTool={waterSubTool}       onWaterSubTool={onWaterSubTool}
+                decorSubTool={decorSubTool}       onDecorSubTool={onDecorSubTool}
+                showGrid={showGrid}               onToggleGrid={onToggleGrid}
+                onResetView={onResetView}         onClearAll={onClearAll}
+                onUndo={onUndo}
+                canUndo={canUndo}
+                extraClass="mobile-tool-menu"
+              />
+            </div>
+          )}
+
         </div>
       )}
 
-      {/* Tool menu - pinned below scrollable body, always fully visible */}
-      {expanded && !searchFocused && (
+      {/* Tool menu pinned below body - only in select/plant-picker mode */}
+      {expanded && currentMode === 'select' && !searchFocused && (
         <>
           <div className="mobile-sheet-divider" />
           <div className="mobile-tool-section" onPointerDown={e => e.stopPropagation()}>
