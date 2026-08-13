@@ -293,6 +293,8 @@
   display: grid !important;
   grid-template-columns: repeat(3, 1fr) !important;
   gap: 5px;
+  overflow-y: auto;
+  max-height: 40vh;
 }
 /* Regular sub-menu buttons: same compact style as top-level */
 .mobile-tool-section .tool-menu-items--sub .tool-menu-btn {
