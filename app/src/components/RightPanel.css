@@ -36,7 +36,7 @@
 /* Mobile: fill panel and distribute space evenly */
 .bp-mobile .panel-content.tool-menu {
   gap: 0;
-  justify-content: space-between;
+  justify-content: flex-start;
   overflow: hidden;
 }
 .panel-empty   { padding: 12px 10px; display: flex; align-items: center; justify-content: center; height: 100%; }
@@ -251,7 +251,7 @@
 .bp-mobile .tool-menu-items {
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  overflow-y: auto;
   gap: clamp(2px, 0.6vh, 5px);
 }
 .bp-mobile .tool-menu-group {
