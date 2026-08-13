@@ -167,16 +167,23 @@ export function addStonesToGroup(group, flatPoints, tension, variant, id, Konva)
 // The group id = structId so existing select/save/delete wiring works unchanged.
 // onReady(group) called after async image load completes (if image wasn't cached).
 export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, Konva, showGrid, snapCell, onSelect, onReady }) {
+  // Normalize: absorb any initial x/y offset into flatPoints so group always starts at (0,0).
+  // This keeps flatPoints in world coords and ensures getShapeWorldPts is always correct.
+  const ox = x || 0, oy = y || 0
+  const normalizedPts = (ox !== 0 || oy !== 0)
+    ? flatPoints.map((v, i) => i % 2 === 0 ? v + ox : v + oy)
+    : flatPoints
+
   const group = new Konva.Group({
     id,
-    x: x || 0, y: y || 0,
+    x: 0, y: 0,
     draggable: true,
   })
 
   // Hit line — listening:true so clicks are absorbed by the Group, not the stage
   // Wide hitStrokeWidth means you can click anywhere near the stone border
   const hitLine = new Konva.Line({
-    points: flatPoints,
+    points: normalizedPts,
     tension, closed: false,
     stroke: 'rgba(0,0,0,0)', strokeWidth: 0,
     strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round',
@@ -193,18 +200,36 @@ export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, K
     }
   })
 
-  // Clicks on the hit line bubble up to group — fire onSelect
-  hitLine.on('click tap', e => { if (onSelect) onSelect(id, group, e) })
-  group.on('click tap', e => { if (onSelect) onSelect(id, group, e) })
+  // After drag ends: absorb the group offset back into flatPoints so group stays at (0,0).
+  // This keeps flatPoints in world coords and getShapeWorldPts correct at all times.
+  group.on('dragend', () => {
+    const dx = group.x(), dy = group.y()
+    if (dx === 0 && dy === 0) return
+    const flat = hitLine.points()
+    const newFlat = flat.map((v, i) => i % 2 === 0 ? v + dx : v + dy)
+    hitLine.points(newFlat)
+    group.x(0); group.y(0)
+    addStonesToGroup(group, newFlat, hitLine.tension(), variant, id, Konva)
+    group.getLayer()?.batchDraw()
+  })
+
+  // Only the Group handles click/tap — hitLine absorbs the hit but doesn't fire onSelect
+  // (prevents double-fire and tap-before-drag issues on mobile)
+  group.on('click tap', e => {
+    // Ignore if this was the end of a drag
+    if (group._wasDragging) { group._wasDragging = false; return }
+    if (onSelect) onSelect(id, group, e)
+  })
+  group.on('dragstart', () => { group._wasDragging = true })
 
   // Add stones — synchronous if image cached, async otherwise
   const src = getRockSrc(variant)
   if (_imgCache[src]) {
-    addStonesToGroup(group, flatPoints, tension, variant, id, Konva)
+    addStonesToGroup(group, normalizedPts, tension, variant, id, Konva)
   } else {
     loadRockImage(src).then(img => {
       if (!img) return
-      addStonesToGroup(group, flatPoints, tension, variant, id, Konva)
+      addStonesToGroup(group, normalizedPts, tension, variant, id, Konva)
       group.getLayer()?.batchDraw()
       if (onReady) onReady(group)
     })
