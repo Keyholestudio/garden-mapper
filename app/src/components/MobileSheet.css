@@ -254,6 +254,7 @@
 /* ── Tool section ── */
 .mobile-tool-section {
   flex-shrink: 0;
+  overflow: visible;
 }
 
 /* Hide the "Tools" header label on mobile - saves space */
@@ -288,10 +289,10 @@
 }
 .mobile-tool-section .tool-menu-emoji { font-size: 13px !important; }
 
-/* Sub-menu: 3-column grid - same as top-level, but groups stay in-flow */
+/* Sub-menu: 3-column grid, wraps to rows - body scrolls to reveal */
 .mobile-tool-section .tool-menu-items--sub {
   display: grid !important;
-  grid-template-columns: repeat(4, 1fr) !important;
+  grid-template-columns: repeat(3, 1fr) !important;
   gap: 5px;
 }
 /* Regular sub-menu buttons: same compact style as top-level */
@@ -322,7 +323,7 @@
 .mobile-tool-section .tool-menu-items--sub .tool-menu-group-children {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 5px;
   padding-left: 0;
   border-left: none;

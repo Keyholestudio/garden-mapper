@@ -37,7 +37,7 @@
 .bp-mobile .panel-content.tool-menu {
   gap: 0;
   justify-content: flex-start;
-  overflow: hidden;
+  overflow: visible;
 }
 .panel-empty   { padding: 12px 10px; display: flex; align-items: center; justify-content: center; height: 100%; }
 .panel-empty p { color: #bbb; font-size: 0.82rem; text-align: center; line-height: 1.6; }
@@ -249,9 +249,8 @@
   font-size: clamp(10px, 1.4vh, 12px);
 }
 .bp-mobile .tool-menu-items {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
+  flex: none;
+  overflow: visible;
   gap: clamp(2px, 0.6vh, 5px);
 }
 .bp-mobile .tool-menu-group {
