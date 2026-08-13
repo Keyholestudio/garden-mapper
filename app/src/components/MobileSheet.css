@@ -291,10 +291,8 @@
 /* Sub-menu: 3-column grid - same as top-level, but groups stay in-flow */
 .mobile-tool-section .tool-menu-items--sub {
   display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
+  grid-template-columns: repeat(4, 1fr) !important;
   gap: 5px;
-  overflow-y: auto;
-  max-height: 40vh;
 }
 /* Regular sub-menu buttons: same compact style as top-level */
 .mobile-tool-section .tool-menu-items--sub .tool-menu-btn {
@@ -324,7 +322,7 @@
 .mobile-tool-section .tool-menu-items--sub .tool-menu-group-children {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 5px;
   padding-left: 0;
   border-left: none;
