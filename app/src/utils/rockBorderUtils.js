@@ -167,23 +167,20 @@ export function addStonesToGroup(group, flatPoints, tension, variant, id, Konva)
 // The group id = structId so existing select/save/delete wiring works unchanged.
 // onReady(group) called after async image load completes (if image wasn't cached).
 export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, Konva, showGrid, snapCell, onSelect, onReady }) {
-  // Normalize: absorb any initial x/y offset into flatPoints so group always starts at (0,0).
-  // This keeps flatPoints in world coords and ensures getShapeWorldPts is always correct.
-  const ox = x || 0, oy = y || 0
-  const normalizedPts = (ox !== 0 || oy !== 0)
-    ? flatPoints.map((v, i) => i % 2 === 0 ? v + ox : v + oy)
-    : flatPoints
+  // flatPoints are in the group's LOCAL coordinate space.
+  // x/y set the group's world position. getShapeWorldPts adds group.x/y to get world coords.
+  // dragend absorbs the drag offset into flatPoints and resets group to (0,0) so they stay in sync.
 
   const group = new Konva.Group({
     id,
-    x: 0, y: 0,
+    x: x || 0, y: y || 0,
     draggable: true,
   })
 
   // Hit line — listening:true so clicks are absorbed by the Group, not the stage
   // Wide hitStrokeWidth means you can click anywhere near the stone border
   const hitLine = new Konva.Line({
-    points: normalizedPts,
+    points: flatPoints,
     tension, closed: false,
     stroke: 'rgba(0,0,0,0)', strokeWidth: 0,
     strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round',
@@ -221,11 +218,11 @@ export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, K
   // Add stones — synchronous if image cached, async otherwise
   const src = getRockSrc(variant)
   if (_imgCache[src]) {
-    addStonesToGroup(group, normalizedPts, tension, variant, id, Konva)
+    addStonesToGroup(group, flatPoints, tension, variant, id, Konva)
   } else {
     loadRockImage(src).then(img => {
       if (!img) return
-      addStonesToGroup(group, normalizedPts, tension, variant, id, Konva)
+      addStonesToGroup(group, flatPoints, tension, variant, id, Konva)
       group.getLayer()?.batchDraw()
       if (onReady) onReady(group)
     })
