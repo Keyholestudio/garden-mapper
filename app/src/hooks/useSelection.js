@@ -73,7 +73,8 @@ export function useSelection({
       const h = makeHandle(id, shape, i, uiLayer, structLayer)
       if (removing) {
         h.fill('#c62828')   // red = remove mode
-        h.draggable(false)
+        // Keep draggable:true on mobile so tap fires reliably;
+        // dragmove is ignored via removingPtRef check inside makeHandle
       }
       uiLayer.add(h)
       editHandlesRef.current.push(h)
@@ -129,6 +130,11 @@ export function useSelection({
       if (flat.length / 2 <= minPts) return  // won't remove below minimum
       const newFlat = [...flat.slice(0, ptIdx * 2), ...flat.slice(ptIdx * 2 + 2)]
       shape.points(newFlat)
+      // Rock border: refresh stones after point removal
+      if (shape.parent instanceof Konva.Group) {
+        const d = sRef.current.structDataRef?.current[id]
+        addStonesToGroup(shape.parent, newFlat, shape.tension(), d?.rockVariant, id, Konva)
+      }
       structLayer.batchDraw()
       buildEditHandles(id, shape)  // rebuild with updated points
       sRef.current.setRemovingPt?.(false)
@@ -156,9 +162,10 @@ export function useSelection({
     if (sRef.current.structDataRef?.current[id]?.type === 'rock-border' && shape instanceof Konva.Group) {
       const hitLine = shape.getChildren(c => c instanceof Konva.Line)[0]
       if (!hitLine) return
-      // Disable Group drag while editing points — prevents Group dragmove from
-      // firing during handle drags and repositioning all handles simultaneously
+      // Disable Group drag while editing points and remove the dragmove.edithandles
+      // listener — handles ARE the point positions, no re-sync needed during edit
       shape.draggable(false)
+      shape.off('dragmove.edithandles')
       buildEditHandles(id, hitLine)
       // Stone refresh is handled inside makeHandle's dragmove for rock borders
       if (onEditMode) onEditMode(id)
