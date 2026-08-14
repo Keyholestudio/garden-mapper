@@ -213,14 +213,10 @@ export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, K
     group.getLayer()?.batchDraw()
   })
 
-  // Only the Group handles click/tap — hitLine absorbs the hit but doesn't fire onSelect
-  // (prevents double-fire and tap-before-drag issues on mobile)
-  group.on('click tap', e => {
-    // Ignore if this was the end of a drag
-    if (group._wasDragging) { group._wasDragging = false; return }
-    if (onSelect) onSelect(id, group, e)
-  })
-  group.on('dragstart', () => { group._wasDragging = true })
+  // Both hitLine and Group fire onSelect — hitLine has the wide hit zone (40px),
+  // Group catches clicks that miss the line. onSelect deduplicates via editingShapeId check.
+  hitLine.on('click tap', e => { if (onSelect) onSelect(id, group, e) })
+  group.on('click tap',   e => { if (onSelect) onSelect(id, group, e) })
 
   // Add stones — synchronous if image cached, async otherwise
   const src = getRockSrc(variant)
