@@ -106,12 +106,18 @@ export function useSelection({
     h.on('dragmove', () => {
       if (removingPtRef.current) return  // don't drag when in remove mode
       // h.x/y are world coords; convert to local (shape-relative) for Line shapes
-      // Also subtract parent Group offset if line lives inside a Group (rock border)
+      // Group is always at (0,0) so lx/ly = 0 for rock border hit lines
       const cur = getShapeLocalPts(shape)
       const lx  = shape instanceof Konva.Line ? shape.x() + (shape.parent instanceof Konva.Group ? shape.parent.x() : 0) : 0
       const ly  = shape instanceof Konva.Line ? shape.y() + (shape.parent instanceof Konva.Group ? shape.parent.y() : 0) : 0
       cur[ptIdx] = { x: h.x() - lx, y: h.y() - ly }
       setShapePts(shape, cur)
+      // Rock border: immediately refresh stones so they follow the moved point
+      if (shape instanceof Konva.Line && shape.parent instanceof Konva.Group) {
+        const grp = shape.parent
+        const d   = sRef.current.structDataRef?.current[id]
+        addStonesToGroup(grp, shape.points(), shape.tension(), d?.rockVariant, id, Konva)
+      }
       structLayer.batchDraw()
     })
     h.on('click tap', () => {
@@ -154,14 +160,7 @@ export function useSelection({
       // firing during handle drags and repositioning all handles simultaneously
       shape.draggable(false)
       buildEditHandles(id, hitLine)
-      // After each handle drag, refresh stones inside the group
-      editHandlesRef.current.forEach(h => {
-        h.on('dragmove.rb', () => {
-          const d = sRef.current.structDataRef?.current[id]
-          addStonesToGroup(shape, hitLine.points(), hitLine.tension(), d?.rockVariant, id, Konva)
-          layers.structLayer?.batchDraw()
-        })
-      })
+      // Stone refresh is handled inside makeHandle's dragmove for rock borders
       if (onEditMode) onEditMode(id)
       return
     }
