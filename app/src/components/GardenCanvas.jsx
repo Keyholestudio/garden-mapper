@@ -243,7 +243,13 @@ export default function GardenCanvas({
         // Single finger — pan start (only in select mode; draw tools handle their own touch)
         isPinching = false
         if (isPinchingRef) isPinchingRef.current = false
-        touchPanStart = { x: e.touches[0].clientX, y: e.touches[0].clientY }
+        // In edit-points mode, suppress canvas pan so handle drags don't shift the
+        // coordinate frame under the other handles (mobile point drift bug)
+        if (editingShapeRef.current) {
+          touchPanStart = null
+        } else {
+          touchPanStart = { x: e.touches[0].clientX, y: e.touches[0].clientY }
+        }
         lastTouchDist = null
       }
     }

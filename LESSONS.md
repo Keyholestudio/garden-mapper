@@ -1,6 +1,35 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026, L027, L028 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L061 — Rock border coordinate system: group.x/y vs flatPoints (2026-08-13)
+**The invariant:** `hitLine.points()` = LOCAL coords (relative to group origin). `group.x/y` = world offset. `getShapeWorldPts` = local + group.x/y = world coords.
+**dragend handler:** absorbs group.x/y into flatPoints, resets group to (0,0). After any drag, group is always at (0,0).
+**Load path:** group restores to `(x: lx, y: ly)`, flatPoints stay as local coords. Do NOT normalize flatPoints on load — that double-offsets them.
+**Handle placement:** `h.x = flatPt.x + group.x` (world). **Handle write-back:** `cur[ptIdx] = { x: h.x() - (hitLine.x() + group.x()) }` = local.
+**Stone placement:** `addStonesToGroup(group, hitLine.points(), ...)` — stones are children of group, rendered at local coords.
+**Rule:** Never add group.x/y to flatPoints at build/load time. Only do it at dragend to normalize.
+
+## L062 — Rock border edit handles: disable Group.draggable + remove dragmove listener during edit (2026-08-13)
+**What happened:** In edit mode, dragging one handle caused all handles to jump. On mobile, Konva initiated drag on both the handle (uiLayer) and the Group (structLayer) simultaneously from the same touch.
+**Fix:** In `enterEdit` for rock border: `shape.draggable(false)` + `shape.off('dragmove.edithandles')`. Re-enable on `exitEdit`.
+**Rule:** Any Konva.Group used as a draggable struct must have drag disabled during point-edit mode.
+
+## L063 — Mobile Konva tap on non-draggable nodes unreliable (2026-08-13)
+**What happened:** Remove-mode handles set `draggable(false)` — on mobile, `tap` event didn’t fire reliably on non-draggable Konva.Circle nodes.
+**Fix:** Keep handles draggable in remove mode. `dragmove` is already no-op'd via `removingPtRef` check.
+**Rule:** On mobile, always keep Konva nodes `draggable:true` if you need tap events on them.
+
+## L064 — Mobile point drift: canvas touch pan vs handle drag race condition (2026-08-13, OPEN)
+**Symptom:** In rock border edit mode on mobile, dragging one handle causes other handles to drift from the stone border. Web (mouse) works correctly.
+**Root cause (suspected):** `onTouchStart` in GardenCanvas.jsx sets `touchPanStart` on every single-finger touch, including touches on edit handles. If the finger moves even slightly, both stage pan AND handle drag fire. Stage pan shifts the coordinate frame; `h.x()/h.y()` returns position in the shifted frame, which gets written as the wrong local point.
+**Fix (not yet applied):** In `onTouchStart`, if `editingShapeRef.current` is set, skip setting `touchPanStart`: `if (editingShapeRef.current) { touchPanStart = null; return }`
+**Status:** Open. Next session priority.
+
+## L065 — Always git push immediately after commit — never assume auto-push (2026-08-13)
+**What happened:** 5+ commits sat as local-only for hours. Vercel deploys from GitHub. Rob was testing old code the entire time.
+**Fix:** Always run `git push origin main` right after `git commit`. Confirm with `git log --oneline origin/main -3`.
+**Rule:** Commit + push is one atomic action. Never separate them.
+
 ## L057 — Custom struct types: use Konva.Group containing all children, never two separate objects (2026-08-12)
 **What happened:** Rock border v1 used an invisible `Konva.Line` + a separate `Konva.Group` of stone images. Any move of the line left the stone group behind as a ghost. Spent ~2 hours on async cancel tokens, dragstart/dragend listeners, batchDraw patches — all failed.
 **Root cause:** Two separate Konva objects can never be kept in perfect sync across async redraws, drag events, and point edits.

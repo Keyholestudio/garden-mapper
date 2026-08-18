@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-08-11 (icons, Dream Garden v4, cloud delete fix, bundle perf)_
+_Last updated: 2026-08-18 (rock border mobile fixes — z-order, options panel, menu visibility, edit handles)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -101,10 +101,11 @@ cd projects/garden-planner/app && npm run dev
 ## Open Items
 
 ### 🔴 Immediate
+- **[HIGH] Rock border mobile point drift** — In edit mode on mobile, dragging one handle causes others to drift. Fix: suppress canvas `touchPanStart` when `editingShapeId` is set (GardenCanvas.jsx `onTouchStart`). Single line: `if (editingShapeRef.current) { touchPanStart = null; return }`. Web version works correctly.
 - **Rock border colour variants** — brown, white, sandstone PNGs needed. Colour picker in panel wired but all variants use grey sticker for now. Generate next session.
-- **Rock border save/load mobile test** — not yet tested on device. Needs USB deploy.
 - **Stepping stone path** — same Group architecture, different preset (stoneSize: 48, overlap: -0.40). Add to Fences menu under Rock Borders.
 - **Picket fence** — same system, bottom-edge anchor calc different from centre-anchor stones.
+- **Android APK rebuild** — all rock border fixes need USB deploy.
 
 - ~~**[HIGH] Bundle performance**~~ ✅ Done 2026-08-11. Main chunk 1,244→443 KB. Vendor chunks split (konva/supabase/stripe/pdf/capacitor). ExportModal + jsPDF/html2canvas lazy-loaded (599 KB only on Export open).
 - **[HIGH] Texture opacity not applying on live/cached site** — 10% opacity set in `drawUtils.js` but not rendering correctly on mobile. Suspected cache issue but needs verification on fresh browser. Also check Dream Garden baked JSON needs updating.
