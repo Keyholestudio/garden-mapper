@@ -262,6 +262,7 @@ export default function GardenEditor() {
 
   // ── Clear selection ──
   const clearSelection = () => {
+    exitEdit()  // destroy any stale edit handles before clearing selection
     state.setSelectedPlant(null)
     state.setSelectedStruct(null)
     state.setMultiSelection([])   // triggers highlight useEffect which destroys rects
@@ -357,6 +358,9 @@ export default function GardenEditor() {
         })
         return
       }
+      // Always exit edit mode on selection — cleans up any stale handles from a
+      // previous edit session that wasn't closed via Done Editing (mobile especially)
+      exitEdit()
       state.setMultiSelection([])
       state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
       state.setSelectedPlant(null)
