@@ -195,19 +195,12 @@ export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, K
   })
   group.add(hitLine)
 
-  // Live drag: redraw stones at current group position so border follows finger
+  // Drag: stones are children of the group so they move automatically with it.
+  // Grid snap on dragmove only — stones rebuild on dragend after normalization.
   group.on('dragmove', () => {
     if (showGrid && snapCell) {
       group.x(Math.round(group.x() / snapCell) * snapCell)
       group.y(Math.round(group.y() / snapCell) * snapCell)
-    }
-    // Shift stone positions by current drag offset so they move with the finger in real time
-    const dx = group.x(), dy = group.y()
-    if (dx !== 0 || dy !== 0) {
-      const flat = hitLine.points()
-      const shifted = flat.map((v, i) => i % 2 === 0 ? v + dx : v + dy)
-      addStonesToGroup(group, shifted, hitLine.tension(), variant, id, Konva)
-      group.getLayer()?.batchDraw()
     }
   })
 
