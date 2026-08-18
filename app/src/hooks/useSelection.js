@@ -68,6 +68,7 @@ export function useSelection({
     if (!stage || !layers) return
     const { uiLayer, structLayer } = layers
     const pts = getShapeWorldPts(shape)
+    console.log('[buildEditHandles]', id, 'worldPts:', pts.map(p => `(${Math.round(p.x)},${Math.round(p.y)})`).join(' '))
     const removing = removingPtRef.current
     pts.forEach((_, i) => {
       const h = makeHandle(id, shape, i, uiLayer, structLayer)
@@ -163,6 +164,12 @@ export function useSelection({
     if (sRef.current.structDataRef?.current[id]?.type === 'rock-border' && shape instanceof Konva.Group) {
       const hitLine = shape.getChildren(c => c instanceof Konva.Line)[0]
       if (!hitLine) return
+      // DEBUG — log coordinate state at enterEdit time
+      console.log('[enterEdit rock-border]', id,
+        'group.x:', shape.x(), 'group.y:', shape.y(),
+        'hitLine.x:', hitLine.x(), 'hitLine.y:', hitLine.y(),
+        'flatPoints[0..3]:', hitLine.points().slice(0, 4)
+      )
       // Disable Group drag while editing points and remove the dragmove.edithandles
       // listener — handles ARE the point positions, no re-sync needed during edit
       shape.draggable(false)
