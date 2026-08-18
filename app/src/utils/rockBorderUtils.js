@@ -230,10 +230,13 @@ export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, K
     }
   })
 
-  // Both hitLine and Group fire onSelect — hitLine has the wide hit zone (40px),
-  // Group catches clicks that miss the line. onSelect deduplicates via editingShapeId check.
-  hitLine.on('click tap', e => { if (onSelect) onSelect(id, group, e) })
-  group.on('click tap',   e => { if (onSelect) onSelect(id, group, e) })
+  // Group catches all click/tap events — stones bubble up (listening:true) and
+  // hitLine events also bubble to the Group. Single handler on Group is sufficient.
+  // hitLine.on('click tap') removed — it caused double-firing when touch hit both.
+  group.on('click tap', e => {
+    e.cancelBubble = true  // stop event reaching stage after group handles it
+    if (onSelect) onSelect(id, group, e)
+  })
 
   // Add stones — synchronous if image cached, async otherwise
   const src = getRockSrc(variant)
