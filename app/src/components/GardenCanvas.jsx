@@ -233,6 +233,8 @@ export default function GardenCanvas({
         if (Konva.DD?.isDragging) Konva.DD.reset()
         // Disable draggable on every shape in both layers
         plantLayer?.find('Group').forEach(n => n.draggable(false))
+        // Rock borders are Konva.Groups in structLayer — disable them too
+        structLayer?.find('Group').forEach(n => n.draggable(false))
         structLayer?.find('Line,Rect,Circle,Path').forEach(n => {
           if (n.id() !== '__propBounds') n.draggable(false)
         })
@@ -304,6 +306,8 @@ export default function GardenCanvas({
           const { plantLayer, structLayer } = layersRef.current
           // Re-enable draggable on all shapes (lock state re-applied by onPinchEnd in parent)
           plantLayer?.find('Group').forEach(n => n.draggable(true))
+          // Rock borders are Konva.Groups in structLayer — must restore them too
+          structLayer?.find('Group').forEach(n => n.draggable(true))
           structLayer?.find('Line,Rect,Circle,Path').forEach(n => {
             if (n.id() !== '__propBounds') n.draggable(true)
           })
