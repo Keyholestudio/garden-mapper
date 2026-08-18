@@ -207,10 +207,14 @@ export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, K
   // This keeps flatPoints in world coords and getShapeWorldPts correct at all times.
   group.on('dragend', () => {
     const dx = group.x(), dy = group.y()
-    if (dx === 0 && dy === 0) return
+    // Also absorb any hitLine-own offset (can accumulate on mobile touch drag)
+    const lx = hitLine.x(), ly = hitLine.y()
+    const totalDx = dx + lx, totalDy = dy + ly
+    if (totalDx === 0 && totalDy === 0) return
     const flat = hitLine.points()
-    const newFlat = flat.map((v, i) => i % 2 === 0 ? v + dx : v + dy)
+    const newFlat = flat.map((v, i) => i % 2 === 0 ? v + totalDx : v + totalDy)
     hitLine.points(newFlat)
+    hitLine.x(0); hitLine.y(0)  // always reset hitLine position to (0,0)
     group.x(0); group.y(0)
     addStonesToGroup(group, newFlat, hitLine.tension(), variant, id, Konva)
     group.getLayer()?.batchDraw()
@@ -261,6 +265,13 @@ export function refreshRockBorderGroup(group, structData, Konva) {
   if (!group) return
   const hitLine = group.getChildren(c => c instanceof Konva.Line)[0]
   if (!hitLine) return
+  // Normalize hitLine position — should always be (0,0), absorb any drift into points
+  const lx = hitLine.x(), ly = hitLine.y()
+  if (lx !== 0 || ly !== 0) {
+    const normalized = hitLine.points().map((v, i) => i % 2 === 0 ? v + lx : v + ly)
+    hitLine.points(normalized)
+    hitLine.x(0); hitLine.y(0)
+  }
   const flat    = hitLine.points()
   const variant = structData?.rockVariant || 'grey'
   const id      = group.id()
@@ -283,6 +294,13 @@ export async function drawRockBorders(structLayer, structDataRef, Konva) {
     const src = getRockSrc(d?.rockVariant)
     const img = await loadRockImage(src)
     if (!img) continue
+    // Normalize hitLine position on load
+    const lx = hitLine.x(), ly = hitLine.y()
+    if (lx !== 0 || ly !== 0) {
+      const normalized = hitLine.points().map((v, i) => i % 2 === 0 ? v + lx : v + ly)
+      hitLine.points(normalized)
+      hitLine.x(0); hitLine.y(0)
+    }
     addStonesToGroup(group, hitLine.points(), hitLine.tension(), d?.rockVariant, id, Konva)
     group.moveToTop()  // rock borders render above beds/water
   }
