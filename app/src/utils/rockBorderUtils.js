@@ -195,39 +195,27 @@ export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, K
   })
   group.add(hitLine)
 
-  // Live drag: redraw stones at world position so they follow the finger.
-  // flatPoints stay unchanged — we pass a temporarily shifted array for rendering only.
+  // Drag: Konva moves the Group natively, all children (stones + hitLine) move with it.
+  // Only grid-snap here — no manual stone redraw needed during drag.
   group.on('dragmove', () => {
     if (showGrid && snapCell) {
       group.x(Math.round(group.x() / snapCell) * snapCell)
       group.y(Math.round(group.y() / snapCell) * snapCell)
     }
-    const dx = group.x(), dy = group.y()
-    if (dx === 0 && dy === 0) return
-    // Render stones at shifted positions WITHOUT modifying hitLine.points()
-    const flat = hitLine.points()
-    const shifted = flat.map((v, i) => i % 2 === 0 ? v + dx : v + dy)
-    // Temporarily move group to (0,0) for rendering, then restore
-    group.x(0); group.y(0)
-    addStonesToGroup(group, shifted, hitLine.tension(), variant, id, Konva)
-    group.x(dx); group.y(dy)
-    group.getLayer()?.batchDraw()
   })
 
-  // After drag ends: absorb the group offset back into flatPoints so group stays at (0,0).
-  // This keeps flatPoints in world coords and getShapeWorldPts correct at all times.
+  // dragend: absorb any hitLine-own x/y drift into flatPoints (mobile can cause this),
+  // then reset hitLine to (0,0). Group x/y is NOT reset — it accumulates like a fence Line.
+  // flatPoints are LOCAL coords relative to group origin. Konva applies group.x/y as transform.
   group.on('dragend', () => {
-    const dx = group.x(), dy = group.y()
-    // Also absorb any hitLine-own offset (can accumulate on mobile touch drag)
     const lx = hitLine.x(), ly = hitLine.y()
-    const totalDx = dx + lx, totalDy = dy + ly
-    if (totalDx === 0 && totalDy === 0) return
-    const flat = hitLine.points()
-    const newFlat = flat.map((v, i) => i % 2 === 0 ? v + totalDx : v + totalDy)
-    hitLine.points(newFlat)
-    hitLine.x(0); hitLine.y(0)  // always reset hitLine position to (0,0)
-    group.x(0); group.y(0)
-    addStonesToGroup(group, newFlat, hitLine.tension(), variant, id, Konva)
+    if (lx !== 0 || ly !== 0) {
+      const flat = hitLine.points()
+      const newFlat = flat.map((v, i) => i % 2 === 0 ? v + lx : v + ly)
+      hitLine.points(newFlat)
+      hitLine.x(0); hitLine.y(0)
+    }
+    addStonesToGroup(group, hitLine.points(), hitLine.tension(), variant, id, Konva)
     group.getLayer()?.batchDraw()
   })
 
