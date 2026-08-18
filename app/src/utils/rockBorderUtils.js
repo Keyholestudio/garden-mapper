@@ -195,11 +195,19 @@ export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, K
   })
   group.add(hitLine)
 
-  // Grid snap on drag
+  // Live drag: redraw stones at current group position so border follows finger
   group.on('dragmove', () => {
     if (showGrid && snapCell) {
       group.x(Math.round(group.x() / snapCell) * snapCell)
       group.y(Math.round(group.y() / snapCell) * snapCell)
+    }
+    // Shift stone positions by current drag offset so they move with the finger in real time
+    const dx = group.x(), dy = group.y()
+    if (dx !== 0 || dy !== 0) {
+      const flat = hitLine.points()
+      const shifted = flat.map((v, i) => i % 2 === 0 ? v + dx : v + dy)
+      addStonesToGroup(group, shifted, hitLine.tension(), variant, id, Konva)
+      group.getLayer()?.batchDraw()
     }
   })
 
@@ -218,20 +226,6 @@ export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, K
     group.x(0); group.y(0)
     addStonesToGroup(group, newFlat, hitLine.tension(), variant, id, Konva)
     group.getLayer()?.batchDraw()
-    // If edit handles are visible for this shape, shift them by the same dx/dy
-    // so they follow the border instead of staying at the old position.
-    const stage = group.getStage()
-    if (stage) {
-      stage.getLayers().forEach(layer => {
-        layer.find('Circle').forEach(h => {
-          if (h.getAttr('editId') === id) {
-            h.x(h.x() + dx)
-            h.y(h.y() + dy)
-            layer.batchDraw()
-          }
-        })
-      })
-    }
   })
 
   // Group catches all click/tap events — stones bubble up (listening:true) and

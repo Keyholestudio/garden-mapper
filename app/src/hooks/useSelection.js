@@ -182,9 +182,10 @@ export function useSelection({
       // listener — handles ARE the point positions, no re-sync needed during edit
       shape.draggable(false)
       shape.off('dragmove.edithandles')
-      // Also disable listening on the hitLine itself so accidental touches on the
-      // line/border don't bubble up and trigger a group move (mobile issue 3)
+      // Disable listening on hitLine and stones during edit so touches can't
+      // accidentally move the group — only handle drags should work in edit mode
       hitLine.listening(false)
+      shape.getChildren(c => c instanceof Konva.Image).forEach(s => s.listening(false))
       buildEditHandles(id, hitLine)
       // Stone refresh is handled inside makeHandle's dragmove for rock borders
       if (onEditMode) onEditMode(id)
@@ -205,8 +206,10 @@ export function useSelection({
         if (sh instanceof Konva.Group) {
           sh.off('dragmove.edithandles')
           if (!sRef.current.structDataRef?.current[id]?.locked) sh.draggable(true)
+          // Restore listening on hitLine and stones
           const hl = sh.getChildren(c => c instanceof Konva.Line)[0]
           if (hl) hl.listening(true)
+          sh.getChildren(c => c instanceof Konva.Image).forEach(s => s.listening(true))
         }
         // Rock border: clean Group listener when editing inner line
         if (sh instanceof Konva.Line && sh.parent instanceof Konva.Group) {
