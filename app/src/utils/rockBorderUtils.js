@@ -154,13 +154,13 @@ export function addStonesToGroup(group, flatPoints, tension, variant, id, Konva)
       width: stoneSize, height: stoneSize,
       rotation: (angle * 180 / Math.PI) + rotJitter,
       offsetX: stoneSize / 2, offsetY: stoneSize / 2,
-      listening: false,
+      // listening:true so touch events on stones bubble up to the draggable Group.
+      // Without this, Konva can't initiate drag on mobile when the touch lands on a stone.
+      listening: true,
     }))
   }
 
-  // Always keep the hitLine on top so it intercepts touches on mobile.
-  // Stones are listening:false — if they render above the hitLine, touches
-  // fall through to the stage instead of latching onto the group for drag.
+  // Keep hitLine on top for consistent tap/click handling (hitLine has the wide hit area)
   const hitLine = group.getChildren(c => c instanceof Konva.Line)[0]
   if (hitLine) hitLine.moveToTop()
 }
