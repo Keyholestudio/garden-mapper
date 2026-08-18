@@ -157,6 +157,12 @@ export function addStonesToGroup(group, flatPoints, tension, variant, id, Konva)
       listening: false,
     }))
   }
+
+  // Always keep the hitLine on top so it intercepts touches on mobile.
+  // Stones are listening:false — if they render above the hitLine, touches
+  // fall through to the stage instead of latching onto the group for drag.
+  const hitLine = group.getChildren(c => c instanceof Konva.Line)[0]
+  if (hitLine) hitLine.moveToTop()
 }
 
 // ── Build a complete rock border Konva.Group ──────────────────────────────────
