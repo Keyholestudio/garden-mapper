@@ -214,6 +214,20 @@ export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, K
     group.x(0); group.y(0)
     addStonesToGroup(group, newFlat, hitLine.tension(), variant, id, Konva)
     group.getLayer()?.batchDraw()
+    // If edit handles are visible for this shape, shift them by the same dx/dy
+    // so they follow the border instead of staying at the old position.
+    const stage = group.getStage()
+    if (stage) {
+      stage.getLayers().forEach(layer => {
+        layer.find('Circle').forEach(h => {
+          if (h.getAttr('editId') === id) {
+            h.x(h.x() + dx)
+            h.y(h.y() + dy)
+            layer.batchDraw()
+          }
+        })
+      })
+    }
   })
 
   // Both hitLine and Group fire onSelect — hitLine has the wide hit zone (40px),

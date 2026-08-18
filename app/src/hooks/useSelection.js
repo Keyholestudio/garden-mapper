@@ -103,6 +103,7 @@ export function useSelection({
       radius: 7 / stage.scaleX(),
       fill: '#558B2F', stroke: '#fff', strokeWidth: 2 / stage.scaleX(),
       draggable: true,
+      editId: id,  // used by rock border dragend to shift handles when border is moved
     })
     h.on('dragmove', () => {
       if (removingPtRef.current) return  // don't drag when in remove mode
