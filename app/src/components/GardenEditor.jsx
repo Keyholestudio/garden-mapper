@@ -1584,7 +1584,9 @@ export default function GardenEditor() {
                 state.setAddingPt(next)
                 if (next) state.setRemovingPt(false)
                 if (state.editingShapeId) {
-                  const sh = layersRef.current.structLayer?.findOne('#' + state.editingShapeId)
+                  let sh = layersRef.current.structLayer?.findOne('#' + state.editingShapeId)
+                  // Rock border: buildEditHandles needs the hitLine, not the Group
+                  if (sh instanceof Konva.Group) sh = sh.getChildren(c => c instanceof Konva.Line)[0] || sh
                   if (sh) buildEditHandles(state.editingShapeId, sh)
                 }
               }}
@@ -1594,7 +1596,9 @@ export default function GardenEditor() {
                 state.setRemovingPt(next)
                 if (next) state.setAddingPt(false)
                 if (state.editingShapeId) {
-                  const sh = layersRef.current.structLayer?.findOne('#' + state.editingShapeId)
+                  let sh = layersRef.current.structLayer?.findOne('#' + state.editingShapeId)
+                  // Rock border: buildEditHandles needs the hitLine, not the Group
+                  if (sh instanceof Konva.Group) sh = sh.getChildren(c => c instanceof Konva.Line)[0] || sh
                   if (sh) buildEditHandles(state.editingShapeId, sh)
                 }
               }}
@@ -1700,7 +1704,9 @@ export default function GardenEditor() {
             state.setAddingPt(next)
             if (next) state.setRemovingPt(false)  // mutually exclusive
             if (state.editingShapeId) {
-              const sh = layersRef.current.structLayer?.findOne('#' + state.editingShapeId)
+              let sh = layersRef.current.structLayer?.findOne('#' + state.editingShapeId)
+              // Rock border: buildEditHandles needs the hitLine, not the Group
+              if (sh instanceof Konva.Group) sh = sh.getChildren(c => c instanceof Konva.Line)[0] || sh
               if (sh) buildEditHandles(state.editingShapeId, sh)
             }
           }}
@@ -1710,7 +1716,9 @@ export default function GardenEditor() {
             state.setRemovingPt(next)
             if (next) state.setAddingPt(false)  // mutually exclusive
             if (state.editingShapeId) {
-              const sh = layersRef.current.structLayer?.findOne('#' + state.editingShapeId)
+              let sh = layersRef.current.structLayer?.findOne('#' + state.editingShapeId)
+              // Rock border: buildEditHandles needs the hitLine, not the Group
+              if (sh instanceof Konva.Group) sh = sh.getChildren(c => c instanceof Konva.Line)[0] || sh
               if (sh) buildEditHandles(state.editingShapeId, sh)
             }
           }}

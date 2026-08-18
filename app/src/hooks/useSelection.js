@@ -166,6 +166,9 @@ export function useSelection({
       // listener — handles ARE the point positions, no re-sync needed during edit
       shape.draggable(false)
       shape.off('dragmove.edithandles')
+      // Also disable listening on the hitLine itself so accidental touches on the
+      // line/border don't bubble up and trigger a group move (mobile issue 3)
+      hitLine.listening(false)
       buildEditHandles(id, hitLine)
       // Stone refresh is handled inside makeHandle's dragmove for rock borders
       if (onEditMode) onEditMode(id)
@@ -182,10 +185,12 @@ export function useSelection({
       const sh = layers.structLayer.findOne('#' + id)
       if (sh) {
         sh.off('dragmove.edithandles')
-        // Rock border Group: clean up listener + re-enable drag
+        // Rock border Group: clean up listener + re-enable drag + restore hitLine listening
         if (sh instanceof Konva.Group) {
           sh.off('dragmove.edithandles')
           if (!sRef.current.structDataRef?.current[id]?.locked) sh.draggable(true)
+          const hl = sh.getChildren(c => c instanceof Konva.Line)[0]
+          if (hl) hl.listening(true)
         }
         // Rock border: clean Group listener when editing inner line
         if (sh instanceof Konva.Line && sh.parent instanceof Konva.Group) {
