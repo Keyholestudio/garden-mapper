@@ -68,10 +68,6 @@ export function useSelection({
     if (!stage || !layers) return
     const { uiLayer, structLayer } = layers
     const pts = getShapeWorldPts(shape)
-    const ptsStr = pts.map(p => `(${Math.round(p.x)},${Math.round(p.y)})`).join(' ')
-    console.log('[buildEditHandles]', id, 'worldPts:', ptsStr)
-    const dbg = document.getElementById('__rb_debug')
-    if (dbg) dbg.textContent += `\nhandles:${ptsStr}`
     const removing = removingPtRef.current
     pts.forEach((_, i) => {
       const h = makeHandle(id, shape, i, uiLayer, structLayer)
@@ -167,17 +163,7 @@ export function useSelection({
     if (sRef.current.structDataRef?.current[id]?.type === 'rock-border' && shape instanceof Konva.Group) {
       const hitLine = shape.getChildren(c => c instanceof Konva.Line)[0]
       if (!hitLine) return
-      // DEBUG — show coordinate state on-screen
-      const gx = Math.round(shape.x()), gy = Math.round(shape.y())
-      const fp = hitLine.points().slice(0,4).map(v => Math.round(v))
-      const dbg = document.getElementById('__rb_debug') || Object.assign(document.createElement('div'), {
-        id: '__rb_debug',
-        style: 'position:fixed;top:60px;left:4px;right:4px;background:rgba(0,0,0,0.85);color:#0f0;font:11px monospace;padding:6px;z-index:99999;border-radius:4px;pointer-events:none'
-      })
-      document.body.appendChild(dbg)
-      const worldPts = getShapeWorldPts(hitLine).slice(0,2).map(p => `(${Math.round(p.x)},${Math.round(p.y)})`).join(' ')
-      dbg.textContent = `enterEdit\ngroup:(${gx},${gy}) hitLine:(${hitLine.x()},${hitLine.y()})\nflatPts[0..3]:${fp}\nworldPts[0..1]:${worldPts}`
-      console.log('[enterEdit rock-border]', id, 'group:', gx, gy, 'fp:', fp, 'world:', worldPts)
+
       // Disable Group drag while editing points and remove the dragmove.edithandles
       // listener — handles ARE the point positions, no re-sync needed during edit
       shape.draggable(false)
