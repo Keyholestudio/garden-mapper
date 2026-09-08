@@ -1,18 +1,24 @@
 // usePlantImages.js — Preloads all plant sticker images
 // Returns loadedImages map: key → HTMLImageElement
 //
-// Retry logic: up to 3 attempts per image with exponential backoff (200ms, 600ms, 1400ms).
-// Batch loading: images load in groups of 10 to avoid saturating mobile connection queues.
-// Failed images after all retries resolve as their src string (string fallback = grey box),
-// but a post-load retry sweep re-attempts any remaining string entries once more.
+// Strategy:
+//   Web:    Batch of 10, 50ms between batches, 3 retries (fast CDN/cache)
+//   Native: Batch of 3,  150ms between batches, 5 retries (Capacitor WebView asset serving is slower)
+//           Images also load lazily — garden renders immediately, images fill in as they load.
+//
+// Each failed image retries with exponential backoff before resolving null.
+// A post-load sweep re-attempts any still-null entries once more.
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
+import { Capacitor } from '@capacitor/core'
 import { PLANT_CATALOG } from './usePlantCatalog'
 
-const BATCH_SIZE = 10
-const BATCH_DELAY_MS = 50  // ms between batches
-const MAX_RETRIES = 3
-const RETRY_BASE_MS = 200  // 200ms, 600ms, 1400ms
+const IS_NATIVE = Capacitor.isNativePlatform()
+
+const BATCH_SIZE    = IS_NATIVE ? 3  : 10
+const BATCH_DELAY   = IS_NATIVE ? 150 : 50   // ms between batches
+const MAX_RETRIES   = IS_NATIVE ? 5  : 3
+const RETRY_BASE_MS = IS_NATIVE ? 300 : 200
 
 function loadImageWithRetry(key, src, retries = MAX_RETRIES) {
   return new Promise(res => {
@@ -24,10 +30,10 @@ function loadImageWithRetry(key, src, retries = MAX_RETRIES) {
       img.onerror = () => {
         attempt++
         if (attempt < retries) {
-          const delay = RETRY_BASE_MS * (Math.pow(2, attempt) - 1 + 1)
+          // Exponential backoff: RETRY_BASE_MS, 2x, 4x …
+          const delay = RETRY_BASE_MS * Math.pow(2, attempt - 1)
           setTimeout(tryLoad, delay)
         } else {
-          // All retries exhausted — resolve with null so others aren't blocked
           res({ key, img: null })
         }
       }
@@ -38,14 +44,16 @@ function loadImageWithRetry(key, src, retries = MAX_RETRIES) {
   })
 }
 
-async function loadBatched(entries) {
+async function loadBatched(entries, onBatchDone) {
   const results = {}
   for (let i = 0; i < entries.length; i += BATCH_SIZE) {
     const batch = entries.slice(i, i + BATCH_SIZE)
     const settled = await Promise.all(batch.map(([k, v]) => loadImageWithRetry(k, v)))
-    settled.forEach(({ key, img }) => { results[key] = img })
+    settled.forEach(({ key, img }) => { if (img) results[key] = img })
+    // Notify caller after each batch so canvas can update incrementally
+    if (onBatchDone) onBatchDone({ ...results })
     if (i + BATCH_SIZE < entries.length) {
-      await new Promise(r => setTimeout(r, BATCH_DELAY_MS))
+      await new Promise(r => setTimeout(r, BATCH_DELAY))
     }
   }
   return results
@@ -54,35 +62,27 @@ async function loadBatched(entries) {
 export function usePlantImages() {
   const [loadedImages, setLoadedImages] = useState({})
   const [ready, setReady] = useState(false)
-  const srcsRef = useRef({})
 
   useEffect(() => {
-    const srcs = {}
-    PLANT_CATALOG.forEach(p => { srcs[p.key] = p.src })
-    srcsRef.current = srcs
+    const entries = PLANT_CATALOG.map(p => [p.key, p.src])
 
-    const entries = Object.entries(srcs)
+    // On native: mark ready immediately so the canvas renders without waiting.
+    // Images fill in progressively as batches complete.
+    if (IS_NATIVE) setReady(true)
 
-    loadBatched(entries).then(results => {
-      // Merge: keep src string for any that failed (renders as grey placeholder)
-      const merged = { ...srcs }
-      Object.entries(results).forEach(([k, img]) => {
-        if (img) merged[k] = img
-      })
-      setLoadedImages(merged)
-      setReady(true)
+    loadBatched(entries, batchResult => {
+      // Update state after each batch — canvas refreshes progressively
+      setLoadedImages(prev => ({ ...prev, ...batchResult }))
+    }).then(results => {
+      setLoadedImages(prev => ({ ...prev, ...results }))
+      if (!IS_NATIVE) setReady(true)
 
-      // Post-load sweep: retry any that are still strings (failed all attempts)
-      const failed = Object.entries(merged).filter(([, v]) => typeof v === 'string')
+      // Post-load sweep: retry any that are still missing
+      const failed = PLANT_CATALOG.filter(p => !results[p.key])
       if (failed.length > 0) {
-        loadBatched(failed).then(retryResults => {
-          setLoadedImages(prev => {
-            const next = { ...prev }
-            Object.entries(retryResults).forEach(([k, img]) => {
-              if (img) next[k] = img
-            })
-            return next
-          })
+        const failedEntries = failed.map(p => [p.key, p.src])
+        loadBatched(failedEntries, batchResult => {
+          setLoadedImages(prev => ({ ...prev, ...batchResult }))
         })
       }
     })

@@ -6,6 +6,7 @@
 // Candidate for future splitting: state management, event handlers, and render could be separate files.
 
 import { useRef, useState, useEffect, useCallback, lazy, Suspense } from 'react'
+import { Capacitor } from '@capacitor/core'
 import Konva from 'konva'
 import { useGardenState, TEXTURE_MAP, PLANT_VARIANTS }  from '../hooks/useGardenState'
 import { useDrawTools }    from '../hooks/useDrawTools'
@@ -136,8 +137,14 @@ export default function GardenEditor() {
   const [accountModalOpen, setAccountModalOpen] = useState(false)
 
   // ── Image loading helpers ──
-  // Load a single image with up to MAX_IMG_RETRIES attempts and exponential backoff.
-  const loadImgWithRetry = useCallback((src, maxRetries = 3) => {
+  // Native (Capacitor) WebView asset serving is slower — use smaller batches + more retries.
+  const IS_NATIVE = Capacitor.isNativePlatform()
+  const IMG_BATCH      = IS_NATIVE ? 3   : 10
+  const IMG_BATCH_DELAY = IS_NATIVE ? 150 : 50
+  const IMG_MAX_RETRIES = IS_NATIVE ? 5   : 3
+  const IMG_RETRY_BASE  = IS_NATIVE ? 300 : 200
+
+  const loadImgWithRetry = useCallback((src) => {
     return new Promise(resolve => {
       let attempt = 0
       const try_ = () => {
@@ -145,41 +152,45 @@ export default function GardenEditor() {
         img.onload  = () => resolve(img)
         img.onerror = () => {
           attempt++
-          if (attempt < maxRetries) setTimeout(try_, 200 * (Math.pow(2, attempt) - 1 + 1))
+          if (attempt < IMG_MAX_RETRIES) setTimeout(try_, IMG_RETRY_BASE * Math.pow(2, attempt - 1))
           else resolve(null)
         }
         img.src = src
       }
       try_()
     })
-  }, [])
+  }, [IS_NATIVE, IMG_MAX_RETRIES, IMG_RETRY_BASE])
 
-  // Load a batch of catalog entries in groups of BATCH_SIZE to avoid connection queue exhaustion.
-  const loadBatchedImgs = useCallback(async (entries, getSrc) => {
-    const BATCH = 10
+  // Load a batch of catalog entries progressively; calls onBatch after each group.
+  const loadBatchedImgs = useCallback(async (entries, getSrc, onBatch) => {
     const result = {}
-    for (let i = 0; i < entries.length; i += BATCH) {
-      const batch = entries.slice(i, i + BATCH)
+    for (let i = 0; i < entries.length; i += IMG_BATCH) {
+      const batch = entries.slice(i, i + IMG_BATCH)
       const settled = await Promise.all(batch.map(p => loadImgWithRetry(getSrc(p)).then(img => ({ key: p.key, img }))))
       settled.forEach(({ key, img }) => { if (img) result[key] = img })
-      if (i + BATCH < entries.length) await new Promise(r => setTimeout(r, 50))
+      if (onBatch) onBatch({ ...result })
+      if (i + IMG_BATCH < entries.length) await new Promise(r => setTimeout(r, IMG_BATCH_DELAY))
     }
     return result
-  }, [loadImgWithRetry])
+  }, [loadImgWithRetry, IMG_BATCH, IMG_BATCH_DELAY])
 
   // ── Image loading ──
   const [loadedImages, setLoadedImages] = useState({})
   const loadedImagesRef = useRef({}) // ref so setLocalGardens closure sees current images
   useEffect(() => {
-    loadBatchedImgs(PLANT_CATALOG, p => p.src).then(result => {
-      loadedImagesRef.current = { ...result }
-      setLoadedImages({ ...result })
+    loadBatchedImgs(PLANT_CATALOG, p => p.src, batchResult => {
+      // Progressive update: canvas refreshes as each batch completes
+      loadedImagesRef.current = { ...loadedImagesRef.current, ...batchResult }
+      setLoadedImages(prev => ({ ...prev, ...batchResult }))
+    }).then(result => {
+      loadedImagesRef.current = { ...loadedImagesRef.current, ...result }
+      setLoadedImages(prev => ({ ...prev, ...result }))
       // Post-load sweep: retry any that still failed
-      const failed = PLANT_CATALOG.filter(p => !result[p.key])
+      const failed = PLANT_CATALOG.filter(p => !loadedImagesRef.current[p.key])
       if (failed.length > 0) {
-        loadBatchedImgs(failed, p => p.src).then(retried => {
-          loadedImagesRef.current = { ...loadedImagesRef.current, ...retried }
-          setLoadedImages(prev => ({ ...prev, ...retried }))
+        loadBatchedImgs(failed, p => p.src, batchResult => {
+          loadedImagesRef.current = { ...loadedImagesRef.current, ...batchResult }
+          setLoadedImages(prev => ({ ...prev, ...batchResult }))
         })
       }
     })
