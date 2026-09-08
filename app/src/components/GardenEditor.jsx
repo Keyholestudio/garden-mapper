@@ -137,14 +137,12 @@ export default function GardenEditor() {
   const [accountModalOpen, setAccountModalOpen] = useState(false)
 
   // ── Image loading helpers ──
-  // Native (Capacitor) WebView asset serving is slower — use smaller batches + more retries.
+  // Capacitor's WebViewLocalServer has a fixed thread pool for serving APK assets.
+  // Concurrent image requests beyond pool size block each other → random onerror failures.
+  // Fix: load sequentially (one at a time) on native to avoid thread pool contention.
   const IS_NATIVE = Capacitor.isNativePlatform()
-  const IMG_BATCH      = IS_NATIVE ? 3   : 10
-  const IMG_BATCH_DELAY = IS_NATIVE ? 150 : 50
-  const IMG_MAX_RETRIES = IS_NATIVE ? 5   : 3
-  const IMG_RETRY_BASE  = IS_NATIVE ? 300 : 200
 
-  const loadImgWithRetry = useCallback((src) => {
+  const loadImgWithRetry = useCallback((src, maxRetries = 3, retryBase = 200) => {
     return new Promise(resolve => {
       let attempt = 0
       const try_ = () => {
@@ -152,49 +150,67 @@ export default function GardenEditor() {
         img.onload  = () => resolve(img)
         img.onerror = () => {
           attempt++
-          if (attempt < IMG_MAX_RETRIES) setTimeout(try_, IMG_RETRY_BASE * Math.pow(2, attempt - 1))
+          if (attempt < maxRetries) setTimeout(try_, retryBase * Math.pow(2, attempt - 1))
           else resolve(null)
         }
         img.src = src
       }
       try_()
     })
-  }, [IS_NATIVE, IMG_MAX_RETRIES, IMG_RETRY_BASE])
+  }, [])
 
-  // Load a batch of catalog entries progressively; calls onBatch after each group.
-  const loadBatchedImgs = useCallback(async (entries, getSrc, onBatch) => {
+  // Sequential loader (native): one image at a time, calls onEach after each loaded image.
+  const loadSequentialImgs = useCallback(async (entries, getSrc, onEach) => {
     const result = {}
-    for (let i = 0; i < entries.length; i += IMG_BATCH) {
-      const batch = entries.slice(i, i + IMG_BATCH)
+    for (const p of entries) {
+      const img = await loadImgWithRetry(getSrc(p), 3, 300)
+      if (img) { result[p.key] = img; if (onEach) onEach(p.key, img) }
+    }
+    return result
+  }, [loadImgWithRetry])
+
+  // Batched loader (web): groups of 10, 50ms delay between batches.
+  const loadBatchedImgs = useCallback(async (entries, getSrc, onBatch) => {
+    const BATCH = 10; const DELAY = 50
+    const result = {}
+    for (let i = 0; i < entries.length; i += BATCH) {
+      const batch = entries.slice(i, i + BATCH)
       const settled = await Promise.all(batch.map(p => loadImgWithRetry(getSrc(p)).then(img => ({ key: p.key, img }))))
       settled.forEach(({ key, img }) => { if (img) result[key] = img })
       if (onBatch) onBatch({ ...result })
-      if (i + IMG_BATCH < entries.length) await new Promise(r => setTimeout(r, IMG_BATCH_DELAY))
+      if (i + BATCH < entries.length) await new Promise(r => setTimeout(r, DELAY))
     }
     return result
-  }, [loadImgWithRetry, IMG_BATCH, IMG_BATCH_DELAY])
+  }, [loadImgWithRetry])
 
   // ── Image loading ──
   const [loadedImages, setLoadedImages] = useState({})
   const loadedImagesRef = useRef({}) // ref so setLocalGardens closure sees current images
   useEffect(() => {
-    loadBatchedImgs(PLANT_CATALOG, p => p.src, batchResult => {
-      // Progressive update: canvas refreshes as each batch completes
-      loadedImagesRef.current = { ...loadedImagesRef.current, ...batchResult }
-      setLoadedImages(prev => ({ ...prev, ...batchResult }))
-    }).then(result => {
-      loadedImagesRef.current = { ...loadedImagesRef.current, ...result }
-      setLoadedImages(prev => ({ ...prev, ...result }))
-      // Post-load sweep: retry any that still failed
-      const failed = PLANT_CATALOG.filter(p => !loadedImagesRef.current[p.key])
-      if (failed.length > 0) {
-        loadBatchedImgs(failed, p => p.src, batchResult => {
-          loadedImagesRef.current = { ...loadedImagesRef.current, ...batchResult }
-          setLoadedImages(prev => ({ ...prev, ...batchResult }))
-        })
-      }
-    })
-  }, [loadBatchedImgs])
+    if (IS_NATIVE) {
+      // Native: sequential to avoid Capacitor WebViewLocalServer thread pool contention
+      loadSequentialImgs(PLANT_CATALOG, p => p.src, (key, img) => {
+        loadedImagesRef.current = { ...loadedImagesRef.current, [key]: img }
+        setLoadedImages(prev => ({ ...prev, [key]: img }))
+      })
+    } else {
+      // Web: batched loading
+      loadBatchedImgs(PLANT_CATALOG, p => p.src, batchResult => {
+        loadedImagesRef.current = { ...loadedImagesRef.current, ...batchResult }
+        setLoadedImages(prev => ({ ...prev, ...batchResult }))
+      }).then(result => {
+        loadedImagesRef.current = { ...loadedImagesRef.current, ...result }
+        setLoadedImages(prev => ({ ...prev, ...result }))
+        const failed = PLANT_CATALOG.filter(p => !loadedImagesRef.current[p.key])
+        if (failed.length > 0) {
+          loadBatchedImgs(failed, p => p.src, batchResult => {
+            loadedImagesRef.current = { ...loadedImagesRef.current, ...batchResult }
+            setLoadedImages(prev => ({ ...prev, ...batchResult }))
+          })
+        }
+      })
+    }
+  }, [IS_NATIVE, loadSequentialImgs, loadBatchedImgs])
 
   // Load images for pack entries when a pack loads
   const loadedPackKeysRef = useRef({})

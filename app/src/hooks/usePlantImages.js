@@ -3,11 +3,12 @@
 //
 // Strategy:
 //   Web:    Batch of 10, 50ms between batches, 3 retries (fast CDN/cache)
-//   Native: Batch of 3,  150ms between batches, 5 retries (Capacitor WebView asset serving is slower)
-//           Images also load lazily — garden renders immediately, images fill in as they load.
-//
-// Each failed image retries with exponential backoff before resolving null.
-// A post-load sweep re-attempts any still-null entries once more.
+//   Native: Sequential one-at-a-time with 3 retries per image.
+//           Capacitor's WebViewLocalServer uses a fixed thread pool for asset serving.
+//           Concurrent requests beyond the pool size block each other, causing random
+//           onerror failures that aren't real missing-file errors. Sequential loading
+//           eliminates thread pool contention entirely.
+//           Garden renders immediately (ready=true fires before loading starts).
 
 import { useState, useEffect } from 'react'
 import { Capacitor } from '@capacitor/core'
@@ -15,77 +16,74 @@ import { PLANT_CATALOG } from './usePlantCatalog'
 
 const IS_NATIVE = Capacitor.isNativePlatform()
 
-const BATCH_SIZE    = IS_NATIVE ? 3  : 10
-const BATCH_DELAY   = IS_NATIVE ? 150 : 50   // ms between batches
-const MAX_RETRIES   = IS_NATIVE ? 5  : 3
-const RETRY_BASE_MS = IS_NATIVE ? 300 : 200
-
-function loadImageWithRetry(key, src, retries = MAX_RETRIES) {
-  return new Promise(res => {
+function loadImageWithRetry(src, maxRetries = 3, retryDelayMs = 200) {
+  return new Promise(resolve => {
     let attempt = 0
-
-    function tryLoad() {
+    const try_ = () => {
       const img = new Image()
-      img.onload = () => res({ key, img })
+      img.onload  = () => resolve(img)
       img.onerror = () => {
         attempt++
-        if (attempt < retries) {
-          // Exponential backoff: RETRY_BASE_MS, 2x, 4x …
-          const delay = RETRY_BASE_MS * Math.pow(2, attempt - 1)
-          setTimeout(tryLoad, delay)
-        } else {
-          res({ key, img: null })
-        }
+        if (attempt < maxRetries) setTimeout(try_, retryDelayMs * Math.pow(2, attempt - 1))
+        else resolve(null)
       }
       img.src = src
     }
-
-    tryLoad()
+    try_()
   })
 }
 
-async function loadBatched(entries, onBatchDone) {
+// Sequential loader — one image at a time, calls onLoad after each success.
+async function loadSequential(catalog, onLoad) {
+  for (const p of catalog) {
+    const img = await loadImageWithRetry(p.src, 3, 300)
+    if (img) onLoad(p.key, img)
+  }
+}
+
+// Batched loader (web) — groups of BATCH_SIZE with delay between batches.
+async function loadBatched(catalog, onBatchDone) {
+  const BATCH_SIZE = 10
+  const BATCH_DELAY = 50
   const results = {}
-  for (let i = 0; i < entries.length; i += BATCH_SIZE) {
-    const batch = entries.slice(i, i + BATCH_SIZE)
-    const settled = await Promise.all(batch.map(([k, v]) => loadImageWithRetry(k, v)))
+  for (let i = 0; i < catalog.length; i += BATCH_SIZE) {
+    const batch = catalog.slice(i, i + BATCH_SIZE)
+    const settled = await Promise.all(
+      batch.map(p => loadImageWithRetry(p.src, 3, 200).then(img => ({ key: p.key, img })))
+    )
     settled.forEach(({ key, img }) => { if (img) results[key] = img })
-    // Notify caller after each batch so canvas can update incrementally
-    if (onBatchDone) onBatchDone({ ...results })
-    if (i + BATCH_SIZE < entries.length) {
-      await new Promise(r => setTimeout(r, BATCH_DELAY))
-    }
+    onBatchDone({ ...results })
+    if (i + BATCH_SIZE < catalog.length) await new Promise(r => setTimeout(r, BATCH_DELAY))
   }
   return results
 }
 
 export function usePlantImages() {
   const [loadedImages, setLoadedImages] = useState({})
-  const [ready, setReady] = useState(false)
+  const [ready, setReady]   = useState(false)
 
   useEffect(() => {
-    const entries = PLANT_CATALOG.map(p => [p.key, p.src])
-
-    // On native: mark ready immediately so the canvas renders without waiting.
-    // Images fill in progressively as batches complete.
-    if (IS_NATIVE) setReady(true)
-
-    loadBatched(entries, batchResult => {
-      // Update state after each batch — canvas refreshes progressively
-      setLoadedImages(prev => ({ ...prev, ...batchResult }))
-    }).then(results => {
-      setLoadedImages(prev => ({ ...prev, ...results }))
-      if (!IS_NATIVE) setReady(true)
-
-      // Post-load sweep: retry any that are still missing
-      const failed = PLANT_CATALOG.filter(p => !results[p.key])
-      if (failed.length > 0) {
-        const failedEntries = failed.map(p => [p.key, p.src])
-        loadBatched(failedEntries, batchResult => {
-          setLoadedImages(prev => ({ ...prev, ...batchResult }))
-        })
-      }
-    })
+    if (IS_NATIVE) {
+      // Native: mark ready immediately so canvas renders, then stream images in one-by-one
+      setReady(true)
+      loadSequential(PLANT_CATALOG, (key, img) => {
+        setLoadedImages(prev => ({ ...prev, [key]: img }))
+      })
+    } else {
+      // Web: batched loading, mark ready after first pass
+      loadBatched(PLANT_CATALOG, batchResult => {
+        setLoadedImages(prev => ({ ...prev, ...batchResult }))
+      }).then(results => {
+        setReady(true)
+        // Post-load sweep for anything that failed
+        const failed = PLANT_CATALOG.filter(p => !results[p.key])
+        if (failed.length > 0) {
+          loadBatched(failed, batchResult => {
+            setLoadedImages(prev => ({ ...prev, ...batchResult }))
+          })
+        }
+      })
+    }
   }, [])
 
   return { loadedImages, ready }
