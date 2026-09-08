@@ -249,10 +249,10 @@ export const PLANT_CATALOG = [
 
   { key:'decor_umbrella_L_CA-US-FR-GB-AU', label:'Beach Umbrella', family:'Decor', src:'/stickers/decor_umbrella_L_CA-US-FR-GB-AU.png', size:'L' },
 
-  { key:'decor_pot-red-round_S_CA-US-FR-GB-AU',        label:'Red Round Pot',        family:'Decor', src:'/stickers/decor_pot-red-round_S_CA-US-FR-GB-AU.png',        size:'S' },
+  { key:'decor_pot-red-round_S_CA-US-FR-GB-AU',        label:'Red Round Pot',        family:'Decor', src:'/stickers/decor_pot-red-round_S_CA-US-FR-GB-AU.png',        size:'M' },
   { key:'decor_pot-terracotta-round_M_CA-US-FR-GB-AU',  label:'Terracotta Round Pot',  family:'Decor', src:'/stickers/decor_pot-terracotta-round_M_CA-US-FR-GB-AU.png',  size:'M' },
-  { key:'decor_pot-blue_S_CA-US-FR-GB-AU',              label:'Blue Pot',              family:'Decor', src:'/stickers/decor_pot-blue_S_CA-US-FR-GB-AU.png',              size:'S' },
-  { key:'decor_pot-terracotta_S_CA-US-FR-GB-AU',        label:'Terracotta Pot',        family:'Decor', src:'/stickers/decor_pot-terracotta_S_CA-US-FR-GB-AU.png',        size:'S' },
+  { key:'decor_pot-blue_S_CA-US-FR-GB-AU',              label:'Blue Pot',              family:'Decor', src:'/stickers/decor_pot-blue_S_CA-US-FR-GB-AU.png',              size:'M' },
+  { key:'decor_pot-terracotta_S_CA-US-FR-GB-AU',        label:'Terracotta Pot',        family:'Decor', src:'/stickers/decor_pot-terracotta_S_CA-US-FR-GB-AU.png',        size:'M' },
   { key:'decor_pot-green-round_M_CA-US-FR-GB-AU',       label:'Green Round Pot',       family:'Decor', src:'/stickers/decor_pot-green-round_M_CA-US-FR-GB-AU.png',       size:'M' },
 
   { key:'decor_stairs-wood_M_CA-US-FR-GB-AU', label:'Wood Stairs', family:'Decor', src:'/stickers/decor_stairs-wood_M_CA-US-FR-GB-AU.png', size:'M' },
