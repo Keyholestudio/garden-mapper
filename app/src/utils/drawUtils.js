@@ -9,7 +9,7 @@ import { buildRockBorderGroup } from './rockBorderUtils'
 // ── Texture helper ─────────────────────────────────────────
 // Apply a repeating texture (or solid fill) to any Konva shape based on colour token.
 // If colour starts with '#TX:' it loads the texture and tiles it; otherwise uses solid fill.
-export function applyColourOrTexture(shape, colour, layer, TEXTURE_MAP) {
+export function applyColourOrTexture(shape, colour, layer, TEXTURE_MAP, opaque = false) {
   if (colour && colour.startsWith('#TX:') && TEXTURE_MAP && TEXTURE_MAP[colour]) {
     const img = new window.Image()
     img.onload = () => {
@@ -24,7 +24,7 @@ export function applyColourOrTexture(shape, colour, layer, TEXTURE_MAP) {
   } else {
     shape.fillPriority('color')
     shape.fillPatternImage(null)
-    shape.fill((colour || '#8B6340') + 'CC')
+    shape.fill((colour || '#8B6340') + (opaque ? 'FF' : 'CC'))
     layer?.batchDraw()
   }
 }
@@ -155,12 +155,12 @@ export function getShapeStyle(type, opts = {}) {
     case 'hedge':      return { fillC: HEDGE_COLOURS[0]+'CC',   strokeC: '#3A2A10', sWidth: 2,  tension: 0.45, closed: true  }
     case 'pond':       return { fillC: WATER_COLOURS[0]+'CC',   strokeC: '#1976D2', sWidth: 2,  tension: 0.45, closed: true  }
     case 'deck':       return { fillC: DECKING_COLOURS[0]+'CC', strokeC: '#3A2A10', sWidth: 2,  tension: 0.45, closed: true  }
-    case 'bed':        return { fillC: BED_COLOURS[0]+'CC',     strokeC: 'transparent', sWidth: 2,  tension: 0.45, closed: true  }
+    case 'bed':        return { fillC: BED_COLOURS[0]+'FF',     strokeC: 'transparent', sWidth: 2,  tension: 0.45, closed: true  }
     default:
       if (type?.startsWith('underground')) {
         return { fillC: 'transparent', strokeC: undergroundColour || '#111', sWidth: undergroundWidth || 4, tension: 0.4, closed: false }
       }
-      return { fillC: BED_COLOURS[0]+'CC', strokeC: 'transparent', sWidth: 2, tension: 0.45, closed: true }
+      return { fillC: BED_COLOURS[0]+'FF', strokeC: 'transparent', sWidth: 2, tension: 0.45, closed: true }
   }
 }
 
@@ -300,7 +300,7 @@ function getGroupMembers(group, structDataRef) {
   return group.getChildren().filter(c => c instanceof Konva.Rect).map(r => ({
     x: r.x() + group.x(), y: r.y() + group.y(),
     w: r.width(), h: r.height(),
-    colour: r.fill().replace('CC', ''),
+    colour: r.fill().replace(/FF$|CC$/, ''),
     type: structDataRef.current[group.id()]?.type,
     label: structDataRef.current[group.id()]?.label,
   }))
@@ -332,7 +332,7 @@ export function tryMergeRects(id, rect, { structDataRef, structIdCtr, groupIdCtr
     rect.destroy(); delete structDataRef.current[id]
     const newR = new Konva.Rect({
       x: ax - grp.x(), y: ay - grp.y(), width: aw, height: ah,
-      fill: d.colour + 'CC', stroke: d.type === 'bed' || d.type === 'bed-square' ? 'transparent' : '#3A2A10', strokeWidth: 2,
+      fill: d.colour + (d.type === 'bed' || d.type === 'bed-square' ? 'FF' : 'CC'), stroke: d.type === 'bed' || d.type === 'bed-square' ? 'transparent' : '#3A2A10', strokeWidth: 2,
       cornerRadius: d.type === 'building' ? 3 : 0, strokeScaleEnabled: false,
     })
     grp.add(newR)
@@ -359,10 +359,10 @@ export function tryMergeRects(id, rect, { structDataRef, structIdCtr, groupIdCtr
     structDataRef.current[gid] = { type: d.type, colour: d.colour, label: d.label, isGroup: true }
     const group = new Konva.Group({ id: gid, x: 0, y: 0, draggable: true })
     const rA = new Konva.Rect({ x: ax, y: ay, width: aw, height: ah,
-      fill: d.colour + 'CC', stroke: d.type === 'bed' || d.type === 'bed-square' ? 'transparent' : '#3A2A10', strokeWidth: 2,
+      fill: d.colour + (d.type === 'bed' || d.type === 'bed-square' ? 'FF' : 'CC'), stroke: d.type === 'bed' || d.type === 'bed-square' ? 'transparent' : '#3A2A10', strokeWidth: 2,
       cornerRadius: d.type === 'building' ? 3 : 0, strokeScaleEnabled: false })
     const rB = new Konva.Rect({ x: bx, y: by, width: bw, height: bh,
-      fill: od.colour + 'CC', stroke: od.type === 'bed' || od.type === 'bed-square' ? 'transparent' : '#3A2A10', strokeWidth: 2,
+      fill: od.colour + (od.type === 'bed' || od.type === 'bed-square' ? 'FF' : 'CC'), stroke: od.type === 'bed' || od.type === 'bed-square' ? 'transparent' : '#3A2A10', strokeWidth: 2,
       cornerRadius: od.type === 'building' ? 3 : 0, strokeScaleEnabled: false })
     group.add(rA, rB)
     group.on('dragmove', () => {
@@ -398,7 +398,7 @@ export function addRectStruct({
   const bedType = type === 'bed' || type === 'bed-square'
   const rect = new Konva.Rect({
     id, x, y, width: w, height: h,
-    fill: colour + 'CC', stroke: bedType ? 'transparent' : '#3A2A10', strokeWidth: 2,
+    fill: colour + (bedType ? 'FF' : 'CC'), stroke: bedType ? 'transparent' : '#3A2A10', strokeWidth: 2,
     cornerRadius: cornerR, draggable: true, strokeScaleEnabled: false,
   })
   rect.on('transformend', () => {

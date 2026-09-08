@@ -771,9 +771,13 @@ export default function GardenEditor() {
     if (isTexture) {
       // Texture fill - works on any shape type
       applyColourOrTexture(shape, colour, layersRef.current.structLayer, TEXTURE_MAP)
-    } else if (shape instanceof Konva.Rect)        { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(colour + 'CC') }
-    else if (shape instanceof Konva.Circle) { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(colour + 'CC'); shape.stroke(colour) }
-    else { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(noFill ? 'transparent' : colour + 'CC'); if (noFill) shape.stroke(colour) }
+    } else {
+      const isBed = d.type === 'bed' || d.type === 'bed-square'
+      const alpha = isBed ? 'FF' : 'CC'
+      if (shape instanceof Konva.Rect)        { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(colour + alpha) }
+      else if (shape instanceof Konva.Circle) { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(colour + alpha); shape.stroke(colour) }
+      else { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(noFill ? 'transparent' : colour + alpha); if (noFill) shape.stroke(colour) }
+    }
     layersRef.current.structLayer?.batchDraw()
     state.setSelectedStruct({ ...sel, colour })
     triggerAutoSave()
