@@ -236,6 +236,30 @@ export default function GardenEditor() {
     })
   }, [lazyPacksProps.loaded])
 
+  // ── Swap placeholder Konva nodes when catalog images arrive ──────────────
+  // When loadedImages updates (images stream in on native), walk the plant layer
+  // and replace any placeholder Image nodes with the real loaded image.
+  // This is the same pattern used for lazy pack image swaps below.
+  useEffect(() => {
+    const plantLayer = layersRef.current.plantLayer
+    if (!plantLayer) return
+    let needsDraw = false
+    plantLayer.find('Group').forEach(group => {
+      const id = group.id()
+      const d  = state.plantDataRef.current[id]
+      if (!d) return
+      const realImg = loadedImages[d.key]
+      if (!realImg) return
+      const konvaImg = group.findOne('Image')
+      // Only swap if the node is still showing a placeholder (width/height === size px, src !== real img)
+      if (konvaImg && konvaImg.image() !== realImg) {
+        konvaImg.image(realImg)
+        needsDraw = true
+      }
+    })
+    if (needsDraw) plantLayer.batchDraw()
+  }, [loadedImages])
+
   // Keep showGridRef current
   useEffect(() => { showGridRef.current = state.showGrid }, [state.showGrid])
 
