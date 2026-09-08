@@ -246,7 +246,7 @@ export default function LogoBar({
             </button>
 
             <button className="profile-menu-item" onClick={() => { onExport?.(); closeMenu() }}>
-              <span className="profile-menu-icon">🖸</span>
+              <span className="profile-menu-icon">🖨</span>
               <span>Print your Plan</span>
             </button>
 
@@ -276,7 +276,7 @@ export default function LogoBar({
                   <span>Account</span>
                 </button>
                 <button className="profile-menu-item" onClick={() => { onSignOut?.(); closeMenu(); }}>
-                  <span className="profile-menu-icon">🚲</span>
+                  <span className="profile-menu-icon">🚪</span>
                   <span>Sign Out</span>
                 </button>
               </>
