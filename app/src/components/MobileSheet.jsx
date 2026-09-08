@@ -69,7 +69,8 @@ export default function MobileSheet({
   showGrid, onToggleGrid, onResetView, onClearAll,
 }) {
   const pxPerUnit = UNIT_PX * (gardenUnit === 'm' ? 3.281 : 1)
-  const [expanded, setExpanded] = useState(true)
+  const [expanded, setExpanded] = useState(() => sessionStorage.getItem('mobileSheetExpanded') === 'true')
+  const toggleExpanded = () => setExpanded(v => { const next = !v; sessionStorage.setItem('mobileSheetExpanded', next); return next })
   const [query, setQuery] = useState('')
   const [searchFocused, setSearchFocused] = useState(false)
 
@@ -116,7 +117,7 @@ export default function MobileSheet({
       <div className="mobile-sheet mobile-sheet--edit" onPointerDown={e => e.stopPropagation()}>
         <div className="mobile-sheet-handle mobile-sheet-handle--edit">
           <button className="mobile-edit-back-inline" onClick={() => onExitEdit?.()}>← Back</button>
-          <button className="mobile-sheet-toggle" onClick={() => setExpanded(v => !v)}
+          <button className="mobile-sheet-toggle" onClick={toggleExpanded}
             aria-label={expanded ? 'Collapse' : 'Expand'}>
             {expanded ? '↓' : '↑'} Menu
           </button>
@@ -163,7 +164,7 @@ export default function MobileSheet({
       <div className="mobile-sheet mobile-sheet--edit" onPointerDown={e => e.stopPropagation()}>
         <div className="mobile-sheet-handle mobile-sheet-handle--edit">
           <button className="mobile-edit-back-inline" onClick={() => onClearSelection?.()}>← Back</button>
-          <button className="mobile-sheet-toggle" onClick={() => setExpanded(v => !v)}
+          <button className="mobile-sheet-toggle" onClick={toggleExpanded}
             aria-label={expanded ? 'Collapse' : 'Expand'}>
             {expanded ? '↓' : '↑'} Menu
           </button>
@@ -186,7 +187,7 @@ export default function MobileSheet({
       <div className="mobile-sheet-handle" onPointerDown={e => e.stopPropagation()}>
         <button
           className="mobile-sheet-toggle"
-          onClick={() => setExpanded(v => !v)}
+          onClick={toggleExpanded}
           aria-label={expanded ? 'Collapse menu' : 'Expand menu'}
         >
           {expanded ? '↓' : '↑'} Menu
