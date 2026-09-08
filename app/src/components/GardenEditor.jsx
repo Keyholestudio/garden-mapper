@@ -5,7 +5,7 @@
 // Consider whether the needed logic can be found via targeted offset/limit read or grep first.
 // Candidate for future splitting: state management, event handlers, and render could be separate files.
 
-import { useRef, useState, useEffect, lazy, Suspense } from 'react'
+import { useRef, useState, useEffect, useCallback, lazy, Suspense } from 'react'
 import Konva from 'konva'
 import { useGardenState, TEXTURE_MAP, PLANT_VARIANTS }  from '../hooks/useGardenState'
 import { useDrawTools }    from '../hooks/useDrawTools'
@@ -135,18 +135,55 @@ export default function GardenEditor() {
   const [subscribeModalOpen, setSubscribeModalOpen] = useState(false)
   const [accountModalOpen, setAccountModalOpen] = useState(false)
 
+  // ── Image loading helpers ──
+  // Load a single image with up to MAX_IMG_RETRIES attempts and exponential backoff.
+  const loadImgWithRetry = useCallback((src, maxRetries = 3) => {
+    return new Promise(resolve => {
+      let attempt = 0
+      const try_ = () => {
+        const img = new Image()
+        img.onload  = () => resolve(img)
+        img.onerror = () => {
+          attempt++
+          if (attempt < maxRetries) setTimeout(try_, 200 * (Math.pow(2, attempt) - 1 + 1))
+          else resolve(null)
+        }
+        img.src = src
+      }
+      try_()
+    })
+  }, [])
+
+  // Load a batch of catalog entries in groups of BATCH_SIZE to avoid connection queue exhaustion.
+  const loadBatchedImgs = useCallback(async (entries, getSrc) => {
+    const BATCH = 10
+    const result = {}
+    for (let i = 0; i < entries.length; i += BATCH) {
+      const batch = entries.slice(i, i + BATCH)
+      const settled = await Promise.all(batch.map(p => loadImgWithRetry(getSrc(p)).then(img => ({ key: p.key, img }))))
+      settled.forEach(({ key, img }) => { if (img) result[key] = img })
+      if (i + BATCH < entries.length) await new Promise(r => setTimeout(r, 50))
+    }
+    return result
+  }, [loadImgWithRetry])
+
   // ── Image loading ──
   const [loadedImages, setLoadedImages] = useState({})
   const loadedImagesRef = useRef({}) // ref so setLocalGardens closure sees current images
   useEffect(() => {
-    const result = {}
-    Promise.all(PLANT_CATALOG.map(p => new Promise(res => {
-      const img = new Image()
-      img.onload  = () => { result[p.key] = img; res() }
-      img.onerror = () => res()
-      img.src = p.src
-    }))).then(() => { loadedImagesRef.current = { ...result }; setLoadedImages({ ...result }) })
-  }, [])
+    loadBatchedImgs(PLANT_CATALOG, p => p.src).then(result => {
+      loadedImagesRef.current = { ...result }
+      setLoadedImages({ ...result })
+      // Post-load sweep: retry any that still failed
+      const failed = PLANT_CATALOG.filter(p => !result[p.key])
+      if (failed.length > 0) {
+        loadBatchedImgs(failed, p => p.src).then(retried => {
+          loadedImagesRef.current = { ...loadedImagesRef.current, ...retried }
+          setLoadedImages(prev => ({ ...prev, ...retried }))
+        })
+      }
+    })
+  }, [loadBatchedImgs])
 
   // Load images for pack entries when a pack loads
   const loadedPackKeysRef = useRef({})
@@ -154,13 +191,7 @@ export default function GardenEditor() {
     const allPackEntries = Object.values(lazyPacksProps.loaded || {}).flat()
     const newEntries = allPackEntries.filter(p => !loadedPackKeysRef.current[p.key])
     if (newEntries.length === 0) return
-    const result = {}
-    Promise.all(newEntries.map(p => new Promise(res => {
-      const img = new Image()
-      img.onload  = () => { result[p.key] = img; res() }
-      img.onerror = () => res()
-      img.src = p.src || `/stickers/${p.key}.png`
-    }))).then(() => {
+    loadBatchedImgs(newEntries, p => p.src || `/stickers/${p.key}.png`).then(result => {
       newEntries.forEach(p => { loadedPackKeysRef.current[p.key] = true })
       setLoadedImages(prev => ({ ...prev, ...result }))
       // Swap placeholder images on already-placed plants whose pack just loaded
