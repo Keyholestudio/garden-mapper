@@ -1,0 +1,115 @@
+/* MoreModal.css */
+
+.more-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.more-modal {
+  background: #fff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+  overflow: hidden;
+}
+
+.more-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.more-modal-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.more-modal-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #888;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  line-height: 1;
+}
+.more-modal-close:hover { background: #f5f5f5; color: #333; }
+
+.more-modal-list {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.more-modal-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 12px;
+  border-radius: 12px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background 0.13s;
+}
+.more-modal-item:hover { background: #f5f9f5; }
+.more-modal-item:active { background: #e8f3e8; }
+
+.more-modal-item-icon {
+  font-size: 22px;
+  width: 36px;
+  height: 36px;
+  background: #f0f7f0;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.more-modal-item-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.more-modal-item-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.more-modal-item-sub {
+  font-size: 12px;
+  color: #999;
+}
+
+.more-modal-item-arrow {
+  font-size: 14px;
+  color: #bbb;
+  flex-shrink: 0;
+}
+
+.more-modal-footer {
+  text-align: center;
+  font-size: 12px;
+  color: #bbb;
+  padding: 12px 20px 20px;
+  border-top: 1px solid #f0f0f0;
+}

@@ -19,6 +19,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useStripe } from '../hooks/useStripe'
 import SubscribeModal from './SubscribeModal'
 import AccountModal   from './AccountModal'
+import MoreModal      from './MoreModal'
 import RestorePrompt from './RestorePrompt'
 import { seedDreamGarden, fetchDreamGardenUpdate } from '../hooks/useDreamGarden'
 import { softDeleteCloudGarden } from '../supabase'
@@ -135,6 +136,7 @@ export default function GardenEditor() {
   const { isSubscribed, openCheckout, checkoutLoading, error: stripeError } = useStripe(user?.id)
   const [subscribeModalOpen, setSubscribeModalOpen] = useState(false)
   const [accountModalOpen, setAccountModalOpen] = useState(false)
+  const [moreModalOpen, setMoreModalOpen] = useState(false)
 
   // ── Image loading helpers ──
   // Capacitor's WebViewLocalServer has a fixed thread pool for serving APK assets.
@@ -1384,6 +1386,11 @@ export default function GardenEditor() {
         onSubscribe={(plan) => { setSubscribeModalOpen(false); openCheckout(plan) }}
       />
 
+      {/* More modal */}
+      {moreModalOpen && (
+        <MoreModal onClose={() => setMoreModalOpen(false)} />
+      )}
+
       {/* Account modal */}
       {accountModalOpen && (
         <AccountModal
@@ -1487,6 +1494,7 @@ export default function GardenEditor() {
         onSignOut={signOut}
         syncStatus={syncStatus}
         onOpenAccount={() => setAccountModalOpen(true)}
+        onOpenMore={() => setMoreModalOpen(true)}
       />
 
       {/* Clear All confirm modal */}

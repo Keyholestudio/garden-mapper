@@ -148,13 +148,13 @@ export default function AccountModal({ user, onClose, onSubscribe }) {
 
         <div className="account-divider" />
 
-        {/* Help links */}
+        {/* Legal links */}
         <div className="account-section account-section--links">
-          <button className="account-link" onClick={() => openLink('https://gardenmapper.ca/support')}>
-            Help & Support ↗
-          </button>
-          <button className="account-link" onClick={() => openLink('https://gardenmapper.ca/privacy')}>
+          <button className="account-link" onClick={() => openLink('https://www.gardenmapper.ca/store-policy')}>
             Privacy Policy ↗
+          </button>
+          <button className="account-link" onClick={() => openLink('https://www.gardenmapper.ca/delete-account')}>
+            Delete Account ↗
           </button>
         </div>
       </div>

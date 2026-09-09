@@ -32,6 +32,7 @@ export default function LogoBar({
   onSignIn,
   onSignOut,
   onOpenAccount,
+  onOpenMore,
   syncStatus = 'idle',
 }) {
   // Hooks must always be called at the top level — never inside conditionals
@@ -153,41 +154,11 @@ export default function LogoBar({
               )}
               <div className="profile-menu-divider" />
 
-              {/* Website */}
-              <a
-                className="profile-menu-item"
-                href="https://gardenmapper.ca"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={closeMenu}
-              >
-                <span className="profile-menu-icon">🌐</span>
-                <span>Visit GardenMapper.ca</span>
-              </a>
-
-              <div className="profile-menu-divider" />
-
-              {/* About */}
-              <a
-                className="profile-menu-item"
-                href="https://www.gardenmapper.ca/store-policy"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={closeMenu}
-              >
-                <span className="profile-menu-icon">🔒</span>
-                <span>Privacy Policy</span>
-              </a>
-              <a
-                className="profile-menu-item"
-                href="https://www.gardenmapper.ca/delete-account"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={closeMenu}
-              >
-                <span className="profile-menu-icon">🗑️</span>
-                <span>Delete Account</span>
-              </a>
+              {/* More */}
+              <button className="profile-menu-item" onClick={() => { onOpenMore?.(); closeMenu(); }}>
+                <span className="profile-menu-icon">•••</span>
+                <span>More</span>
+              </button>
             </div>
           </>
         , document.body)}
@@ -314,40 +285,11 @@ export default function LogoBar({
 
             <div className="profile-menu-divider" />
 
-            <a
-              className="profile-menu-item"
-              href="https://gardenmapper.ca"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={closeMenu}
-            >
-              <span className="profile-menu-icon">🌐</span>
-              <span>Visit GardenMapper.ca</span>
-            </a>
-
-            <div className="profile-menu-divider" />
-
-            {/* About */}
-            <a
-              className="profile-menu-item"
-              href="https://www.gardenmapper.ca/store-policy"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={closeMenu}
-            >
-              <span className="profile-menu-icon">🔒</span>
-              <span>Privacy Policy</span>
-            </a>
-            <a
-              className="profile-menu-item"
-              href="https://www.gardenmapper.ca/delete-account"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={closeMenu}
-            >
-              <span className="profile-menu-icon">🗑️</span>
-              <span>Delete Account</span>
-            </a>
+            {/* More */}
+            <button className="profile-menu-item" onClick={() => { onOpenMore?.(); closeMenu(); }}>
+              <span className="profile-menu-icon">•••</span>
+              <span>More</span>
+            </button>
           </div>
         </>,
         document.body
