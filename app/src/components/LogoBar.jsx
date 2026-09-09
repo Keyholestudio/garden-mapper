@@ -164,6 +164,30 @@ export default function LogoBar({
                 <span className="profile-menu-icon">🌐</span>
                 <span>Visit GardenMapper.ca</span>
               </a>
+
+              <div className="profile-menu-divider" />
+
+              {/* About */}
+              <a
+                className="profile-menu-item"
+                href="https://www.gardenmapper.ca/store-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={closeMenu}
+              >
+                <span className="profile-menu-icon">🔒</span>
+                <span>Privacy Policy</span>
+              </a>
+              <a
+                className="profile-menu-item"
+                href="https://www.gardenmapper.ca/delete-account"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={closeMenu}
+              >
+                <span className="profile-menu-icon">🗑️</span>
+                <span>Delete Account</span>
+              </a>
             </div>
           </>
         , document.body)}
@@ -299,6 +323,30 @@ export default function LogoBar({
             >
               <span className="profile-menu-icon">🌐</span>
               <span>Visit GardenMapper.ca</span>
+            </a>
+
+            <div className="profile-menu-divider" />
+
+            {/* About */}
+            <a
+              className="profile-menu-item"
+              href="https://www.gardenmapper.ca/store-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={closeMenu}
+            >
+              <span className="profile-menu-icon">🔒</span>
+              <span>Privacy Policy</span>
+            </a>
+            <a
+              className="profile-menu-item"
+              href="https://www.gardenmapper.ca/delete-account"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={closeMenu}
+            >
+              <span className="profile-menu-icon">🗑️</span>
+              <span>Delete Account</span>
             </a>
           </div>
         </>,
