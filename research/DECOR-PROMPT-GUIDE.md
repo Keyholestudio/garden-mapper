@@ -1,5 +1,34 @@
 # Garden Mapper — Decor Sticker Prompt Guide
-_Last updated: 2026-06-09_
+_Last updated: 2026-09-10_
+
+---
+
+## 0. Image Processing Pipeline — Approved Method (Gates, 2026-09-10)
+
+All chroma-key sticker images must be processed with this pipeline before adding to the app.
+Approved and standardized during gate session. Use for all future decor stickers.
+
+### Processing Steps
+1. **Hard erase** — remove pure chroma green: `R < 100, G > 200, B < 100`
+2. **Flood-fill from borders** — catches gradient/JPEG-compressed green that the hard erase misses. Spreads through already-transparent pixels and any pixel where G is dominant and the pixel is NOT warm (warm = `R > B + 35`)
+3. **Despill** — for remaining visible pixels with green excess (`G > R+20` and `G > B+20` and `G > 100`): reduce G channel by 80% of excess, reduce alpha proportionally
+4. **Alpha edge smoothing** — Gaussian blur (radius=1.2) applied only to the transition zone (`alpha 10–245`), interior (alpha=255) stays hard
+5. **Tight crop** — `getbbox()` + 12px padding on all sides
+6. **Consistent scale** — longer dimension scaled to **460px**, centered on **512×512** transparent canvas
+
+### Pre-crop rule
+If the source image has an unusual aspect ratio (e.g. cedar gate was wider/shorter), pre-crop the source to match the typical gate area **before** background removal so all variants end up the same visual size.
+- Cedar pre-crop: `(260, 200, 1020, 1080)` on a 1280×1280 source
+- Standard gates (white, charcoal, red, blue, sage): no pre-crop needed
+
+### Output spec
+- Canvas: 512×512 PNG, transparent background
+- Gate content: ~380×459px centered (portrait orientation)
+- Naming: `decor_{name}_XL_CA-US-FR-GB-AU.png`
+- Copy to both `app/public/stickers/` and `stickers/`
+
+### Reference Python script
+Full reusable script saved at: `tmp/process_gate_pipeline.py`
 
 ---
 
