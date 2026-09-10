@@ -21,7 +21,7 @@ const LINKS = [
   {
     icon: '🌐',
     label: 'Visit GardenMapper.ca',
-    sub: 'Tips, updates & plant guides',
+    sub: 'Visit our How To page',
     url: 'https://gardenmapper.ca',
   },
   {
