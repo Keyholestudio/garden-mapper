@@ -259,6 +259,7 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
       transparent: d.transparent || false, locked: d.locked || false,
       points: hitLine.points(), lx: g.x(), ly: g.y(),
       zIndex: g.getZIndex(),
+      onPlantLayer: d.onPlantLayer || false,
     })
   })
 
@@ -436,9 +437,13 @@ export function loadGarden({
         Konva,
         showGrid: false, snapCell: 0,
         onSelect: (id, shape, e) => { if (!state.editingShapeIdRef?.current) onSelectStruct(id, shape, e) },
-        onReady: () => structLayer?.batchDraw(),
+        onReady: () => (entry.onPlantLayer ? plantLayer : structLayer)?.batchDraw(),
       })
-      structLayer?.add(group)
+      if (entry.onPlantLayer && plantLayer) {
+        plantLayer?.add(group)
+      } else {
+        structLayer?.add(group)
+      }
       return
     }
     if (entry.type === 'rock-border' && entry.points !== undefined) {

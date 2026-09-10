@@ -905,7 +905,14 @@ export default function GardenEditor() {
 
     } else if (kind === 'struct' && state.selectedStruct) {
       const target = state.selectedStruct.shape
-      const layer  = layersRef.current.structLayer
+      const d      = state.structDataRef.current[state.selectedStruct.id]
+      const isPicket = d?.type === 'picket-fence'
+      const { structLayer, plantLayer } = layersRef.current
+      // Picket fences can hop between structLayer and plantLayer so they render above/below plants
+      const currentLayer = isPicket
+        ? (target.getLayer() === plantLayer ? plantLayer : structLayer)
+        : structLayer
+      const layer = currentLayer
       if (!layer) return
 
       // Exclude non-data shapes (propBounds, propLabel) from consideration
@@ -931,14 +938,34 @@ export default function GardenEditor() {
 
       if (dir === 'up') {
         const above = overlapping.filter(s => s.zIndex() > targetZ)
-        if (above.length === 0) { triggerAutoSave(); return }
+        if (above.length === 0) {
+          // Picket fence at top of structLayer — hop to plantLayer bottom
+          if (isPicket && layer === structLayer && plantLayer) {
+            target.moveTo(plantLayer)
+            target.moveToBottom()
+            if (d) d.onPlantLayer = true
+            structLayer.batchDraw(); plantLayer.batchDraw()
+            triggerAutoSave(); return
+          }
+          triggerAutoSave(); return
+        }
         const nextZ   = Math.min(...above.map(s => s.zIndex()))
         const nextSib = above.find(s => s.zIndex() === nextZ)
         nextSib.moveDown()
         target.zIndex(nextSib.zIndex() + 1)
       } else {
         const below = overlapping.filter(s => s.zIndex() < targetZ)
-        if (below.length === 0) { triggerAutoSave(); return }
+        if (below.length === 0) {
+          // Picket fence at bottom of plantLayer — hop back to structLayer top
+          if (isPicket && layer === plantLayer && structLayer) {
+            target.moveTo(structLayer)
+            target.moveToTop()
+            if (d) d.onPlantLayer = false
+            structLayer.batchDraw(); plantLayer.batchDraw()
+            triggerAutoSave(); return
+          }
+          triggerAutoSave(); return
+        }
         const nextZ   = Math.max(...below.map(s => s.zIndex()))
         const nextSib = below.find(s => s.zIndex() === nextZ)
         nextSib.moveUp()
