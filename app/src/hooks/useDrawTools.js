@@ -95,6 +95,12 @@ export function useDrawTools({
 
     freePtsRef.current = [...freePts, pos]
 
+    // Picket fence: auto-complete after exactly 2 points
+    if (s.currentMode === 'fences' && s.fenceType === 'picket-fence' && freePtsRef.current.length === 2) {
+      doClose()
+      return
+    }
+
     const dotFill = s.currentMode === 'paths' ? '#795548'
       : s.currentMode === 'fences' ? '#2E7D32'
       : s.currentMode === 'water'  ? '#1976D2'

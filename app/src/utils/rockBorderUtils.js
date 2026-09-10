@@ -324,12 +324,19 @@ export function addPicketsToGroup(group, flatPoints, tension, variant, Konva) {
   if (positions.length === 0) return
 
   for (const { x, y, angle } of positions) {
+    const deg = angle * 180 / Math.PI
+    // If the line goes right-to-left (angle outside -90..90), flip vertically
+    // so picket points always face up regardless of draw direction
+    const goingLeft = Math.abs(deg) > 90
+    const scaleY = goingLeft ? -1 : 1
+    const rotation = goingLeft ? deg + 180 : deg
     group.add(new Konva.Image({
       image: img,
       x, y,
       width: PICKET_TILE_W,
       height: PICKET_TILE_H,
-      rotation: (angle * 180 / Math.PI),  // rotate to follow line, no jitter
+      rotation,
+      scaleY,
       offsetX: PICKET_TILE_W / 2,
       offsetY: PICKET_TILE_H / 2,
       listening: true,

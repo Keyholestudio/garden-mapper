@@ -932,13 +932,11 @@ export default function GardenEditor() {
         )
       })
 
-      if (overlapping.length === 0) { triggerAutoSave(); return } // Option B
-
       const targetZ = target.zIndex()
 
       if (dir === 'up') {
         const above = overlapping.filter(s => s.zIndex() > targetZ)
-        if (above.length === 0) {
+        if (above.length === 0 || overlapping.length === 0) {
           // Picket fence at top of structLayer — hop to plantLayer bottom
           if (isPicket && layer === structLayer && plantLayer) {
             target.moveTo(plantLayer)
@@ -955,7 +953,7 @@ export default function GardenEditor() {
         target.zIndex(nextSib.zIndex() + 1)
       } else {
         const below = overlapping.filter(s => s.zIndex() < targetZ)
-        if (below.length === 0) {
+        if (below.length === 0 || overlapping.length === 0) {
           // Picket fence at bottom of plantLayer — hop back to structLayer top
           if (isPicket && layer === plantLayer && structLayer) {
             target.moveTo(structLayer)
@@ -1053,6 +1051,40 @@ export default function GardenEditor() {
         fillPatternRepeat: shape.fillPatternRepeat() || undefined,
         fillPatternScale: shape.fillPatternScale() || undefined,
       })
+    } else if (shape instanceof Konva.Group && d.type === 'picket-fence') {
+      // Picket fence: rebuild a new Group from the hit line's points
+      const hitLine = shape.getChildren(c => c instanceof Konva.Line)[0]
+      if (!hitLine) return
+      const flatPts = hitLine.points().map((v, i) => v + OFFSET)
+      const newData = { ...d, label: d.label ? d.label + ' (copy)' : '', onPlantLayer: false }
+      state.structDataRef.current[newId] = newData
+      const { structLayer: sl, plantLayer: pl } = layersRef.current
+      const grp = buildPicketFenceGroup({
+        id: newId,
+        flatPoints: flatPts,
+        tension: 0,
+        variant: d.picketVariant || 'white',
+        x: shape.x() + OFFSET, y: shape.y() + OFFSET,
+        Konva, showGrid: state.showGrid, snapCell: state.snapCell,
+        onSelect: (id2, g) => {
+          if (isFreeToolActive() || isDrawToolActive()) return
+          state.setMultiSelection([])
+          state.setSelectedPlant(null)
+          state.setSelectedStruct({ id: id2, shape: g, ...state.structDataRef.current[id2] })
+        },
+        onReady: () => sl?.batchDraw(),
+      })
+      sl.add(grp)
+      grp.moveToTop()
+      sl.batchDraw()
+      state.setSelectedStruct({ id: newId, shape: grp, ...state.structDataRef.current[newId] })
+      state.pushUndo(() => {
+        grp.destroy()
+        delete state.structDataRef.current[newId]
+        sl?.batchDraw()
+      })
+      triggerAutoSave()
+      return
     } else if (shape instanceof Konva.Group && d.type === 'rock-border') {
       // Rock border: rebuild a new Group from the hit line's points
       const hitLine = shape.getChildren(c => c instanceof Konva.Line)[0]
