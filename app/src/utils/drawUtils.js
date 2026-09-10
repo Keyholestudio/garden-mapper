@@ -179,7 +179,8 @@ export function closeFreeShape({
   const isPath       = currentMode === 'paths'
   const isGate       = currentMode === 'paths' && pathSubTool === 'gate'
   const isFenceOpen  = currentMode === 'fences' && fenceType === 'fence'
-  const isRockBorder = currentMode === 'fences' && fenceType === 'rock-border'
+  const isRockBorder   = currentMode === 'fences' && fenceType === 'rock-border'
+  const isPicketFence  = currentMode === 'fences' && fenceType === 'picket-fence'
   const isUnderground= (currentMode === 'building' && (buildingSubTool === 'underground' || buildingSubTool === 'underground-electrical' || buildingSubTool === 'underground-plumbing'))
                      || (currentMode === 'water' && waterSubTool === 'underground-plumbing')
   const isDeckFree   = currentMode === 'building' && (buildingSubTool === 'deck-curved' || buildingSubTool === 'deck-straight')
