@@ -908,11 +908,28 @@ export default function GardenEditor() {
       const d      = state.structDataRef.current[state.selectedStruct.id]
       const isPicket = d?.type === 'picket-fence'
       const { structLayer, plantLayer } = layersRef.current
-      // Picket fences can hop between structLayer and plantLayer so they render above/below plants
-      const currentLayer = isPicket
-        ? (target.getLayer() === plantLayer ? plantLayer : structLayer)
-        : structLayer
-      const layer = currentLayer
+
+      // Picket fence: simple layer toggle — Forward = above plants, Back = below plants
+      if (isPicket) {
+        const onPlant = target.getLayer() === plantLayer
+        if (dir === 'up' && !onPlant) {
+          target.moveTo(plantLayer)
+          target.moveToTop()
+          if (d) d.onPlantLayer = true
+        } else if (dir === 'down' && onPlant) {
+          target.moveTo(structLayer)
+          target.moveToTop()
+          if (d) d.onPlantLayer = false
+        } else if (dir === 'up' && onPlant) {
+          target.moveToTop()  // already on plant layer, just push to very top
+        } else if (dir === 'down' && !onPlant) {
+          target.moveToBottom()  // already on struct layer, push to bottom
+        }
+        structLayer?.batchDraw(); plantLayer?.batchDraw()
+        triggerAutoSave(); return
+      }
+
+      const layer = structLayer
       if (!layer) return
 
       // Exclude non-data shapes (propBounds, propLabel) from consideration
@@ -932,38 +949,20 @@ export default function GardenEditor() {
         )
       })
 
+      if (overlapping.length === 0) { triggerAutoSave(); return }
+
       const targetZ = target.zIndex()
 
       if (dir === 'up') {
         const above = overlapping.filter(s => s.zIndex() > targetZ)
-        if (above.length === 0 || overlapping.length === 0) {
-          // Picket fence at top of structLayer — hop to plantLayer bottom
-          if (isPicket && layer === structLayer && plantLayer) {
-            target.moveTo(plantLayer)
-            target.moveToBottom()
-            if (d) d.onPlantLayer = true
-            structLayer.batchDraw(); plantLayer.batchDraw()
-            triggerAutoSave(); return
-          }
-          triggerAutoSave(); return
-        }
+        if (above.length === 0) { triggerAutoSave(); return }
         const nextZ   = Math.min(...above.map(s => s.zIndex()))
         const nextSib = above.find(s => s.zIndex() === nextZ)
         nextSib.moveDown()
         target.zIndex(nextSib.zIndex() + 1)
       } else {
         const below = overlapping.filter(s => s.zIndex() < targetZ)
-        if (below.length === 0 || overlapping.length === 0) {
-          // Picket fence at bottom of plantLayer — hop back to structLayer top
-          if (isPicket && layer === plantLayer && structLayer) {
-            target.moveTo(structLayer)
-            target.moveToTop()
-            if (d) d.onPlantLayer = false
-            structLayer.batchDraw(); plantLayer.batchDraw()
-            triggerAutoSave(); return
-          }
-          triggerAutoSave(); return
-        }
+        if (below.length === 0) { triggerAutoSave(); return }
         const nextZ   = Math.max(...below.map(s => s.zIndex()))
         const nextSib = below.find(s => s.zIndex() === nextZ)
         nextSib.moveUp()

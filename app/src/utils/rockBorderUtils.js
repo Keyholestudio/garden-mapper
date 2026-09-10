@@ -320,23 +320,31 @@ export function addPicketsToGroup(group, flatPoints, tension, variant, Konva) {
   // Remove existing picket images (keep hit line)
   group.getChildren(c => c instanceof Konva.Image).forEach(c => c.destroy())
 
-  const positions = computeStonePositions(flatPoints, tension, 'picket-fence')
+  // Normalize so tiles always run left-to-right — prevents upside-down pickets
+  // when user draws from right to left
+  let pts = flatPoints
+  if (pts.length >= 4) {
+    const x1 = pts[0], x2 = pts[pts.length - 2]
+    if (x1 > x2) {
+      // Reverse the point pairs so we always go left-to-right
+      const pairs = []
+      for (let i = 0; i < pts.length; i += 2) pairs.push([pts[i], pts[i+1]])
+      pairs.reverse()
+      pts = pairs.flat()
+    }
+  }
+
+  const positions = computeStonePositions(pts, tension, 'picket-fence')
   if (positions.length === 0) return
 
   for (const { x, y, angle } of positions) {
     const deg = angle * 180 / Math.PI
-    // If the line goes right-to-left (angle outside -90..90), flip vertically
-    // so picket points always face up regardless of draw direction
-    const goingLeft = Math.abs(deg) > 90
-    const scaleY = goingLeft ? -1 : 1
-    const rotation = goingLeft ? deg + 180 : deg
     group.add(new Konva.Image({
       image: img,
       x, y,
       width: PICKET_TILE_W,
       height: PICKET_TILE_H,
-      rotation,
-      scaleY,
+      rotation: deg,
       offsetX: PICKET_TILE_W / 2,
       offsetY: PICKET_TILE_H / 2,
       listening: true,
