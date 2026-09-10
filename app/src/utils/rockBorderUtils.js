@@ -4,7 +4,7 @@
 export const ROCK_BORDER_PRESETS = {
   'rock-border':   { stoneSize: 28, overlap: -0.15 },
   'stepping-path': { stoneSize: 48, overlap: -0.40 },
-  'picket-fence':  { stoneSize: 38, overlap: 0.0  },  // tile width at canvas display size (64px tall * 151/256 aspect)
+  'picket-fence':  { stoneSize: 38, overlap: 0.0  },  // matches front-facing tile display width (PICKET_H_W)
 }
 
 // ── Catmull-Rom curve sampling ────────────────────────────────────────────────
@@ -320,9 +320,11 @@ export async function drawRockBorders(structLayer, structDataRef, Konva) {
 // H tile (aerial top-down):       51x256 source -> displays at 13x64px (but we rotate it, so width becomes height)
 // For H tiles the image is stored rotated 90°, so when Konva applies line angle it renders correctly
 const PICKET_TILE_H = 64          // display size (longer axis) for both tile types
-const PICKET_V_W = Math.round(PICKET_TILE_H * (151 / 256))  // ~38px  (V tile display width)
-const PICKET_H_W = Math.round(PICKET_TILE_H * (51  / 256))  // ~13px  (H tile display width)
-// Angle threshold: lines more vertical than this use the V (front-facing) tile
+// H key = front-facing pickets (horizontal lines): source 151x256 -> 38px wide
+// V key = aerial top-down (vertical lines): source 51x256 -> 13px wide
+const PICKET_H_W = Math.round(PICKET_TILE_H * (151 / 256))  // ~38px  (front-facing, used on horizontal lines)
+const PICKET_V_W = Math.round(PICKET_TILE_H * (51  / 256))  // ~13px  (aerial, used on vertical lines)
+// Angle threshold: lines more vertical than this use the V (aerial) tile
 const VERTICAL_THRESHOLD_DEG = 45
 
 export function addPicketsToGroup(group, flatPoints, tension, variant, Konva) {
