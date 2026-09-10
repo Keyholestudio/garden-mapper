@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-08-18 (rock border mobile fixes — z-order, options panel, menu visibility, edit handles)_
+_Last updated: 2026-09-09 (privacy policy gap analysis + fixes, More modal, profile menu cleanup, AccountModal legal links updated)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -101,22 +101,17 @@ cd projects/garden-planner/app && npm run dev
 ## Open Items
 
 ### 🔴 Immediate
-- **[HIGH] Rock border mobile point drift** — In edit mode on mobile, dragging one handle causes others to drift. Fix: suppress canvas `touchPanStart` when `editingShapeId` is set (GardenCanvas.jsx `onTouchStart`). Single line: `if (editingShapeRef.current) { touchPanStart = null; return }`. Web version works correctly.
+- **[HIGH] Rock border drag on mobile — border doesn't follow finger** — Jumps to new location on release instead of smooth drag. Root issue: coordinate system for rock border Group children vs fence Line is not reconciled. Last commit (`1926d59`) changed to local-coord model (like fence) but still not smooth. Next session: read fence dragmove code, match rock border exactly to it. Do NOT mix Model A (world coords, normalize on dragend) and Model B (local coords, group accumulates).
+- **[HIGH] L061 in LESSONS.md is stale** — reflects old Model A. Update once coordinate model is settled next session.
 - **Rock border colour variants** — brown, white, sandstone PNGs needed. Colour picker in panel wired but all variants use grey sticker for now. Generate next session.
 - **Stepping stone path** — same Group architecture, different preset (stoneSize: 48, overlap: -0.40). Add to Fences menu under Rock Borders.
 - **Picket fence** — same system, bottom-edge anchor calc different from centre-anchor stones.
 - **Android APK rebuild** — all rock border fixes need USB deploy.
 
-- ~~**[HIGH] Bundle performance**~~ ✅ Done 2026-08-11. Main chunk 1,244→443 KB. Vendor chunks split (konva/supabase/stripe/pdf/capacitor). ExportModal + jsPDF/html2canvas lazy-loaded (599 KB only on Export open).
-- **[HIGH] Texture opacity not applying on live/cached site** — 10% opacity set in `drawUtils.js` but not rendering correctly on mobile. Suspected cache issue but needs verification on fresh browser. Also check Dream Garden baked JSON needs updating.
-- **[HIGH] Merging textured beds goes black** — `tryMergeRects` creates a Konva.Group with child rects using `d.colour + 'CC'` where colour is `#TX:soil-brown` — not valid CSS, renders black. `applyColourOrTexture` never called on merged children. Fix: either exclude texture beds from merge, or apply texture to each child rect individually.
-- ~~**Maple Green + Red Leaf**~~ - ✅ resolved (confirmed not needed 2026-07-31)
-- ~~**Remove debug banner**~~ - ✅ done 2026-07-17
-- **Android APK rebuild** — all fixes from 2026-08-03 + 2026-08-05 not yet on device. Needs USB connect + deploy-android.bat.
-- **Dream Garden resize** - Rob wants to resize canvas. Pull current JSON from local:5200, update w/h, re-lock dimensions. Do as part of next Dream Garden update trigger.
-- ~~**Batch 8 rework**~~ - ✅ done 2026-07-27 (lupin, buddleia, forsythia, spirea, weigela, iris)
-- ~~**Echinacea + Water Lily**~~ - ✅ done 2026-07-31
-- ~~**Batch 6 leftover**~~ - ✅ done 2026-07-27 (hollyhock, onion)
+- **[HIGH] Texture opacity not applying on live/cached site** — 10% opacity set in `drawUtils.js` but not rendering correctly on mobile. Suspected cache issue.
+- **[HIGH] Merging textured beds goes black** — `tryMergeRects` uses `d.colour + 'CC'` where colour is `#TX:soil-brown` — not valid CSS. Fix: exclude texture beds from merge or apply texture to each child rect.
+- **Android APK rebuild** — all rock border + bundle fixes need USB deploy.
+- **Dream Garden resize** — Pull current JSON from local:5200, update w/h, re-lock. Do as part of next Dream Garden update trigger.
 
 ### 🟡 In Progress
 - **Plant catalog expansion** - full research complete for all 63 packs (~600 plants). See `research/PLANT-PACK-RESEARCH.md` for counts, `research/PLANT-STAGING.md` for schema rows ready to generate.
@@ -132,25 +127,27 @@ cd projects/garden-planner/app && npm run dev
 - **Core catalog searchMeta** - add `latinName`, `searchTerms`, `traits` to `usePlantCatalog.js` entries. Tropical pack needs same update.
 - **Pack architecture** - 63 pack files defined (WORKFLOWS.md). Create on demand as plants are added. Core migration deferred.
 
+### 🟡 Play Store Submission (in progress)
+**All declarations complete.** Remaining tasks:
+- ✅ Privacy policy URL — gardenmapper.ca/store-policy live, submitted to Play Console
+- ✅ Government apps, Financial features, Health, Sign-in details, Ads, Content rating, Target audience, Data safety, Advertising ID, External marketing, App category (House & Home) + contact details
+- **Store listing** 🔴 NEXT — need: screenshots (min 2, max 8, phone 16:9 or 9:16), feature graphic (1024×500 PNG/JPG), icon (512×512 PNG), short desc (80 chars), full desc (4000 chars)
+- **Release build** — signed AAB required (not debug APK)
+- **Closed test** — ≥12 testers, ≥14 days → then apply for production
+- **More modal** ✅ — `MoreModal.jsx` live. Privacy Policy + Delete Account + Visit site. Satisfies Google Play in-app requirements.
+- **AccountModal** ✅ — legal links updated (Privacy Policy + Delete Account, correct URLs)
+
 ### 🔲 Deferred
 - **Wire `isSubscribed` from RevenueCat (Android)** - web billing live via Stripe. Android: wire `useRevenueCat().isSubscribed` when Play Billing is set up (Session D).
 - **Google Sign-In** - Supabase `unexpected_failure`, needs device + USB to debug Auth logs.
 - **Google Play Developer account** - ✅ complete (2026-07-16, $25 paid)
 - **Capacitor.js Android/iOS** - deferred until catalog expansion stable.
 - **App icons + splash screen** - Rob designing.
-- **Phase 8 Textures** - Rob designing.
-- **Dream Garden** - say "update the Dream Garden to the website" when ready.
-- **Sunny/shady areas, zoom clip, multi-device sync** - later phases.
-- **SM campaign, pricing, gamification** - parallel track, non-blocking.
-- **Parabolic Stocks crons** - disabled, re-enable when Rob says go.
+- Phase 8 Textures, Dream Garden update, multi-device sync, SM campaign — all deferred.
+- Parabolic Stocks crons disabled — re-enable when Rob says go.
 
-### Architecture decisions (June 2026)
-- **Auth:** Sign in with Google (Android) + Sign in with Apple (iOS, mandatory)
-- **Billing:** Google Play Billing + Apple StoreKit - stores handle all payments, zero card data
-- **Backend:** Thin FastAPI + Supabase Postgres - stores only: anon user ID + garden JSON + subscription flag
-- **Onboarding:** Anonymous-first - start using immediately, login prompt on natural trigger
-- **Migration:** localStorage → Supabase automatic on first sign-in, no data loss
-- **Web:** Free/local only - try-it experience, upsells to app install. Web billing deferred.
+### Architecture (June 2026)
+- Auth: Google (Android) + Apple (iOS). Billing: Play/StoreKit. Backend: FastAPI + Supabase. Anon-first. Web = try-it only.
 
 ---
 
@@ -182,9 +179,11 @@ cd projects/garden-planner/app && npm run dev
 ## ⚠️ Large File Warnings - Confirm Before Loading
 | File | Size | Rule |
 |------|------|------|
-| `research/PLANT-STAGING.md` | 131 KB | Read only the needed pack section via offset/limit. Consider splitting by category. |
+| `research/PLANT-STAGING.md` | ~1 KB | Index only (split complete 2026-09-08). Load the category file, not this. |
+| `research/PLANT-STAGING-flowers-grasses-climbers-groundcovers.md` | 52 KB | Use offset/limit — read only the target pack section. |
+| `research/PLANT-PACK-RESEARCH.md` | 60 KB | Read-only reference. Use offset/limit or grep. |
 | `app/src/components/GardenEditor.jsx` | 72 KB | Grep or offset/limit first. Consider splitting into smaller modules. |
-_Rob flagged these 2026-07-08. Splitting plan TBD - raise with Rob at next relevant session._
+_Split completed 2026-09-08. GardenEditor split plan TBD._
 
 ## Standing Rules
 1. Read `ARCHITECTURE.md` at session start

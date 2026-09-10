@@ -496,6 +496,11 @@ export default function GardenEditor() {
     'decor-stairs-cement':{ key: 'decor_stairs-cement_M_CA-US-FR-GB-AU',label: 'Cement Stairs',   family: 'Decor', size: 'M',  src: '/stickers/decor_stairs-cement_M_CA-US-FR-GB-AU.png'},
     'decor-arch-wood':    { key: 'decor_arch-wood_XL_CA-US-FR-GB-AU',    label: 'Wood Arch',       family: 'Decor', size: 'XL', src: '/stickers/decor_arch-wood_XL_CA-US-FR-GB-AU.png'    },
     'decor-arch-metal':   { key: 'decor_arch-metal_XL_CA-US-FR-GB-AU',   label: 'Metal Arch',      family: 'Decor', size: 'XL', src: '/stickers/decor_arch-metal_XL_CA-US-FR-GB-AU.png'   },
+    // Gates
+    'gate-cedar':    { key: 'decor_gate-wood-cedar_XL_CA-US-FR-GB-AU',    label: 'Cedar Gate',    family: 'Gate', size: 'XL', src: '/stickers/decor_gate-wood-cedar_XL_CA-US-FR-GB-AU.png'    },
+    'gate-charcoal': { key: 'decor_gate-wood-charcoal_XL_CA-US-FR-GB-AU', label: 'Charcoal Gate', family: 'Gate', size: 'XL', src: '/stickers/decor_gate-wood-charcoal_XL_CA-US-FR-GB-AU.png' },
+    'gate-red':      { key: 'decor_gate-wood-red_XL_CA-US-FR-GB-AU',      label: 'Red Gate',      family: 'Gate', size: 'XL', src: '/stickers/decor_gate-wood-red_XL_CA-US-FR-GB-AU.png'      },
+    'gate-blue':     { key: 'decor_gate-wood-blue_XL_CA-US-FR-GB-AU',     label: 'Blue Gate',     family: 'Gate', size: 'XL', src: '/stickers/decor_gate-wood-blue_XL_CA-US-FR-GB-AU.png'     },
     // Fountains - merged from FOUNTAIN_CATALOG (same placement flow as decor stickers)
     'fountain-sm': { key: 'water-feature_fountain-sm_S_CA-US-FR-GB-AU', label: 'Small Fountain',  family: 'Water Feature', size: 'S', src: '/stickers/water-feature_fountain-sm_S_CA-US-FR-GB-AU.png' },
     'fountain-md': { key: 'water-feature_fountain-md_M_CA-US-FR-GB-AU', label: 'Medium Fountain', family: 'Water Feature', size: 'M', src: '/stickers/water-feature_fountain-md_M_CA-US-FR-GB-AU.png' },
@@ -506,11 +511,12 @@ export default function GardenEditor() {
   useEffect(() => {
     const id = state.decorSubTool
     // Explicit deselect (null while in decor mode) - cancel pending placement
-    if (id === null && state.currentMode === 'decor') {
+    const isGatePlacement = state.currentMode === 'fences' && state.fenceType === 'gate'
+    if (id === null && (state.currentMode === 'decor' || isGatePlacement)) {
       pendingPlantRef.current = null
       return
     }
-    if (!id || state.currentMode !== 'decor') return
+    if (!id || (state.currentMode !== 'decor' && !isGatePlacement)) return
     const entry = DECOR_CATALOG[id]
     if (!entry) return
     // Do NOT clear decorSubTool here - keep it set so the button stays highlighted
@@ -523,18 +529,19 @@ export default function GardenEditor() {
     img.onerror = () => console.warn('Decor sticker not found:', entry.src)
     img.src = entry.src
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.decorSubTool, state.currentMode])
+  }, [state.decorSubTool, state.currentMode, state.fenceType])
 
   // When leaving decor mode (Back button or switching tools), cancel any pending decor placement
   useEffect(() => {
-    if (state.currentMode !== 'decor') {
+    const isGatePlacement = state.currentMode === 'fences' && state.fenceType === 'gate'
+    if (state.currentMode !== 'decor' && !isGatePlacement) {
       if (pendingPlantRef.current?._img && state.decorSubTool) {
         pendingPlantRef.current = null
         state.setDecorSubTool(null)
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.currentMode])
+  }, [state.currentMode, state.fenceType])
 
   // ── Plant placement ──
   const pendingPlantRef  = useRef(null)
@@ -600,6 +607,8 @@ export default function GardenEditor() {
     // Switch to select mode so info panel shows after placement
     // (decor stays in decor mode until placement to avoid panel bounce)
     state.setCurrentMode('select')
+    // Clear gate fenceType if this was a gate placement
+    if (state.fenceType === 'gate') state.setFenceType(null)
     // Clear decor subtool now that placement is done (button unhighlights)
     if (state.decorSubTool) state.setDecorSubTool(null)
     const newId = addPlant({
@@ -1100,7 +1109,7 @@ export default function GardenEditor() {
     const d = state.plantDataRef.current[sel.id]
     // null = default swatch selected - clear variantSrc, resolve to base catalog src
     d.variantSrc = variantSrc || null
-    const baseSrc = PLANT_CATALOG.find(p => p.key === d.key)?.src
+    const baseSrc = PLANT_CATALOG.find(p => p.key === d.key)?.src || d.src
     const resolvedSrc = variantSrc || baseSrc
     const img = new window.Image()
     img.onload = () => {

@@ -34,6 +34,7 @@ export function addPlant({ entry, x, y, stage, plantLayer, plantDataRef, plantId
     transparent: false,
     size: entry.size,
     key: entry.key,
+    src: entry.src || null,
   }
 
   const group = makePlantGroup(id, loadedImg, SIZE, x - SIZE / 2, y - SIZE / 2)

@@ -235,7 +235,7 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
       scaleX: g.scaleX(), scaleY: g.scaleY(),
       label: d.label, family: d.family, key: d.key, size: d.size,
       notes: d.notes, seasons: d.seasons, transparent: d.transparent, locked: d.locked || false,
-      variantSrc: d.variantSrc || null,
+      variantSrc: d.variantSrc || null, src: d.src || null,
       zIndex: g.zIndex(),
     })
   })
@@ -526,6 +526,7 @@ export function loadGarden({
       locked: entry.locked || false,
       size: entry.size, key: entry.key,
       variantSrc: entry.variantSrc || null,
+      src: entry.src || (entry.key ? '/stickers/' + entry.key + '.png' : null),
     }
 
     const size = SIZE_MAP[entry.size] || 64
@@ -580,6 +581,19 @@ export function loadGarden({
 
   structLayer?.batchDraw()
   plantLayer?.batchDraw()
+
+  // ── Load images for decor/gate/sticker entries not preloaded by PLANT_CATALOG ──
+  ;(g.plants || []).forEach(entry => {
+    if (!entry.key || loadedImages[entry.key]) return
+    const src = entry.src || '/stickers/' + entry.key + '.png'
+    const img = new window.Image()
+    img.onload = () => {
+      const group = plantLayer?.findOne('#' + entry.id)
+      const konvaImg = group?.findOne('Image')
+      if (konvaImg) { konvaImg.image(img); plantLayer?.batchDraw() }
+    }
+    img.src = src
+  })
 
   // ── Update React state AFTER all Konva work (avoid async races) ──
   setGardenName(g.name)

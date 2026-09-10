@@ -2,6 +2,28 @@
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 
+## L072 — LogoBar.jsx has two render paths that must be kept in sync (2026-09-08)
+**What happened:** Profile menu icons were inconsistent between mobile and desktop — 🖸 instead of 🖨 for Print, 🚲 instead of 🚪 for Sign Out.
+**Root cause:** `LogoBar.jsx` has an early-return mobile render path and a separate desktop render path. Both contain a full copy of the profile menu JSX. They were edited independently and drifted.
+**Rule:** Any change to the profile menu must be made in BOTH blocks. Always grep for the item text (e.g. "Print your Plan") to find both locations before editing.
+**Fix commit:** `9956da5`
+
+## L071 — Android grey placeholder fix: root cause was stale Konva nodes, not image loading (2026-09-08)
+**Symptom:** ~50% of plant stickers showed grey question-mark placeholders on Android app cold open. Random images failed each time. Leaving the app open did NOT fix it. Manually re-loading the garden via "Your Gardens" fixed it instantly.
+**Red herrings pursued:** Concurrent image loading, Capacitor thread pool contention, batch size, retry count — none of these were the cause.
+**Root cause:** `loadGarden()` in `useSaveLoad.js` creates Konva `Image` nodes at render time using `loadedImages[entry.key] || makePlaceholderImage()`. On native (Capacitor), images stream in sequentially AFTER the garden renders. Konva nodes get placeholders. When `loadedImages` state fills in later, nothing tells Konva to update the existing nodes.
+**Why re-loading worked:** triggered a fresh `loadGarden()` call which re-created all Konva nodes with the now-loaded images already in memory.
+**Fix:** Added `useEffect` in `GardenEditor.jsx` watching `loadedImages`. On each update, walks the plant layer and calls `konvaImg.image(realImg)` + `plantLayer.batchDraw()` for any node whose image doesn't match the loaded one. Same pattern as the lazy pack image swap (already proven).
+**Key diagnostic question:** "Does manually re-loading the garden fix it instantly?" If yes → stale Konva nodes, not a loading problem.
+**Commits:** `b494ce2` (retry fix), `0e17e81` (GardenEditor retry), `ce4a307` (native-aware), `fa76e87` (sequential), `7f52d40` (root cause fix)
+**Debug log:** `projects/garden-planner/IMAGE-LOADING-DEBUG.md`
+
+## L070 — App icons vs in-app logos are distinct — never conflate them (2026-09-08)
+**What happened:** When cleaning the app icon background, also replaced `garden-mapper-logo-gm.png`, `garden-mapper-logo.webp`, and `stickers/Logo.png` — all distinct in-app logos with their own design purpose. Had to revert.
+**Rule:** There are two categories of logo files:
+- **App icons** (favicon, PWA icons, Android mipmaps): generated from clean rembg master, white bg, safe zone padding. Touch freely when updating branding.
+- **In-app logos** (`garden-mapper-logo-gm.png`, `garden-mapper-logo.webp`, `stickers/Logo.png`): unique designs used inside the app UI. Never replace unless Rob explicitly asks for each one by name.
+
 ## L069 — Gemini watermark removal: always scan + vision check before committing (2026-09-08)
 **What happened:** Spent multiple back-and-forth rounds removing Gemini watermarks from pot stickers. Each time I thought it was clean, a fragment remained visible in-app.
 **Root causes:**

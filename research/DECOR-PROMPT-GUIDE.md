@@ -257,6 +257,26 @@ Shape: Aerial side-front view of 4-step smooth concrete/cement outdoor stairs wi
 
 ---
 
+### Gates
+
+| Sticker ID | Label | Size | Size px |
+|---|---|---|---|
+| `decor_gate-wood_XL_CA-US-FR-GB-AU` | Wooden Garden Gate | XL | 512 |
+
+**Wooden Garden Gate**
+```
+Perspective: Aerial straight on, 3rd person perspective. Viewing directly.
+Art style: watercolor painting of tasteful Wooden Garden Gate with crisp edges. Dark outline. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+
+Subject: Wooden Garden Gate
+Canvas: 512px square.
+Colours: warm cedar, dark outline, the background to be completely a flat chroma-key green background (#00FF00)
+
+Shape: Aerial side view of a freestanding wooden garden gate, arched door. Correct proportions.
+```
+
+---
+
 ### Arches
 
 | Sticker ID | Label | Size | Size px |

@@ -9,7 +9,7 @@ import { ToolMenu } from './toolMenuData.jsx'
 import {
   BED_COLOURS, BUILDING_COLOURS, FENCE_COLOURS, HEDGE_COLOURS,
   PATH_COLOURS, WATER_COLOURS, DECKING_COLOURS, ELEC_COLOURS, PLUMB_COLOURS,
-  UNIT_PX, TEXTURE_MAP, PLANT_VARIANTS,
+  UNIT_PX, TEXTURE_MAP, PLANT_VARIANTS, GATE_VARIANTS,
 } from '../hooks/useGardenState'
 import './MobileSheet.css'
 
@@ -350,6 +350,55 @@ export default function MobileSheet({
   function renderPlantPanel() {
     const d = plantDataRef?.current[selectedPlant.id] || {}
     const isDecor = ['Decor', 'Water Feature'].includes(d.family)
+    const isGate = d.family === 'Gate'
+    const gateVariants = isGate ? (GATE_VARIANTS[d.key] || null) : null
+
+    // ── Gate hybrid panel ──────────────────────────────────────
+    if (isGate) {
+      return (
+        <>
+          <div className="mobile-edit-title">Gates</div>
+          <div className="mobile-edit-subtitle">Decor</div>
+          {gateVariants && (
+            <>
+              <div className="mobile-edit-label" style={{marginTop:8}}>COLOUR</div>
+              <div className="mobile-colour-swatch-row">
+                {gateVariants.map(v => (
+                  <div
+                    key={v.label}
+                    className={`mobile-colour-swatch${(d.variantSrc || null) === v.src ? ' selected' : ''}`}
+                    style={{ background: v.colour }}
+                    title={v.label}
+                    onClick={() => onPlantVariantChange?.(v.src)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+          <div className="mobile-edit-sep" />
+          <div className="mobile-edit-row">
+            <button className="mobile-edit-btn" onClick={onCopyPlant}>⧎ Copy</button>
+            <button
+              className={`mobile-edit-btn${d.locked ? ' mobile-edit-btn--locked' : ''}`}
+              onClick={onLockPlant}
+            >{d.locked ? '🔒 Locked' : '🔓 Unlocked'}</button>
+          </div>
+          <div className="mobile-edit-row">
+            <button className="mobile-edit-btn" onClick={() => onLayerMove?.('plant','up')}>▲ Forward</button>
+            <button className="mobile-edit-btn" onClick={() => onLayerMove?.('plant','down')}>▼ Back</button>
+          </div>
+          <div className="mobile-edit-row">
+            <button className="mobile-edit-btn" onClick={onTransparentPlant}>
+              👁 {d.transparent ? 'Restore Opacity' : 'Make Transparent'}
+            </button>
+          </div>
+          <div className="mobile-edit-row">
+            <button className="mobile-edit-btn danger" onClick={onDeletePlant}>🗑 Delete</button>
+          </div>
+        </>
+      )
+    }
+
     return (
       <>
         <div className="mobile-edit-title">{d.label || 'Plant'}</div>

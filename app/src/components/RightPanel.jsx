@@ -8,7 +8,7 @@ import { ToolMenu } from './toolMenuData.jsx'
 import {
   BED_COLOURS, BUILDING_COLOURS, FENCE_COLOURS, HEDGE_COLOURS,
   PATH_COLOURS, WATER_COLOURS, DECKING_COLOURS, ELEC_COLOURS, PLUMB_COLOURS,
-  UNIT_PX, TEXTURE_MAP, PLANT_VARIANTS,
+  UNIT_PX, TEXTURE_MAP, PLANT_VARIANTS, GATE_VARIANTS,
 } from '../hooks/useGardenState'
 import './RightPanel.css'
 
@@ -119,6 +119,58 @@ export default function RightPanel({
   if (selectedPlant) {
     const d = plantDataRef?.current[selectedPlant.id] || {}
     const isDecor = ['Decor', 'Water Feature'].includes(d.family)
+    const isGate = d.family === 'Gate'
+    const gateVariants = isGate ? (GATE_VARIANTS[d.key] || null) : null
+
+    // ── Gate hybrid panel ─────────────────────────────────
+    if (isGate) {
+      return (
+        <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
+          <div className="panel-content">
+            <div className="panel-back-row">
+              <button className="panel-back-btn" onClick={() => onClearSelection?.()}>← Back</button>
+              <button className="panel-undo-btn" style={{visibility: canUndo ? 'visible' : 'hidden'}} onClick={() => onUndo?.()}>↩</button>
+            </div>
+            <div className="panel-h2">Gates</div>
+            <div className="panel-sub">Decor</div>
+            {gateVariants && (
+              <>
+                <div className="panel-title" style={{marginTop:8}}>COLOUR</div>
+                <div className="colour-swatch-row">
+                  {gateVariants.map(v => (
+                    <div
+                      key={v.label}
+                      className={`colour-swatch${(d.variantSrc || null) === v.src ? ' selected' : ''}`}
+                      style={{ background: v.colour }}
+                      title={v.label}
+                      onClick={() => onPlantVariantChange?.(v.src)}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+            <div className="panel-sep" />
+            <div style={{ display: 'flex', gap: 4 }}>
+              <button className="btn-panel" style={{ flex: 1 }} onClick={onCopyPlant}>⧉ Copy</button>
+              <button
+                className={`btn-panel${d.locked ? ' btn-panel--locked' : ''}`}
+                style={{ flex: 1 }}
+                onClick={onLockPlant}
+              >{d.locked ? '🔒 Locked' : '🔓 Unlocked'}</button>
+            </div>
+            <div style={{ display: 'flex', gap: 4 }}>
+              <button className="btn-panel" style={{ flex: 1 }} onClick={() => onLayerMove?.('plant', 'up')}>▲ Forward</button>
+              <button className="btn-panel" style={{ flex: 1 }} onClick={() => onLayerMove?.('plant', 'down')}>▼ Back</button>
+            </div>
+            <button className="btn-panel" onClick={onTransparentPlant}>
+              👁 {d.transparent ? 'Restore Opacity' : 'Make Transparent'}
+            </button>
+            <button className="btn-panel danger" onClick={onDeletePlant}>🗑 Delete</button>
+          </div>
+        </div>
+      )
+    }
+
     return (
       <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
         <div className="panel-content">
