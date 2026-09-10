@@ -94,8 +94,8 @@ const ROCK_SRCS = {
 
 export const PICKET_SRCS = {
   white: {
-    h: '/stickers/decor_picket-fence-white-v_M_CA-US-FR-GB-AU.png',  // front-facing pickets (horizontal lines)
-    v: '/stickers/decor_picket-fence-white-h_M_CA-US-FR-GB-AU.png',  // aerial top-down (vertical lines)
+    h: '/stickers/decor_picket-fence-white-h_M_CA-US-FR-GB-AU.png',  // front-facing pickets (horizontal lines)
+    v: '/stickers/decor_picket-fence-white-v_M_CA-US-FR-GB-AU.png',  // aerial top-down (vertical lines)
   },
   // additional colours added here as generated (each needs both h and v)
 }
@@ -321,10 +321,10 @@ export async function drawRockBorders(structLayer, structDataRef, Konva) {
 // V tile: aerial top-down (vertical lines)        - source 606x138 -> 96x22px display
 //   When Konva rotates V tile ~90° for a vertical line, 96px runs along line, 22px is depth
 const PICKET_TILE_H  = 64  // H tile display height
-const PICKET_H_W     = 38  // H tile display width
-const PICKET_V_TW    = 96  // V tile display width (long axis = spacing along line when rotated)
-const PICKET_V_TH    = 22  // V tile display height (short axis = fence depth)
-const PICKET_V_W     = PICKET_V_TW
+const PICKET_H_W     = 38  // H tile display width (front-facing)
+const PICKET_V_TW    = 96  // V tile long axis (runs along the vertical line)
+const PICKET_V_TH    = 22  // V tile short axis (fence depth/width on screen)
+const PICKET_V_W     = PICKET_V_TW  // spacing alias
 // Angle threshold: lines more vertical than this use the V (aerial) tile
 const VERTICAL_THRESHOLD_DEG = 45
 
