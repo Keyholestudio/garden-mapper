@@ -161,8 +161,8 @@ const GATE_VARIANT_LIST = [
 ]
 
 export const PICKET_VARIANTS = [
-  { id: 'white', label: 'White', colour: '#F5F5F5', src: '/stickers/decor_picket-fence-white_M_CA-US-FR-GB-AU.png' },
-  // additional colours added here as generated
+  { id: 'white', label: 'White', colour: '#F5F5F5' },
+  // additional colours added here as generated (each variant needs h + v tiles in rockBorderUtils PICKET_SRCS)
 ]
 
 export const GATE_VARIANTS = {

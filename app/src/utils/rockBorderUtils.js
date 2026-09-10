@@ -92,8 +92,11 @@ const ROCK_SRCS = {
 }
 
 export const PICKET_SRCS = {
-  white: '/stickers/decor_picket-fence-white_M_CA-US-FR-GB-AU.png',
-  // additional colours added here as generated
+  white: {
+    h: '/stickers/decor_picket-fence-white-h_M_CA-US-FR-GB-AU.png',  // aerial top-down (horizontal lines)
+    v: '/stickers/decor_picket-fence-white-v_M_CA-US-FR-GB-AU.png',  // front-facing pickets (vertical lines)
+  },
+  // additional colours added here as generated (each needs both h and v)
 }
 
 const _imgCache = {}
@@ -113,15 +116,20 @@ export function getRockImageCached(variant) {
 export function getRockSrc(variant) {
   return ROCK_SRCS[variant || 'grey'] || ROCK_SRCS.grey
 }
-export function getPicketSrc(variant) {
-  return PICKET_SRCS[variant || 'white'] || PICKET_SRCS.white
+export function getPicketSrc(variant, type = 'h') {
+  const entry = PICKET_SRCS[variant || 'white'] || PICKET_SRCS.white
+  return entry[type] || entry.h
 }
-export function getPicketImageCached(variant) {
-  const src = getPicketSrc(variant)
-  return _imgCache[src] || null
+export function getPicketImageCached(variant, type = 'h') {
+  return _imgCache[getPicketSrc(variant, type)] || null
 }
 export function loadPicketImage(src) {
   return loadRockImage(src)  // reuse same cache + loader
+}
+export function loadPicketImages(variant) {
+  // Preload both H and V tiles for a given variant
+  const entry = PICKET_SRCS[variant || 'white'] || PICKET_SRCS.white
+  return Promise.all([loadRockImage(entry.h), loadRockImage(entry.v)])
 }
 
 // ── Seeded PRNG ───────────────────────────────────────────────────────────────
@@ -308,25 +316,28 @@ export async function drawRockBorders(structLayer, structDataRef, Konva) {
 }
 
 // ── Picket Fence ────────────────────────────────────────────────────────────────────
-// Tile dimensions: 151x256 source, displays at tileW x 64px on canvas
-// tileW = 64 * (151/256) = 37.75 ≈ 38px
-const PICKET_TILE_H = 64  // display height on canvas (= medium fountain size)
-const PICKET_TILE_W = Math.round(PICKET_TILE_H * (151 / 256))  // ~38px
+// V tile (front-facing pickets): 151x256 source -> displays at 38x64px
+// H tile (aerial top-down):       51x256 source -> displays at 13x64px (but we rotate it, so width becomes height)
+// For H tiles the image is stored rotated 90°, so when Konva applies line angle it renders correctly
+const PICKET_TILE_H = 64          // display size (longer axis) for both tile types
+const PICKET_V_W = Math.round(PICKET_TILE_H * (151 / 256))  // ~38px  (V tile display width)
+const PICKET_H_W = Math.round(PICKET_TILE_H * (51  / 256))  // ~13px  (H tile display width)
+// Angle threshold: lines more vertical than this use the V (front-facing) tile
+const VERTICAL_THRESHOLD_DEG = 45
 
 export function addPicketsToGroup(group, flatPoints, tension, variant, Konva) {
-  const img = getPicketImageCached(variant)
-  if (!img) return
+  const imgV = getPicketImageCached(variant, 'v')  // front-facing pickets (steep angles)
+  const imgH = getPicketImageCached(variant, 'h')  // aerial top-down (shallow angles)
+  if (!imgV && !imgH) return
 
   // Remove existing picket images (keep hit line)
   group.getChildren(c => c instanceof Konva.Image).forEach(c => c.destroy())
 
   // Normalize so tiles always run left-to-right — prevents upside-down pickets
-  // when user draws from right to left
   let pts = flatPoints
   if (pts.length >= 4) {
     const x1 = pts[0], x2 = pts[pts.length - 2]
     if (x1 > x2) {
-      // Reverse the point pairs so we always go left-to-right
       const pairs = []
       for (let i = 0; i < pts.length; i += 2) pairs.push([pts[i], pts[i+1]])
       pairs.reverse()
@@ -339,13 +350,18 @@ export function addPicketsToGroup(group, flatPoints, tension, variant, Konva) {
 
   for (const { x, y, angle } of positions) {
     const deg = angle * 180 / Math.PI
+    const absDeg = Math.abs(deg)
+    // Use V tile (front-facing) when line is steep (more vertical than horizontal)
+    const isVertical = absDeg > VERTICAL_THRESHOLD_DEG
+    const img  = isVertical ? (imgV || imgH) : (imgH || imgV)
+    const tileW = isVertical ? PICKET_V_W : PICKET_H_W
     group.add(new Konva.Image({
       image: img,
       x, y,
-      width: PICKET_TILE_W,
+      width: tileW,
       height: PICKET_TILE_H,
       rotation: deg,
-      offsetX: PICKET_TILE_W / 2,
+      offsetX: tileW / 2,
       offsetY: PICKET_TILE_H / 2,
       listening: true,
     }))
@@ -392,12 +408,13 @@ export function buildPicketFenceGroup({ id, flatPoints, tension, variant, x, y, 
     if (onSelect) onSelect(id, group, e)
   })
 
-  const src = getPicketSrc(variant)
-  if (_imgCache[src]) {
+  const srcH = getPicketSrc(variant, 'h')
+  const srcV = getPicketSrc(variant, 'v')
+  const bothCached = _imgCache[srcH] && _imgCache[srcV]
+  if (bothCached) {
     addPicketsToGroup(group, flatPoints, tension, variant, Konva)
   } else {
-    loadPicketImage(src).then(img => {
-      if (!img) return
+    loadPicketImages(variant).then(() => {
       addPicketsToGroup(group, flatPoints, tension, variant, Konva)
       group.getLayer()?.batchDraw()
       if (onReady) onReady(group)
@@ -429,9 +446,10 @@ export async function drawPicketFences(structLayer, structDataRef, Konva) {
     const hitLine = group.getChildren(c => c instanceof Konva.Line)[0]
     if (!hitLine) continue
     const d = structDataRef.current[id]
-    const src = getPicketSrc(d?.picketVariant)
-    const img = await loadPicketImage(src)
-    if (!img) continue
+    await loadPicketImages(d?.picketVariant || 'white')
+    const imgH = getPicketImageCached(d?.picketVariant || 'white', 'h')
+    const imgV = getPicketImageCached(d?.picketVariant || 'white', 'v')
+    if (!imgH && !imgV) continue
     const lx = hitLine.x(), ly = hitLine.y()
     if (lx !== 0 || ly !== 0) {
       const normalized = hitLine.points().map((v, i) => i % 2 === 0 ? v + lx : v + ly)
