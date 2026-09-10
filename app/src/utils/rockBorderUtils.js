@@ -5,7 +5,7 @@ export const ROCK_BORDER_PRESETS = {
   'rock-border':   { stoneSize: 28, overlap: -0.15 },
   'stepping-path': { stoneSize: 48, overlap: -0.40 },
   'picket-fence':   { stoneSize: 38, overlap: 0.0 },  // horizontal: H tile width (unchanged)
-  'picket-fence-v':  { stoneSize: 96, overlap: 0.0 },  // vertical: V tile long axis (96px) = spacing along line
+  'picket-fence-v':  { stoneSize: 38, overlap: 0.0 },  // vertical: V tile long axis (38px) = spacing along line
 }
 
 // ── Catmull-Rom curve sampling ────────────────────────────────────────────────
@@ -322,8 +322,8 @@ export async function drawRockBorders(structLayer, structDataRef, Konva) {
 //   When Konva rotates V tile ~90° for a vertical line, 96px runs along line, 22px is depth
 const PICKET_TILE_H  = 64  // H tile display height
 const PICKET_H_W     = 38  // H tile display width (front-facing)
-const PICKET_V_TW    = 96  // V tile long axis (runs along the vertical line)
-const PICKET_V_TH    = 22  // V tile short axis (fence depth/width on screen)
+const PICKET_V_TW    = 38  // V tile long axis (runs along the vertical line)
+const PICKET_V_TH    = 9   // V tile short axis (fence depth/width on screen)
 const PICKET_V_W     = PICKET_V_TW  // spacing alias
 // Angle threshold: lines more vertical than this use the V (aerial) tile
 const VERTICAL_THRESHOLD_DEG = 45
