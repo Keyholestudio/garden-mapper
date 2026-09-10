@@ -4,7 +4,7 @@
 export const ROCK_BORDER_PRESETS = {
   'rock-border':   { stoneSize: 28, overlap: -0.15 },
   'stepping-path': { stoneSize: 48, overlap: -0.40 },
-  'picket-fence':  { stoneSize: 24, overlap: 0.0  },
+  'picket-fence':  { stoneSize: 38, overlap: 0.0  },  // tile width at canvas display size (64px tall * 151/256 aspect)
 }
 
 // ── Catmull-Rom curve sampling ────────────────────────────────────────────────
@@ -91,6 +91,11 @@ const ROCK_SRCS = {
   mixed: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',
 }
 
+export const PICKET_SRCS = {
+  white: '/stickers/decor_picket-fence-white_M_CA-US-FR-GB-AU.png',
+  // additional colours added here as generated
+}
+
 const _imgCache = {}
 export function loadRockImage(src) {
   if (_imgCache[src]) return Promise.resolve(_imgCache[src])
@@ -107,6 +112,16 @@ export function getRockImageCached(variant) {
 }
 export function getRockSrc(variant) {
   return ROCK_SRCS[variant || 'grey'] || ROCK_SRCS.grey
+}
+export function getPicketSrc(variant) {
+  return PICKET_SRCS[variant || 'white'] || PICKET_SRCS.white
+}
+export function getPicketImageCached(variant) {
+  const src = getPicketSrc(variant)
+  return _imgCache[src] || null
+}
+export function loadPicketImage(src) {
+  return loadRockImage(src)  // reuse same cache + loader
 }
 
 // ── Seeded PRNG ───────────────────────────────────────────────────────────────
@@ -288,6 +303,127 @@ export async function drawRockBorders(structLayer, structDataRef, Konva) {
     }
     addStonesToGroup(group, hitLine.points(), hitLine.tension(), d?.rockVariant, id, Konva)
     group.moveToTop()  // rock borders render above beds/water
+  }
+  structLayer.batchDraw()
+}
+
+// ── Picket Fence ────────────────────────────────────────────────────────────────────
+// Tile dimensions: 151x256 source, displays at tileW x 64px on canvas
+// tileW = 64 * (151/256) = 37.75 ≈ 38px
+const PICKET_TILE_H = 64  // display height on canvas (= medium fountain size)
+const PICKET_TILE_W = Math.round(PICKET_TILE_H * (151 / 256))  // ~38px
+
+export function addPicketsToGroup(group, flatPoints, tension, variant, Konva) {
+  const img = getPicketImageCached(variant)
+  if (!img) return
+
+  // Remove existing picket images (keep hit line)
+  group.getChildren(c => c instanceof Konva.Image).forEach(c => c.destroy())
+
+  const positions = computeStonePositions(flatPoints, tension, 'picket-fence')
+  if (positions.length === 0) return
+
+  for (const { x, y, angle } of positions) {
+    group.add(new Konva.Image({
+      image: img,
+      x, y,
+      width: PICKET_TILE_W,
+      height: PICKET_TILE_H,
+      rotation: (angle * 180 / Math.PI),  // rotate to follow line, no jitter
+      offsetX: PICKET_TILE_W / 2,
+      offsetY: PICKET_TILE_H / 2,
+      listening: true,
+    }))
+  }
+
+  const hitLine = group.getChildren(c => c instanceof Konva.Line)[0]
+  if (hitLine) hitLine.moveToTop()
+}
+
+export function buildPicketFenceGroup({ id, flatPoints, tension, variant, x, y, Konva, showGrid, snapCell, onSelect, onReady }) {
+  const group = new Konva.Group({ id, x: x || 0, y: y || 0, draggable: true })
+
+  const hitLine = new Konva.Line({
+    points: flatPoints,
+    tension, closed: false,
+    stroke: 'rgba(0,0,0,0)', strokeWidth: 0,
+    strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round',
+    hitStrokeWidth: 40,
+    listening: true,
+  })
+  group.add(hitLine)
+
+  group.on('dragmove', () => {
+    if (showGrid && snapCell) {
+      group.x(Math.round(group.x() / snapCell) * snapCell)
+      group.y(Math.round(group.y() / snapCell) * snapCell)
+    }
+  })
+
+  group.on('dragend', () => {
+    const lx = hitLine.x(), ly = hitLine.y()
+    if (lx !== 0 || ly !== 0) {
+      const flat = hitLine.points()
+      const newFlat = flat.map((v, i) => i % 2 === 0 ? v + lx : v + ly)
+      hitLine.points(newFlat)
+      hitLine.x(0); hitLine.y(0)
+    }
+    addPicketsToGroup(group, hitLine.points(), hitLine.tension(), variant, Konva)
+    group.getLayer()?.batchDraw()
+  })
+
+  group.on('click tap', e => {
+    e.cancelBubble = true
+    if (onSelect) onSelect(id, group, e)
+  })
+
+  const src = getPicketSrc(variant)
+  if (_imgCache[src]) {
+    addPicketsToGroup(group, flatPoints, tension, variant, Konva)
+  } else {
+    loadPicketImage(src).then(img => {
+      if (!img) return
+      addPicketsToGroup(group, flatPoints, tension, variant, Konva)
+      group.getLayer()?.batchDraw()
+      if (onReady) onReady(group)
+    })
+  }
+
+  return group
+}
+
+export function refreshPicketFenceGroup(group, structData, Konva) {
+  if (!group) return
+  const hitLine = group.getChildren(c => c instanceof Konva.Line)[0]
+  if (!hitLine) return
+  const lx = hitLine.x(), ly = hitLine.y()
+  if (lx !== 0 || ly !== 0) {
+    const normalized = hitLine.points().map((v, i) => i % 2 === 0 ? v + lx : v + ly)
+    hitLine.points(normalized); hitLine.x(0); hitLine.y(0)
+  }
+  addPicketsToGroup(group, hitLine.points(), hitLine.tension(), structData?.picketVariant || 'white', Konva)
+  group.getLayer()?.batchDraw()
+}
+
+export async function drawPicketFences(structLayer, structDataRef, Konva) {
+  if (!structLayer || !structDataRef?.current) return
+  const entries = Object.entries(structDataRef.current).filter(([, d]) => d.type === 'picket-fence')
+  for (const [id] of entries) {
+    const group = structLayer.findOne('#' + id)
+    if (!group || !(group instanceof Konva.Group)) continue
+    const hitLine = group.getChildren(c => c instanceof Konva.Line)[0]
+    if (!hitLine) continue
+    const d = structDataRef.current[id]
+    const src = getPicketSrc(d?.picketVariant)
+    const img = await loadPicketImage(src)
+    if (!img) continue
+    const lx = hitLine.x(), ly = hitLine.y()
+    if (lx !== 0 || ly !== 0) {
+      const normalized = hitLine.points().map((v, i) => i % 2 === 0 ? v + lx : v + ly)
+      hitLine.points(normalized); hitLine.x(0); hitLine.y(0)
+    }
+    addPicketsToGroup(group, hitLine.points(), hitLine.tension(), d?.picketVariant || 'white', Konva)
+    group.moveToTop()
   }
   structLayer.batchDraw()
 }

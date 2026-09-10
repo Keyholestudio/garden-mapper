@@ -2,7 +2,7 @@
 import { useEffect, useRef } from 'react'
 import Konva from 'konva'
 import { isFreeMode } from '../utils/drawUtils'
-import { addStonesToGroup } from '../utils/rockBorderUtils'
+import { addStonesToGroup, addPicketsToGroup } from '../utils/rockBorderUtils'
 
 export function useSelection({
   stage, layers, state,
@@ -24,7 +24,8 @@ export function useSelection({
     const { tr, structLayer } = layers
     const sel = state.selectedStruct
     const structLocked = sel && state.structDataRef?.current[sel.id]?.locked
-    const isRockBorder = sel && state.structDataRef?.current[sel.id]?.type === 'rock-border'
+    const selType = sel && state.structDataRef?.current[sel.id]?.type
+    const isRockBorder = selType === 'rock-border' || selType === 'picket-fence'
     if (sel && !structLocked && !isRockBorder && (sel.shape instanceof Konva.Rect || sel.shape instanceof Konva.Group)) {
       tr.keepRatio(false)
       tr.enabledAnchors(['top-left','top-center','top-right','middle-left','middle-right','bottom-left','bottom-center','bottom-right'])
@@ -114,11 +115,12 @@ export function useSelection({
       const ly  = shape instanceof Konva.Line ? shape.y() + (shape.parent instanceof Konva.Group ? shape.parent.y() : 0) : 0
       cur[ptIdx] = { x: h.x() - lx, y: h.y() - ly }
       setShapePts(shape, cur)
-      // Rock border: immediately refresh stones so they follow the moved point
+      // Rock border / picket fence: refresh tiles so they follow the moved point
       if (shape instanceof Konva.Line && shape.parent instanceof Konva.Group) {
         const grp = shape.parent
         const d   = sRef.current.structDataRef?.current[id]
-        addStonesToGroup(grp, shape.points(), shape.tension(), d?.rockVariant, id, Konva)
+        if (d?.type === 'picket-fence') addPicketsToGroup(grp, shape.points(), shape.tension(), d?.picketVariant || 'white', Konva)
+        else addStonesToGroup(grp, shape.points(), shape.tension(), d?.rockVariant, id, Konva)
       }
       structLayer.batchDraw()
     })
@@ -131,10 +133,11 @@ export function useSelection({
       if (flat.length / 2 <= minPts) return  // won't remove below minimum
       const newFlat = [...flat.slice(0, ptIdx * 2), ...flat.slice(ptIdx * 2 + 2)]
       shape.points(newFlat)
-      // Rock border: refresh stones after point removal
+      // Rock border / picket fence: refresh tiles after point removal
       if (shape.parent instanceof Konva.Group) {
         const d = sRef.current.structDataRef?.current[id]
-        addStonesToGroup(shape.parent, newFlat, shape.tension(), d?.rockVariant, id, Konva)
+        if (d?.type === 'picket-fence') addPicketsToGroup(shape.parent, newFlat, shape.tension(), d?.picketVariant || 'white', Konva)
+        else addStonesToGroup(shape.parent, newFlat, shape.tension(), d?.rockVariant, id, Konva)
       }
       structLayer.batchDraw()
       buildEditHandles(id, shape)  // rebuild with updated points
@@ -159,8 +162,9 @@ export function useSelection({
     if (sRef.current.structDataRef?.current[id]?.locked) return
     if (onExitEditMode) onExitEditMode() // clear any prior edit
 
-    // Rock border: edit the inner hit line, refresh stones after each handle move
-    if (sRef.current.structDataRef?.current[id]?.type === 'rock-border' && shape instanceof Konva.Group) {
+    // Rock border / picket fence: edit the inner hit line, refresh tiles after each handle move
+    const editType = sRef.current.structDataRef?.current[id]?.type
+    if ((editType === 'rock-border' || editType === 'picket-fence') && shape instanceof Konva.Group) {
       const hitLine = shape.getChildren(c => c instanceof Konva.Line)[0]
       if (!hitLine) return
 

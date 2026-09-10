@@ -69,8 +69,8 @@ export const BED_SUBS = [
 ]
 
 export const FENCE_ITEMS = [
-  { id: 'fence', label: 'Fence', hint: 'Open freeform line' },
-  { id: 'gate',  label: 'Gate',  hint: 'Place a gate section' },
+  { id: 'picket-fence', label: 'Fences', hint: 'Click points · Enter to finish' },
+  { id: 'gate',         label: 'Gate',   hint: 'Place a gate section' },
   {
     id: '__hedges', label: 'Hedges', emoji: '🌳', group: true,
     children: [
@@ -190,7 +190,7 @@ export const ITEMS_MAP = {
 // Helpers
 export function getActiveSub(currentMode, bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool, decorSubTool) {
   if (currentMode === 'beds')     return bedSubTool
-  if (currentMode === 'fences')   return fenceType === 'fence' ? 'fence' : fenceType === 'gate' ? 'gate' : fenceSubTool
+  if (currentMode === 'fences')   return fenceType === 'picket-fence' ? 'picket-fence' : fenceType === 'gate' ? 'gate' : fenceSubTool
   if (currentMode === 'paths')    return pathSubTool
   if (currentMode === 'building') return buildingSubTool
   if (currentMode === 'water')    return waterSubTool
@@ -202,9 +202,9 @@ export function getActiveSub(currentMode, bedSubTool, fenceSubTool, fenceType, p
 export function handleSubChange(id, currentMode, { onBedSubTool, onFenceType, onFenceSubTool, onPathSubTool, onBuildingSubTool, onWaterSubTool, onDecorSubTool }) {
   if (currentMode === 'beds')     { onBedSubTool(id); return }
   if (currentMode === 'fences')   {
-    if (id === null)    { onFenceType(null); onFenceSubTool(null); return }
-    if (id === 'fence') { onFenceType('fence'); return }
-    if (id === 'gate')  { onFenceType('gate'); onDecorSubTool('gate-white'); return }
+    if (id === null)         { onFenceType(null); onFenceSubTool(null); return }
+    if (id === 'picket-fence') { onFenceType('picket-fence'); return }
+    if (id === 'gate')         { onFenceType('gate'); onDecorSubTool('gate-white'); return }
     if (id === 'rock-border-straight' || id === 'rock-border-curved') { onFenceType('rock-border'); onFenceSubTool(id); return }
     onFenceType('hedge'); onFenceSubTool(id); return
   }

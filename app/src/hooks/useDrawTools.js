@@ -123,7 +123,7 @@ export function useDrawTools({
     const isPath = s.currentMode === 'paths'
     const isUG   = (s.currentMode === 'building' && (s.buildingSubTool === 'underground-electrical' || s.buildingSubTool === 'underground-plumbing')) ||
                    (s.currentMode === 'water' && s.waterSubTool === 'underground-plumbing')
-    const isFenceOrGate = s.currentMode === 'fences' && (s.fenceType === 'fence' || s.fenceType === 'rock-border')
+    const isFenceOrGate = s.currentMode === 'fences' && (s.fenceType === 'picket-fence' || s.fenceType === 'rock-border')
     const minPts = (isPath || isUG || isFenceOrGate) ? 2 : 3
     if (pts.length < minPts) {
       // Not enough points — show hint but don't close

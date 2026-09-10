@@ -160,6 +160,11 @@ const GATE_VARIANT_LIST = [
   { label: 'Sage',     colour: '#7A9E7E', src: '/stickers/decor_gate-wood-sage_XL_CA-US-FR-GB-AU.png' },
 ]
 
+export const PICKET_VARIANTS = [
+  { id: 'white', label: 'White', colour: '#F5F5F5', src: '/stickers/decor_picket-fence-white_M_CA-US-FR-GB-AU.png' },
+  // additional colours added here as generated
+]
+
 export const GATE_VARIANTS = {
   'decor_gate-wood-white_XL_CA-US-FR-GB-AU':    GATE_VARIANT_LIST,
   'decor_gate-wood-cedar_XL_CA-US-FR-GB-AU':    GATE_VARIANT_LIST,

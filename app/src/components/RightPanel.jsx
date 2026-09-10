@@ -8,7 +8,7 @@ import { ToolMenu } from './toolMenuData.jsx'
 import {
   BED_COLOURS, BUILDING_COLOURS, FENCE_COLOURS, HEDGE_COLOURS,
   PATH_COLOURS, WATER_COLOURS, DECKING_COLOURS, ELEC_COLOURS, PLUMB_COLOURS,
-  UNIT_PX, TEXTURE_MAP, PLANT_VARIANTS, GATE_VARIANTS,
+  UNIT_PX, TEXTURE_MAP, PLANT_VARIANTS, GATE_VARIANTS, PICKET_VARIANTS,
 } from '../hooks/useGardenState'
 import './RightPanel.css'
 
@@ -18,6 +18,7 @@ const TYPE_NAMES = {
   pond: 'Pond', 'water-fountain': 'Fountain', 'pool-sq': 'Pool', 'pool-circle': 'Pool',
   deck: 'Deck', 'underground-electrical': 'Electrical', 'underground-plumbing': 'Plumbing',
   'rock-border': 'Rock Border',
+  'picket-fence': 'Fences',
 }
 const TYPE_COLOURS = {
   bed: BED_COLOURS, 'bed-square': BED_COLOURS, building: BUILDING_COLOURS,
@@ -314,6 +315,53 @@ export default function RightPanel({
 
             <div className="panel-sep" />
             <button className="btn-panel danger" onClick={() => onDeleteStruct?.()}>🗑 Delete Border</button>
+          </div>
+        </div>
+      )
+    }
+
+    // ── Picket fence panel ──────────────────────────────────────────────
+    if (d.type === 'picket-fence') {
+      return (
+        <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
+          <div className="panel-content">
+            <div className="panel-back-row">
+              <button className="panel-back-btn" onClick={() => onClearSelection?.()}>← Back</button>
+              <button className="panel-undo-btn" style={{visibility: canUndo ? 'visible' : 'hidden'}} onClick={() => onUndo?.()}>↩</button>
+            </div>
+            <div className="panel-h2">Fences</div>
+            <div className="panel-sub">Picket Fence</div>
+            <div className="panel-title" style={{marginTop:8}}>COLOUR</div>
+            <div className="colour-swatch-row">
+              {PICKET_VARIANTS.map(v => (
+                <div
+                  key={v.id}
+                  className={`colour-swatch${(d.picketVariant || 'white') === v.id ? ' selected' : ''}`}
+                  style={{ background: v.colour, border: v.id === 'white' ? '1px solid #ccc' : undefined }}
+                  title={v.label}
+                  onClick={() => onRockVariantChange?.(v.id)}
+                />
+              ))}
+            </div>
+            <button className="btn-panel" onClick={() => onEnterEdit?.(selectedStruct.id)}>✏️ Edit Shape</button>
+            <div className="panel-sep" />
+            <div style={{ display:'flex', gap:4 }}>
+              <button className="btn-panel" style={{flex:1}} onClick={onCopyStruct}>⧉ Copy</button>
+              <button
+                className={`btn-panel${d.locked ? ' btn-panel--locked' : ''}`}
+                style={{flex:1}}
+                onClick={onLockStruct}
+              >{d.locked ? '🔒 Locked' : '🔓 Unlocked'}</button>
+            </div>
+            <div style={{ display:'flex', gap:4 }}>
+              <button className="btn-panel" style={{flex:1}} onClick={() => onLayerMove?.('struct','up')}>▲ Forward</button>
+              <button className="btn-panel" style={{flex:1}} onClick={() => onLayerMove?.('struct','down')}>▼ Back</button>
+            </div>
+            <button className="btn-panel" onClick={onTransparentStruct}>
+              👁 {d.transparent ? 'Restore Opacity' : 'Make Transparent'}
+            </button>
+            <div className="panel-sep" />
+            <button className="btn-panel danger" onClick={() => onDeleteStruct?.()}>🗑 Delete</button>
           </div>
         </div>
       )

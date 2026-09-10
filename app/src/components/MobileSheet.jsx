@@ -9,7 +9,7 @@ import { ToolMenu } from './toolMenuData.jsx'
 import {
   BED_COLOURS, BUILDING_COLOURS, FENCE_COLOURS, HEDGE_COLOURS,
   PATH_COLOURS, WATER_COLOURS, DECKING_COLOURS, ELEC_COLOURS, PLUMB_COLOURS,
-  UNIT_PX, TEXTURE_MAP, PLANT_VARIANTS, GATE_VARIANTS,
+  UNIT_PX, TEXTURE_MAP, PLANT_VARIANTS, GATE_VARIANTS, PICKET_VARIANTS,
 } from '../hooks/useGardenState'
 import './MobileSheet.css'
 
@@ -19,6 +19,7 @@ const TYPE_NAMES = {
   pond: 'Pond', 'water-fountain': 'Fountain', 'pool-sq': 'Pool', 'pool-circle': 'Pool',
   deck: 'Deck', 'underground-electrical': 'Electrical', 'underground-plumbing': 'Plumbing',
   'rock-border': 'Rock Border',
+  'picket-fence': 'Fences',
 }
 const TYPE_COLOURS = {
   bed: BED_COLOURS, 'bed-square': BED_COLOURS, building: BUILDING_COLOURS,
@@ -112,7 +113,7 @@ export default function MobileSheet({
     const d = structDataRef?.current[editingShapeId]
     const editShape = layers?.structLayer?.findOne('#' + editingShapeId)
     const isLine = editShape instanceof Konva.Line
-      || (editShape instanceof Konva.Group && d?.type === 'rock-border')
+      || (editShape instanceof Konva.Group && (d?.type === 'rock-border' || d?.type === 'picket-fence'))
     return (
       <div className="mobile-sheet mobile-sheet--edit" onPointerDown={e => e.stopPropagation()}>
         <div className="mobile-sheet-handle mobile-sheet-handle--edit">
@@ -487,6 +488,47 @@ export default function MobileSheet({
   function renderStructPanel() {
     const d       = structDataRef?.current[selectedStruct.id] || {}
     const shape   = selectedStruct.shape
+
+    // Picket fence panel
+    if (d.type === 'picket-fence') {
+      return (
+        <>
+          <div className="mobile-edit-title">Fences</div>
+          <div className="mobile-edit-subtitle">Picket Fence</div>
+          <div className="mobile-edit-label" style={{marginTop:8}}>COLOUR</div>
+          <div className="mobile-colour-swatch-row">
+            {PICKET_VARIANTS.map(v => (
+              <div key={v.id}
+                className={`mobile-colour-swatch${(d.picketVariant || 'white') === v.id ? ' selected' : ''}`}
+                style={{ background: v.colour, border: v.id === 'white' ? '1px solid #ccc' : undefined }}
+                title={v.label}
+                onClick={() => onRockVariantChange?.(v.id)}
+              />
+            ))}
+          </div>
+          <div className="mobile-edit-sep" />
+          <button className="mobile-edit-btn full" onClick={() => onEnterEdit?.(selectedStruct.id)}>✏️ Edit Shape</button>
+          <div className="mobile-edit-sep" />
+          <div className="mobile-edit-row">
+            <button className="mobile-edit-btn" onClick={onCopyStruct}>⧎ Copy</button>
+            <button
+              className={`mobile-edit-btn${d.locked ? ' mobile-edit-btn--locked' : ''}`}
+              onClick={onLockStruct}
+            >{d.locked ? '🔒 Locked' : '🔓 Unlocked'}</button>
+          </div>
+          <div className="mobile-edit-row">
+            <button className="mobile-edit-btn" onClick={() => onLayerMove?.('struct','up')}>▲ Forward</button>
+            <button className="mobile-edit-btn" onClick={() => onLayerMove?.('struct','down')}>▼ Back</button>
+          </div>
+          <div className="mobile-edit-row">
+            <button className="mobile-edit-btn" onClick={onTransparentStruct}>
+              👁 {d.transparent ? 'Restore' : 'Make Transparent'}
+            </button>
+            <button className="mobile-edit-btn danger" onClick={onDeleteStruct}>🗑 Delete</button>
+          </div>
+        </>
+      )
+    }
 
     // Rock border - simple dedicated panel
     if (d.type === 'rock-border') {

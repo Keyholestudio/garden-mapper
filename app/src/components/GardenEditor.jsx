@@ -24,7 +24,7 @@ import RestorePrompt from './RestorePrompt'
 import { seedDreamGarden, fetchDreamGardenUpdate } from '../hooks/useDreamGarden'
 import { softDeleteCloudGarden } from '../supabase'
 import { addRectStruct, isFreeMode, applyColourOrTexture, tryMergeRects } from '../utils/drawUtils'
-import { drawRockBorders, buildRockBorderGroup } from '../utils/rockBorderUtils'
+import { drawRockBorders, buildRockBorderGroup, drawPicketFences, buildPicketFenceGroup, refreshPicketFenceGroup, getPicketSrc, loadPicketImage } from '../utils/rockBorderUtils'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import { useRecentPlants } from '../hooks/useRecentPlants'
 import LogoBar        from './LogoBar'
@@ -809,7 +809,15 @@ export default function GardenEditor() {
   const handleRockVariantChange = (variant) => {
     const sel = state.selectedStruct; if (!sel) return
     const d = state.structDataRef.current[sel.id]
-    if (!d || d.type !== 'rock-border') return
+    if (!d) return
+    if (d.type === 'picket-fence') {
+      d.picketVariant = variant
+      drawPicketFences(layersRef.current.structLayer, state.structDataRef, Konva)
+      state.setSelectedStruct({ ...sel, picketVariant: variant })
+      triggerAutoSave()
+      return
+    }
+    if (d.type !== 'rock-border') return
     d.rockVariant = variant
     // Redraw stones with new variant
     drawRockBorders(layersRef.current.structLayer, state.structDataRef, Konva)
@@ -1258,8 +1266,9 @@ export default function GardenEditor() {
     })
     currentGardenIndexRef.current = lastIdx
     setCurrentGardenIndex(lastIdx)
-    // Draw rock borders after garden loads
+    // Draw rock borders + picket fences after garden loads
     drawRockBorders(layersRef.current.structLayer, state.structDataRef, Konva)
+    drawPicketFences(layersRef.current.structLayer, state.structDataRef, Konva)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stageReady, loadedImagesCount])
 

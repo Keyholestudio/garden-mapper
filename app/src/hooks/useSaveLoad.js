@@ -6,7 +6,7 @@ import Konva from 'konva'
 import { SIZE_MAP, TEXTURE_MAP } from './useGardenState'
 import { makePlantGroup } from '../utils/plantUtils'
 import { applyColourOrTexture } from '../utils/drawUtils'
-import { buildRockBorderGroup } from '../utils/rockBorderUtils'
+import { buildRockBorderGroup, buildPicketFenceGroup } from '../utils/rockBorderUtils'
 import { getDeviceId, getDeviceLabel } from '../supabase'
 
 // Set to true to re-enable seasonal lawn textures on the property boundary
@@ -243,17 +243,19 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
   // Collect structs (from Konva layer — same as v8)
   const structs = []
 
-  // Rock border groups: serialise from the Group + its inner Line child
+  // Rock border + picket fence groups: serialise from the Group + its inner Line child
   structLayer?.find('Group').forEach(g => {
     const id = g.id()
     if (!id || !state.structDataRef.current[id]) return
     const d = state.structDataRef.current[id]
-    if (d.type !== 'rock-border') return
+    if (d.type !== 'rock-border' && d.type !== 'picket-fence') return
     const hitLine = g.getChildren(c => c instanceof Konva.Line)[0]
     if (!hitLine) return
     structs.push({
       id, type: d.type, colour: d.colour, label: d.label,
-      tension: d.tension, rockVariant: d.rockVariant || 'grey',
+      tension: d.tension,
+      rockVariant: d.rockVariant || 'grey',
+      picketVariant: d.picketVariant || 'white',
       transparent: d.transparent || false, locked: d.locked || false,
       points: hitLine.points(), lx: g.x(), ly: g.y(),
       zIndex: g.getZIndex(),
@@ -264,7 +266,7 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
     const id = s.id()
     if (!id || !state.structDataRef.current[id]) return  // skips __propBounds, __propLabel
     const d = state.structDataRef.current[id]
-    if (d.type === 'rock-border') return  // already handled above via Group
+    if (d.type === 'rock-border' || d.type === 'picket-fence') return  // already handled above via Group
     const entry = {
       id, type: d.type, colour: d.colour, label: d.label,
       pathWidth: d.pathWidth, tension: d.tension,
@@ -421,6 +423,24 @@ export function loadGarden({
     let shape
 
     // ── Rock border restore — Group with hit line + stone images ──────────
+
+    // -- Picket fence restore - Group with hit line + tiled picket images --
+    if (entry.type === 'picket-fence' && entry.points !== undefined) {
+      const group = buildPicketFenceGroup({
+        id: entry.id,
+        flatPoints: entry.points,
+        tension: 0,
+        variant: entry.picketVariant || 'white',
+        x: (entry.lx || 0) + dX,
+        y: (entry.ly || 0) + dY,
+        Konva,
+        showGrid: false, snapCell: 0,
+        onSelect: (id, shape, e) => { if (!state.editingShapeIdRef?.current) onSelectStruct(id, shape, e) },
+        onReady: () => structLayer?.batchDraw(),
+      })
+      structLayer?.add(group)
+      return
+    }
     if (entry.type === 'rock-border' && entry.points !== undefined) {
       const group = buildRockBorderGroup({
         id: entry.id,

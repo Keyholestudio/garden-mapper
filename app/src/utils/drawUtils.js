@@ -4,7 +4,7 @@ import {
   BED_COLOURS, BUILDING_COLOURS, FENCE_COLOURS, HEDGE_COLOURS,
   PATH_COLOURS, WATER_COLOURS, DECKING_COLOURS, GATE_STYLES,
 } from '../hooks/useGardenState'
-import { buildRockBorderGroup } from './rockBorderUtils'
+import { buildRockBorderGroup, buildPicketFenceGroup } from './rockBorderUtils'
 
 // ── Texture helper ─────────────────────────────────────────
 // Apply a repeating texture (or solid fill) to any Konva shape based on colour token.
@@ -44,7 +44,7 @@ function applyHedgeTexture(shape, layer) {
 export function isFreeMode(currentMode, bedSubTool, fenceSubTool, fenceType, buildingSubTool, waterSubTool, pathSubTool) {
   // null sub-tool = no tool selected yet, never freeform
   if (currentMode === 'beds'     && bedSubTool && bedSubTool !== 'square') return true
-  if (currentMode === 'fences'   && fenceType === 'fence') return true
+  if (currentMode === 'fences'   && fenceType === 'picket-fence') return true
   // fenceType === 'gate' is now sticker placement (not line drawing) — do not activate draw tool
   if (currentMode === 'fences'   && fenceType === 'rock-border') return true
   if (currentMode === 'fences'   && fenceSubTool && fenceSubTool !== 'square') return true
@@ -184,9 +184,31 @@ export function closeFreeShape({
                      || (currentMode === 'water' && waterSubTool === 'underground-plumbing')
   const isDeckFree   = currentMode === 'building' && (buildingSubTool === 'deck-curved' || buildingSubTool === 'deck-straight')
   const isWaterPond  = currentMode === 'water'    && waterSubTool === 'pond'
-  const closedShape  = !isPath && !isGate && !isFenceOpen && !isUnderground && !isRockBorder
+  const closedShape  = !isPath && !isGate && !isFenceOpen && !isUnderground && !isRockBorder && !isPicketFence
 
   // ── Rock border: Group containing hit line + stone images ────────────────
+
+  // -- Picket fence: Group containing hit line + tiled picket images --------
+  if (isPicketFence) {
+    const flat = freePts.flatMap(p => [p.x, p.y])
+    const id   = 'struct_' + structIdCtr.current++
+    structDataRef.current[id] = {
+      type: 'picket-fence', label: 'Fences',
+      colour: '#F5F5F5', tension: 0, picketVariant: 'white',
+    }
+    const group = buildPicketFenceGroup({
+      id, flatPoints: flat, tension: 0, variant: 'white',
+      x: 0, y: 0, Konva, showGrid, snapCell,
+      onSelect,
+      onReady: () => structLayer.batchDraw(),
+    })
+    structLayer.add(group)
+    group.moveToTop()
+    structLayer.batchDraw()
+    if (onSelect) onSelect(id, group)
+    if (onModeChange) onModeChange('select')
+    return id
+  }
   if (isRockBorder) {
     const isCurved = fenceSubTool === 'rock-border-curved'
     const tension  = isCurved ? 0.4 : 0
