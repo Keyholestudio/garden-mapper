@@ -4,8 +4,7 @@
 export const ROCK_BORDER_PRESETS = {
   'rock-border':   { stoneSize: 28, overlap: -0.15 },
   'stepping-path': { stoneSize: 48, overlap: -0.40 },
-  'picket-fence':   { stoneSize: 38,  overlap: 0.0 },  // horizontal: front-facing tile width (PICKET_H_W)
-  'picket-fence-v':  { stoneSize: 108, overlap: 0.0 },  // vertical: aerial tile width rotated 90° (PICKET_V_W)
+  'picket-fence':  { stoneSize: 38, overlap: 0.0  },  // matches front-facing tile display width (PICKET_H_W)
 }
 
 // ── Catmull-Rom curve sampling ────────────────────────────────────────────────
@@ -324,7 +323,7 @@ const PICKET_TILE_H = 64          // display size (longer axis) for both tile ty
 // H key = front-facing pickets (horizontal lines): source 151x256 -> 38px wide
 // V key = aerial top-down (vertical lines): source 51x256 -> 13px wide
 const PICKET_H_W = Math.round(PICKET_TILE_H * (151 / 256))  // ~38px  (front-facing, used on horizontal lines)
-const PICKET_V_W = Math.round(PICKET_TILE_H * (256 / 151))  // ~108px (aerial rotated 90°, used on vertical lines)
+const PICKET_V_W = Math.round(PICKET_TILE_H * (51  / 256))  // ~13px  (aerial, used on vertical lines)
 // Angle threshold: lines more vertical than this use the V (aerial) tile
 const VERTICAL_THRESHOLD_DEG = 45
 
@@ -348,20 +347,16 @@ export function addPicketsToGroup(group, flatPoints, tension, variant, Konva) {
     }
   }
 
-  // Use overall line angle to pick preset + tile type consistently
-  const overallAngle = pts.length >= 4
-    ? Math.atan2(pts[pts.length-1] - pts[1], pts[pts.length-2] - pts[0]) * 180 / Math.PI
-    : 0
-  const lineIsVertical = Math.abs(overallAngle) > VERTICAL_THRESHOLD_DEG
-  const preset = lineIsVertical ? 'picket-fence-v' : 'picket-fence'
-
-  const positions = computeStonePositions(pts, tension, preset)
+  const positions = computeStonePositions(pts, tension, 'picket-fence')
   if (positions.length === 0) return
 
   for (const { x, y, angle } of positions) {
     const deg = angle * 180 / Math.PI
-    const img  = lineIsVertical ? (imgV || imgH) : (imgH || imgV)
-    const tileW = lineIsVertical ? PICKET_V_W : PICKET_H_W
+    const absDeg = Math.abs(deg)
+    // Use V tile (front-facing) when line is steep (more vertical than horizontal)
+    const isVertical = absDeg > VERTICAL_THRESHOLD_DEG
+    const img  = isVertical ? (imgV || imgH) : (imgH || imgV)
+    const tileW = isVertical ? PICKET_V_W : PICKET_H_W
     group.add(new Konva.Image({
       image: img,
       x, y,
