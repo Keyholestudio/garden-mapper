@@ -44,7 +44,8 @@ function applyHedgeTexture(shape, layer) {
 export function isFreeMode(currentMode, bedSubTool, fenceSubTool, fenceType, buildingSubTool, waterSubTool, pathSubTool) {
   // null sub-tool = no tool selected yet, never freeform
   if (currentMode === 'beds'     && bedSubTool && bedSubTool !== 'square') return true
-  if (currentMode === 'fences'   && (fenceType === 'fence' || fenceType === 'gate')) return true
+  if (currentMode === 'fences'   && fenceType === 'fence') return true
+  // fenceType === 'gate' is now sticker placement (not line drawing) — do not activate draw tool
   if (currentMode === 'fences'   && fenceType === 'rock-border') return true
   if (currentMode === 'fences'   && fenceSubTool && fenceSubTool !== 'square') return true
   if (currentMode === 'paths'    && pathSubTool) return true

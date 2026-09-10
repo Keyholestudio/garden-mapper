@@ -204,7 +204,7 @@ export function handleSubChange(id, currentMode, { onBedSubTool, onFenceType, on
   if (currentMode === 'fences')   {
     if (id === null)    { onFenceType(null); onFenceSubTool(null); return }
     if (id === 'fence') { onFenceType('fence'); return }
-    if (id === 'gate')  { onFenceType('gate'); onDecorSubTool('gate-cedar'); return }
+    if (id === 'gate')  { onFenceType('gate'); onDecorSubTool('gate-white'); return }
     if (id === 'rock-border-straight' || id === 'rock-border-curved') { onFenceType('rock-border'); onFenceSubTool(id); return }
     onFenceType('hedge'); onFenceSubTool(id); return
   }

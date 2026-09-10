@@ -152,11 +152,13 @@ export const ELEC_COLOURS    = ['#111111','#E53935','#FDD835']
 export const PLUMB_COLOURS   = ['#757575','#1976D2','#6D4C41']
 
 export const GATE_VARIANTS = {
-  'decor_gate-wood-cedar_XL_CA-US-FR-GB-AU': [
-    { label: 'Cedar',    colour: '#8B5E3C', src: null },
+  'decor_gate-wood-white_XL_CA-US-FR-GB-AU': [
+    { label: 'White',    colour: '#F5F5F5', src: null },
+    { label: 'Cedar',    colour: '#8B5E3C', src: '/stickers/decor_gate-wood-cedar_XL_CA-US-FR-GB-AU.png' },
     { label: 'Charcoal', colour: '#3A3A3A', src: '/stickers/decor_gate-wood-charcoal_XL_CA-US-FR-GB-AU.png' },
     { label: 'Red',      colour: '#8B2020', src: '/stickers/decor_gate-wood-red_XL_CA-US-FR-GB-AU.png' },
     { label: 'Blue',     colour: '#3A5FAB', src: '/stickers/decor_gate-wood-blue_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Sage',     colour: '#7A9E7E', src: '/stickers/decor_gate-wood-sage_XL_CA-US-FR-GB-AU.png' },
   ],
 }
 

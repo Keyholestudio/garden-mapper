@@ -497,10 +497,12 @@ export default function GardenEditor() {
     'decor-arch-wood':    { key: 'decor_arch-wood_XL_CA-US-FR-GB-AU',    label: 'Wood Arch',       family: 'Decor', size: 'XL', src: '/stickers/decor_arch-wood_XL_CA-US-FR-GB-AU.png'    },
     'decor-arch-metal':   { key: 'decor_arch-metal_XL_CA-US-FR-GB-AU',   label: 'Metal Arch',      family: 'Decor', size: 'XL', src: '/stickers/decor_arch-metal_XL_CA-US-FR-GB-AU.png'   },
     // Gates
+    'gate-white':    { key: 'decor_gate-wood-white_XL_CA-US-FR-GB-AU',    label: 'White Gate',    family: 'Gate', size: 'XL', src: '/stickers/decor_gate-wood-white_XL_CA-US-FR-GB-AU.png'    },
     'gate-cedar':    { key: 'decor_gate-wood-cedar_XL_CA-US-FR-GB-AU',    label: 'Cedar Gate',    family: 'Gate', size: 'XL', src: '/stickers/decor_gate-wood-cedar_XL_CA-US-FR-GB-AU.png'    },
     'gate-charcoal': { key: 'decor_gate-wood-charcoal_XL_CA-US-FR-GB-AU', label: 'Charcoal Gate', family: 'Gate', size: 'XL', src: '/stickers/decor_gate-wood-charcoal_XL_CA-US-FR-GB-AU.png' },
     'gate-red':      { key: 'decor_gate-wood-red_XL_CA-US-FR-GB-AU',      label: 'Red Gate',      family: 'Gate', size: 'XL', src: '/stickers/decor_gate-wood-red_XL_CA-US-FR-GB-AU.png'      },
     'gate-blue':     { key: 'decor_gate-wood-blue_XL_CA-US-FR-GB-AU',     label: 'Blue Gate',     family: 'Gate', size: 'XL', src: '/stickers/decor_gate-wood-blue_XL_CA-US-FR-GB-AU.png'     },
+    'gate-sage':     { key: 'decor_gate-wood-sage_XL_CA-US-FR-GB-AU',     label: 'Sage Gate',     family: 'Gate', size: 'XL', src: '/stickers/decor_gate-wood-sage_XL_CA-US-FR-GB-AU.png'     },
     // Fountains - merged from FOUNTAIN_CATALOG (same placement flow as decor stickers)
     'fountain-sm': { key: 'water-feature_fountain-sm_S_CA-US-FR-GB-AU', label: 'Small Fountain',  family: 'Water Feature', size: 'S', src: '/stickers/water-feature_fountain-sm_S_CA-US-FR-GB-AU.png' },
     'fountain-md': { key: 'water-feature_fountain-md_M_CA-US-FR-GB-AU', label: 'Medium Fountain', family: 'Water Feature', size: 'M', src: '/stickers/water-feature_fountain-md_M_CA-US-FR-GB-AU.png' },
