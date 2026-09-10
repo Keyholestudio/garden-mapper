@@ -93,8 +93,8 @@ const ROCK_SRCS = {
 
 export const PICKET_SRCS = {
   white: {
-    h: '/stickers/decor_picket-fence-white-h_M_CA-US-FR-GB-AU.png',  // aerial top-down (horizontal lines)
-    v: '/stickers/decor_picket-fence-white-v_M_CA-US-FR-GB-AU.png',  // front-facing pickets (vertical lines)
+    h: '/stickers/decor_picket-fence-white-v_M_CA-US-FR-GB-AU.png',  // front-facing pickets (horizontal lines)
+    v: '/stickers/decor_picket-fence-white-h_M_CA-US-FR-GB-AU.png',  // aerial top-down (vertical lines)
   },
   // additional colours added here as generated (each needs both h and v)
 }
