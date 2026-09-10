@@ -66,7 +66,7 @@ export default function MoreModal({ onClose }) {
         </div>
 
         <div className="more-modal-footer">
-          Made with 🌱 by Rob's Lab
+          Made by Rob's Lab
         </div>
 
       </div>
