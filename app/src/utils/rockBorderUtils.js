@@ -4,7 +4,8 @@
 export const ROCK_BORDER_PRESETS = {
   'rock-border':   { stoneSize: 28, overlap: -0.15 },
   'stepping-path': { stoneSize: 48, overlap: -0.40 },
-  'picket-fence':  { stoneSize: 38, overlap: 0.0  },  // matches front-facing tile display width (PICKET_H_W)
+  'picket-fence':   { stoneSize: 38, overlap: 0.0 },  // horizontal: front-facing tile width
+  'picket-fence-v':  { stoneSize: 64, overlap: 0.0 },  // vertical: tile height becomes width when rotated 90°
 }
 
 // ── Catmull-Rom curve sampling ────────────────────────────────────────────────
@@ -347,14 +348,19 @@ export function addPicketsToGroup(group, flatPoints, tension, variant, Konva) {
     }
   }
 
-  const positions = computeStonePositions(pts, tension, 'picket-fence')
+  // Pick preset based on overall line angle — vertical lines need wider spacing
+  const overallAngle = pts.length >= 4
+    ? Math.atan2(pts[pts.length-1] - pts[1], pts[pts.length-2] - pts[0]) * 180 / Math.PI
+    : 0
+  const lineIsVertical = Math.abs(overallAngle) > VERTICAL_THRESHOLD_DEG
+  const preset = lineIsVertical ? 'picket-fence-v' : 'picket-fence'
+
+  const positions = computeStonePositions(pts, tension, preset)
   if (positions.length === 0) return
 
   for (const { x, y, angle } of positions) {
     const deg = angle * 180 / Math.PI
-    const absDeg = Math.abs(deg)
-    // Use V tile (front-facing) when line is steep (more vertical than horizontal)
-    const isVertical = absDeg > VERTICAL_THRESHOLD_DEG
+    const isVertical = lineIsVertical
     const img  = isVertical ? (imgV || imgH) : (imgH || imgV)
     const tileW = isVertical ? PICKET_V_W : PICKET_H_W
     group.add(new Konva.Image({
