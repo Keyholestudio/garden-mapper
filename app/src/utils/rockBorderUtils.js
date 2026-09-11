@@ -350,7 +350,14 @@ const VERTICAL_THRESHOLD_DEG = 45
 export function addPicketsToGroup(group, flatPoints, tension, variant, Konva) {
   const imgV = getPicketImageCached(variant, 'v')  // front-facing pickets (steep angles)
   const imgH = getPicketImageCached(variant, 'h')  // aerial top-down (shallow angles)
-  if (!imgV && !imgH) return
+  if (!imgV && !imgH) {
+    // Images not cached yet — load them then re-render. Don't clear existing tiles.
+    loadPicketImages(variant).then(() => {
+      addPicketsToGroup(group, flatPoints, tension, variant, Konva)
+      group.getLayer()?.batchDraw()
+    })
+    return
+  }
 
   // Remove existing picket images (keep hit line)
   group.getChildren(c => c instanceof Konva.Image).forEach(c => c.destroy())
