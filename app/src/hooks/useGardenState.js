@@ -181,6 +181,11 @@ export const GATE_VARIANTS = {
 // DECOR_VARIANTS — maps each decor group key to its variant list (label, subtitle, size, src, colour)
 // Used by RightPanel/MobileSheet to render the colour-picker panel with subtitle display.
 export const DECOR_VARIANTS = {
+  gazebos: [
+    { label: 'Square',     subtitle: 'Square Gazebo',  size: 'XXL', colour: '#7B5230', src: '/stickers/decor_gazebo-square_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Octagon',    subtitle: 'Octagon Gazebo', size: 'XXL', colour: '#C06A3A', src: '/stickers/decor_gazebo-oct_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Tiled Roof', subtitle: 'Tiled Roof Gazebo', size: 'XXL', colour: '#7A8B95', src: '/stickers/decor_gazebo-large_XL_CA-US-FR-GB-AU.png' },
+  ],
   rocks: [
     { label: 'River Stone', subtitle: 'River Stone', size: 'XS', colour: '#C4A882', src: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png' },
     { label: 'Brown Rock',  subtitle: 'Brown Rock',  size: 'XS', colour: '#7A6A45', src: '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png' },
