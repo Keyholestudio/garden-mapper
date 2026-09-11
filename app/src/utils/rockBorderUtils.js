@@ -101,7 +101,22 @@ export const PICKET_SRCS = {
     h: '/stickers/decor_picket-fence-sage-h_M_CA-US-FR-GB-AU.png',
     v: '/stickers/decor_picket-fence-sage-v_M_CA-US-FR-GB-AU.png',
   },
-  // additional colours: black, blue, cedar, red
+  black: {
+    h: '/stickers/decor_picket-fence-black-h_M_CA-US-FR-GB-AU.png',
+    v: '/stickers/decor_picket-fence-black-v_M_CA-US-FR-GB-AU.png',
+  },
+  blue: {
+    h: '/stickers/decor_picket-fence-blue-h_M_CA-US-FR-GB-AU.png',
+    v: '/stickers/decor_picket-fence-blue-v_M_CA-US-FR-GB-AU.png',
+  },
+  cedar: {
+    h: '/stickers/decor_picket-fence-cedar-h_M_CA-US-FR-GB-AU.png',
+    v: '/stickers/decor_picket-fence-cedar-v_M_CA-US-FR-GB-AU.png',
+  },
+  red: {
+    h: '/stickers/decor_picket-fence-red-h_M_CA-US-FR-GB-AU.png',
+    v: '/stickers/decor_picket-fence-red-v_M_CA-US-FR-GB-AU.png',
+  },
 }
 
 const _imgCache = {}

@@ -161,9 +161,12 @@ const GATE_VARIANT_LIST = [
 ]
 
 export const PICKET_VARIANTS = [
-  { id: 'white', label: 'White', colour: '#F5F5F5' },
-  { id: 'sage',  label: 'Sage',  colour: '#7A9E7E' },
-  // additional colours: black, blue, cedar, red
+  { id: 'white', label: 'White',    colour: '#F5F5F5' },
+  { id: 'black', label: 'Black',    colour: '#2A2A2A' },
+  { id: 'blue',  label: 'Blue',     colour: '#3A5FAB' },
+  { id: 'cedar', label: 'Cedar',    colour: '#8B5E3C' },
+  { id: 'red',   label: 'Red',      colour: '#8B2020' },
+  { id: 'sage',  label: 'Sage',     colour: '#7A9E7E' },
 ]
 
 export const GATE_VARIANTS = {
