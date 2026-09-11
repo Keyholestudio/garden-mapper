@@ -162,7 +162,8 @@ const GATE_VARIANT_LIST = [
 
 export const PICKET_VARIANTS = [
   { id: 'white', label: 'White', colour: '#F5F5F5' },
-  // additional colours added here as generated (each variant needs h + v tiles in rockBorderUtils PICKET_SRCS)
+  { id: 'sage',  label: 'Sage',  colour: '#7A9E7E' },
+  // additional colours: black, blue, cedar, red
 ]
 
 export const GATE_VARIANTS = {

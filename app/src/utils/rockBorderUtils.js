@@ -97,7 +97,11 @@ export const PICKET_SRCS = {
     h: '/stickers/decor_picket-fence-white-h_M_CA-US-FR-GB-AU.png',  // front-facing pickets (horizontal lines)
     v: '/stickers/decor_picket-fence-white-v_M_CA-US-FR-GB-AU.png',  // aerial top-down (vertical lines)
   },
-  // additional colours added here as generated (each needs both h and v)
+  sage: {
+    h: '/stickers/decor_picket-fence-sage-h_M_CA-US-FR-GB-AU.png',
+    v: '/stickers/decor_picket-fence-sage-v_M_CA-US-FR-GB-AU.png',
+  },
+  // additional colours: black, blue, cedar, red
 }
 
 const _imgCache = {}

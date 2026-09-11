@@ -812,7 +812,9 @@ export default function GardenEditor() {
     if (!d) return
     if (d.type === 'picket-fence') {
       d.picketVariant = variant
+      // Redraw on whichever layer the fence is currently on
       drawPicketFences(layersRef.current.structLayer, state.structDataRef, Konva)
+      drawPicketFences(layersRef.current.plantLayer, state.structDataRef, Konva)
       state.setSelectedStruct({ ...sel, picketVariant: variant })
       triggerAutoSave()
       return
