@@ -38,7 +38,10 @@ export function addPlant({ entry, x, y, stage, plantLayer, plantDataRef, plantId
     decorGroup: entry.decorGroup || null,
   }
 
-  const group = makePlantGroup(id, loadedImg, SIZE, x - SIZE / 2, y - SIZE / 2)
+  const _aspect = (loadedImg.naturalWidth && loadedImg.naturalHeight) ? loadedImg.naturalWidth / loadedImg.naturalHeight : 1
+  const _W = _aspect >= 1 ? SIZE : SIZE * _aspect
+  const _H = _aspect >= 1 ? SIZE / _aspect : SIZE
+  const group = makePlantGroup(id, loadedImg, SIZE, x - _W / 2, y - _H / 2)
   group._family = entry.family || ''  // stamp family for zone-aware layer stepping
 
   group.on('dragmove', () => {
