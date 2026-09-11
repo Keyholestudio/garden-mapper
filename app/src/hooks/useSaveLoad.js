@@ -610,15 +610,16 @@ export function loadGarden({
 
   // ── Load images for decor/gate/sticker entries not preloaded by PLANT_CATALOG ──
   ;(g.plants || []).forEach(entry => {
-    if (!entry.key || loadedImages[entry.key]) return
-    const src = entry.src || '/stickers/' + entry.key + '.png'
+    if (!entry.key) return
+    // Use variantSrc if set (coloured gate/sticker), otherwise fall back to base src
+    const displaySrc = entry.variantSrc || entry.src || '/stickers/' + entry.key + '.png'
     const img = new window.Image()
     img.onload = () => {
       const group = plantLayer?.findOne('#' + entry.id)
       const konvaImg = group?.findOne('Image')
       if (konvaImg) { konvaImg.image(img); plantLayer?.batchDraw() }
     }
-    img.src = src
+    img.src = displaySrc
   })
 
   // ── Update React state AFTER all Konva work (avoid async races) ──

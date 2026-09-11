@@ -813,8 +813,7 @@ export default function GardenEditor() {
     if (d.type === 'picket-fence') {
       d.picketVariant = variant
       // Redraw on whichever layer the fence is currently on
-      drawPicketFences(layersRef.current.structLayer, state.structDataRef, Konva)
-      drawPicketFences(layersRef.current.plantLayer, state.structDataRef, Konva)
+      drawPicketFences(layersRef.current.structLayer, state.structDataRef, Konva, layersRef.current.plantLayer)
       state.setSelectedStruct({ ...sel, picketVariant: variant })
       triggerAutoSave()
       return
@@ -1329,7 +1328,7 @@ export default function GardenEditor() {
     setCurrentGardenIndex(lastIdx)
     // Draw rock borders + picket fences after garden loads
     drawRockBorders(layersRef.current.structLayer, state.structDataRef, Konva)
-    drawPicketFences(layersRef.current.structLayer, state.structDataRef, Konva)
+    drawPicketFences(layersRef.current.structLayer, state.structDataRef, Konva, layersRef.current.plantLayer)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stageReady, loadedImagesCount])
 

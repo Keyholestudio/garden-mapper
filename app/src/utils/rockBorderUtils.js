@@ -467,11 +467,12 @@ export function refreshPicketFenceGroup(group, structData, Konva) {
   group.getLayer()?.batchDraw()
 }
 
-export async function drawPicketFences(structLayer, structDataRef, Konva) {
-  if (!structLayer || !structDataRef?.current) return
+export async function drawPicketFences(structLayer, structDataRef, Konva, plantLayer) {
+  if (!structDataRef?.current) return
   const entries = Object.entries(structDataRef.current).filter(([, d]) => d.type === 'picket-fence')
   for (const [id] of entries) {
-    const group = structLayer.findOne('#' + id)
+    // Search both structLayer and plantLayer (fence may have been moved Forward)
+    const group = structLayer?.findOne('#' + id) || plantLayer?.findOne('#' + id)
     if (!group || !(group instanceof Konva.Group)) continue
     const hitLine = group.getChildren(c => c instanceof Konva.Line)[0]
     if (!hitLine) continue
