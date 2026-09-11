@@ -580,7 +580,8 @@ export function loadGarden({
         const k = group.findOne('Image')
         if (!k) return
         k.image(vImg)
-        // If this is a decor group variant with a potentially different size, resize to match
+        // If this is a decor group variant with a potentially different size, resize to match.
+        // Do NOT reposition the group — saved x/y already reflects the post-resize position.
         if (entry.decorGroup) {
           const variants = DECOR_VARIANTS[entry.decorGroup]
           const variant = variants?.find(v => v.src === entry.variantSrc)
@@ -589,13 +590,9 @@ export function loadGarden({
             const aspect = (vImg.naturalWidth && vImg.naturalHeight) ? vImg.naturalWidth / vImg.naturalHeight : 1
             const W = aspect >= 1 ? SIZE : SIZE * aspect
             const H = aspect >= 1 ? SIZE / aspect : SIZE
-            const oldW = k.width() || W
-            const oldH = k.height() || H
             k.width(W); k.height(H)
             const hitRect = group.findOne('Rect')
             if (hitRect) { hitRect.width(W); hitRect.height(H) }
-            group.x(group.x() + (oldW - W) / 2)
-            group.y(group.y() + (oldH - H) / 2)
             group.width(W); group.height(H)
           }
         }
