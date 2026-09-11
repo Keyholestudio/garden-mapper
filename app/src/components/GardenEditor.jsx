@@ -1326,9 +1326,17 @@ export default function GardenEditor() {
     })
     currentGardenIndexRef.current = lastIdx
     setCurrentGardenIndex(lastIdx)
-    // Draw rock borders + picket fences after garden loads
+    // Draw rock borders immediately
     drawRockBorders(layersRef.current.structLayer, state.structDataRef, Konva)
-    drawPicketFences(layersRef.current.structLayer, state.structDataRef, Konva, layersRef.current.plantLayer)
+    // Preload all picket variant images used in this garden, then draw fences
+    const picketVariantsInUse = [...new Set(
+      Object.values(state.structDataRef.current)
+        .filter(d => d.type === 'picket-fence')
+        .map(d => d.picketVariant || 'white')
+    )]
+    Promise.all(picketVariantsInUse.map(v => loadPicketImages(v))).then(() => {
+      drawPicketFences(layersRef.current.structLayer, state.structDataRef, Konva, layersRef.current.plantLayer)
+    })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stageReady, loadedImagesCount])
 
