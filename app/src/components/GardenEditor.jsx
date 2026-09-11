@@ -490,10 +490,7 @@ export default function GardenEditor() {
     'decor-pot-blue':              { key: 'decor_pot-blue_S_CA-US-FR-GB-AU',              label: 'Flower Pots', family: 'Decor', size: 'S', decorGroup: 'pots', src: '/stickers/decor_pot-blue_S_CA-US-FR-GB-AU.png'              },
     'decor-pot-terracotta':        { key: 'decor_pot-terracotta_S_CA-US-FR-GB-AU',        label: 'Flower Pots', family: 'Decor', size: 'S', decorGroup: 'pots', src: '/stickers/decor_pot-terracotta_S_CA-US-FR-GB-AU.png'        },
     'decor-pot-green-round':       { key: 'decor_pot-green-round_M_CA-US-FR-GB-AU',       label: 'Flower Pots', family: 'Decor', size: 'M', decorGroup: 'pots', src: '/stickers/decor_pot-green-round_M_CA-US-FR-GB-AU.png'       },
-    'decor-stairs-wood':  { key: 'decor_stairs-wood_M_CA-US-FR-GB-AU',  label: 'Wood Stairs',     family: 'Decor', size: 'M',  src: '/stickers/decor_stairs-wood_M_CA-US-FR-GB-AU.png'  },
-    'decor-stairs-stone': { key: 'decor_stairs-stone_M_CA-US-FR-GB-AU', label: 'Stone Stairs',    family: 'Decor', size: 'M',  src: '/stickers/decor_stairs-stone_M_CA-US-FR-GB-AU.png' },
-    'decor-stairs-brick': { key: 'decor_stairs-brick_M_CA-US-FR-GB-AU', label: 'Brick Stairs',    family: 'Decor', size: 'M',  src: '/stickers/decor_stairs-brick_M_CA-US-FR-GB-AU.png' },
-    'decor-stairs-cement':{ key: 'decor_stairs-cement_M_CA-US-FR-GB-AU',label: 'Cement Stairs',   family: 'Decor', size: 'M',  src: '/stickers/decor_stairs-cement_M_CA-US-FR-GB-AU.png'},
+    'decor-stairs-wood':  { key: 'decor_stairs-wood_M_CA-US-FR-GB-AU',  label: 'Stairs', family: 'Decor', size: 'M', decorGroup: 'stairs', src: '/stickers/decor_stairs-wood_M_CA-US-FR-GB-AU.png' },
     'decor-arch-wood':    { key: 'decor_arch-wood_XL_CA-US-FR-GB-AU',    label: 'Arches', family: 'Decor', size: 'XL', decorGroup: 'arches', src: '/stickers/decor_arch-wood_XL_CA-US-FR-GB-AU.png'    },
     'decor-arch-metal':   { key: 'decor_arch-metal_XL_CA-US-FR-GB-AU',   label: 'Arches', family: 'Decor', size: 'XL', decorGroup: 'arches', src: '/stickers/decor_arch-metal_XL_CA-US-FR-GB-AU.png'   },
     // Gates

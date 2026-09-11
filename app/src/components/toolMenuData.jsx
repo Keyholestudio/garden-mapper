@@ -124,15 +124,7 @@ export const DECOR_ITEMS = [
   { id: 'decor-lounge-wood', label: 'Seating', emoji: '🪑', hint: 'Tap to place seating', decorGroup: 'seating' },
   { id: 'decor-umbrella', label: 'Beach Umbrella', emoji: '⛱', hint: 'Tap to place beach umbrella' },
   { id: 'decor-pot-red-round', label: 'Flower Pots', emoji: '🪴', hint: 'Tap to place a flower pot', decorGroup: 'pots' },
-  {
-    id: '__stairs', label: 'Stairs', emoji: '🚶', group: true,
-    children: [
-      { id: 'decor-stairs-wood',    label: 'Wood Stairs',    hint: 'Tap to place wood stairs' },
-      { id: 'decor-stairs-stone',   label: 'Stone Stairs',   hint: 'Tap to place stone stairs' },
-      { id: 'decor-stairs-brick',   label: 'Brick Stairs',   hint: 'Tap to place brick stairs' },
-      { id: 'decor-stairs-cement',  label: 'Cement Stairs',  hint: 'Tap to place cement stairs' },
-    ],
-  },
+  { id: 'decor-stairs-wood', label: 'Stairs', emoji: '🚶', hint: 'Tap to place stairs', decorGroup: 'stairs' },
   { id: 'decor-arch-wood', label: 'Arches', emoji: '🌼', hint: 'Tap to place an arch', decorGroup: 'arches' },
 ]
 

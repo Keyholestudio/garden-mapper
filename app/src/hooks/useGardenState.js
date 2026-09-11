@@ -181,6 +181,9 @@ export const GATE_VARIANTS = {
 // DECOR_VARIANTS — maps each decor group key to its variant list (label, subtitle, size, src, colour)
 // Used by RightPanel/MobileSheet to render the colour-picker panel with subtitle display.
 export const DECOR_VARIANTS = {
+  stairs: [
+    { label: 'Wood Stairs', subtitle: 'Wood Stairs', size: 'M', colour: '#C07840', src: '/stickers/decor_stairs-wood_M_CA-US-FR-GB-AU.png' },
+  ],
   arches: [
     { label: 'Wood Arch',  subtitle: 'Wood Arch',  size: 'XL', colour: '#B5793B', src: '/stickers/decor_arch-wood_XL_CA-US-FR-GB-AU.png' },
     { label: 'Metal Arch', subtitle: 'Metal Arch', size: 'XL', colour: '#6B7080', src: '/stickers/decor_arch-metal_XL_CA-US-FR-GB-AU.png' },
