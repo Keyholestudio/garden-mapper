@@ -1188,9 +1188,22 @@ export default function GardenEditor() {
         konvaImg.image(img)
         // Resize sticker if the new variant has a different size (e.g. fountain S->L)
         if (newSize && SIZE_MAP[newSize]) {
-          const px = SIZE_MAP[newSize]
-          konvaImg.width(px); konvaImg.height(px)
-          konvaImg.offsetX(px / 2); konvaImg.offsetY(px / 2)
+          const SIZE = SIZE_MAP[newSize]
+          const aspect = (img.naturalWidth && img.naturalHeight) ? img.naturalWidth / img.naturalHeight : 1
+          const W = aspect >= 1 ? SIZE : SIZE * aspect
+          const H = aspect >= 1 ? SIZE / aspect : SIZE
+          // Update image dimensions
+          konvaImg.width(W); konvaImg.height(H)
+          konvaImg.offsetX(0); konvaImg.offsetY(0)
+          // Update hitRect to match new size
+          const hitRect = sel.group.findOne('Rect')
+          if (hitRect) { hitRect.width(W); hitRect.height(H) }
+          // Reposition group so sticker stays centered on same point
+          const oldW = sel.group.width() || W
+          const oldH = sel.group.height() || H
+          sel.group.x(sel.group.x() + (oldW - W) / 2)
+          sel.group.y(sel.group.y() + (oldH - H) / 2)
+          sel.group.width(W); sel.group.height(H)
           d.size = newSize
         }
         layersRef.current.plantLayer?.batchDraw()
