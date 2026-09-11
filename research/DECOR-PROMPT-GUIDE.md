@@ -1,5 +1,73 @@
 # Garden Mapper — Decor Sticker Prompt Guide
-_Last updated: 2026-09-10_
+_Last updated: 2026-09-11_
+
+---
+
+## 0b. Workflow — Adding a New Picket Fence Colour Variant (2026-09-11)
+
+Follow this exact sequence when Rob provides new H and V fence tile images for a new colour.
+
+### Files needed per colour
+- `Horizontal Fence <Colour>.png` — front-facing pickets, source ~1596×2688px, transparent background
+- `Vertical Fence <Colour>.png` — aerial top-down view, source ~606×138px, transparent background
+
+### Step 1 — Process images
+Place source files in `C:\Users\RG\Downloads\` then run:
+```python
+from PIL import Image
+
+colour = 'cedar'  # lowercase, used in filenames
+base = 'C:/Users/RG/Downloads'
+out_dir = 'C:/Users/RG/.openclaw/workspace/projects/garden-planner/app/public/stickers'
+stk_dir = 'C:/Users/RG/.openclaw/workspace/projects/garden-planner/stickers'
+
+# H tile: 151x256 (displays at 38x64px on canvas)
+sh = Image.open(f'{base}/Horizontal Fence {colour.title()}.png').convert('RGBA')
+sh.resize((151, 256), Image.LANCZOS).save(f'{out_dir}/decor_picket-fence-{colour}-h_M_CA-US-FR-GB-AU.png', 'PNG')
+
+# V tile: 76x18 (displays at 38x9px on canvas, Konva scales at render time)
+sv = Image.open(f'{base}/Vertical Fence {colour.title()}.png').convert('RGBA')
+sv.resize((76, 18), Image.LANCZOS).save(f'{out_dir}/decor_picket-fence-{colour}-v_M_CA-US-FR-GB-AU.png', 'PNG')
+
+# Copy to stickers dir
+import shutil
+for f in [f'decor_picket-fence-{colour}-h_M_CA-US-FR-GB-AU.png', f'decor_picket-fence-{colour}-v_M_CA-US-FR-GB-AU.png']:
+    shutil.copy(f'{out_dir}/{f}', f'{stk_dir}/{f}')
+```
+
+### Step 2 — Add to PICKET_SRCS in `rockBorderUtils.js`
+```js
+// In export const PICKET_SRCS = { ... }
+cedar: {
+  h: '/stickers/decor_picket-fence-cedar-h_M_CA-US-FR-GB-AU.png',
+  v: '/stickers/decor_picket-fence-cedar-v_M_CA-US-FR-GB-AU.png',
+},
+```
+
+### Step 3 — Add to PICKET_VARIANTS in `useGardenState.js`
+```js
+{ id: 'cedar', label: 'Cedar', colour: '#8B5E3C' },
+```
+
+### Step 4 — Commit and push
+```
+git add -A && git commit -m "feat: add cedar picket fence variant" && git push origin main
+```
+
+### Current variants (2026-09-11)
+| id | Label | H source | V source |
+|---|---|---|---|
+| white | White | Horizontal Fence Sage.png (original) | Vertical Fence (original) |
+| black | Black | Horizontal Fence Black.png | Vertical Fence Black.png |
+| blue | Blue | Horizontal Fence Blue.png | Vertical Fence Blue.png |
+| cedar | Cedar | Horizontal Fence Cedar.png | Vertical Fence Orange.png (placeholder) |
+| red | Red | Horizontal Fence Red.png | Vertical Fence Red.png |
+| sage | Sage | Horizontal Fence Sage.png (updated) | Vertical Fence Sage.png (updated) |
+
+### Key files
+- Tile display constants: `PICKET_H_W=38, PICKET_TILE_H=64, PICKET_V_TW=38, PICKET_V_TH=9` in `rockBorderUtils.js`
+- Render pipeline: `drawPicketFences()` is the single renderer — preloads all variants then renders synchronously
+- Save/load: `picketVariant` must be in the `structDataRef.current[entry.id]` restore block in `useSaveLoad.js`
 
 ---
 

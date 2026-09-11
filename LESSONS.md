@@ -2,6 +2,26 @@
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 
+## L076 — structDataRef restore must include ALL variant fields (2026-09-11)
+**What happened:** Picket fence colours reverted to white on every hard refresh despite being saved correctly.
+**Root cause:** `useSaveLoad.js` restore block wrote `structDataRef.current[entry.id]` but only included `rockVariant`, not `picketVariant`. So `drawPicketFences` always read `undefined` → fell back to `'white'`.
+**Rule:** Any time a new variant/colour field is added to a struct type, it MUST be added in THREE places in `useSaveLoad.js`: (1) the save block, (2) the Group-type save block if applicable, (3) the `structDataRef.current[entry.id]` restore block. Missing any one of these causes silent colour loss on reload.
+**Fix commit:** c6b8cf7
+
+## L075 — Iterative async patching creates race conditions — do a clean rewrite instead (2026-09-11)
+**What happened:** Spent ~2 hours adding async patches to `addPicketsToGroup` and `buildPicketFenceGroup` to fix colour loss, making the problem worse each time. Multiple async paths competed to render the same fence, with unpredictable winner.
+**Root cause:** Each fix added another async render path without removing the old one. 4 separate places ended up calling `addPicketsToGroup` on overlapping async timelines.
+**Rule:** When a rendering function has async timing issues, don't patch it — rewrite the render pipeline with a single clear owner:
+1. Builder (`buildPicketFenceGroup`) — builds structure only, no rendering
+2. Renderer (`addPicketsToGroup`) — pure sync, requires images already loaded, never self-triggers
+3. Orchestrator (`drawPicketFences`) — single call site, preloads all images first, then renders synchronously
+**Fix commit:** 4e9517e
+
+## L074 — Async race: multiple render paths writing to same Konva Group (2026-09-11)
+**What happened:** `buildPicketFenceGroup`, `drawPicketFences`, and `addPicketsToGroup` all called each other's render paths on overlapping async timelines. Whichever finished last "won" — sometimes white, sometimes correct.
+**Symptom pattern:** Black/blue showed correctly (small files, loaded fast), red/cedar/sage showed white (larger files, lost the race).
+**Rule:** One Konva Group should have exactly one code path responsible for its visual render at any given time. If multiple async paths can render the same node, you have a race condition. Identify the single owner and remove all others.
+
 ## L073 — Never start or restart the Vite dev server via OpenClaw exec (2026-09-11)
 **What happened:** Every time `npm run dev` was run through OpenClaw exec, the session timed out (SIGKILL) and killed the Vite process with it. This caused repeated "server not loading" reports, wasted debugging time, and nearly crashed OpenClaw.
 **Root cause:** OpenClaw exec sessions have a ~60s timeout. Vite is a long-running process — it gets SIGKILL'd when the exec session dies.
