@@ -181,6 +181,13 @@ export const GATE_VARIANTS = {
 // DECOR_VARIANTS — maps each decor group key to its variant list (label, subtitle, size, src, colour)
 // Used by RightPanel/MobileSheet to render the colour-picker panel with subtitle display.
 export const DECOR_VARIANTS = {
+  pots: [
+    { label: 'Red Round',         subtitle: 'Red Round Pot',        size: 'S', colour: '#C82B2B', src: '/stickers/decor_pot-red-round_S_CA-US-FR-GB-AU.png' },
+    { label: 'Terracotta Round',  subtitle: 'Terracotta Round Pot', size: 'M', colour: '#E87A7A', src: '/stickers/decor_pot-terracotta-round_M_CA-US-FR-GB-AU.png' },
+    { label: 'Blue',              subtitle: 'Blue Pot',             size: 'S', colour: '#3A9AD9', src: '/stickers/decor_pot-blue_S_CA-US-FR-GB-AU.png' },
+    { label: 'Terracotta',        subtitle: 'Terracotta Pot',       size: 'S', colour: '#C2714A', src: '/stickers/decor_pot-terracotta_S_CA-US-FR-GB-AU.png' },
+    { label: 'Green Round',       subtitle: 'Green Round Pot',      size: 'M', colour: '#4A8A52', src: '/stickers/decor_pot-green-round_M_CA-US-FR-GB-AU.png' },
+  ],
   seating: [
     { label: 'Wood Loungers',    subtitle: 'Wood Loungers',    size: 'XL',  colour: '#D4893A', src: '/stickers/decor_lounge-wood_XL_CA-US-FR-GB-AU.png' },
     { label: 'Modern Loungers',  subtitle: 'Modern Loungers',  size: 'XL',  colour: '#9A9A9A', src: '/stickers/decor_lounge-modern_XL_CA-US-FR-GB-AU.png' },

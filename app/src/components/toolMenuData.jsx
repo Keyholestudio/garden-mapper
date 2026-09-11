@@ -123,16 +123,7 @@ export const DECOR_ITEMS = [
   { id: 'decor-gazebo-square', label: 'Gazebos', emoji: '🗻', hint: 'Tap to place a gazebo', decorGroup: 'gazebos' },
   { id: 'decor-lounge-wood', label: 'Seating', emoji: '🪑', hint: 'Tap to place seating', decorGroup: 'seating' },
   { id: 'decor-umbrella', label: 'Beach Umbrella', emoji: '⛱', hint: 'Tap to place beach umbrella' },
-  {
-    id: '__pots', label: 'Flower Pots', emoji: '🪴', group: true,
-    children: [
-      { id: 'decor-pot-red-round',       label: 'Red Round Pot',        hint: 'Tap to place red round pot' },
-      { id: 'decor-pot-terracotta-round',label: 'Terracotta Round Pot',  hint: 'Tap to place terracotta round pot' },
-      { id: 'decor-pot-blue',            label: 'Blue Pot',             hint: 'Tap to place blue pot' },
-      { id: 'decor-pot-terracotta',      label: 'Terracotta Pot',       hint: 'Tap to place terracotta pot' },
-      { id: 'decor-pot-green-round',     label: 'Green Round Pot',      hint: 'Tap to place green round pot' },
-    ],
-  },
+  { id: 'decor-pot-red-round', label: 'Flower Pots', emoji: '🪴', hint: 'Tap to place a flower pot', decorGroup: 'pots' },
   {
     id: '__stairs', label: 'Stairs', emoji: '🚶', group: true,
     children: [
