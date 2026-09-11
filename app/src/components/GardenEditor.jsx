@@ -1074,6 +1074,7 @@ export default function GardenEditor() {
           state.setSelectedStruct({ id: id2, shape: g, ...state.structDataRef.current[id2] })
         },
         onReady: () => sl?.batchDraw(),
+        structDataRef: state.structDataRef,
       })
       sl.add(grp)
       grp.moveToTop()

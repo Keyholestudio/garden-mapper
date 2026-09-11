@@ -384,7 +384,7 @@ export function addPicketsToGroup(group, flatPoints, tension, variant, Konva) {
   if (hitLine) hitLine.moveToTop()
 }
 
-export function buildPicketFenceGroup({ id, flatPoints, tension, variant, x, y, Konva, showGrid, snapCell, onSelect, onReady }) {
+export function buildPicketFenceGroup({ id, flatPoints, tension, variant, x, y, Konva, showGrid, snapCell, onSelect, onReady, structDataRef }) {
   const group = new Konva.Group({ id, x: x || 0, y: y || 0, draggable: true })
 
   const hitLine = new Konva.Line({
@@ -412,7 +412,9 @@ export function buildPicketFenceGroup({ id, flatPoints, tension, variant, x, y, 
       hitLine.points(newFlat)
       hitLine.x(0); hitLine.y(0)
     }
-    addPicketsToGroup(group, hitLine.points(), hitLine.tension(), variant, Konva)
+    // Always read current variant from structDataRef so colour changes persist after drag
+    const currentVariant = structDataRef?.current?.[id]?.picketVariant || variant
+    addPicketsToGroup(group, hitLine.points(), hitLine.tension(), currentVariant, Konva)
     group.getLayer()?.batchDraw()
   })
 

@@ -438,6 +438,7 @@ export function loadGarden({
         showGrid: false, snapCell: 0,
         onSelect: (id, shape, e) => { if (!state.editingShapeIdRef?.current) onSelectStruct(id, shape, e) },
         onReady: () => (entry.onPlantLayer ? plantLayer : structLayer)?.batchDraw(),
+        structDataRef: state.structDataRef,
       })
       if (entry.onPlantLayer && plantLayer) {
         plantLayer?.add(group)

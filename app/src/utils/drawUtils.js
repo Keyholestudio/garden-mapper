@@ -200,7 +200,7 @@ export function closeFreeShape({
     const group = buildPicketFenceGroup({
       id, flatPoints: flat, tension: 0, variant: 'white',
       x: 0, y: 0, Konva, showGrid, snapCell,
-      onSelect,
+      onSelect, structDataRef,
       onReady: () => structLayer.batchDraw(),
     })
     structLayer.add(group)

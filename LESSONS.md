@@ -2,6 +2,13 @@
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 
+## L073 — Never start or restart the Vite dev server via OpenClaw exec (2026-09-11)
+**What happened:** Every time `npm run dev` was run through OpenClaw exec, the session timed out (SIGKILL) and killed the Vite process with it. This caused repeated "server not loading" reports, wasted debugging time, and nearly crashed OpenClaw.
+**Root cause:** OpenClaw exec sessions have a ~60s timeout. Vite is a long-running process — it gets SIGKILL'd when the exec session dies.
+**Fix:** Rob starts the dev server manually via the **"Garden Mapper Dev Server"** desktop shortcut. It stays alive as long as that terminal window is open.
+**Rule:** I never start or restart `npm run dev`. If localhost:5200 is down, I tell Rob to double-click the desktop shortcut. I do not run any start/stop/restart commands for the Vite server.
+**Shortcut:** `C:\Users\RG\Desktop\Garden Mapper Dev Server.lnk` → runs `start-dev.bat`
+
 ## L072 — LogoBar.jsx has two render paths that must be kept in sync (2026-09-08)
 **What happened:** Profile menu icons were inconsistent between mobile and desktop — 🖸 instead of 🖨 for Print, 🚲 instead of 🚪 for Sign Out.
 **Root cause:** `LogoBar.jsx` has an early-return mobile render path and a separate desktop render path. Both contain a full copy of the profile menu JSX. They were edited independently and drifted.
