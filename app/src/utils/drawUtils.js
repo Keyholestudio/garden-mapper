@@ -4,7 +4,7 @@ import {
   BED_COLOURS, BUILDING_COLOURS, FENCE_COLOURS, HEDGE_COLOURS,
   PATH_COLOURS, WATER_COLOURS, DECKING_COLOURS, GATE_STYLES,
 } from '../hooks/useGardenState'
-import { buildRockBorderGroup, buildPicketFenceGroup } from './rockBorderUtils'
+import { buildRockBorderGroup, buildPicketFenceGroup, drawPicketFences } from './rockBorderUtils'
 
 // ── Texture helper ─────────────────────────────────────────
 // Apply a repeating texture (or solid fill) to any Konva shape based on colour token.
@@ -206,6 +206,8 @@ export function closeFreeShape({
     structLayer.add(group)
     group.moveToTop()
     structLayer.batchDraw()
+    // Render tiles immediately after placement (drawPicketFences preloads images then renders)
+    drawPicketFences(structLayer, structDataRef, Konva)
     if (onSelect) onSelect(id, group)
     if (onModeChange) onModeChange('select')
     return id
