@@ -347,17 +347,12 @@ const PICKET_V_W     = PICKET_V_TW  // spacing alias
 // Angle threshold: lines more vertical than this use the V (aerial) tile
 const VERTICAL_THRESHOLD_DEG = 45
 
+// Pure synchronous renderer — requires images already in cache.
+// Never loads images itself. Never self-triggers. Call drawPicketFences() to render from load.
 export function addPicketsToGroup(group, flatPoints, tension, variant, Konva) {
-  const imgV = getPicketImageCached(variant, 'v')  // front-facing pickets (steep angles)
-  const imgH = getPicketImageCached(variant, 'h')  // aerial top-down (shallow angles)
-  if (!imgV && !imgH) {
-    // Images not cached yet — load them then re-render. Don't clear existing tiles.
-    loadPicketImages(variant).then(() => {
-      addPicketsToGroup(group, flatPoints, tension, variant, Konva)
-      group.getLayer()?.batchDraw()
-    })
-    return
-  }
+  const imgV = getPicketImageCached(variant, 'v')
+  const imgH = getPicketImageCached(variant, 'h')
+  if (!imgV && !imgH) return  // images not ready — caller must ensure preloaded first
 
   // Remove existing picket images (keep hit line)
   group.getChildren(c => c instanceof Konva.Image).forEach(c => c.destroy())
@@ -445,19 +440,9 @@ export function buildPicketFenceGroup({ id, flatPoints, tension, variant, x, y, 
     if (onSelect) onSelect(id, group, e)
   })
 
-  const srcH = getPicketSrc(variant, 'h')
-  const srcV = getPicketSrc(variant, 'v')
-  const bothCached = _imgCache[srcH] && _imgCache[srcV]
-  if (bothCached) {
-    addPicketsToGroup(group, flatPoints, tension, variant, Konva)
-  } else {
-    loadPicketImages(variant).then(() => {
-      addPicketsToGroup(group, flatPoints, tension, variant, Konva)
-      group.getLayer()?.batchDraw()
-      if (onReady) onReady(group)
-    })
-  }
-
+  // Tile rendering is handled exclusively by drawPicketFences() after all images are loaded.
+  // buildPicketFenceGroup only builds the Group structure (hit line + drag/click handlers).
+  if (onReady) onReady(group)
   return group
 }
 
@@ -474,27 +459,32 @@ export function refreshPicketFenceGroup(group, structData, Konva) {
   group.getLayer()?.batchDraw()
 }
 
+// Single renderer called after load. Preloads ALL variant images in parallel, then
+// renders all fences synchronously in one pass. No races, no white flash.
 export async function drawPicketFences(structLayer, structDataRef, Konva, plantLayer) {
   if (!structDataRef?.current) return
   const entries = Object.entries(structDataRef.current).filter(([, d]) => d.type === 'picket-fence')
-  for (const [id] of entries) {
-    // Search both structLayer and plantLayer (fence may have been moved Forward)
+  if (entries.length === 0) return
+
+  // Step 1: collect all unique variants in use and preload all their images in parallel
+  const variants = [...new Set(entries.map(([, d]) => d.picketVariant || 'white'))]
+  await Promise.all(variants.map(v => loadPicketImages(v)))
+
+  // Step 2: all images now in cache — render all fences synchronously
+  for (const [id, d] of entries) {
     const group = structLayer?.findOne('#' + id) || plantLayer?.findOne('#' + id)
     if (!group || !(group instanceof Konva.Group)) continue
     const hitLine = group.getChildren(c => c instanceof Konva.Line)[0]
     if (!hitLine) continue
-    const d = structDataRef.current[id]
-    await loadPicketImages(d?.picketVariant || 'white')
-    const imgH = getPicketImageCached(d?.picketVariant || 'white', 'h')
-    const imgV = getPicketImageCached(d?.picketVariant || 'white', 'v')
-    if (!imgH && !imgV) continue
     const lx = hitLine.x(), ly = hitLine.y()
     if (lx !== 0 || ly !== 0) {
       const normalized = hitLine.points().map((v, i) => i % 2 === 0 ? v + lx : v + ly)
       hitLine.points(normalized); hitLine.x(0); hitLine.y(0)
     }
-    addPicketsToGroup(group, hitLine.points(), hitLine.tension(), d?.picketVariant || 'white', Konva)
-    group.moveToTop()
+    addPicketsToGroup(group, hitLine.points(), hitLine.tension(), d.picketVariant || 'white', Konva)
   }
-  structLayer.batchDraw()
+
+  // Step 3: single batchDraw after all fences rendered
+  structLayer?.batchDraw()
+  plantLayer?.batchDraw()
 }

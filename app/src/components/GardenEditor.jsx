@@ -24,7 +24,7 @@ import RestorePrompt from './RestorePrompt'
 import { seedDreamGarden, fetchDreamGardenUpdate } from '../hooks/useDreamGarden'
 import { softDeleteCloudGarden } from '../supabase'
 import { addRectStruct, isFreeMode, applyColourOrTexture, tryMergeRects } from '../utils/drawUtils'
-import { drawRockBorders, buildRockBorderGroup, drawPicketFences, buildPicketFenceGroup, refreshPicketFenceGroup, loadPicketImages } from '../utils/rockBorderUtils'
+import { drawRockBorders, buildRockBorderGroup, drawPicketFences, buildPicketFenceGroup, refreshPicketFenceGroup } from '../utils/rockBorderUtils'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import { useRecentPlants } from '../hooks/useRecentPlants'
 import LogoBar        from './LogoBar'
@@ -1326,17 +1326,10 @@ export default function GardenEditor() {
     })
     currentGardenIndexRef.current = lastIdx
     setCurrentGardenIndex(lastIdx)
-    // Draw rock borders immediately
+    // Draw rock borders + picket fences after garden loads
+    // drawPicketFences is async: preloads all variant images first, then renders in one pass
     drawRockBorders(layersRef.current.structLayer, state.structDataRef, Konva)
-    // Preload all picket variant images used in this garden, then draw fences
-    const picketVariantsInUse = [...new Set(
-      Object.values(state.structDataRef.current)
-        .filter(d => d.type === 'picket-fence')
-        .map(d => d.picketVariant || 'white')
-    )]
-    Promise.all(picketVariantsInUse.map(v => loadPicketImages(v))).then(() => {
-      drawPicketFences(layersRef.current.structLayer, state.structDataRef, Konva, layersRef.current.plantLayer)
-    })
+    drawPicketFences(layersRef.current.structLayer, state.structDataRef, Konva, layersRef.current.plantLayer)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stageReady, loadedImagesCount])
 
