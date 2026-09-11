@@ -472,9 +472,9 @@ export default function GardenEditor() {
   // Decor items are oversized stickers placed via the same click-to-place flow as plants.
   // DECOR_CATALOG entries match the plant entry shape so addPlant() can be reused.
   const DECOR_CATALOG = {
-    'decor-rock-small':   { key: 'decor_rock-small_M_CA-US-FR-GB-AU',   label: 'Small Stone',     family: 'Decor', size: 'M',  src: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png'   },
-    'decor-rock-medium':  { key: 'decor_rock-medium_L_CA-US-FR-GB-AU',  label: 'Medium Stone',    family: 'Decor', size: 'L',  src: '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png'  },
-    'decor-rock-large':   { key: 'decor_rock-large_XL_CA-US-FR-GB-AU',  label: 'Large Stone',     family: 'Decor', size: 'XL', src: '/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png'  },
+    'decor-rock-small':   { key: 'decor_rock-small_M_CA-US-FR-GB-AU',   label: 'Rocks', family: 'Decor', size: 'XS', decorGroup: 'rocks', src: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png'   },
+    'decor-rock-medium':  { key: 'decor_rock-medium_L_CA-US-FR-GB-AU',  label: 'Rocks', family: 'Decor', size: 'XS', decorGroup: 'rocks', src: '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png'  },
+    'decor-rock-large':   { key: 'decor_rock-large_XL_CA-US-FR-GB-AU',  label: 'Rocks', family: 'Decor', size: 'XS', decorGroup: 'rocks', src: '/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png'  },
     'decor-gazebo-square':{ key: 'decor_gazebo-square_XL_CA-US-FR-GB-AU', label: 'Square Gazebo',  family: 'Decor', size: 'XL', src: '/stickers/decor_gazebo-square_XL_CA-US-FR-GB-AU.png' },
     'decor-gazebo-oct':   { key: 'decor_gazebo-oct_XL_CA-US-FR-GB-AU',   label: 'Octagon Gazebo', family: 'Decor', size: 'XL', src: '/stickers/decor_gazebo-oct_XL_CA-US-FR-GB-AU.png'   },
     'decor-gazebo-large': { key: 'decor_gazebo-large_XL_CA-US-FR-GB-AU',  label: 'Large Gazebo',   family: 'Decor', size: 'XL', src: '/stickers/decor_gazebo-large_XL_CA-US-FR-GB-AU.png'  },

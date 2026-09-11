@@ -119,14 +119,7 @@ export const WATER_ITEMS = [
 
 export const DECOR_ITEMS = [
   { id: 'fountain-sm', label: 'Fountains', emoji: '⛲', hint: 'Tap to place a fountain', decorGroup: 'fountains' },
-  {
-    id: '__rocks', label: 'Rocks', emoji: '🪨', group: true,
-    children: [
-      { id: 'decor-rock-small',  label: 'Small Stone',  hint: 'Tap to place small stone' },
-      { id: 'decor-rock-medium', label: 'Medium Stone', hint: 'Tap to place medium stone' },
-      { id: 'decor-rock-large',  label: 'Large Stone',  hint: 'Tap to place large stone' },
-    ],
-  },
+  { id: 'decor-rock-small', label: 'Rocks', emoji: '🪨', hint: 'Tap to place a rock', decorGroup: 'rocks' },
   {
     id: '__gazebo', label: 'Gazebo', emoji: '🗻', group: true,
     children: [
