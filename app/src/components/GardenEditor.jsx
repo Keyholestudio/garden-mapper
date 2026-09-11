@@ -252,6 +252,8 @@ export default function GardenEditor() {
       if (!d) return
       const realImg = loadedImages[d.key]
       if (!realImg) return
+      // Skip if this sticker is showing a variant image — don't clobber it with the catalog default
+      if (d.variantSrc) return
       const konvaImg = group.findOne('Image')
       // Only swap if the node is still showing a placeholder (width/height === size px, src !== real img)
       if (konvaImg && konvaImg.image() !== realImg) {
