@@ -576,7 +576,7 @@ export function loadGarden({
     }
     if (entry.variantSrc) {
       const vImg = new window.Image()
-      vImg.onload = () => {
+      const applyVariant = () => {
         const k = group.findOne('Image')
         if (!k) return
         k.image(vImg)
@@ -598,7 +598,10 @@ export function loadGarden({
         }
         plantLayer?.batchDraw()
       }
+      vImg.onload = applyVariant
       vImg.src = entry.variantSrc
+      // If browser already has this image cached, onload may not fire — apply immediately
+      if (vImg.complete && vImg.naturalWidth) applyVariant()
     }
     group._family = entry.family || ''  // stamp family for zone-aware layer stepping
     group.on('dragmove', () => {
