@@ -419,6 +419,8 @@ export function loadGarden({
       notes: entry.notes || '',
       family: entry.family || '',
       rockVariant: entry.rockVariant || 'grey',
+      picketVariant: entry.picketVariant || 'white',
+      onPlantLayer: entry.onPlantLayer || false,
     }
 
     let shape
