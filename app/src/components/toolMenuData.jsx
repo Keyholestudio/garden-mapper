@@ -133,13 +133,7 @@ export const DECOR_ITEMS = [
       { id: 'decor-stairs-cement',  label: 'Cement Stairs',  hint: 'Tap to place cement stairs' },
     ],
   },
-  {
-    id: '__arch', label: 'Arches', emoji: '🌼', group: true,
-    children: [
-      { id: 'decor-arch-wood',  label: 'Wood Arch',  hint: 'Tap to place wooden arch' },
-      { id: 'decor-arch-metal', label: 'Metal Arch', hint: 'Tap to place metal arch' },
-    ],
-  },
+  { id: 'decor-arch-wood', label: 'Arches', emoji: '🌼', hint: 'Tap to place an arch', decorGroup: 'arches' },
 ]
 
 export const ITEMS_MAP = {

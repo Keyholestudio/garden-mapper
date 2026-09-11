@@ -181,6 +181,10 @@ export const GATE_VARIANTS = {
 // DECOR_VARIANTS — maps each decor group key to its variant list (label, subtitle, size, src, colour)
 // Used by RightPanel/MobileSheet to render the colour-picker panel with subtitle display.
 export const DECOR_VARIANTS = {
+  arches: [
+    { label: 'Wood Arch',  subtitle: 'Wood Arch',  size: 'XL', colour: '#B5793B', src: '/stickers/decor_arch-wood_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Metal Arch', subtitle: 'Metal Arch', size: 'XL', colour: '#6B7080', src: '/stickers/decor_arch-metal_XL_CA-US-FR-GB-AU.png' },
+  ],
   pots: [
     { label: 'Red Round',         subtitle: 'Red Round Pot',        size: 'S', colour: '#C82B2B', src: '/stickers/decor_pot-red-round_S_CA-US-FR-GB-AU.png' },
     { label: 'Terracotta Round',  subtitle: 'Terracotta Round Pot', size: 'M', colour: '#E87A7A', src: '/stickers/decor_pot-terracotta-round_M_CA-US-FR-GB-AU.png' },
