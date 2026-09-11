@@ -3,7 +3,7 @@
 // Designed to run synchronously against Konva layer refs (no React state async issues)
 
 import Konva from 'konva'
-import { SIZE_MAP, TEXTURE_MAP } from './useGardenState'
+import { SIZE_MAP, TEXTURE_MAP, DECOR_VARIANTS } from './useGardenState'
 import { makePlantGroup } from '../utils/plantUtils'
 import { applyColourOrTexture } from '../utils/drawUtils'
 import { buildRockBorderGroup, buildPicketFenceGroup } from '../utils/rockBorderUtils'
@@ -576,7 +576,31 @@ export function loadGarden({
     }
     if (entry.variantSrc) {
       const vImg = new window.Image()
-      vImg.onload = () => { const k = group.findOne('Image'); if (k) { k.image(vImg); plantLayer?.batchDraw() } }
+      vImg.onload = () => {
+        const k = group.findOne('Image')
+        if (!k) return
+        k.image(vImg)
+        // If this is a decor group variant with a potentially different size, resize to match
+        if (entry.decorGroup) {
+          const variants = DECOR_VARIANTS[entry.decorGroup]
+          const variant = variants?.find(v => v.src === entry.variantSrc)
+          if (variant && variant.size && SIZE_MAP[variant.size]) {
+            const SIZE = SIZE_MAP[variant.size]
+            const aspect = (vImg.naturalWidth && vImg.naturalHeight) ? vImg.naturalWidth / vImg.naturalHeight : 1
+            const W = aspect >= 1 ? SIZE : SIZE * aspect
+            const H = aspect >= 1 ? SIZE / aspect : SIZE
+            const oldW = k.width() || W
+            const oldH = k.height() || H
+            k.width(W); k.height(H)
+            const hitRect = group.findOne('Rect')
+            if (hitRect) { hitRect.width(W); hitRect.height(H) }
+            group.x(group.x() + (oldW - W) / 2)
+            group.y(group.y() + (oldH - H) / 2)
+            group.width(W); group.height(H)
+          }
+        }
+        plantLayer?.batchDraw()
+      }
       vImg.src = entry.variantSrc
     }
     group._family = entry.family || ''  // stamp family for zone-aware layer stepping
