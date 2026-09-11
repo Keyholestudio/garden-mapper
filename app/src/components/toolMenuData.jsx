@@ -121,17 +121,7 @@ export const DECOR_ITEMS = [
   { id: 'fountain-sm', label: 'Fountains', emoji: '⛲', hint: 'Tap to place a fountain', decorGroup: 'fountains' },
   { id: 'decor-rock-small', label: 'Rocks', emoji: '🪨', hint: 'Tap to place a rock', decorGroup: 'rocks' },
   { id: 'decor-gazebo-square', label: 'Gazebos', emoji: '🗻', hint: 'Tap to place a gazebo', decorGroup: 'gazebos' },
-  {
-    id: '__seating', label: 'Seating', emoji: '🪑', group: true,
-    children: [
-      { id: 'decor-lounge-wood',      label: 'Wood Loungers',    hint: 'Tap to place wooden lounge chairs' },
-      { id: 'decor-lounge-modern',    label: 'Plastic Loungers', hint: 'Tap to place plastic lounge chairs' },
-      { id: 'decor-table-pine',       label: 'Pine Table',       hint: 'Tap to place pine table + chairs' },
-      { id: 'decor-table-stained',    label: 'Stained Table',    hint: 'Tap to place stained table + chairs' },
-      { id: 'decor-table-enameled',   label: 'Enameled Table',   hint: 'Tap to place enameled table + chairs' },
-      { id: 'decor-table-bronzed',    label: 'Bronzed Table',    hint: 'Tap to place bronzed table + chairs' },
-    ],
-  },
+  { id: 'decor-lounge-wood', label: 'Seating', emoji: '🪑', hint: 'Tap to place seating', decorGroup: 'seating' },
   { id: 'decor-umbrella', label: 'Beach Umbrella', emoji: '⛱', hint: 'Tap to place beach umbrella' },
   {
     id: '__pots', label: 'Flower Pots', emoji: '🪴', group: true,

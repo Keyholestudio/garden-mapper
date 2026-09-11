@@ -181,6 +181,14 @@ export const GATE_VARIANTS = {
 // DECOR_VARIANTS — maps each decor group key to its variant list (label, subtitle, size, src, colour)
 // Used by RightPanel/MobileSheet to render the colour-picker panel with subtitle display.
 export const DECOR_VARIANTS = {
+  seating: [
+    { label: 'Wood Loungers',    subtitle: 'Wood Loungers',    size: 'XL',  colour: '#D4893A', src: '/stickers/decor_lounge-wood_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Modern Loungers',  subtitle: 'Modern Loungers',  size: 'XL',  colour: '#9A9A9A', src: '/stickers/decor_lounge-modern_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Pine Table',       subtitle: 'Pine Table',       size: 'XXL', colour: '#D4A656', src: '/stickers/decor_table-pine_XXL_CA-US-FR-GB-AU.png' },
+    { label: 'Stained Table',    subtitle: 'Stained Table',    size: 'XXL', colour: '#A0522D', src: '/stickers/decor_table-stained_XXL_CA-US-FR-GB-AU.png' },
+    { label: 'Enameled Table',   subtitle: 'Enameled Table',   size: 'XXL', colour: '#C8CDD0', src: '/stickers/decor_table-enameled_XXL_CA-US-FR-GB-AU.png' },
+    { label: 'Bronzed Table',    subtitle: 'Bronzed Table',    size: 'XXL', colour: '#7B3F2E', src: '/stickers/decor_table-bronzed_XXL_CA-US-FR-GB-AU.png' },
+  ],
   gazebos: [
     { label: 'Square',     subtitle: 'Square Gazebo',  size: 'XXL', colour: '#7B5230', src: '/stickers/decor_gazebo-square_XL_CA-US-FR-GB-AU.png' },
     { label: 'Octagon',    subtitle: 'Octagon Gazebo', size: 'XXL', colour: '#C06A3A', src: '/stickers/decor_gazebo-oct_XL_CA-US-FR-GB-AU.png' },
