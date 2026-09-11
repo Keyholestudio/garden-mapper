@@ -178,6 +178,16 @@ export const GATE_VARIANTS = {
   'decor_gate-wood-sage_XL_CA-US-FR-GB-AU':     GATE_VARIANT_LIST,
 }
 
+// DECOR_VARIANTS — maps each decor group key to its variant list (label, subtitle, size, src, colour)
+// Used by RightPanel/MobileSheet to render the colour-picker panel with subtitle display.
+export const DECOR_VARIANTS = {
+  fountains: [
+    { label: 'Small',  subtitle: 'Small Fountain',  size: 'S', colour: '#7EC8E3', src: '/stickers/water-feature_fountain-sm_S_CA-US-FR-GB-AU.png' },
+    { label: 'Medium', subtitle: 'Medium Fountain', size: 'M', colour: '#4A9CC7', src: '/stickers/water-feature_fountain-md_M_CA-US-FR-GB-AU.png' },
+    { label: 'Large',  subtitle: 'Large Fountain',  size: 'L', colour: '#1A6A9A', src: '/stickers/water-feature_fountain-lg_L_CA-US-FR-GB-AU.png' },
+  ],
+}
+
 export const GATE_STYLES = {
   wood:    { stroke: '#8B4513', strokeWidth: 8,  dash: [],      label: 'Wood Gate' },
   metal:   { stroke: '#37474F', strokeWidth: 5,  dash: [6, 4],  label: 'Metal Gate' },

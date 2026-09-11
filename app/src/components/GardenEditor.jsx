@@ -8,7 +8,7 @@
 import { useRef, useState, useEffect, useCallback, lazy, Suspense } from 'react'
 import { Capacitor } from '@capacitor/core'
 import Konva from 'konva'
-import { useGardenState, TEXTURE_MAP, PLANT_VARIANTS }  from '../hooks/useGardenState'
+import { useGardenState, TEXTURE_MAP, PLANT_VARIANTS, SIZE_MAP, DECOR_VARIANTS }  from '../hooks/useGardenState'
 import { useDrawTools }    from '../hooks/useDrawTools'
 import { useSelection }    from '../hooks/useSelection'
 import { PLANT_CATALOG, useLazyPacks }   from '../hooks/usePlantCatalog'
@@ -504,9 +504,9 @@ export default function GardenEditor() {
     'gate-blue':     { key: 'decor_gate-wood-blue_XL_CA-US-FR-GB-AU',     label: 'Blue Gate',     family: 'Gate', size: 'XL', src: '/stickers/decor_gate-wood-blue_XL_CA-US-FR-GB-AU.png'     },
     'gate-sage':     { key: 'decor_gate-wood-sage_XL_CA-US-FR-GB-AU',     label: 'Sage Gate',     family: 'Gate', size: 'XL', src: '/stickers/decor_gate-wood-sage_XL_CA-US-FR-GB-AU.png'     },
     // Fountains - merged from FOUNTAIN_CATALOG (same placement flow as decor stickers)
-    'fountain-sm': { key: 'water-feature_fountain-sm_S_CA-US-FR-GB-AU', label: 'Small Fountain',  family: 'Water Feature', size: 'S', src: '/stickers/water-feature_fountain-sm_S_CA-US-FR-GB-AU.png' },
-    'fountain-md': { key: 'water-feature_fountain-md_M_CA-US-FR-GB-AU', label: 'Medium Fountain', family: 'Water Feature', size: 'M', src: '/stickers/water-feature_fountain-md_M_CA-US-FR-GB-AU.png' },
-    'fountain-lg': { key: 'water-feature_fountain-lg_L_CA-US-FR-GB-AU', label: 'Large Fountain',  family: 'Water Feature', size: 'L', src: '/stickers/water-feature_fountain-lg_L_CA-US-FR-GB-AU.png' },
+    'fountain-sm': { key: 'water-feature_fountain-sm_S_CA-US-FR-GB-AU', label: 'Fountains', family: 'Water Feature', size: 'S', decorGroup: 'fountains', src: '/stickers/water-feature_fountain-sm_S_CA-US-FR-GB-AU.png' },
+    'fountain-md': { key: 'water-feature_fountain-md_M_CA-US-FR-GB-AU', label: 'Fountains', family: 'Water Feature', size: 'M', decorGroup: 'fountains', src: '/stickers/water-feature_fountain-md_M_CA-US-FR-GB-AU.png' },
+    'fountain-lg': { key: 'water-feature_fountain-lg_L_CA-US-FR-GB-AU', label: 'Fountains', family: 'Water Feature', size: 'L', decorGroup: 'fountains', src: '/stickers/water-feature_fountain-lg_L_CA-US-FR-GB-AU.png' },
   }
 
   // When a decor sub-tool is clicked, load the image and queue it for placement (same as plant click-to-place)
@@ -1174,7 +1174,7 @@ export default function GardenEditor() {
     triggerAutoSave()
   }
 
-  const handlePlantVariantChange = (variantSrc) => {
+  const handlePlantVariantChange = (variantSrc, newSize) => {
     const sel = state.selectedPlant; if (!sel) return
     const d = state.plantDataRef.current[sel.id]
     // null = default swatch selected - clear variantSrc, resolve to base catalog src
@@ -1184,7 +1184,17 @@ export default function GardenEditor() {
     const img = new window.Image()
     img.onload = () => {
       const konvaImg = sel.group.findOne('Image')
-      if (konvaImg) { konvaImg.image(img); layersRef.current.plantLayer?.batchDraw() }
+      if (konvaImg) {
+        konvaImg.image(img)
+        // Resize sticker if the new variant has a different size (e.g. fountain S->L)
+        if (newSize && SIZE_MAP[newSize]) {
+          const px = SIZE_MAP[newSize]
+          konvaImg.width(px); konvaImg.height(px)
+          konvaImg.offsetX(px / 2); konvaImg.offsetY(px / 2)
+          d.size = newSize
+        }
+        layersRef.current.plantLayer?.batchDraw()
+      }
     }
     img.src = resolvedSrc
     state.setSelectedPlant({ ...sel })
