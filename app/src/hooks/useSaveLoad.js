@@ -235,7 +235,7 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
       scaleX: g.scaleX(), scaleY: g.scaleY(),
       label: d.label, family: d.family, key: d.key, size: d.size,
       notes: d.notes, seasons: d.seasons, transparent: d.transparent, locked: d.locked || false,
-      variantSrc: d.variantSrc || null, src: d.src || null,
+      variantSrc: d.variantSrc || null, src: d.src || null, decorGroup: d.decorGroup || null,
       zIndex: g.zIndex(),
     })
   })
@@ -555,6 +555,7 @@ export function loadGarden({
       size: entry.size, key: entry.key,
       variantSrc: entry.variantSrc || null,
       src: entry.src || (entry.key ? '/stickers/' + entry.key + '.png' : null),
+      decorGroup: entry.decorGroup || null,
     }
 
     const size = SIZE_MAP[entry.size] || 64
