@@ -1054,7 +1054,9 @@ export default function GardenEditor() {
       // Picket fence: rebuild a new Group from the hit line's points
       const hitLine = shape.getChildren(c => c instanceof Konva.Line)[0]
       if (!hitLine) return
-      const flatPts = hitLine.points().map((v, i) => v + OFFSET)
+      // Keep flatPoints in local space (relative to group origin) — do NOT offset them.
+      // Only the group x/y moves the copy in world space. Offsetting points too = double-offset.
+      const flatPts = hitLine.points().slice()
       const newData = { ...d, label: d.label ? d.label + ' (copy)' : '', onPlantLayer: false }
       state.structDataRef.current[newId] = newData
       const { structLayer: sl, plantLayer: pl } = layersRef.current
@@ -1076,6 +1078,8 @@ export default function GardenEditor() {
       })
       sl.add(grp)
       grp.moveToTop()
+      // Render tiles immediately (same as fresh placement)
+      drawPicketFences(sl, state.structDataRef, Konva)
       sl.batchDraw()
       state.setSelectedStruct({ id: newId, shape: grp, ...state.structDataRef.current[newId] })
       state.pushUndo(() => {
