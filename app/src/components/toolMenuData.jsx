@@ -70,7 +70,7 @@ export const BED_SUBS = [
 
 export const FENCE_ITEMS = [
   { id: 'picket-fence', label: 'Fences', hint: 'Click points · Enter to finish' },
-  { id: 'gate',         label: 'Gate',   hint: 'Place a gate section' },
+  { id: 'gate',         label: 'Gates',  hint: 'Place a gate section' },
   {
     id: '__hedges', label: 'Hedges', emoji: '🌳', group: true,
     children: [
