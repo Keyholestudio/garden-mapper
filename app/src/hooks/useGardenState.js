@@ -18,7 +18,7 @@ export const BUILDING_COLOURS= ['#90A4AE','#BCAAA4','#78909C','#A1887F',
 export const FENCE_COLOURS   = ['#795548','#6D4C41','#4E342E','#BCAAA4','#90A4AE']
 export const HEDGE_COLOURS   = ['#388E3C','#2E7D32','#1B5E20','#558B2F']
 export const PATH_COLOURS    = ['#D7CCC8','#BCAAA4','#9E9E9E',
-  '#TX:path-brick','#TX:path-brick-red']
+  '#TX:path-brick','#TX:path-brick-red','#TX:path-flagstone-beige']
 export const WATER_COLOURS   = ['#64B5F6','#42A5F5','#1E88E5','#90CAF9','#B3E5FC']
 export const DECKING_COLOURS = ['#C8A96A','#A0785A','#8B6340','#D4A96A','#6D4C41',
   '#TX:deck-medium-brown','#TX:deck-dark-brown','#TX:deck-cedar']
@@ -36,8 +36,9 @@ export const TEXTURE_MAP = {
   '#TX:path-stepping-round': { src: '/textures/path-stepping-round.jpg', label: 'Round Stepping Stones' },
   '#TX:path-stepping-square':{ src: '/textures/path-stepping-square.jpg',label: 'Square Pavers' },
   '#TX:path-flagstone':      { src: '/textures/path-flagstone.jpg',      label: 'Flagstone' },
-  '#TX:path-brick':          { src: '/textures/path-brick.jpg',          label: 'Brick Path' },
-  '#TX:path-brick-red':      { src: '/textures/path-brick-red.jpg',      label: 'Red Brick Path' },
+  '#TX:path-brick':              { src: '/textures/path-brick.jpg',          label: 'Brick Path' },
+  '#TX:path-brick-red':          { src: '/textures/path-brick-red.jpg',      label: 'Red Brick Path' },
+  '#TX:path-flagstone-beige':    { src: '/textures/path-flagstone-beige.jpg', label: 'Beige Flagstone' },
   '#TX:deck-medium-brown':   { src: '/textures/deck-medium-brown.jpg',   label: 'Medium Brown Planks' },
   '#TX:deck-dark-brown':     { src: '/textures/deck-dark-brown.jpg',     label: 'Dark Brown Planks' },
   '#TX:deck-cedar':          { src: '/textures/deck-cedar.jpg',          label: 'Cedar Planks' },
