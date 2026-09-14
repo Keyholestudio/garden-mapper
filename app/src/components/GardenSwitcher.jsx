@@ -158,8 +158,8 @@ export default function GardenSwitcher({
             </div>
           )}
 
-          {/* Unlock upsell — shown when no ghost gardens (keeps upsell always visible) */}
-          {ghostGardens.length === 0 && (
+          {/* Unlock upsell — shown to free users with no ghost gardens */}
+          {!isSubscribed && ghostGardens.length === 0 && (
             <a
               href="#"
               className="switcher-unlock-row"
