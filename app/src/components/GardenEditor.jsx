@@ -503,7 +503,7 @@ export default function GardenEditor() {
     'decor-stairs-wood':      { key: 'decor_stairs-wood_M_CA-US-FR-GB-AU',      label: 'Stairs', family: 'Decor', size: 'M', decorGroup: 'stairs', src: '/stickers/decor_stairs-wood_M_CA-US-FR-GB-AU.png'      },
     'decor-stairs-wood-rail':  { key: 'decor_stairs-wood-rail_M_CA-US-FR-GB-AU',  label: 'Stairs', family: 'Decor', size: 'M', decorGroup: 'stairs', src: '/stickers/decor_stairs-wood-rail_M_CA-US-FR-GB-AU.png'  },
     'decor-stairs-brick':      { key: 'decor_stairs-brick_M_CA-US-FR-GB-AU',      label: 'Stairs', family: 'Decor', size: 'M', decorGroup: 'stairs', src: '/stickers/decor_stairs-brick_M_CA-US-FR-GB-AU.png'      },
-    'decor-stairs-stone':      { key: 'decor_stairs-stone_M_CA-US-FR-GB-AU',      label: 'Stairs', family: 'Decor', size: 'M', decorGroup: 'stairs', src: '/stickers/decor_stairs-stone_M_CA-US-FR-GB-AU.png'      },
+    'decor-stairs-stone':      { key: 'decor_stairs-stone_M_CA-US-FR-GB-AU',      label: 'Sandstone Stairs', family: 'Decor', size: 'M', decorGroup: 'stairs', src: '/stickers/decor_stairs-stone_M_CA-US-FR-GB-AU.png'      },
     'decor-arch-wood':    { key: 'decor_arch-wood_XL_CA-US-FR-GB-AU',    label: 'Arches', family: 'Decor', size: 'XL', decorGroup: 'arches', src: '/stickers/decor_arch-wood_XL_CA-US-FR-GB-AU.png'    },
     'decor-arch-metal':   { key: 'decor_arch-metal_XL_CA-US-FR-GB-AU',   label: 'Arches', family: 'Decor', size: 'XL', decorGroup: 'arches', src: '/stickers/decor_arch-metal_XL_CA-US-FR-GB-AU.png'   },
     // Gates
