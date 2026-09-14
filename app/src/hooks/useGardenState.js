@@ -38,7 +38,7 @@ export const TEXTURE_MAP = {
   '#TX:path-flagstone':      { src: '/textures/path-flagstone.jpg',      label: 'Flagstone' },
   '#TX:path-brick':              { src: '/textures/path-brick.jpg',          label: 'Brick Path' },
   '#TX:path-brick-red':          { src: '/textures/path-brick-red.jpg',      label: 'Red Brick Path' },
-  '#TX:path-flagstone-beige':    { src: '/textures/path-flagstone-beige.jpg', label: 'Beige Flagstone' },
+  '#TX:path-flagstone-beige':    { src: '/textures/path-flagstone-beige.png', label: 'Beige Flagstone' },
   '#TX:deck-medium-brown':   { src: '/textures/deck-medium-brown.jpg',   label: 'Medium Brown Planks' },
   '#TX:deck-dark-brown':     { src: '/textures/deck-dark-brown.jpg',     label: 'Dark Brown Planks' },
   '#TX:deck-cedar':          { src: '/textures/deck-cedar.jpg',          label: 'Cedar Planks' },
