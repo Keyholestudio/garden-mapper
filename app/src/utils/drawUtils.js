@@ -33,79 +33,48 @@ export function applyPathTexture(line, colour, pathWidth, layer, TEXTURE_MAP) {
   line.listening(true)
   line.hitStrokeWidth(sw + 10)
 
+  // Shared helper: trace the line's bezier/linear path onto a 2D context
+  const tracePath = (c2d, points, tension) => {
+    if (points.length < 4) return
+    c2d.moveTo(points[0], points[1])
+    if (tension > 0 && points.length >= 6) {
+      for (let i = 0; i < points.length - 2; i += 2) {
+        const x0 = i > 0 ? points[i-2] : points[i],   y0 = i > 0 ? points[i-1] : points[i+1]
+        const x1 = points[i],   y1 = points[i+1]
+        const x2 = points[i+2], y2 = points[i+3]
+        const x3 = i < points.length-4 ? points[i+4] : x2
+        const y3 = i < points.length-4 ? points[i+5] : y2
+        c2d.bezierCurveTo(
+          x1+(x2-x0)*tension/3, y1+(y2-y0)*tension/3,
+          x2-(x3-x1)*tension/3, y2-(y3-y1)*tension/3,
+          x2, y2
+        )
+      }
+    } else {
+      for (let i = 2; i < points.length; i += 2) c2d.lineTo(points[i], points[i+1])
+    }
+  }
+
   const applyPattern = (img) => {
     line.stroke('transparent')  // hide default Konva stroke
     line.strokeWidth(sw)
 
-    // Pre-build offscreen canvas for pattern (once)
+    // Pre-build offscreen canvas for pattern (once per image load)
     const offscreen = document.createElement('canvas')
     offscreen.width = img.naturalWidth || img.width || 256
     offscreen.height = img.naturalHeight || img.height || 256
-    const octx = offscreen.getContext('2d')
-    octx.drawImage(img, 0, 0)
+    offscreen.getContext('2d').drawImage(img, 0, 0)
 
+    // sceneFunc: draw texture pattern clipped to stroke shape
     line.sceneFunc((ctx, shape) => {
-      const c2d = ctx._context  // native CanvasRenderingContext2D
-      const points = shape.points ? shape.points() : []
-      if (points.length < 4) return
-
-      const tension = shape.tension ? shape.tension() : 0
-
-      // Build the path once as a clip region (the stroke shape)
-      c2d.save()
-      c2d.beginPath()
-      c2d.moveTo(points[0], points[1])
-      if (tension > 0 && points.length >= 6) {
-        for (let i = 0; i < points.length - 2; i += 2) {
-          const x0 = i > 0 ? points[i - 2] : points[i]
-          const y0 = i > 0 ? points[i - 1] : points[i + 1]
-          const x1 = points[i],     y1 = points[i + 1]
-          const x2 = points[i + 2], y2 = points[i + 3]
-          const x3 = i < points.length - 4 ? points[i + 4] : x2
-          const y3 = i < points.length - 4 ? points[i + 5] : y2
-          const cp1x = x1 + (x2 - x0) * tension / 3
-          const cp1y = y1 + (y2 - y0) * tension / 3
-          const cp2x = x2 - (x3 - x1) * tension / 3
-          const cp2y = y2 - (y3 - y1) * tension / 3
-          c2d.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x2, y2)
-        }
-      } else {
-        for (let i = 2; i < points.length; i += 2) c2d.lineTo(points[i], points[i + 1])
-      }
-
-      // Use the stroked path as a clip mask
-      c2d.lineWidth = sw
-      c2d.lineCap = 'round'
-      c2d.lineJoin = 'round'
-      // stroke-to-path trick: clip to the stroked area
-      c2d.strokeStyle = 'rgba(0,0,0,1)'
-      c2d.stroke()  // draw stroke first so we can use it as clip
-      // Now clip and fill with texture
-      c2d.restore()
-
-      // Redraw — this time clip to stroke shape then fill with pattern
-      c2d.save()
-      c2d.beginPath()
-      c2d.moveTo(points[0], points[1])
-      if (tension > 0 && points.length >= 6) {
-        for (let i = 0; i < points.length - 2; i += 2) {
-          const x0 = i > 0 ? points[i - 2] : points[i]
-          const y0 = i > 0 ? points[i - 1] : points[i + 1]
-          const x1 = points[i],     y1 = points[i + 1]
-          const x2 = points[i + 2], y2 = points[i + 3]
-          const x3 = i < points.length - 4 ? points[i + 4] : x2
-          const y3 = i < points.length - 4 ? points[i + 5] : y2
-          const cp1x = x1 + (x2 - x0) * tension / 3
-          const cp1y = y1 + (y2 - y0) * tension / 3
-          const cp2x = x2 - (x3 - x1) * tension / 3
-          const cp2y = y2 - (y3 - y1) * tension / 3
-          c2d.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x2, y2)
-        }
-      } else {
-        for (let i = 2; i < points.length; i += 2) c2d.lineTo(points[i], points[i + 1])
-      }
-      // Set stroke style to pattern and draw — pattern fills the stroke width
+      const c2d = ctx._context
+      const pts = shape.points ? shape.points() : []
+      const ten = shape.tension ? shape.tension() : 0
+      if (pts.length < 4) return
       const pattern = c2d.createPattern(offscreen, 'repeat')
+      c2d.save()
+      c2d.beginPath()
+      tracePath(c2d, pts, ten)
       c2d.strokeStyle = pattern
       c2d.lineWidth = sw
       c2d.lineCap = 'round'
@@ -113,6 +82,24 @@ export function applyPathTexture(line, colour, pathWidth, layer, TEXTURE_MAP) {
       c2d.stroke()
       c2d.restore()
     })
+
+    // hitFunc: draw the same path shape opaque on the hit canvas so Konva can detect clicks
+    line.hitFunc((ctx, shape) => {
+      const c2d = ctx._context
+      const pts = shape.points ? shape.points() : []
+      const ten = shape.tension ? shape.tension() : 0
+      if (pts.length < 4) return
+      c2d.save()
+      c2d.beginPath()
+      tracePath(c2d, pts, ten)
+      c2d.strokeStyle = 'rgba(0,0,0,1)'
+      c2d.lineWidth = sw + 10  // slightly wider for easy clicking
+      c2d.lineCap = 'round'
+      c2d.lineJoin = 'round'
+      c2d.stroke()
+      c2d.restore()
+    })
+
     layer?.batchDraw()
   }
 
