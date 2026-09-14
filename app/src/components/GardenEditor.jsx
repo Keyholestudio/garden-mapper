@@ -843,8 +843,8 @@ export default function GardenEditor() {
     const sel = state.selectedStruct; if (!sel) return
     state.structDataRef.current[sel.id].pathWidth = w
     sel.shape.strokeWidth(w)
-    // If this path has a texture group, update its clip bounds too
-    updatePathTextureWidth(sel.shape, w, layersRef.current.structLayer)
+    // If this path has a texture group, rebuild it with new width
+    updatePathTextureWidth(sel.shape, w, layersRef.current.structLayer, TEXTURE_MAP)
     layersRef.current.structLayer?.batchDraw()
     triggerAutoSave()
   }
