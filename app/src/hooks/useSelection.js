@@ -124,7 +124,7 @@ export function useSelection({
           addPicketsToGroup(grp, shape.points(), shape.tension(), d?.picketVariant || 'white', Konva)
         } else if (d?.type === 'path') {
           // Update the visual clone (non-listening Line) to match hit line points
-          const visual = grp.getChildren(c => c instanceof Konva.Line && !c.listening())[0]
+          const visual = grp.getChildren(c => c instanceof Konva.Line && c.id() !== id)[0]
           if (visual) visual.points(shape.points())
         } else {
           addStonesToGroup(grp, shape.points(), shape.tension(), d?.rockVariant, id, Konva)
@@ -147,7 +147,7 @@ export function useSelection({
         if (d?.type === 'picket-fence') {
           addPicketsToGroup(shape.parent, newFlat, shape.tension(), d?.picketVariant || 'white', Konva)
         } else if (d?.type === 'path') {
-          const visual = shape.parent.getChildren(c => c instanceof Konva.Line && !c.listening())[0]
+          const visual = shape.parent.getChildren(c => c instanceof Konva.Line && c.id() !== id)[0]
           if (visual) visual.points(newFlat)
         } else {
           addStonesToGroup(shape.parent, newFlat, shape.tension(), d?.rockVariant, id, Konva)
@@ -179,7 +179,11 @@ export function useSelection({
     // Rock border / picket fence / textured path: edit the inner hit line
     const editType = sRef.current.structDataRef?.current[id]?.type
     if ((editType === 'rock-border' || editType === 'picket-fence' || editType === 'path') && shape instanceof Konva.Group) {
-      const hitLine = shape.getChildren(c => c instanceof Konva.Line)[0]
+      // For textured paths: hit line has the struct id; visual clone is non-listening
+      // For rock-border/picket-fence: first Line child is always the hit line
+      const hitLine = editType === 'path'
+        ? shape.findOne(`#${id}`)  // hit line carries the original struct id
+        : shape.getChildren(c => c instanceof Konva.Line)[0]
       if (!hitLine) return
 
       // Disable Group drag while editing points and remove the dragmove.edithandles
@@ -210,8 +214,11 @@ export function useSelection({
         if (sh instanceof Konva.Group) {
           sh.off('dragmove.edithandles')
           if (!sRef.current.structDataRef?.current[id]?.locked) sh.draggable(true)
-          // Restore listening on hitLine and stones
-          const hl = sh.getChildren(c => c instanceof Konva.Line)[0]
+          // Restore listening on hitLine — for textured paths use id lookup, for others first Line child
+          const editType2 = sRef.current.structDataRef?.current[id]?.type
+          const hl = editType2 === 'path'
+            ? sh.findOne(`#${id}`)
+            : sh.getChildren(c => c instanceof Konva.Line)[0]
           if (hl) hl.listening(true)
           sh.getChildren(c => c instanceof Konva.Image).forEach(s => s.listening(true))
         }
