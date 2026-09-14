@@ -23,7 +23,7 @@ function isDreamGarden(g) {
   return !!(g?._isDreamGarden) || g?.name === '🌸 Dream Garden';
 }
 
-export function useAuth({ getLocalGardens, setLocalGardens }) {
+export function useAuth({ getLocalGardens, setLocalGardens, getIsSubscribed = () => false }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -229,7 +229,7 @@ export function useAuth({ getLocalGardens, setLocalGardens }) {
     const toLoad = Array.isArray(gardenToRestore) ? gardenToRestore : (gardenToRestore ? [gardenToRestore] : cloudGardenData || []);
 
     const MAX_FREE = 1;
-    const isSubscribed = false; // TODO: wire real subscription state
+    const isSubscribed = getIsSubscribed(); // reads current value from ref (Stripe on web, RevenueCat on native in Session D)
 
     if (toLoad.length > 0) {
       const local = getLocalGardens() || [];

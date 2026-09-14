@@ -105,6 +105,8 @@ export default function GardenEditor() {
   // ── Auth + cloud sync ────────────────────────────────────────────
   // Ref-based callback - set after all handlers are defined, avoids stale closure
   const loadGardenFromCloudRef = useRef(null)
+  // isSubscribedRef: lets useAuth read the latest subscription state without hook ordering issues
+  const isSubscribedRef = useRef(false)
 
   const {
     user,
@@ -115,6 +117,7 @@ export default function GardenEditor() {
     syncToCloud, syncStatus, signInWithGoogle, signOut,
   } = useAuth({
     getLocalGardens: () => readGardens(),
+    getIsSubscribed: () => isSubscribedRef.current,
     setLocalGardens: (gardens, loadIdx = 0) => {
       localStorage.setItem('gardenData', JSON.stringify(gardens))
       // Delegate to the ref - set after all handlers are defined below
@@ -134,6 +137,8 @@ export default function GardenEditor() {
 
   // ── Stripe web billing ──────────────────────────────────────────
   const { isSubscribed, openCheckout, checkoutLoading, error: stripeError } = useStripe(user?.id)
+  // Keep ref in sync so useAuth's restoreFromCloud always reads current subscription state
+  useEffect(() => { isSubscribedRef.current = isSubscribed }, [isSubscribed])
   const [subscribeModalOpen, setSubscribeModalOpen] = useState(false)
   const [accountModalOpen, setAccountModalOpen] = useState(false)
   const [moreModalOpen, setMoreModalOpen] = useState(false)
