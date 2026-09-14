@@ -188,40 +188,44 @@ Shape: [SHAPE DESCRIPTION]
 
 ### Rocks
 
+**Standard size: XS (160px generated, 24px display)** — all rocks use this single size as of 2026-09-14.
+
 | Sticker ID | Label | Size | Size px |
 |---|---|---|---|
-| `decor_rock-small_M_CA-US-FR-GB-AU` | Small Garden Stone | M | 256 |
-| `decor_rock-medium_L_CA-US-FR-GB-AU` | Medium Garden Stone | L | 384 |
-| `decor_rock-large_XL_CA-US-FR-GB-AU` | Large Garden Stone | XL | 512 |
+| `decor_rock-small_M_CA-US-FR-GB-AU` | River Stone | XS | 160 |
+| `decor_rock-medium_L_CA-US-FR-GB-AU` | Brown Rock | XS | 160 |
+| `decor_rock-large_XL_CA-US-FR-GB-AU` | Grey Rock | XS | 160 |
 
-**Small Garden Stone**
+_Note: filenames retain old size suffix for backwards compat — the size in code (useGardenState.js) is what matters._
+
+**River Stone**
 ```
-Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified Small Garden Stone with crisp edges, bold flat icon. Dark outline 2–3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified Garden Stone with crisp edges, bold flat icon. Dark outline 2–3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
 
-Subject: Small Garden Stone
-Canvas: 256px square.
+Subject: River Stone
+Canvas: 160px square.
 Colours: warm tan #C8A878, grey #9A9A8A, pale cream #E8DCC8, dark outline #3A3020, flat chroma-key green background (#00FF00)
-Shape: Single small rounded decorative garden stone, smooth surface with subtle texture variation. Correct proportions.
+Shape: Single small rounded river stone, smooth surface with subtle texture variation. Correct proportions.
 ```
 
-**Medium Garden Stone**
+**Brown Rock**
 ```
-Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified Medium Garden Stone with crisp edges, bold flat icon. Dark outline 2–3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified Garden Stone with crisp edges, bold flat icon. Dark outline 2–3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
 
-Subject: Medium Garden Stone
-Canvas: 384px square.
+Subject: Brown Rock
+Canvas: 160px square.
 Colours: warm grey #8A8A7A, mossy green patches #6A8A5A, tan #B0987A, dark outline #2A2A1A, flat chroma-key green background (#00FF00)
-Shape: Single medium rounded garden stone with subtle moss patches on top. Correct proportions.
+Shape: Single rounded brown garden stone with subtle moss patches on top. Correct proportions.
 ```
 
-**Large Garden Stone**
+**Grey Rock**
 ```
-Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified Large Garden Stone with crisp edges, bold flat icon. Dark outline 2–3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
+Aerial side view. Art style: Plants vs. Zombies meets watercolor painting — tasteful simplified Garden Stone with crisp edges, bold flat icon. Dark outline 2–3px. No shadows. Centered, 75% canvas fill. Vibrant and iconic.
 
-Subject: Large Garden Stone
-Canvas: 512px square.
+Subject: Grey Rock
+Canvas: 160px square.
 Colours: cool grey #7A8A8A, deep grey #4A5A5A, moss green #5A7A4A, pale lichens #C8C8A8, dark outline #1A2A1A, flat chroma-key green background (#00FF00)
-Shape: Single large decorative boulder with moss and lichen patches. Natural irregular shape. Correct proportions.
+Shape: Single grey decorative boulder with moss and lichen patches. Natural irregular shape. Correct proportions.
 ```
 
 ---
