@@ -513,7 +513,7 @@ export default function RightPanel({
           {!isCircle && !isGroup && !isRectType && !d.locked && (
             <button className="btn-panel" onClick={() => onEnterEdit?.(selectedStruct.id)}>✏️ Edit Shape</button>
           )}
-          {isGroup && (
+          {isGroup && !isPath && (
             <button className="btn-panel" onClick={onDisconnect}>⇥ Disconnect</button>
           )}
 
