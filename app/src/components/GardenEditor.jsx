@@ -139,6 +139,9 @@ export default function GardenEditor() {
   const { isSubscribed, loading: subscriptionLoading, openCheckout, purchase, restorePurchases, checkoutLoading, error: stripeError } = useSubscription(user?.id)
   // Keep ref in sync so useAuth's restoreFromCloud always reads current subscription state
   useEffect(() => { isSubscribedRef.current = isSubscribed }, [isSubscribed])
+  // Only show upsell when we are certain the user is NOT subscribed:
+  // signed in + loading finished + not subscribed. Prevents false positive during async fetch.
+  const showSubscribeUpsell = !!user && !subscriptionLoading && !isSubscribed
   const [subscribeModalOpen, setSubscribeModalOpen] = useState(false)
   const [accountModalOpen, setAccountModalOpen] = useState(false)
   const [moreModalOpen, setMoreModalOpen] = useState(false)
@@ -1666,7 +1669,7 @@ export default function GardenEditor() {
         onDeleteGhost={deleteGhostGarden}
         onDeleteLocal={(gardenId) => { if (gardenId) softDeleteCloudGarden(gardenId) }}
         isSubscribed={isSubscribed}
-        subscriptionLoading={subscriptionLoading}
+        showSubscribeUpsell={showSubscribeUpsell}
         onSubscribe={() => setSubscribeModalOpen(true)}
       />
 
