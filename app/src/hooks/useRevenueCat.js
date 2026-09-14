@@ -13,8 +13,8 @@ import { Purchases, LOG_LEVEL } from '@revenuecat/purchases-capacitor';
 
 // ── API keys ───────────────────────────────────────────────────────────────────
 // test_ prefix = sandbox key (no real charges). Replace with prod key before release.
-const RC_API_KEY_IOS     = 'test_YCKSQRAwYqZVvgVNVCijNPLzEbS';
-const RC_API_KEY_ANDROID = 'test_YCKSQRAwYqZVvgVNVCijNPLzEbS';
+const RC_API_KEY_IOS     = 'test_YCKSQRAwYqZVvgVNVCijNPLzEbS'; // TODO: replace with iOS key when App Store is set up
+const RC_API_KEY_ANDROID = 'goog_MRFLHJyEcpALdJyrwVNFLqBFFb'; // Production Android key (RC dashboard → Garden Mapper Play Store app)
 
 // RevenueCat identifiers — must match dashboard exactly
 // Entitlement: "Garden Mapper Pro" | REST API ID: centl71cfe4f3a4
