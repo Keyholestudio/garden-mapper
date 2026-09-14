@@ -10,94 +10,87 @@ import { buildRockBorderGroup, buildPicketFenceGroup, drawPicketFences } from '.
 // Apply a repeating texture (or solid fill) to any Konva shape based on colour token.
 // If colour starts with '#TX:' it loads the texture and tiles it; otherwise uses solid fill.
 // ── Path texture helper ──────────────────────────────────
-// Strategy: leave the line completely untouched (drag/hit/position all work).
-// Place a non-interactive Konva.Group BEHIND the line on the same layer.
-// The group contains a texture rect, clipped to the line's stroke bounding box.
-// The group tracks the line's position via a dragmove listener on the line.
+// Strategy: use a custom sceneFunc on the line that draws the texture
+// as the stroke fill using a CanvasPattern. No groups, no layer tricks.
+// The line keeps all its normal behaviour (drag, hit, position).
 export function applyPathTexture(line, colour, pathWidth, layer, TEXTURE_MAP) {
-  // Always clean up any existing shadow group for this line
-  layer?.findOne(`#ptx_${line.id()}`)?.destroy()
+  // Clean up any previous custom renderer
+  line._ptxColour = null
+  line.sceneFunc(null)  // reset to default Konva renderer
 
   if (!colour?.startsWith('#TX:') || !TEXTURE_MAP?.[colour]) {
-    // Flat colour — restore normal stroke
     line.stroke(colour)
+    line.strokeWidth(pathWidth || 18)
     layer?.batchDraw()
-    return null
+    return
   }
 
-  const txInfo = TEXTURE_MAP[colour]
-  const hw = (pathWidth || 18) / 2
-
-  // Make the line itself invisible (texture group renders the visual)
-  line.stroke('transparent')
-
-  const buildGroup = () => {
-    // Destroy stale group before rebuilding
-    layer?.findOne(`#ptx_${line.id()}`)?.destroy()
-
-    const bbox = line.getSelfRect()  // local coords relative to line's origin
-    const lx = line.x(), ly = line.y()
-
-    // World-space clip region
-    const wx = lx + bbox.x - hw - 2
-    const wy = ly + bbox.y - hw - 2
-    const ww = Math.max(bbox.width  + hw * 2 + 4, 1)
-    const wh = Math.max(bbox.height + hw * 2 + 4, 1)
-
-    const group = new Konva.Group({
-      id: `ptx_${line.id()}`,
-      x: wx, y: wy,
-      listening: false,
-      clip: { x: 0, y: 0, width: ww, height: wh },
-    })
-
-    const texRect = new Konva.Rect({
-      x: 0, y: 0,
-      width: ww, height: wh,
-      fillPriority: 'pattern',
-      fillPatternRepeat: 'repeat',
-      listening: false,
-    })
-
-    const img = new window.Image()
-    img.onload = () => { texRect.fillPatternImage(img); layer?.batchDraw() }
-    img.src = txInfo.src
-
-    group.add(texRect)
-    // Insert group below the line
-    layer?.add(group)
-    group.moveToBottom()
-    line.moveToTop()
-    layer?.batchDraw()
-    return group
-  }
-
-  // Store colour on line for width-change rebuilds
   line._ptxColour = colour
+  const txInfo = TEXTURE_MAP[colour]
+  const sw = pathWidth || 18
 
-  buildGroup()
+  const applyPattern = (img) => {
+    line.stroke('transparent')  // hide default stroke
+    line.strokeWidth(sw)
 
-  // Track line movement — rebuild group position on drag
-  line.off('dragmove.ptx dragend.ptx')
-  line.on('dragmove.ptx', () => {
-    const g = layer?.findOne(`#ptx_${line.id()}`)
-    if (!g) return
-    const bbox = line.getSelfRect()
-    const hw2 = (line.strokeWidth() || 18) / 2
-    g.x(line.x() + bbox.x - hw2 - 2)
-    g.y(line.y() + bbox.y - hw2 - 2)
-  })
-  line.on('dragend.ptx', () => buildGroup())
+    line.sceneFunc((ctx, shape) => {
+      // Create a tiling canvas pattern from the texture image
+      const offscreen = document.createElement('canvas')
+      offscreen.width = img.width || 256
+      offscreen.height = img.height || 256
+      const octx = offscreen.getContext('2d')
+      octx.drawImage(img, 0, 0)
+      const pattern = ctx._context.createPattern(offscreen, 'repeat')
 
-  return null
+      // Draw the path shape with the texture pattern as stroke
+      ctx.beginPath()
+      const points = shape.points ? shape.points() : []
+      if (points.length < 2) { ctx.closePath(); return }
+
+      // Apply tension curve (simplified Catmull-Rom for tension > 0)
+      const tension = shape.tension ? shape.tension() : 0
+      ctx.moveTo(points[0], points[1])
+      if (tension > 0 && points.length >= 6) {
+        for (let i = 0; i < points.length - 2; i += 2) {
+          const x0 = i > 0 ? points[i - 2] : points[i]
+          const y0 = i > 0 ? points[i - 1] : points[i + 1]
+          const x1 = points[i], y1 = points[i + 1]
+          const x2 = points[i + 2], y2 = points[i + 3]
+          const x3 = i < points.length - 4 ? points[i + 4] : x2
+          const y3 = i < points.length - 4 ? points[i + 5] : y2
+          const cp1x = x1 + (x2 - x0) * tension / 3
+          const cp1y = y1 + (y2 - y0) * tension / 3
+          const cp2x = x2 - (x3 - x1) * tension / 3
+          const cp2y = y2 - (y3 - y1) * tension / 3
+          ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x2, y2)
+        }
+      } else {
+        for (let i = 2; i < points.length; i += 2) ctx.lineTo(points[i], points[i + 1])
+      }
+
+      ctx._context.strokeStyle = pattern
+      ctx._context.lineWidth = sw
+      ctx._context.lineCap = 'round'
+      ctx._context.lineJoin = 'round'
+      ctx._context.stroke()
+
+      // Draw hit area (invisible)
+      ctx.beginPath()
+      shape.strokeHitEnabled(false)
+    })
+    layer?.batchDraw()
+  }
+
+  const img = new window.Image()
+  img.onload = () => applyPattern(img)
+  img.src = txInfo.src
 }
 
-// Update path texture clip when pathWidth changes (just rebuild with stored colour)
+// Update path texture width (just re-apply with stored colour)
 export function updatePathTextureWidth(line, pathWidth, layer, TEXTURE_MAP) {
-  const g = layer?.findOne(`#ptx_${line.id()}`)
-  if (!g) return  // no texture group, flat colour path — nothing to do
-  const storedColour = line._ptxColour
-  if (storedColour && TEXTURE_MAP) applyPathTexture(line, storedColour, pathWidth, layer, TEXTURE_MAP)
+  const c = line._ptxColour
+  if (!c) return  // flat colour, nothing to do
+  applyPathTexture(line, c, pathWidth, layer, TEXTURE_MAP)
 }
 
 export function applyColourOrTexture(shape, colour, layer, TEXTURE_MAP, opaque = false) {
