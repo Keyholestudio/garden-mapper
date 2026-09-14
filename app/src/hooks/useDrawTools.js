@@ -362,7 +362,11 @@ export function useDrawTools({
         const pos = stage.getRelativePointerPosition()
         let shape = structLayer.findOne('#' + s.editingShapeId)
         // Rock border: editingShapeId points to the Group — resolve to inner hit line
-        const isRockBorderGroup = shape instanceof Konva.Group && s.structDataRef?.current[s.editingShapeId]?.type === 'rock-border'
+        const structType = s.structDataRef?.current[s.editingShapeId]?.type
+        const isRockBorderGroup = shape instanceof Konva.Group && structType === 'rock-border'
+        // Textured path: hit line is inside ptxg_ group, findOne by id gets it directly
+        const isPathGroup = structType === 'path' && shape instanceof Konva.Line && shape.parent?.id()?.startsWith('ptxg_')
+        const pathGroup = isPathGroup ? shape.parent : null
         const rockGroup = isRockBorderGroup ? shape : null
         if (isRockBorderGroup) shape = shape.getChildren(c => c instanceof Konva.Line)[0]
         if (shape && shape instanceof Konva.Line) {
@@ -373,9 +377,10 @@ export function useDrawTools({
             const t = Math.max(0, Math.min(1, ((p.x-a.x)*dx + (p.y-a.y)*dy) / len2))
             return Math.hypot(p.x-(a.x+t*dx), p.y-(a.y+t*dy))
           }
-          // For rock border: click pos is in world space, line points are in group-local space
-          const localPos = rockGroup
-            ? { x: pos.x - rockGroup.x(), y: pos.y - rockGroup.y() }
+          // For rock border / textured path: click pos is in world space, line points are in group-local space
+          const parentGroup = rockGroup || pathGroup
+          const localPos = parentGroup
+            ? { x: pos.x - parentGroup.x(), y: pos.y - parentGroup.y() }
             : pos
           const flat = shape.points()
           const n = flat.length / 2
@@ -397,6 +402,11 @@ export function useDrawTools({
           if (rockGroup) {
             const d = s.structDataRef?.current[s.editingShapeId]
             addStonesToGroup(rockGroup, shape.points(), shape.tension(), d?.rockVariant, s.editingShapeId, Konva)
+          }
+          // Textured path: sync visual clone points
+          if (pathGroup) {
+            const visual = pathGroup.getChildren(c => c instanceof Konva.Line && c.id() !== s.editingShapeId)[0]
+            if (visual) visual.points(shape.points())
           }
           structLayer.batchDraw()
           if (onAddPointDone) onAddPointDone(s.editingShapeId)

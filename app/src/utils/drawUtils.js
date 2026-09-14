@@ -129,8 +129,10 @@ export function applyPathTexture(line, colour, pathWidth, layer, TEXTURE_MAP, on
   group.on('dragmove', () => { })
   group.on('dragend',  () => { })
 
-  // Group click/tap → select
+  // Group click/tap → select (suppress when in add-point/edit mode so clicks reach useDrawTools)
   group.on('click tap', e => {
+    // If the hit line's parent group is being edited, let the click propagate to stage
+    if (line._ptxEditing) return
     e.cancelBubble = true
     if (onSelect) onSelect(lineId, group, e)
   })
