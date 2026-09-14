@@ -178,29 +178,32 @@ export function useSelection({
 
     // Rock border / picket fence / textured path: edit the inner hit line
     const editType = sRef.current.structDataRef?.current[id]?.type
-    if ((editType === 'rock-border' || editType === 'picket-fence' || editType === 'path') && shape instanceof Konva.Group) {
-      // For textured paths: hit line has the struct id; visual clone is non-listening
-      // For rock-border/picket-fence: first Line child is always the hit line
-      const hitLine = editType === 'path'
-        ? shape.findOne(`#${id}`)  // hit line carries the original struct id
-        : shape.getChildren(c => c instanceof Konva.Line)[0]
-      if (!hitLine) return
 
-      // Disable Group drag while editing points and remove the dragmove.edithandles
-      // listener — handles ARE the point positions, no re-sync needed during edit
+    // Textured path: findOne returns the hit LINE (has struct id), not the group.
+    // Resolve to group explicitly via ptxg_ prefix.
+    if (editType === 'path') {
+      const hitLine = shape instanceof Konva.Line ? shape : layers.structLayer.findOne(`#${id}`)
+      if (!hitLine) return
+      const ptxGroup = layers.structLayer.findOne(`#ptxg_${id}`)
+      if (ptxGroup) {
+        ptxGroup.draggable(false)
+        ptxGroup.off('dragmove.edithandles')
+        ptxGroup.listening(false)  // let clicks pass through to stage for add-point
+      }
+      hitLine._ptxEditing = true
+      buildEditHandles(id, hitLine)
+      if (onEditMode) onEditMode(id)
+      return
+    }
+
+    if ((editType === 'rock-border' || editType === 'picket-fence') && shape instanceof Konva.Group) {
+      const hitLine = shape.getChildren(c => c instanceof Konva.Line)[0]
+      if (!hitLine) return
       shape.draggable(false)
       shape.off('dragmove.edithandles')
-      // Disable listening on hitLine and stones during edit so touches can't
-      // accidentally move the group — only handle drags should work in edit mode
       hitLine.listening(false)
       shape.getChildren(c => c instanceof Konva.Image).forEach(s => s.listening(false))
-      // For textured paths: disable group listening so clicks pass through to stage (add-point)
-      if (editType === 'path') {
-        hitLine._ptxEditing = true
-        shape.listening(false)  // group stops intercepting clicks
-      }
       buildEditHandles(id, hitLine)
-      // Stone refresh is handled inside makeHandle's dragmove for rock borders
       if (onEditMode) onEditMode(id)
       return
     }
@@ -216,20 +219,23 @@ export function useSelection({
       if (sh) {
         sh.off('dragmove.edithandles')
         // Rock border Group: clean up listener + re-enable drag + restore hitLine listening
-        if (sh instanceof Konva.Group) {
+        const exitType = sRef.current.structDataRef?.current[id]?.type
+        // Textured path: hit line is on the layer, group is ptxg_
+        if (exitType === 'path') {
+          if (sh instanceof Konva.Line) sh._ptxEditing = false
+          const ptxGroup = layers?.structLayer?.findOne(`#ptxg_${id}`)
+          if (ptxGroup) {
+            ptxGroup.off('dragmove.edithandles')
+            ptxGroup.listening(true)
+            if (!sRef.current.structDataRef?.current[id]?.locked) ptxGroup.draggable(true)
+          }
+        } else if (sh instanceof Konva.Group) {
           sh.off('dragmove.edithandles')
           if (!sRef.current.structDataRef?.current[id]?.locked) sh.draggable(true)
-          // Restore listening on hitLine — for textured paths use id lookup, for others first Line child
-          const editType2 = sRef.current.structDataRef?.current[id]?.type
-          const hl = editType2 === 'path'
-            ? sh.findOne(`#${id}`)
-            : sh.getChildren(c => c instanceof Konva.Line)[0]
-          if (hl) { hl.listening(true); hl._ptxEditing = false }
-          if (editType2 === 'path') sh.listening(true)  // restore group listening after edit
+          const hl = sh.getChildren(c => c instanceof Konva.Line)[0]
+          if (hl) hl.listening(true)
           sh.getChildren(c => c instanceof Konva.Image).forEach(s => s.listening(true))
-        }
-        // Rock border: clean Group listener when editing inner line
-        if (sh instanceof Konva.Line && sh.parent instanceof Konva.Group) {
+        } else if (sh instanceof Konva.Line && sh.parent instanceof Konva.Group) {
           sh.parent.off('dragmove.edithandles')
           if (!sRef.current.structDataRef?.current[id]?.locked) sh.parent.draggable(true)
         }
