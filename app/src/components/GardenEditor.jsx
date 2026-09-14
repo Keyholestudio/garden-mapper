@@ -16,7 +16,7 @@ import { addPlant }        from '../utils/plantUtils'
 import { insertPointNearestSegment } from '../hooks/useSelection'
 import { saveGarden, loadGarden, createNewGarden, readGardens, readLastGardenIndex, writeLastGardenIndex } from '../hooks/useSaveLoad'
 import { useAuth } from '../hooks/useAuth'
-import { useStripe } from '../hooks/useStripe'
+import { useSubscription } from '../hooks/useSubscription'
 import SubscribeModal from './SubscribeModal'
 import AccountModal   from './AccountModal'
 import MoreModal      from './MoreModal'
@@ -135,8 +135,8 @@ export default function GardenEditor() {
     },
   })
 
-  // ── Stripe web billing ──────────────────────────────────────────
-  const { isSubscribed, openCheckout, checkoutLoading, error: stripeError } = useStripe(user?.id)
+  // ── Subscription status (web: Stripe, native: Supabase flag; RC added in Session D) ──
+  const { isSubscribed, openCheckout, checkoutLoading, error: stripeError } = useSubscription(user?.id)
   // Keep ref in sync so useAuth's restoreFromCloud always reads current subscription state
   useEffect(() => { isSubscribedRef.current = isSubscribed }, [isSubscribed])
   const [subscribeModalOpen, setSubscribeModalOpen] = useState(false)
