@@ -21,6 +21,9 @@ export function applyPathTexture(line, colour, pathWidth, layer, TEXTURE_MAP) {
   if (!colour?.startsWith('#TX:') || !TEXTURE_MAP?.[colour]) {
     line.stroke(colour)
     line.strokeWidth(pathWidth || 18)
+    line.sceneFunc(null)
+    line.hitFunc(null)
+    line.clearCache()
     layer?.batchDraw()
     return
   }
@@ -100,6 +103,8 @@ export function applyPathTexture(line, colour, pathWidth, layer, TEXTURE_MAP) {
       c2d.restore()
     })
 
+    // Clear Konva's cache so hit canvas gets redrawn with the new hitFunc
+    line.clearCache()
     layer?.batchDraw()
   }
 
