@@ -793,9 +793,13 @@ export default function GardenEditor() {
     const isTexture = colour?.startsWith('#TX:')
     const isPath = d.type === 'path'
     if (isPath) {
+      // If sel.shape is already a group (textured path), extract the inner hit line
+      const hitLine = (shape instanceof Konva.Group)
+        ? shape.findOne(`#${sel.id}`)
+        : shape
       const onSel = (id, grp, e) => { exitEdit(); state.setMultiSelection([]); state.setSelectedStruct({ id, shape: grp, ...state.structDataRef.current[id] }); state.setSelectedPlant(null) }
       const onEd  = (id) => enterEdit(id)
-      applyPathTexture(shape, colour, d.pathWidth || 18, layersRef.current.structLayer, TEXTURE_MAP, onSel, onEd)
+      applyPathTexture(hitLine, colour, d.pathWidth || 18, layersRef.current.structLayer, TEXTURE_MAP, onSel, onEd)
       // Update sel.shape to the new group if a texture was applied
       if (colour?.startsWith('#TX:')) {
         const grp = layersRef.current.structLayer?.findOne(`#ptxg_${sel.id}`)
@@ -852,9 +856,15 @@ export default function GardenEditor() {
   const handlePathWidthChange = (w) => {
     const sel = state.selectedStruct; if (!sel) return
     state.structDataRef.current[sel.id].pathWidth = w
-    if (sel.shape instanceof Konva.Group) {
-      // Textured path — rebuild the group with new width
-      updatePathTextureWidth(sel.shape, w, layersRef.current.structLayer, TEXTURE_MAP)
+    if (sel.shape instanceof Konva.Group && state.structDataRef.current[sel.id]?.type === 'path') {
+      // Textured path — extract hit line and rebuild group with new width
+      const hitLine = sel.shape.findOne(`#${sel.id}`)
+      if (hitLine) {
+        const onSel = (id, grp, e) => { exitEdit(); state.setMultiSelection([]); state.setSelectedStruct({ id, shape: grp, ...state.structDataRef.current[id] }); state.setSelectedPlant(null) }
+        applyPathTexture(hitLine, state.structDataRef.current[sel.id].colour, w, layersRef.current.structLayer, TEXTURE_MAP, onSel, (id) => enterEdit(id))
+        const grp = layersRef.current.structLayer?.findOne(`#ptxg_${sel.id}`)
+        if (grp) state.setSelectedStruct(prev => ({ ...prev, shape: grp }))
+      }
     } else {
       sel.shape.strokeWidth(w)
     }

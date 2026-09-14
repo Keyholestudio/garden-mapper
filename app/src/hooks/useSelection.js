@@ -25,7 +25,7 @@ export function useSelection({
     const sel = state.selectedStruct
     const structLocked = sel && state.structDataRef?.current[sel.id]?.locked
     const selType = sel && state.structDataRef?.current[sel.id]?.type
-    const isRockBorder = selType === 'rock-border' || selType === 'picket-fence'
+    const isRockBorder = selType === 'rock-border' || selType === 'picket-fence' || selType === 'path'
     if (sel && !structLocked && !isRockBorder && (sel.shape instanceof Konva.Rect || sel.shape instanceof Konva.Group)) {
       tr.keepRatio(false)
       tr.enabledAnchors(['top-left','top-center','top-right','middle-left','middle-right','bottom-left','bottom-center','bottom-right'])
