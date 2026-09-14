@@ -1512,6 +1512,7 @@ export default function GardenEditor() {
           user={user}
           onClose={() => setAccountModalOpen(false)}
           onSubscribe={() => { setAccountModalOpen(false); setSubscribeModalOpen(true) }}
+          onRestorePurchases={restorePurchases}
         />
       )}
       {showRestorePrompt && cloudGardenData && (

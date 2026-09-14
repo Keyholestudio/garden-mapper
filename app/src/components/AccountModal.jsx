@@ -19,10 +19,12 @@ const PLAY_PACKAGE   = 'ca.gardenmapper.app';
 const PLAY_PRODUCT   = 'garden_mapper_pro';           // update when Play product ID is confirmed
 const PORTAL_RETURN  = 'https://app.gardenmapper.ca';
 
-export default function AccountModal({ user, onClose, onSubscribe }) {
+export default function AccountModal({ user, onClose, onSubscribe, onRestorePurchases }) {
   const [subDetails, setSubDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [portalLoading, setPortalLoading] = useState(false);
+  const [restoreLoading, setRestoreLoading] = useState(false);
+  const [restoreMsg, setRestoreMsg] = useState(null); // success/fail feedback
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -142,6 +144,23 @@ export default function AccountModal({ user, onClose, onSubscribe }) {
                   Upgrade to Pro
                 </button>
               )}
+              {/* Restore Purchases — native only, for reinstall recovery */}
+              {isNative && onRestorePurchases && (
+                <button
+                  className="account-btn account-btn--restore"
+                  disabled={restoreLoading}
+                  onClick={async () => {
+                    setRestoreLoading(true);
+                    setRestoreMsg(null);
+                    const ok = await onRestorePurchases();
+                    setRestoreMsg(ok ? '✓ Purchase restored!' : 'No purchase found.');
+                    setRestoreLoading(false);
+                  }}
+                >
+                  {restoreLoading ? 'Checking…' : 'Restore Purchases'}
+                </button>
+              )}
+              {restoreMsg && <div className="account-restore-msg">{restoreMsg}</div>}
             </>
           )}
         </div>
