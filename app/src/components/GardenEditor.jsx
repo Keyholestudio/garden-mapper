@@ -23,7 +23,7 @@ import MoreModal      from './MoreModal'
 import RestorePrompt from './RestorePrompt'
 import { seedDreamGarden, fetchDreamGardenUpdate } from '../hooks/useDreamGarden'
 import { softDeleteCloudGarden } from '../supabase'
-import { addRectStruct, isFreeMode, applyColourOrTexture, tryMergeRects } from '../utils/drawUtils'
+import { addRectStruct, isFreeMode, applyColourOrTexture, applyPathTexture, updatePathTextureWidth, tryMergeRects } from '../utils/drawUtils'
 import { drawRockBorders, buildRockBorderGroup, drawPicketFences, buildPicketFenceGroup, refreshPicketFenceGroup } from '../utils/rockBorderUtils'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import { useRecentPlants } from '../hooks/useRecentPlants'
@@ -791,8 +791,11 @@ export default function GardenEditor() {
     const shape = sel.shape
     const noFill = ['path','fence','gate','underground-electrical','underground-plumbing'].includes(d.type)
     const isTexture = colour?.startsWith('#TX:')
-    if (isTexture) {
-      // Texture fill - works on any shape type
+    const isPath = d.type === 'path'
+    if (isPath) {
+      // Paths use stroke-based texture group or plain stroke colour
+      applyPathTexture(shape, colour, d.pathWidth || 18, layersRef.current.structLayer, TEXTURE_MAP)
+    } else if (isTexture) {
       applyColourOrTexture(shape, colour, layersRef.current.structLayer, TEXTURE_MAP)
     } else {
       const isBed = d.type === 'bed' || d.type === 'bed-square'
@@ -840,6 +843,8 @@ export default function GardenEditor() {
     const sel = state.selectedStruct; if (!sel) return
     state.structDataRef.current[sel.id].pathWidth = w
     sel.shape.strokeWidth(w)
+    // If this path has a texture group, update its clip bounds too
+    updatePathTextureWidth(sel.shape, w, layersRef.current.structLayer)
     layersRef.current.structLayer?.batchDraw()
     triggerAutoSave()
   }

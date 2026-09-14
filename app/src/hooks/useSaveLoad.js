@@ -5,7 +5,7 @@
 import Konva from 'konva'
 import { SIZE_MAP, TEXTURE_MAP, DECOR_VARIANTS } from './useGardenState'
 import { makePlantGroup } from '../utils/plantUtils'
-import { applyColourOrTexture } from '../utils/drawUtils'
+import { applyColourOrTexture, applyPathTexture } from '../utils/drawUtils'
 import { buildRockBorderGroup, buildPicketFenceGroup } from '../utils/rockBorderUtils'
 import { getDeviceId, getDeviceLabel } from '../supabase'
 
@@ -537,7 +537,13 @@ export function loadGarden({
       structLayer?.add(shape)
       if (entry.type === 'hedge' || entry.type === 'hedge-sq') applyHedgeTexture(shape, structLayer)
       // Restore texture fills (colours stored as '#TX:...' tokens)
-      if (entry.colour?.startsWith('#TX:')) applyColourOrTexture(shape, entry.colour, structLayer, TEXTURE_MAP)
+      if (entry.colour?.startsWith('#TX:')) {
+        if (entry.type === 'path') {
+          applyPathTexture(shape, entry.colour, entry.pathWidth || 18, structLayer, TEXTURE_MAP)
+        } else {
+          applyColourOrTexture(shape, entry.colour, structLayer, TEXTURE_MAP)
+        }
+      }
     }
   })
 

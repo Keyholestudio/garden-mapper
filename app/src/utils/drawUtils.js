@@ -9,6 +9,95 @@ import { buildRockBorderGroup, buildPicketFenceGroup, drawPicketFences } from '.
 // ── Texture helper ─────────────────────────────────────────
 // Apply a repeating texture (or solid fill) to any Konva shape based on colour token.
 // If colour starts with '#TX:' it loads the texture and tiles it; otherwise uses solid fill.
+// ── Path texture helper ──────────────────────────────────
+// Applies a tiled texture to a path (Konva.Line or Konva.Path) by
+// replacing its stroke with a clipped texture Group.
+// Returns the group (now on the layer) and removes the bare line.
+// If colour is not a texture token, just sets stroke colour and returns null.
+export function applyPathTexture(line, colour, pathWidth, layer, TEXTURE_MAP) {
+  // Remove any existing texture group wrapping this line
+  const existingGroup = layer?.findOne(`#ptx_${line.id()}`)
+  if (existingGroup) {
+    // Move the line back out, remove group
+    existingGroup.getChildren().forEach(c => { if (c !== line) c.destroy() })
+    existingGroup.remove()
+    line.stroke(colour)
+    layer?.add(line)
+  }
+
+  if (!colour?.startsWith('#TX:') || !TEXTURE_MAP?.[colour]) {
+    // Flat colour — just set stroke
+    line.stroke(colour)
+    layer?.batchDraw()
+    return null
+  }
+
+  const txInfo = TEXTURE_MAP[colour]
+  const hw = (pathWidth || 18) / 2
+
+  // Get bounding box of the line in local coords
+  const bbox = line.getSelfRect()
+  const clipX = bbox.x - hw - 2
+  const clipY = bbox.y - hw - 2
+  const clipW = bbox.width  + hw * 2 + 4
+  const clipH = bbox.height + hw * 2 + 4
+
+  // Make the line transparent stroke — group will show texture
+  line.stroke('transparent')
+
+  // Build group at same world position as the line
+  const group = new Konva.Group({
+    id: `ptx_${line.id()}`,
+    x: line.x(), y: line.y(),
+    draggable: false,
+    clip: { x: clipX, y: clipY, width: Math.max(clipW, 1), height: Math.max(clipH, 1) },
+  })
+
+  // Texture fill rect (behind the line)
+  const texRect = new Konva.Rect({
+    id: `ptx_rect_${line.id()}`,
+    x: clipX, y: clipY,
+    width: Math.max(clipW, 1), height: Math.max(clipH, 1),
+    fillPriority: 'pattern',
+    fillPatternRepeat: 'repeat',
+  })
+
+  const img = new window.Image()
+  img.onload = () => {
+    texRect.fillPatternImage(img)
+    layer?.batchDraw()
+  }
+  img.src = txInfo.src
+
+  // Move line into group (preserving its local coords)
+  line.remove()
+  line.x(0); line.y(0)  // position is now handled by group
+  group.add(texRect)
+  group.add(line)
+
+  // Sync group drag to structDataRef position tracking
+  // (line drag events still fire since line is inside group)
+  layer?.add(group)
+  layer?.batchDraw()
+  return group
+}
+
+// Update path texture clip when pathWidth changes
+export function updatePathTextureWidth(line, pathWidth, layer) {
+  const group = layer?.findOne(`#ptx_${line.id()}`)
+  if (!group) return
+  const hw = (pathWidth || 18) / 2
+  const bbox = line.getSelfRect()
+  const clipX = bbox.x - hw - 2
+  const clipY = bbox.y - hw - 2
+  const clipW = Math.max(bbox.width  + hw * 2 + 4, 1)
+  const clipH = Math.max(bbox.height + hw * 2 + 4, 1)
+  group.clip({ x: clipX, y: clipY, width: clipW, height: clipH })
+  const texRect = group.findOne(`#ptx_rect_${line.id()}`)
+  if (texRect) { texRect.x(clipX); texRect.y(clipY); texRect.width(clipW); texRect.height(clipH) }
+  layer?.batchDraw()
+}
+
 export function applyColourOrTexture(shape, colour, layer, TEXTURE_MAP, opaque = false) {
   if (colour && colour.startsWith('#TX:') && TEXTURE_MAP && TEXTURE_MAP[colour]) {
     const img = new window.Image()
