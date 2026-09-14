@@ -10,74 +10,104 @@ import { buildRockBorderGroup, buildPicketFenceGroup, drawPicketFences } from '.
 // Apply a repeating texture (or solid fill) to any Konva shape based on colour token.
 // If colour starts with '#TX:' it loads the texture and tiles it; otherwise uses solid fill.
 // ── Path texture helper ──────────────────────────────────
-// Strategy: use a custom sceneFunc on the line that draws the texture
-// as the stroke fill using a CanvasPattern. No groups, no layer tricks.
-// The line keeps all its normal behaviour (drag, hit, position).
-export function applyPathTexture(line, colour, pathWidth, layer, TEXTURE_MAP) {
-  // Clean up any previous custom renderer
-  line._ptxColour = null
-  line.sceneFunc(null)  // reset to default Konva renderer
+// Strategy: mirror the rock-border approach exactly.
+// - Original line becomes invisible hit target (native Konva hit, no custom funcs)
+// - A visual-only clone Line (non-listening) gets sceneFunc for texture rendering
+// - Both live inside a Konva.Group (id = 'ptxg_' + lineId) that is draggable
+// - Group.click/tap fires onSelect; the original line's own listeners are removed
+// - Restoring flat colour destroys the group and re-adds the bare line
 
-  if (!colour?.startsWith('#TX:') || !TEXTURE_MAP?.[colour]) {
-    line.stroke(colour)
-    line.strokeWidth(pathWidth || 18)
+export function applyPathTexture(line, colour, pathWidth, layer, TEXTURE_MAP, onSelect, onEnterEdit) {
+  const lineId = line.id()
+
+  // ─ Tear down any existing texture group ─
+  const existingGroup = layer?.findOne(`#ptxg_${lineId}`)
+  if (existingGroup) {
+    // Pull line back out before destroying group
+    line.remove()
+    existingGroup.destroy()
     line.sceneFunc(null)
     line.hitFunc(null)
     line.clearCache()
+    line.listening(true)
+    line.draggable(true)
+    layer?.add(line)
+  }
+
+  if (!colour?.startsWith('#TX:') || !TEXTURE_MAP?.[colour]) {
+    // Flat colour — plain line, restore normal stroke
+    line.stroke(colour)
+    line.strokeWidth(pathWidth || 18)
     layer?.batchDraw()
     return
   }
 
-  line._ptxColour = colour
   const txInfo = TEXTURE_MAP[colour]
   const sw = pathWidth || 18
 
-  // Ensure line is listening and has a wide hit area (native Konva hit detection)
+  // ─ Make original line invisible but keep it as the native hit target ─
+  line.stroke('transparent')
+  line.strokeWidth(sw)
+  line.hitStrokeWidth(sw + 16)   // wide hit area via native Konva stroke hit
   line.listening(true)
-  line.hitStrokeWidth(sw + 10)
+  line.draggable(false)          // group handles drag
+  line.sceneFunc(null)
+  line.hitFunc(null)
+  line.clearCache()
 
-  // Shared helper: trace the line's bezier/linear path onto a 2D context
-  const tracePath = (c2d, points, tension) => {
-    if (points.length < 4) return
-    c2d.moveTo(points[0], points[1])
-    if (tension > 0 && points.length >= 6) {
-      for (let i = 0; i < points.length - 2; i += 2) {
-        const x0 = i > 0 ? points[i-2] : points[i],   y0 = i > 0 ? points[i-1] : points[i+1]
-        const x1 = points[i],   y1 = points[i+1]
-        const x2 = points[i+2], y2 = points[i+3]
-        const x3 = i < points.length-4 ? points[i+4] : x2
-        const y3 = i < points.length-4 ? points[i+5] : y2
-        c2d.bezierCurveTo(
-          x1+(x2-x0)*tension/3, y1+(y2-y0)*tension/3,
-          x2-(x3-x1)*tension/3, y2-(y3-y1)*tension/3,
-          x2, y2
-        )
-      }
-    } else {
-      for (let i = 2; i < points.length; i += 2) c2d.lineTo(points[i], points[i+1])
-    }
-  }
+  // ─ Build the group ─
+  const group = new Konva.Group({
+    id: `ptxg_${lineId}`,
+    x: line.x(), y: line.y(),
+    draggable: true,
+  })
 
-  const applyPattern = (img) => {
-    line.stroke('transparent')  // hide default Konva stroke
-    line.strokeWidth(sw)
+  // ─ Visual clone: same points/tension, non-listening, gets sceneFunc ─
+  const visual = new Konva.Line({
+    points: line.points(),
+    tension: line.tension(),
+    closed: false,
+    stroke: 'transparent',
+    strokeWidth: sw,
+    strokeScaleEnabled: false,
+    lineCap: 'round', lineJoin: 'round',
+    listening: false,
+    draggable: false,
+  })
 
-    // Pre-build offscreen canvas for pattern (once per image load)
-    const offscreen = document.createElement('canvas')
-    offscreen.width = img.naturalWidth || img.width || 256
-    offscreen.height = img.naturalHeight || img.height || 256
+  // Load texture and apply via sceneFunc on visual clone
+  const offscreen = document.createElement('canvas')
+  const img = new window.Image()
+  img.onload = () => {
+    offscreen.width  = img.naturalWidth  || 256
+    offscreen.height = img.naturalHeight || 256
     offscreen.getContext('2d').drawImage(img, 0, 0)
 
-    // sceneFunc: draw texture pattern clipped to stroke shape
-    line.sceneFunc((ctx, shape) => {
+    visual.sceneFunc((ctx, shape) => {
       const c2d = ctx._context
-      const pts = shape.points ? shape.points() : []
-      const ten = shape.tension ? shape.tension() : 0
+      const pts = shape.points()
+      const ten = shape.tension()
       if (pts.length < 4) return
       const pattern = c2d.createPattern(offscreen, 'repeat')
       c2d.save()
       c2d.beginPath()
-      tracePath(c2d, pts, ten)
+      c2d.moveTo(pts[0], pts[1])
+      if (ten > 0 && pts.length >= 6) {
+        for (let i = 0; i < pts.length - 2; i += 2) {
+          const x0 = i > 0 ? pts[i-2] : pts[i],   y0 = i > 0 ? pts[i-1] : pts[i+1]
+          const x1 = pts[i],   y1 = pts[i+1]
+          const x2 = pts[i+2], y2 = pts[i+3]
+          const x3 = i < pts.length-4 ? pts[i+4] : x2
+          const y3 = i < pts.length-4 ? pts[i+5] : y2
+          c2d.bezierCurveTo(
+            x1+(x2-x0)*ten/3, y1+(y2-y0)*ten/3,
+            x2-(x3-x1)*ten/3, y2-(y3-y1)*ten/3,
+            x2, y2
+          )
+        }
+      } else {
+        for (let i = 2; i < pts.length; i += 2) c2d.lineTo(pts[i], pts[i+1])
+      }
       c2d.strokeStyle = pattern
       c2d.lineWidth = sw
       c2d.lineCap = 'round'
@@ -85,39 +115,50 @@ export function applyPathTexture(line, colour, pathWidth, layer, TEXTURE_MAP) {
       c2d.stroke()
       c2d.restore()
     })
-
-    // hitFunc: draw the same path shape opaque on the hit canvas so Konva can detect clicks
-    line.hitFunc((ctx, shape) => {
-      const c2d = ctx._context
-      const pts = shape.points ? shape.points() : []
-      const ten = shape.tension ? shape.tension() : 0
-      if (pts.length < 4) return
-      c2d.save()
-      c2d.beginPath()
-      tracePath(c2d, pts, ten)
-      c2d.strokeStyle = 'rgba(0,0,0,1)'
-      c2d.lineWidth = sw + 10  // slightly wider for easy clicking
-      c2d.lineCap = 'round'
-      c2d.lineJoin = 'round'
-      c2d.stroke()
-      c2d.restore()
-    })
-
-    // Clear Konva's cache so hit canvas gets redrawn with the new hitFunc
-    line.clearCache()
     layer?.batchDraw()
   }
-
-  const img = new window.Image()
-  img.onload = () => applyPattern(img)
   img.src = txInfo.src
+
+  // Move original line into group (reset its local position — group carries world pos)
+  line.remove()
+  line.x(0); line.y(0)
+  group.add(visual)
+  group.add(line)   // line on top so its hit area is active
+
+  // Group drag — sync back to line world position in structDataRef
+  group.on('dragmove', () => { })
+  group.on('dragend',  () => { })
+
+  // Group click/tap → select
+  group.on('click tap', e => {
+    e.cancelBubble = true
+    if (onSelect) onSelect(lineId, group, e)
+  })
+  group.on('dblclick dbltap', e => {
+    e.cancelBubble = true
+    if (onEnterEdit) onEnterEdit(lineId)
+  })
+
+  // Store colour for width-change rebuilds
+  group._ptxColour  = colour
+  group._ptxOnSelect     = onSelect
+  group._ptxOnEnterEdit  = onEnterEdit
+
+  layer?.add(group)
+  layer?.batchDraw()
 }
 
-// Update path texture width (just re-apply with stored colour)
-export function updatePathTextureWidth(line, pathWidth, layer, TEXTURE_MAP) {
-  const c = line._ptxColour
-  if (!c) return  // flat colour, nothing to do
-  applyPathTexture(line, c, pathWidth, layer, TEXTURE_MAP)
+// Update path texture width — rebuild group with new width
+export function updatePathTextureWidth(shapeOrGroup, pathWidth, layer, TEXTURE_MAP) {
+  // shapeOrGroup may be the group (if already textured) or the bare line
+  const group = shapeOrGroup instanceof Konva.Group
+    ? shapeOrGroup
+    : layer?.findOne(`#ptxg_${shapeOrGroup.id()}`)
+  if (!group || !group._ptxColour) return
+  // Find the hit line inside the group
+  const hitLine = group.findOne(`#${group.id().replace('ptxg_', '')}`)
+  if (!hitLine) return
+  applyPathTexture(hitLine, group._ptxColour, pathWidth, layer, TEXTURE_MAP, group._ptxOnSelect, group._ptxOnEnterEdit)
 }
 
 export function applyColourOrTexture(shape, colour, layer, TEXTURE_MAP, opaque = false) {

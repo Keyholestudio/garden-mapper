@@ -793,8 +793,18 @@ export default function GardenEditor() {
     const isTexture = colour?.startsWith('#TX:')
     const isPath = d.type === 'path'
     if (isPath) {
-      // Paths use stroke-based texture group or plain stroke colour
-      applyPathTexture(shape, colour, d.pathWidth || 18, layersRef.current.structLayer, TEXTURE_MAP)
+      const onSel = (id, grp, e) => { exitEdit(); state.setMultiSelection([]); state.setSelectedStruct({ id, shape: grp, ...state.structDataRef.current[id] }); state.setSelectedPlant(null) }
+      const onEd  = (id) => enterEdit(id)
+      applyPathTexture(shape, colour, d.pathWidth || 18, layersRef.current.structLayer, TEXTURE_MAP, onSel, onEd)
+      // Update sel.shape to the new group if a texture was applied
+      if (colour?.startsWith('#TX:')) {
+        const grp = layersRef.current.structLayer?.findOne(`#ptxg_${sel.id}`)
+        if (grp) state.setSelectedStruct({ ...sel, colour, shape: grp })
+        else     state.setSelectedStruct({ ...sel, colour })
+        layersRef.current.structLayer?.batchDraw()
+        triggerAutoSave()
+        return
+      }
     } else if (isTexture) {
       applyColourOrTexture(shape, colour, layersRef.current.structLayer, TEXTURE_MAP)
     } else {
@@ -842,9 +852,12 @@ export default function GardenEditor() {
   const handlePathWidthChange = (w) => {
     const sel = state.selectedStruct; if (!sel) return
     state.structDataRef.current[sel.id].pathWidth = w
-    sel.shape.strokeWidth(w)
-    // If this path has a texture group, rebuild it with new width
-    updatePathTextureWidth(sel.shape, w, layersRef.current.structLayer, TEXTURE_MAP)
+    if (sel.shape instanceof Konva.Group) {
+      // Textured path — rebuild the group with new width
+      updatePathTextureWidth(sel.shape, w, layersRef.current.structLayer, TEXTURE_MAP)
+    } else {
+      sel.shape.strokeWidth(w)
+    }
     layersRef.current.structLayer?.batchDraw()
     triggerAutoSave()
   }

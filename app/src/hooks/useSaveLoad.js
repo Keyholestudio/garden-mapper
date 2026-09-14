@@ -263,9 +263,29 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
     })
   })
 
+  // Save textured path groups (ptxg_ prefix) — the hit line inside carries the id
+  structLayer?.find('Group').forEach(g => {
+    if (!g.id().startsWith('ptxg_')) return
+    const lineId = g.id().replace('ptxg_', '')
+    const hitLine = g.findOne(`#${lineId}`)
+    if (!hitLine || !state.structDataRef.current[lineId]) return
+    const d = state.structDataRef.current[lineId]
+    structs.push({
+      id: lineId, type: d.type, colour: d.colour, label: d.label,
+      pathWidth: d.pathWidth, tension: d.tension,
+      transparent: d.transparent || false, locked: d.locked || false,
+      points: hitLine.points(),
+      lx: g.x(), ly: g.y(),
+      closed: false,
+      zIndex: g.getZIndex(),
+    })
+  })
+
   structLayer?.find('Line,Rect,Circle,Path').forEach(s => {
     const id = s.id()
     if (!id || !state.structDataRef.current[id]) return  // skips __propBounds, __propLabel
+    // Skip lines that are inside a ptxg_ group (already saved above)
+    if (s.getParent()?.id()?.startsWith('ptxg_')) return
     const d = state.structDataRef.current[id]
     if (d.type === 'rock-border' || d.type === 'picket-fence') return  // already handled above via Group
     const entry = {
@@ -539,7 +559,8 @@ export function loadGarden({
       // Restore texture fills (colours stored as '#TX:...' tokens)
       if (entry.colour?.startsWith('#TX:')) {
         if (entry.type === 'path') {
-          applyPathTexture(shape, entry.colour, entry.pathWidth || 18, structLayer, TEXTURE_MAP)
+          const onSel = (id, grp, e) => { if (!state.editingShapeIdRef?.current) onSelectStruct(id, grp, e) }
+          applyPathTexture(shape, entry.colour, entry.pathWidth || 18, structLayer, TEXTURE_MAP, onSel, null)
         } else {
           applyColourOrTexture(shape, entry.colour, structLayer, TEXTURE_MAP)
         }
