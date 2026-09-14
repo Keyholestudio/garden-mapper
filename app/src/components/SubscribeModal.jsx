@@ -1,8 +1,11 @@
-// SubscribeModal.jsx — "Go Pro" paywall modal for web users
-// Shown when a free-tier web user tries to load a ghost garden or add a second garden.
-// Native users (Android/iOS) use RevenueCat — this modal is web-only.
+// SubscribeModal.jsx — "Go Pro" paywall modal
+// Shown when a free-tier user tries to load a ghost garden or add a second garden.
+// Web: triggers Stripe Checkout. Native: triggers Google Play via RevenueCat.
 
 import React, { useState } from 'react';
+import { Capacitor } from '@capacitor/core';
+
+const isNative = Capacitor.isNativePlatform();
 import './SubscribeModal.css';
 
 const FEATURES = [
@@ -81,7 +84,9 @@ export default function SubscribeModal({ isOpen, onClose, onSubscribe, loading, 
         </button>
 
         <p className="subscribe-modal-fine">
-          Secure payment via Stripe. Cancel anytime (annual plan).
+          {isNative
+            ? 'Payment processed by Google Play. Cancel anytime (annual plan).'
+            : 'Secure payment via Stripe. Cancel anytime (annual plan).'}
         </p>
       </div>
     </div>

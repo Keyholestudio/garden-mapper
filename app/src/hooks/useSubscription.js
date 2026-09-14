@@ -15,14 +15,14 @@
 
 import { Capacitor } from '@capacitor/core';
 import { useStripe } from './useStripe';
-// SESSION D: import { useRevenueCat } from './useRevenueCat';
+import { useRevenueCat, PACKAGE_LIFETIME, PACKAGE_YEARLY } from './useRevenueCat';
 
 const isNative = Capacitor.isNativePlatform();
 
 /**
  * useSubscription(userId)
  * @param {string|null} userId — Supabase user ID
- * @returns {{ isSubscribed: boolean, loading: boolean, openCheckout: Function, refreshStatus: Function }}
+ * @returns {{ isSubscribed: boolean, loading: boolean, openCheckout: Function, purchase: Function, refreshStatus: Function }}
  */
 export function useSubscription(userId) {
   // Stripe / Supabase — works on both web and native (reads subscription_flag)
@@ -33,25 +33,49 @@ export function useSubscription(userId) {
     refreshStatus,
   } = useStripe(userId);
 
-  // SESSION D — RevenueCat (native only, Google Play purchases)
-  // Uncomment when RC is connected to Google Play in dashboard:
-  //
-  // const {
-  //   isSubscribed: rcSubscribed,
-  //   loading: rcLoading,
-  // } = useRevenueCat(userId);
-  //
-  // const isSubscribed = stripeSubscribed || (isNative && rcSubscribed);
-  // const loading = stripeLoading || (isNative && rcLoading);
+  // RevenueCat — native only (Google Play purchases)
+  // On web: all RC calls are no-ops (useRevenueCat skips on non-native)
+  const {
+    isSubscribed: rcSubscribed,
+    loading: rcLoading,
+    offerings,
+    purchasePackage,
+    restorePurchases,
+  } = useRevenueCat(userId);
 
-  // Current: Supabase flag is the single source of truth on all platforms
-  const isSubscribed = stripeSubscribed;
-  const loading = stripeLoading;
+  // Merge: either source granting Pro = subscribed (belt + suspenders)
+  // Supabase flag is updated by both Stripe webhook (web) and RC webhook (native)
+  const isSubscribed = stripeSubscribed || (isNative && rcSubscribed);
+  const loading = stripeLoading || (isNative && rcLoading);
+
+  // ── Unified purchase function ───────────────────────────────────────────
+  // Web:    opens Stripe Checkout
+  // Native: triggers Google Play purchase via RevenueCat
+  const purchase = async (plan = 'lifetime') => {
+    if (isNative) {
+      // Find the matching RC package from current offering
+      if (!offerings?.availablePackages) {
+        console.warn('[useSubscription] No RC offerings available');
+        return { success: false, reason: 'no_offerings' };
+      }
+      const targetId = plan === 'annual' ? PACKAGE_YEARLY : PACKAGE_LIFETIME;
+      const pkg = offerings.availablePackages.find(p => p.identifier === targetId)
+                ?? offerings.availablePackages[0]; // fallback to first available
+      if (!pkg) return { success: false, reason: 'package_not_found' };
+      return purchasePackage(pkg);
+    } else {
+      // Web: open Stripe Checkout
+      await openCheckout(plan);
+      return { success: true };
+    }
+  };
 
   return {
     isSubscribed,
     loading,
-    openCheckout,   // opens Stripe Checkout (web only — no-op on native until Play billing is wired)
-    refreshStatus,  // manually re-fetches subscription_flag from Supabase
+    openCheckout,     // direct Stripe access (web only)
+    purchase,         // unified: Stripe on web, RevenueCat on native
+    restorePurchases, // RC restore (native only, no-op on web)
+    refreshStatus,    // re-fetches Supabase subscription_flag
   };
 }

@@ -135,8 +135,8 @@ export default function GardenEditor() {
     },
   })
 
-  // ── Subscription status (web: Stripe, native: Supabase flag; RC added in Session D) ──
-  const { isSubscribed, openCheckout, checkoutLoading, error: stripeError } = useSubscription(user?.id)
+  // ── Subscription status (unified: Stripe on web, RC on native) ──
+  const { isSubscribed, openCheckout, purchase, restorePurchases, checkoutLoading, error: stripeError } = useSubscription(user?.id)
   // Keep ref in sync so useAuth's restoreFromCloud always reads current subscription state
   useEffect(() => { isSubscribedRef.current = isSubscribed }, [isSubscribed])
   const [subscribeModalOpen, setSubscribeModalOpen] = useState(false)
@@ -1495,7 +1495,7 @@ export default function GardenEditor() {
       <SubscribeModal
         isOpen={subscribeModalOpen}
         onClose={() => setSubscribeModalOpen(false)}
-        onSubscribe={(plan) => { setSubscribeModalOpen(false); openCheckout(plan) }}
+        onSubscribe={(plan) => { setSubscribeModalOpen(false); purchase(plan) }}
       />
 
       {/* More modal */}
