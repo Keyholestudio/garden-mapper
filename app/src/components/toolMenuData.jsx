@@ -124,7 +124,7 @@ export const DECOR_ITEMS = [
   { id: 'decor-lounge-wood', label: 'Seating', emoji: '🪑', hint: 'Tap to place seating', decorGroup: 'seating' },
   { id: 'decor-umbrella', label: 'Beach Umbrella', emoji: '⛱', hint: 'Tap to place beach umbrella' },
   { id: 'decor-pot-red-round', label: 'Flower Pots', emoji: '🪴', hint: 'Tap to place a flower pot', decorGroup: 'pots' },
-  { id: 'decor-stairs-wood', label: 'Stairs', emoji: '🚶', hint: 'Tap to place stairs', decorGroup: 'stairs' },
+  { id: 'decor-stairs-stone', label: 'Stairs', emoji: '🪜', hint: 'Tap to place stairs', decorGroup: 'stairs' },
   { id: 'decor-arch-wood', label: 'Arches', emoji: '🌼', hint: 'Tap to place an arch', decorGroup: 'arches' },
 ]
 

@@ -2,6 +2,33 @@
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 
+## L080 — Browser onload does not fire for cached images (2026-09-11)
+**What happened:** Decor variant images restored correctly on first page load, but on refresh (when browser had images cached) the variant swap never applied — stickers reverted to catalog defaults.
+**Root cause:** Setting `img.src` to a cached URL may not fire `onload` at all in some browsers. The restore logic relied entirely on `onload`.
+**Fix:** After setting `img.src`, immediately check `if (img.complete && img.naturalWidth) applyVariant()` — handles the cached case synchronously.
+**Rule:** Any time you use `img.onload` to apply logic after image load, always add the `complete` check immediately after setting `src`. Never assume `onload` fires for cached images.
+
+## L079 — Decor variant panel: 4 places to update when adding a new decor group (2026-09-11)
+**What:** Adding a new decor category to the single-tap/colour-picker system requires changes in exactly 4 places.
+**Checklist:**
+1. `useGardenState.js` → add key to `DECOR_VARIANTS` with `[{label, subtitle, size, colour, src}]`
+2. `toolMenuData.jsx` → replace group+children entry with single flat entry `{ id: 'default-variant-id', label: 'Category Name', decorGroup: 'key' }`
+3. `GardenEditor.jsx` DECOR_CATALOG → update all variant entries: add `decorGroup`, update `label` to category name, set correct `size`
+4. Default placement id in toolMenuData must match the first variant's catalog key (so click-to-place drops the right default sticker)
+**Miss any one:** panel falls through to generic plant panel, or wrong sticker placed on first tap.
+
+## L078 — Sticker placement must use aspect-corrected W/H for centering, not raw SIZE (2026-09-11)
+**What happened:** All stickers were placed slightly off-center — hit area misaligned with visual content.
+**Root cause:** `addPlant()` placed the group at `x - SIZE/2, y - SIZE/2` but `makePlantGroup` adjusts W/H for aspect ratio. Non-square images render smaller than SIZE in one dimension, so the center was wrong.
+**Fix:** Compute `_W` and `_H` from the loaded image's natural aspect ratio before calling `makePlantGroup`, then place at `x - _W/2, y - _H/2`.
+**Affects:** ALL stickers, not just decor. Fix committed in `plantUtils.js`.
+
+## L077 — Variant size swap must update Image + hitRect + Group, not just Image (2026-09-11)
+**What happened:** Switching between fountain sizes (S/M/L) via colour picker left the bounding box and grab area at the original size.
+**Root cause:** `handlePlantVariantChange` only called `konvaImg.width(px); konvaImg.height(px)` — the hitRect and Group kept original dimensions.
+**Fix:** On variant swap with `newSize`: (1) compute aspect-corrected W/H, (2) update konvaImg, (3) update hitRect, (4) reposition Group by `(oldW-W)/2` to keep sticker visually centered, (5) update Group width/height.
+**Rule:** Any time you resize a Konva Image inside a Group, also update the hitRect and Group, and reposition to stay centered.
+
 ## L076 — structDataRef restore must include ALL variant fields (2026-09-11)
 **What happened:** Picket fence colours reverted to white on every hard refresh despite being saved correctly.
 **Root cause:** `useSaveLoad.js` restore block wrote `structDataRef.current[entry.id]` but only included `rockVariant`, not `picketVariant`. So `drawPicketFences` always read `undefined` → fell back to `'white'`.

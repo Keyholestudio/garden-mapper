@@ -3,6 +3,61 @@ _Last updated: 2026-09-11_
 
 ---
 
+## 0c. Workflow — Adding a New Decor Category to the Colour-Picker System (2026-09-11)
+
+Use this when adding a brand new decor category, or adding new variants to an existing one.
+All decor categories use the single-tap / colour-picker panel pattern (no dropdowns).
+
+### Step 1 — Prepare sticker images
+- Place finished `.png` files in `app/public/stickers/`
+- Filename convention: `decor_<name>_<SIZE>_CA-US-FR-GB-AU.png`
+- SIZE codes: `XS`=24px `S`=40px `M`=64px `L`=96px `XL`=128px `XXL`=160px
+- Images should have transparent backgrounds, content roughly centered
+
+### Step 2 — `useGardenState.js` — add to DECOR_VARIANTS
+```js
+export const DECOR_VARIANTS = {
+  myCategory: [
+    { label: 'Variant A', subtitle: 'Variant A subtitle', size: 'XL', colour: '#HEXCOL', src: '/stickers/decor_variant-a_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Variant B', subtitle: 'Variant B subtitle', size: 'XL', colour: '#HEXCOL', src: '/stickers/decor_variant-b_XL_CA-US-FR-GB-AU.png' },
+  ],
+  // ... existing groups
+}
+```
+- `label` = swatch tooltip
+- `subtitle` = shown below panel title when this swatch is active
+- `size` = SIZE_MAP key — if variants differ in size, bounding box auto-resizes on swap
+- `colour` = swatch background colour (sample from the actual image)
+
+### Step 3 — `toolMenuData.jsx` — replace group with flat entry
+```js
+// BEFORE (old dropdown style):
+{ id: '__myCategory', label: 'My Category', emoji: '🌼', group: true, children: [ ... ] }
+
+// AFTER (new single-tap style):
+{ id: 'decor-variant-a', label: 'My Category', emoji: '🌼', hint: 'Tap to place', decorGroup: 'myCategory' }
+```
+- `id` must match the **first/default variant** in DECOR_CATALOG (what gets placed on first tap)
+- `label` = primary menu label (plural: Fountains, Gazebos, etc.)
+- `decorGroup` = key in DECOR_VARIANTS
+
+### Step 4 — `GardenEditor.jsx` DECOR_CATALOG — update all variant entries
+```js
+'decor-variant-a': { key: 'decor_variant-a_XL_CA-US-FR-GB-AU', label: 'My Category', family: 'Decor', size: 'XL', decorGroup: 'myCategory', src: '/stickers/decor_variant-a_XL_CA-US-FR-GB-AU.png' },
+'decor-variant-b': { key: 'decor_variant-b_XL_CA-US-FR-GB-AU', label: 'My Category', family: 'Decor', size: 'XL', decorGroup: 'myCategory', src: '/stickers/decor_variant-b_XL_CA-US-FR-GB-AU.png' },
+```
+- `label` = same as menu label (panel title)
+- `decorGroup` = key in DECOR_VARIANTS (must match exactly)
+- `size` = placement size for this specific variant
+
+### Notes
+- `plantUtils.js`, `useSaveLoad.js`, `RightPanel.jsx`, `MobileSheet.jsx` require NO changes — they handle `decorGroup` generically
+- Bounding box resize on size swap is automatic — no extra code needed
+- If all variants are the same size: no resize on swap (simpler)
+- If variants differ in size: resize + reposition is handled automatically by `handlePlantVariantChange`
+
+---
+
 ## 0b. Workflow — Adding a New Picket Fence Colour Variant (2026-09-11)
 
 Follow this exact sequence when Rob provides new H and V fence tile images for a new colour.

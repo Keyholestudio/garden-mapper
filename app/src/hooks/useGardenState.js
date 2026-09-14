@@ -182,7 +182,13 @@ export const GATE_VARIANTS = {
 // Used by RightPanel/MobileSheet to render the colour-picker panel with subtitle display.
 export const DECOR_VARIANTS = {
   stairs: [
-    { label: 'Wood Stairs', subtitle: 'Wood Stairs', size: 'M', colour: '#C07840', src: '/stickers/decor_stairs-wood_M_CA-US-FR-GB-AU.png' },
+    { label: 'Stone Stairs',      subtitle: 'Stone Stairs',      size: 'XL', colour: '#C8B89A', src: '/stickers/decor_stairs-stone_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Wood Stairs',       subtitle: 'Wood Stairs',       size: 'XL', colour: '#C07840', src: '/stickers/decor_stairs-wood_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Wood + Railings',   subtitle: 'Wood + Railings',   size: 'XL', colour: '#B06030', src: '/stickers/decor_stairs-wood-rail_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Stone + Railings',  subtitle: 'Stone + Railings',  size: 'XL', colour: '#A09080', src: '/stickers/decor_stairs-stone-rail_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Brick Stairs',      subtitle: 'Brick Stairs',      size: 'XL', colour: '#B84A28', src: '/stickers/decor_stairs-brick_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Wood & Stone',      subtitle: 'Wood & Stone',      size: 'XL', colour: '#B09870', src: '/stickers/decor_stairs-wood-stone_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Open-Riser Wood',   subtitle: 'Open-Riser Wood',   size: 'XL', colour: '#987040', src: '/stickers/decor_stairs-open-wood_XL_CA-US-FR-GB-AU.png' },
   ],
   arches: [
     { label: 'Wood Arch',  subtitle: 'Wood Arch',  size: 'XL', colour: '#B5793B', src: '/stickers/decor_arch-wood_XL_CA-US-FR-GB-AU.png' },
