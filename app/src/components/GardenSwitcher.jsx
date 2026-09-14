@@ -17,6 +17,7 @@ export default function GardenSwitcher({
   onDeleteGhost,            // (ghostItem) => void — soft-delete a ghost from cloud
   onDeleteLocal,            // (garden_id) => void — soft-delete a local garden from cloud after local removal
   isSubscribed = false,     // subscription status
+  subscriptionLoading = false, // true while Supabase fetch is in flight
   onSubscribe,              // () => void — open the subscribe modal
 }) {
   const [gardens, setGardens] = useState([])
@@ -158,8 +159,8 @@ export default function GardenSwitcher({
             </div>
           )}
 
-          {/* Unlock upsell — shown to free users with no ghost gardens */}
-          {!isSubscribed && ghostGardens.length === 0 && (
+          {/* Unlock upsell — shown to free users with no ghost gardens (hidden while loading to avoid flash) */}
+          {!isSubscribed && !subscriptionLoading && ghostGardens.length === 0 && (
             <a
               href="#"
               className="switcher-unlock-row"

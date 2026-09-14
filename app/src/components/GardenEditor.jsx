@@ -136,7 +136,7 @@ export default function GardenEditor() {
   })
 
   // ── Subscription status (unified: Stripe on web, RC on native) ──
-  const { isSubscribed, openCheckout, purchase, restorePurchases, checkoutLoading, error: stripeError } = useSubscription(user?.id)
+  const { isSubscribed, loading: subscriptionLoading, openCheckout, purchase, restorePurchases, checkoutLoading, error: stripeError } = useSubscription(user?.id)
   // Keep ref in sync so useAuth's restoreFromCloud always reads current subscription state
   useEffect(() => { isSubscribedRef.current = isSubscribed }, [isSubscribed])
   const [subscribeModalOpen, setSubscribeModalOpen] = useState(false)
@@ -1666,6 +1666,7 @@ export default function GardenEditor() {
         onDeleteGhost={deleteGhostGarden}
         onDeleteLocal={(gardenId) => { if (gardenId) softDeleteCloudGarden(gardenId) }}
         isSubscribed={isSubscribed}
+        subscriptionLoading={subscriptionLoading}
         onSubscribe={() => setSubscribeModalOpen(true)}
       />
 
