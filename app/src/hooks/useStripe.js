@@ -39,12 +39,10 @@ export function useStripe(userId) {
 
   // ── Fetch subscription status from Supabase on mount / userId change ──
   // Also listens to Supabase auth state changes so sign-in after mount triggers a re-check
+  // Note: we always check Supabase regardless of platform. Supabase is the source of truth
+  // for subscription_flag (set by Stripe webhook on web, and by RC webhook in Session D on native).
+  // RevenueCat entitlement check (native only) will be added in Session D as an additional layer.
   useEffect(() => {
-    if (isNative) {
-      setLoading(false);
-      return;
-    }
-
     async function checkStatus(uid) {
       if (!uid) {
         setIsSubscribed(false);
@@ -151,7 +149,7 @@ export function useStripe(userId) {
 
   // ── Manually refresh subscription status ─────────────────────────────
   const refreshStatus = useCallback(async () => {
-    if (!userId || isNative) return;
+    if (!userId) return;
     const flag = await fetchSubscriptionStatus(userId);
     setIsSubscribed(flag);
     return flag;
