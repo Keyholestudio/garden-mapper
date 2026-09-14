@@ -194,8 +194,11 @@ export function useSelection({
       // accidentally move the group — only handle drags should work in edit mode
       hitLine.listening(false)
       shape.getChildren(c => c instanceof Konva.Image).forEach(s => s.listening(false))
-      // For textured paths: flag edit mode so group click handler doesn't intercept add-point clicks
-      if (editType === 'path') hitLine._ptxEditing = true
+      // For textured paths: disable group listening so clicks pass through to stage (add-point)
+      if (editType === 'path') {
+        hitLine._ptxEditing = true
+        shape.listening(false)  // group stops intercepting clicks
+      }
       buildEditHandles(id, hitLine)
       // Stone refresh is handled inside makeHandle's dragmove for rock borders
       if (onEditMode) onEditMode(id)
@@ -222,6 +225,7 @@ export function useSelection({
             ? sh.findOne(`#${id}`)
             : sh.getChildren(c => c instanceof Konva.Line)[0]
           if (hl) { hl.listening(true); hl._ptxEditing = false }
+          if (editType2 === 'path') sh.listening(true)  // restore group listening after edit
           sh.getChildren(c => c instanceof Konva.Image).forEach(s => s.listening(true))
         }
         // Rock border: clean Group listener when editing inner line
