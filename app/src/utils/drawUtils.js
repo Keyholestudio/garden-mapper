@@ -109,6 +109,36 @@ export function applyPathTexture(line, colour, pathWidth, layer, TEXTURE_MAP) {
       c2d.stroke()
       c2d.restore()
     })
+    // Restore hit detection — draw an invisible thick stroke for clicking
+    line.hitFunc((ctx, shape) => {
+      const c2d = ctx._context
+      const points = shape.points ? shape.points() : []
+      if (points.length < 4) return
+      const tension = shape.tension ? shape.tension() : 0
+      c2d.beginPath()
+      c2d.moveTo(points[0], points[1])
+      if (tension > 0 && points.length >= 6) {
+        for (let i = 0; i < points.length - 2; i += 2) {
+          const x0 = i > 0 ? points[i-2] : points[i]
+          const y0 = i > 0 ? points[i-1] : points[i+1]
+          const x1 = points[i], y1 = points[i+1]
+          const x2 = points[i+2], y2 = points[i+3]
+          const x3 = i < points.length-4 ? points[i+4] : x2
+          const y3 = i < points.length-4 ? points[i+5] : y2
+          c2d.bezierCurveTo(
+            x1+(x2-x0)*tension/3, y1+(y2-y0)*tension/3,
+            x2-(x3-x1)*tension/3, y2-(y3-y1)*tension/3,
+            x2, y2
+          )
+        }
+      } else {
+        for (let i = 2; i < points.length; i += 2) c2d.lineTo(points[i], points[i+1])
+      }
+      c2d.lineWidth = sw + 10  // slightly wider for easier clicking
+      c2d.lineCap = 'round'
+      c2d.strokeStyle = 'rgba(0,0,0,1)'
+      c2d.stroke()
+    })
     layer?.batchDraw()
   }
 
