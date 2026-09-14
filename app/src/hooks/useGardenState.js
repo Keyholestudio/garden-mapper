@@ -182,10 +182,10 @@ export const GATE_VARIANTS = {
 // Used by RightPanel/MobileSheet to render the colour-picker panel with subtitle display.
 export const DECOR_VARIANTS = {
   stairs: [
+    { label: 'Stone Stairs',     subtitle: 'Stone Stairs',     size: 'M', colour: '#C8B89A', src: '/stickers/decor_stairs-stone_M_CA-US-FR-GB-AU.png' },
     { label: 'Wood Stairs',      subtitle: 'Wood Stairs',      size: 'M', colour: '#C07840', src: '/stickers/decor_stairs-wood_M_CA-US-FR-GB-AU.png' },
     { label: 'Wood + Railings',  subtitle: 'Wood + Railings',  size: 'M', colour: '#B06030', src: '/stickers/decor_stairs-wood-rail_M_CA-US-FR-GB-AU.png' },
     { label: 'Brick Stairs',     subtitle: 'Brick Stairs',     size: 'M', colour: '#8B3A28', src: '/stickers/decor_stairs-brick_M_CA-US-FR-GB-AU.png' },
-    { label: 'Stone Stairs',     subtitle: 'Stone Stairs',     size: 'M', colour: '#C8B89A', src: '/stickers/decor_stairs-stone_M_CA-US-FR-GB-AU.png' },
   ],
   arches: [
     { label: 'Wood Arch',  subtitle: 'Wood Arch',  size: 'XL', colour: '#B5793B', src: '/stickers/decor_arch-wood_XL_CA-US-FR-GB-AU.png' },
