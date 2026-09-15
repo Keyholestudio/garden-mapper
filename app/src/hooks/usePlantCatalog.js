@@ -57,6 +57,7 @@ export const PLANT_CATALOG = [
 
   // ── Flower Clusters ───────────────────────────────────────────────────────────
   { key:'flower-cluster_allium',           label:'Allium',              family:'Ornamental Bulb',      src:'/stickers/flower-cluster_allium_M_CA-US-FR-GB-AU.png',            size:'M' },
+  { key:'flower-cluster_gypsophila',       label:'Gypsophila',          family:'Perennial',            src:'/stickers/flower-cluster_gypsophila_M_CA-US-FR-GB-AU.png',        size:'M' },
   { key:'flower-cluster_hydrangea',        label:'Hydrangea',           family:'Shrub',                src:'/stickers/flower-cluster_hydrangea_M_CA-US-FR-GB-AU.png', size:'M' },
 
   // ── Daisy-type Flowers ────────────────────────────────────────────────────────
