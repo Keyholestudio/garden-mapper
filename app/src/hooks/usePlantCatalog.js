@@ -86,6 +86,7 @@ export const PLANT_CATALOG = [
   { key:'flower-spike_foxglove',           label:'Foxglove',            family:'Biennial',             src:'/stickers/flower-spike_foxglove_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'flower-spike_gladiolus',          label:'Gladiolus',           family:'Bulb',                 src:'/stickers/flower-spike_gladiolus_M_CA-US-FR-GB-AU.png',           size:'M' },
   { key:'flower-spike_iris',               label:'Iris',                family:'Perennial',            src:'/stickers/flower-spike_iris_M_bearded_CA-US-FR-GB-AU.png',         size:'M' },
+  { key:'flower-spike_verbena-bonariensis', label:'Verbena bonariensis', family:'Perennial',            src:'/stickers/flower-spike_verbena-bonariensis_L_CA-US-FR-GB-AU.png',  size:'L' },
   { key:'herb-small_catmint',              label:'Catmint',             family:'Perennial',            src:'/stickers/herb-small_catmint_S_CA-US-FR-GB-AU.png',               size:'S' },
   { key:'flower-spike_lupin',              label:'Lupin',               family:'Perennial',            src:'/stickers/flower-spike_lupin_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'flower-spike_salvia',             label:'Salvia',              family:'Perennial / Annual',   src:'/stickers/flower-spike_salvia_M_CA-US-FR-GB-AU.png',              size:'M' },
