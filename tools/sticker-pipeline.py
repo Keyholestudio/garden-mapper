@@ -1,9 +1,9 @@
 """
-Chroma-key background remover v11
+Chroma-key background remover v12
 - Default chroma: #FF00FF magenta
-- Supports --chroma RRGGBB flag: e.g. --chroma 00FFFF (cyan), --chroma FFFF00 (neon yellow)
-- Colour-aware edge spill suppression for magenta, cyan, and neon yellow
-- Erases Gemini watermark in bottom-right 15% corner
+- Supports --chroma RRGGBB flag: e.g. --chroma 00FFFF (cyan), FF0000 (red), 00FF00 (green)
+- Colour-aware edge spill suppression for magenta, cyan, neon yellow, red, and green
+- Erases Gemini watermark in bottom-right 8% corner
 - Crops to content bounding box
 - Resizes to 512x512
 - Outputs transparent PNG ready for Garden Mapper sticker folder
@@ -55,6 +55,10 @@ def remove_chroma(input_path, output_path):
         spill = edge_mask & ((g - r) > 4) & ((b - r) > 4)
         data[:,:,1] = np.where(spill, r, g)
         data[:,:,2] = np.where(spill, r, b)
+    elif chroma_r > 200 and chroma_g < 50 and chroma_b < 50:
+        # Red spill: R elevated above both G and B
+        spill = edge_mask & ((r - g) > 8) & ((r - b) > 8)
+        data[:,:,0] = np.where(spill, np.minimum(g, b), r)
     else:
         # Generic: suppress all chroma channels toward the lowest channel
         min_ch = np.minimum(np.minimum(r, g), b)

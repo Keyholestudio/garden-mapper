@@ -577,6 +577,8 @@ def detect_background_chroma(image_path):
             return 'FFFF00'  # neon yellow
         elif g > threshold and r < dark and b < dark:
             return '00FF00'  # green
+        elif r > threshold and g < dark and b < dark:
+            return 'FF0000'  # red
         else:
             # Default to magenta (most common Gemini output)
             return 'FF00FF'
@@ -638,11 +640,48 @@ def main():
     _bg_match = _bg_pattern.search(colours)
     colours_has_bg = bool(_bg_match)
     colours_clean = _bg_pattern.sub('', colours).strip().rstrip(',')
-    # Determine background line: use what's in colours if specified, else default magenta
+
+    # ── Auto-select safest background chroma ─────────────────────────────────
+    # Parse plant hex colours and pick the chroma background that is furthest
+    # from ALL plant colours, minimising bleed during background removal.
+    # If the colours string already has a hardcoded background spec, honour it.
+    def _pick_safe_chroma(colour_string):
+        """Return (bg_name, hex) — the chroma background furthest from plant colours."""
+        import re as _r2
+        # Extract all #RRGGBB hex values from the plant colour string
+        hexes = _r2.findall(r'#([0-9A-Fa-f]{6})', colour_string)
+        plant_rgb = []
+        for h in hexes:
+            plant_rgb.append((int(h[0:2],16), int(h[2:4],16), int(h[4:6],16)))
+        # Four candidate backgrounds (name, hex, RGB)
+        candidates = [
+            ('magenta',  'FF00FF', (255,   0, 255)),
+            ('cyan',     '00FFFF', (  0, 255, 255)),
+            ('red',      'FF0000', (255,   0,   0)),
+            ('green',    '00FF00', (  0, 255,   0)),
+        ]
+        if not plant_rgb:
+            return candidates[0]  # default magenta if no colours parsed
+        best_name, best_hex, best_rgb = None, None, None
+        best_min_dist = -1
+        for cname, chex, crgb in candidates:
+            # Min distance from this chroma to any plant colour
+            min_d = min(
+                ((r - crgb[0])**2 + (g - crgb[1])**2 + (b - crgb[2])**2) ** 0.5
+                for r, g, b in plant_rgb
+            )
+            if min_d > best_min_dist:
+                best_min_dist = min_d
+                best_name, best_hex, best_rgb = cname, chex, crgb
+        return best_name, best_hex, best_rgb
+
     if colours_has_bg:
         bg_spec = _bg_match.group(0).strip().lstrip(',')
+        p(f"  Background: using hardcoded spec from colours string")
     else:
-        bg_spec = 'flat solid magenta background (#FF00FF)'
+        bg_name, bg_hex, _ = _pick_safe_chroma(colours_clean)
+        bg_spec = f'flat solid {bg_name} background (#{bg_hex})'
+        p(f"  Background: auto-selected {bg_name} (#{bg_hex}) as safest chroma for plant colours")
     colours_line = f"{colours_clean}, {bg_spec}"
 
     prefix = TEMPLATES[template]
