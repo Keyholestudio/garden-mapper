@@ -418,25 +418,34 @@ def lookup_plant(name):
             return v
     return None
 
-def get_brave_tab(url_fragment):
-    """Get a Brave CDP tab matching url_fragment. Returns None if not found."""
+def get_brave_tab(url_fragment, tab_index=0):
+    """Get the Nth Brave CDP tab matching url_fragment (0-based). Returns None if not found."""
     try:
         tabs = json.loads(urllib.request.urlopen("http://127.0.0.1:9222/json", timeout=5).read())
-        for t in tabs:
-            if url_fragment in t.get("url","") and t.get("type")=="page":
-                return t
+        matches = [t for t in tabs if url_fragment in t.get("url","") and t.get("type")=="page"]
+        if tab_index < len(matches):
+            return matches[tab_index]
     except Exception:
         pass
     return None
 
 def open_gemini_in_brave():
-    """Open Gemini in Brave if not already open."""
-    p("Opening Gemini in Brave...")
-    subprocess.Popen([
-        r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe",
-        "--remote-debugging-port=9222",
-        GEMINI_URL
-    ])
+    """Open a new Gemini tab in Brave (Brave must already be running with CDP)."""
+    p("Opening new Gemini tab in Brave...")
+    # Open a new tab via CDP rather than spawning a new Brave process
+    try:
+        req = urllib.request.Request(
+            f"http://127.0.0.1:9222/json/new?{GEMINI_URL}",
+            method="PUT"
+        )
+        urllib.request.urlopen(req, timeout=5)
+    except Exception:
+        # Fallback: open new Brave window
+        subprocess.Popen([
+            r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe",
+            "--remote-debugging-port=9222",
+            GEMINI_URL
+        ])
     # Wait for tab to appear
     deadline = time.time() + 30
     while time.time() < deadline:
@@ -446,14 +455,14 @@ def open_gemini_in_brave():
             return True
     return False
 
-def ensure_gemini_open():
-    """Make sure Gemini is open. Open if needed. Returns tab or raises."""
-    tab = get_brave_tab("gemini.google.com")
+def ensure_gemini_open(tab_index=0):
+    """Make sure the Nth Gemini tab is open. Opens a new one if needed. Returns tab or raises."""
+    tab = get_brave_tab("gemini.google.com", tab_index)
     if not tab:
-        p("Gemini not open — opening now...")
+        p(f"Gemini tab {tab_index} not open — opening now...")
         if not open_gemini_in_brave():
             raise RuntimeError("Could not open Gemini in Brave after 30s")
-        tab = get_brave_tab("gemini.google.com")
+        tab = get_brave_tab("gemini.google.com", tab_index)
     return tab
 
 def cdp(ws_url, expr, timeout=15):
@@ -497,7 +506,7 @@ def navigate_fresh(ws_url):
     p(f"New chat: {result}")
     time.sleep(3)  # wait for navigation to complete
     # Re-fetch tab after navigation (New chat link navigates to new URL = new CDP target)
-    fresh = get_brave_tab("gemini.google.com")
+    fresh = get_brave_tab("gemini.google.com", tab_index)
     if fresh:
         return fresh["webSocketDebuggerUrl"]
     return ws_url
@@ -600,10 +609,33 @@ def detect_background_chroma(image_path):
 def main():
     args = sys.argv[1:]
     force = "--force" in args
-    args = [a for a in args if not a.startswith("--")]
+
+    # Parse --tab N (default 0)
+    tab_index = 0
+    for i, a in enumerate(args):
+        if a == "--tab" and i + 1 < len(args):
+            try:
+                tab_index = int(args[i + 1])
+            except ValueError:
+                pass
+
+    # Strip all flags
+    clean_args = []
+    skip_next = False
+    for a in args:
+        if skip_next:
+            skip_next = False
+            continue
+        if a == "--tab":
+            skip_next = True
+            continue
+        if a.startswith("--"):
+            continue
+        clean_args.append(a)
+    args = clean_args
 
     if not args:
-        print("Usage: python sticker-generate-one.py \"Plant Name\" [--force]")
+        print("Usage: python sticker-generate-one.py \"Plant Name\" [--force] [--tab N]")
         sys.exit(1)
 
     plant_name = " ".join(args)
@@ -737,8 +769,8 @@ def main():
         )
 
     # ── Ensure Gemini is open ────────────────────────────────
-    p("\nChecking Gemini tab...")
-    tab = ensure_gemini_open()
+    p(f"\nChecking Gemini tab (index {tab_index})...")
+    tab = ensure_gemini_open(tab_index)
     ws_url = tab["webSocketDebuggerUrl"]
     time.sleep(3)
 
