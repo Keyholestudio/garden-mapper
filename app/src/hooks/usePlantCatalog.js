@@ -57,15 +57,11 @@ export const PLANT_CATALOG = [
 
   // ── Flower Clusters ───────────────────────────────────────────────────────────
   { key:'flower-cluster_allium',           label:'Allium',              family:'Ornamental Bulb',      src:'/stickers/flower-cluster_allium_M_CA-US-FR-GB-AU.png',            size:'M' },
-  { key:'flower-cluster_gypsophila',       label:'Gypsophila',          family:'Perennial',            src:'/stickers/flower-cluster_gypsophila_M_CA-US-FR-GB-AU.png',        size:'M' },
-  { key:'flower-cluster_monarda',          label:'Monarda',             family:'Perennial',            src:'/stickers/flower-cluster_monarda_M_CA-US-FR-GB-AU.png',           size:'M' },
-  { key:'flower-cluster_yarrow',           label:'Yarrow',              family:'Perennial',            src:'/stickers/flower-cluster_yarrow_M_CA-US-FR-GB-AU.png',            size:'M' },
   { key:'flower-cluster_hydrangea',        label:'Hydrangea',           family:'Shrub',                src:'/stickers/flower-cluster_hydrangea_M_CA-US-FR-GB-AU.png', size:'M' },
 
   // ── Daisy-type Flowers ────────────────────────────────────────────────────────
   { key:'flower-daisy_black-eyed-susan',   label:'Black-eyed Susan',    family:'Perennial',            src:'/stickers/flower-daisy_black-eyed-susan_M_CA-US-FR-GB-AU.png',    size:'M' },
-  { key:'flower-daisy_rudbeckia',          label:'Rudbeckia',           family:'Perennial',            src:'/stickers/flower-daisy_rudbeckia_M_CA-US-FR-GB-AU.png',           size:'M' },
-  { key:'flower-daisy_shasta-daisy',       label:'Shasta Daisy',        family:'Perennial',            src:'/stickers/flower-daisy_shasta-daisy_M_CA-US-FR-GB-AU.png',        size:'M' },
+
   { key:'flower-daisy_cosmos',             label:'Cosmos',              family:'Annual Flower',        src:'/stickers/flower-daisy_cosmos_M_CA-US-FR-GB-AU.png',              size:'M' },
   { key:'flower-daisy_dahlia',             label:'Dahlia',              family:'Bulb / Annual',        src:'/stickers/flower-daisy_dahlia_M_CA-US-FR-GB-AU.png',              size:'M' },
   { key:'flower-daisy_echinacea',          label:'Echinacea',           family:'Perennial',            src:'/stickers/flower-daisy_echinacea_M_CA-US-FR-GB-AU.png',           size:'M' },
@@ -88,8 +84,6 @@ export const PLANT_CATALOG = [
   { key:'flower-spike_foxglove',           label:'Foxglove',            family:'Biennial',             src:'/stickers/flower-spike_foxglove_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'flower-spike_gladiolus',          label:'Gladiolus',           family:'Bulb',                 src:'/stickers/flower-spike_gladiolus_M_CA-US-FR-GB-AU.png',           size:'M' },
   { key:'flower-spike_iris',               label:'Iris',                family:'Perennial',            src:'/stickers/flower-spike_iris_M_bearded_CA-US-FR-GB-AU.png',         size:'M' },
-  { key:'flower-spike_verbena-bonariensis', label:'Verbena bonariensis', family:'Perennial',            src:'/stickers/flower-spike_verbena-bonariensis_L_CA-US-FR-GB-AU.png',  size:'L' },
-  { key:'herb-small_catmint',              label:'Catmint',             family:'Perennial',            src:'/stickers/herb-small_catmint_S_CA-US-FR-GB-AU.png',               size:'S' },
   { key:'flower-spike_lupin',              label:'Lupin',               family:'Perennial',            src:'/stickers/flower-spike_lupin_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'flower-spike_salvia',             label:'Salvia',              family:'Perennial / Annual',   src:'/stickers/flower-spike_salvia_M_CA-US-FR-GB-AU.png',              size:'M' },
   { key:'flower-spike_snapdragon',         label:'Snapdragon',          family:'Annual Flower',        src:'/stickers/flower-spike_snapdragon_M_CA-US-FR-GB.png',             size:'M' },

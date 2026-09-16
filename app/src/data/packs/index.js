@@ -165,6 +165,14 @@ export const PACK_REGISTRY = [
     loader: () => import('./pack-herbs-medicinal.js'),
     families: ['Medicinal Herb'],
   },
+  // Flowers
+  {
+    id: 'flowers-perennials',
+    label: 'Perennial Flowers',
+    eager: false,
+    loader: () => import('./pack-flowers-perennials.js'),
+    families: ['Perennial'],
+  },
   // Ferns
   {
     id: 'ferns-woodland',
