@@ -492,7 +492,7 @@ def verify_account(ws_url):
     result = cdp(ws_url, account_js, timeout=10)
     return result == "ROB"
 
-def navigate_fresh(ws_url):
+def navigate_fresh(ws_url, tab_index=0):
     # Click "New chat" in the Gemini sidebar — clears the conversation without page reload.
     # No navigation = no account switch. Account re-verify is skipped after this call.
     p("Clicking New chat...")
@@ -513,21 +513,22 @@ def navigate_fresh(ws_url):
 
 def send_telegram_preview(image_path, plant_name):
     """Send the sticker preview to Rob via Telegram (Garden Mapper topic)."""
-    openclaw = r"openclaw"  # use PATH-resolved openclaw CLI
-    cmd = [
-        openclaw, "message", "send",
-        "--channel", "telegram",
-        "--target", "-1003881533717",
-        "--thread", "3954",
-        "--file", image_path,
-        "--message", f"Sticker preview: *{plant_name}* — reply OK to add to Garden Mapper, or describe changes."
-    ]
+    # Use pwsh to invoke the openclaw CLI (bare 'openclaw' only works in PowerShell context)
+    oc_cmd = (
+        f'openclaw message send '
+        f'--channel telegram '
+        f'--target "-1003881533717" '
+        f'--thread 3954 '
+        f'--file "{image_path}" '
+        f'--message "Sticker preview: {plant_name} - reply OK to commit, or describe changes."'
+    )
+    cmd = ["pwsh", "-NoProfile", "-Command", oc_cmd]
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
         if result.returncode == 0:
             p(f"Telegram preview sent for {plant_name}")
         else:
-            p(f"Telegram send warning: {result.stderr[:200]}")
+            p(f"Telegram send warning (rc={result.returncode}): {result.stderr[:300]}")
     except Exception as e:
         p(f"Telegram send failed: {e}")
 
@@ -785,7 +786,7 @@ def main():
 
     # ── Navigate to fresh chat ────────────────────────────────
     p("Navigating to fresh chat...")
-    ws_url = navigate_fresh(ws_url)
+    ws_url = navigate_fresh(ws_url, tab_index)
 
 
     img_js = 'var i=Array.from(document.querySelectorAll("img")).filter(x=>(x.src.startsWith("blob:")||x.src.includes("lh3.googleusercontent"))&&x.naturalWidth>100); i.length?i[i.length-1].src:""'
