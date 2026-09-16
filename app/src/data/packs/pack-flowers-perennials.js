@@ -21,4 +21,12 @@ export const entries = [
   { key: 'flower-daisy_hardy-geranium',         label: 'Hardy Geranium',         family: 'Perennial', src: '/stickers/flower-daisy_hardy-geranium_S_CA-US-FR-GB-AU.png',         size: 'S' },
   { key: 'flower-cluster_phacelia',             label: 'Phacelia',               family: 'Perennial', src: '/stickers/flower-cluster_phacelia_S_CA-US-FR-GB-AU.png',             size: 'S' },
 
+
+  // ── Batch 3 (2026-09-16) ──────────────────────────────────────────────────────────────────────
+  { key: 'flower-spike_kniphofia',             label: 'Kniphofia',              family: 'Perennial', src: '/stickers/flower-spike_kniphofia_L_CA-US-FR-GB-AU.png',             size: 'L' },
+  { key: 'flower-daisy_japanese-anemone',      label: 'Japanese Anemone',       family: 'Perennial', src: '/stickers/flower-daisy_japanese-anemone_M_CA-US-FR-GB-AU.png',      size: 'M' },
+  { key: 'flower-daisy_helenium',              label: 'Helenium',               family: 'Perennial', src: '/stickers/flower-daisy_helenium_M_CA-US-FR-GB-AU.png',              size: 'M' },
+  { key: 'flower-spike_sanguisorba',           label: 'Sanguisorba',            family: 'Perennial', src: '/stickers/flower-spike_sanguisorba_M_CA-US-FR-GB-AU.png',           size: 'M' },
+  { key: 'flower-cluster_autumn-joy-sedum',    label: 'Autumn Joy Sedum',       family: 'Perennial', src: '/stickers/flower-cluster_autumn-joy-sedum_S_CA-US-FR-GB-AU.png',    size: 'S' },
+
 ];
