@@ -1,12 +1,12 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-09-09 (privacy policy gap analysis + fixes, More modal, profile menu cleanup, AccountModal legal links updated)_
+_Last updated: 2026-09-16 (perennials pack batch 1-3, auto-chroma system, lazy pack migration)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
 
 ## What It Is
-A web-based garden planner - React + Vite + Konva canvas, 171 core + 36 pack plant stickers, colour variant picker, freeform/rect/circle draw tools, save/load, season theming, textures. Live at https://app.gardenmapper.ca.
+A web-based garden planner - React + Vite + Konva canvas, colour variant picker, freeform/rect/circle draw tools, save/load, season theming, textures. Live at https://app.gardenmapper.ca.
 
 ---
 
