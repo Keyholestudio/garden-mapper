@@ -93,7 +93,7 @@ git add -A && git commit -m "Pack: create pack-<name>.js (<N> plants)"
 ### Current pending packs (as of 2026-09-16)
 | Pack | Family string | Plants accumulated | Status |
 |------|---------------|-------------------|--------|
-| `pack-flowers-perennials` | `Perennial` | Rudbeckia, Catmint, Shasta Daisy, Verbena bonariensis, Gypsophila, Yarrow, Monarda, Joe Pye Weed, Hardy Geranium (9) | ⏳ Need ~1 more then create |
+| `pack-flowers-perennials` | `Perennial` | 10 plants live | ✅ Created 2026-09-16 — add next batch here |
 
 > **Note:** Plants currently wired into `PLANT_CATALOG` incorrectly (Rudbeckia, Catmint, etc.) will be moved into the pack file when it's created. Remove their entries from `PLANT_CATALOG` at that time.
 
