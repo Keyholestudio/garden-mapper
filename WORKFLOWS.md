@@ -37,6 +37,65 @@ W. [Remove Gemini watermark from a sticker](#w-remove-gemini-watermark-from-a-st
 10. [Make everything live](#10-make-everything-live)
 11. [Full deploy: web + Android in one shot](#11-full-deploy-web--android-in-one-shot)
 12. [Session Start - Version Sync Check](#12-session-start--version-sync-check)
+13. [Create / populate a lazy pack](#13-create--populate-a-lazy-pack)
+
+---
+
+## 13. Create / populate a lazy pack
+
+> **Rule:** Never add new plant families to `PLANT_CATALOG` in `usePlantCatalog.js`. That is core-only (always loaded at boot). All new plants go into lazy pack files.
+
+### Pack sizing rule
+- **Minimum ~10 stickers** before creating a pack file and registering it
+- Accumulate stickers in batches; commit them to `app/public/stickers/` + `stickers/` as approved
+- Only create the `.js` pack file and register it in `index.js` once you have ~10+ plants ready
+- Don't ship a pack with 1-2 stickers — it adds a lazy load event for near-zero benefit
+
+### Step 1 — Accumulate stickers
+- Generate and commit stickers to `app/public/stickers/` + `stickers/` normally (no catalog wiring yet)
+- Keep a running list of pending pack entries in your notes or the relevant PROJECT.md section
+- When count reaches ~10, proceed to Step 2
+
+### Step 2 — Create the pack file
+```js
+// app/src/data/packs/pack-<name>.js
+export const PACK_ID = '<name>';
+
+export const entries = [
+  {
+    key: '<sticker-key>',
+    label: '<Display Name>',
+    family: '<Family Name>',   // must match the family string used in PACK_REGISTRY
+    src: '/stickers/<filename>.png',
+    size: 'M',
+  },
+  // ... all plants in this pack
+];
+```
+
+### Step 3 — Register in index.js
+```js
+// app/src/data/packs/index.js — add entry to PACK_REGISTRY:
+{
+  id: '<name>',
+  label: '<Display Label>',
+  eager: false,
+  loader: () => import('./pack-<name>.js'),
+  families: ['<Family Name>'],   // must match the family field in entries
+},
+```
+
+### Step 4 — Commit
+```
+git add -A && git commit -m "Pack: create pack-<name>.js (<N> plants)"
+```
+
+### Current pending packs (as of 2026-09-16)
+| Pack | Family string | Plants accumulated | Status |
+|------|---------------|-------------------|--------|
+| `pack-flowers-perennials` | `Perennial` | Rudbeckia, Catmint, Shasta Daisy, Verbena bonariensis, Gypsophila, Yarrow, Monarda, Joe Pye Weed, Hardy Geranium (9) | ⏳ Need ~1 more then create |
+
+> **Note:** Plants currently wired into `PLANT_CATALOG` incorrectly (Rudbeckia, Catmint, etc.) will be moved into the pack file when it's created. Remove their entries from `PLANT_CATALOG` at that time.
 
 ---
 

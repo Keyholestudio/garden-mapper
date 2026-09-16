@@ -2,6 +2,12 @@
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
 
+## L081 — New plant packs must use the lazy pack system, never PLANT_CATALOG (2026-09-16)
+**What happened:** Perennial stickers (Rudbeckia, Catmint, Shasta Daisy, Verbena, Gypsophila, Yarrow, Monarda) were added directly to `PLANT_CATALOG` in `usePlantCatalog.js`, which is always bundled and loaded at boot. This bloats the core bundle for every user.
+**Rule:** All new plants go into a lazy pack file (`app/src/data/packs/pack-<name>.js`), registered in `index.js`. `PLANT_CATALOG` is core-only (backward compat). Never add new families to it.
+**Pack sizing rule:** Minimum ~10 plants per pack before creating. Don't ship a pack with 1-2 stickers — accumulate the full batch first, then create the pack and register it in one commit.
+**See:** Workflow 13 (Create / populate a lazy pack)
+
 ## L080 — Browser onload does not fire for cached images (2026-09-11)
 **What happened:** Decor variant images restored correctly on first page load, but on refresh (when browser had images cached) the variant swap never applied — stickers reverted to catalog defaults.
 **Root cause:** Setting `img.src` to a cached URL may not fire `onload` at all in some browsers. The restore logic relied entirely on `onload`.
