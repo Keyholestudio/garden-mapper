@@ -522,7 +522,7 @@ def send_telegram_preview(image_path, plant_name):
         f'openclaw message send '
         f'--channel telegram '
         f'--target "-1003881533717" '
-        f'--thread 3954 '
+        f'--thread-id 3954 '
         f'--file "{image_path}" '
         f'--message "Sticker preview: {plant_name} - reply OK to commit, or describe changes."'
     )
