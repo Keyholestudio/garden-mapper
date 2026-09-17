@@ -15,4 +15,6 @@ export const entries = [
   { key: 'shrub-flowering_beauty-bush_M_CA-US-FR-GB-AU', label: 'Beauty Bush', size: 'M', latinName: 'Kolkwitzia amabilis', searchTerms: ['beauty bush', 'kolkwitzia'], traits: ['deciduous', 'flowering', 'spring', 'shrub'] },
   { key: 'shrub-flowering_flowering-currant_M_CA-US-FR-GB-AU', label: 'Flowering Currant', size: 'M', latinName: 'Ribes sanguineum', searchTerms: ['flowering currant', 'ribes', 'red-flowering currant'], traits: ['deciduous', 'flowering', 'spring', 'wildlife', 'shrub'] },
 
+  { key: 'shrub-flowering_deutzia_S_CA-US-FR-GB-AU', label: 'Deutzia', size: 'S', latinName: 'Deutzia gracilis', searchTerms: ['deutzia', 'slender deutzia'], traits: ['deciduous', 'flowering', 'spring', 'shrub'] },
+
 ];
