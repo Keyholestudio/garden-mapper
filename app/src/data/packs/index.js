@@ -181,6 +181,79 @@ export const PACK_REGISTRY = [
     loader: () => import('./pack-ferns-woodland.js'),
     families: ['Fern / Groundcover'],
   },
+  // Trees
+  {
+    id: 'trees-deciduous',
+    label: 'Deciduous Trees',
+    eager: false,
+    loader: () => import('./pack-trees-deciduous.js'),
+    families: ['Deciduous Tree'],
+  },
+  {
+    id: 'trees-evergreen',
+    label: 'Evergreen Trees',
+    eager: false,
+    loader: () => import('./pack-trees-evergreen.js'),
+    families: ['Evergreen Tree'],
+  },
+  {
+    id: 'trees-coniferous',
+    label: 'Coniferous Trees',
+    eager: false,
+    loader: () => import('./pack-trees-coniferous.js'),
+    families: ['Coniferous Tree'],
+  },
+  // Climbers
+  {
+    id: 'climbers-flowering',
+    label: 'Flowering Climbers',
+    eager: false,
+    loader: () => import('./pack-climbers-flowering.js'),
+    families: ['Flowering Climber'],
+  },
+  {
+    id: 'climbers-evergreen',
+    label: 'Evergreen Climbers',
+    eager: false,
+    loader: () => import('./pack-climbers-evergreen.js'),
+    families: ['Evergreen Climber'],
+  },
+  {
+    id: 'climbers-deciduous',
+    label: 'Deciduous Climbers',
+    eager: false,
+    loader: () => import('./pack-climbers-deciduous.js'),
+    families: ['Deciduous Climber'],
+  },
+  // Shrubs
+  {
+    id: 'shrubs-deciduous',
+    label: 'Deciduous Shrubs',
+    eager: false,
+    loader: () => import('./pack-shrubs-deciduous.js'),
+    families: ['Deciduous Shrub'],
+  },
+  {
+    id: 'shrubs-evergreen',
+    label: 'Evergreen Shrubs',
+    eager: false,
+    loader: () => import('./pack-shrubs-evergreen.js'),
+    families: ['Evergreen Shrub'],
+  },
+  {
+    id: 'shrubs-flowering',
+    label: 'Flowering Shrubs',
+    eager: false,
+    loader: () => import('./pack-shrubs-flowering.js'),
+    families: ['Flowering Shrub'],
+  },
+  {
+    id: 'shrubs-coniferous',
+    label: 'Coniferous Shrubs',
+    eager: false,
+    loader: () => import('./pack-shrubs-coniferous.js'),
+    families: ['Coniferous Shrub'],
+  },
 ];
 
 // Families served by lazy packs — used to exclude them from core tray render
