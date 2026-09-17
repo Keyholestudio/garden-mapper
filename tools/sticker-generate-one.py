@@ -493,21 +493,25 @@ def verify_account(ws_url):
     return result == "ROB"
 
 def navigate_fresh(ws_url, tab_index=0):
-    # Click "New chat" in the Gemini sidebar — clears the conversation without page reload.
-    # No navigation = no account switch. Account re-verify is skipped after this call.
-    p("Clicking New chat...")
-    click_js = """(function(){
-        var links = Array.from(document.querySelectorAll('a, button'));
-        var nc = links.find(function(l){ return l.textContent.trim() === 'New chat'; });
-        if (nc) { nc.click(); return 'CLICKED'; }
-        return 'NOT_FOUND';
-    })()"""
-    result = cdp(ws_url, click_js, timeout=8)
-    p(f"New chat: {result}")
-    time.sleep(3)  # wait for navigation to complete
-    # Re-fetch tab after navigation (New chat link navigates to new URL = new CDP target)
+    # Navigate the tab directly to gemini.google.com/app via CDP Page.navigate.
+    # This is tab-specific and atomic — avoids the race condition where two agents
+    # both click 'New chat' and land in the same session.
+    p(f"Navigating tab {tab_index} to fresh Gemini chat...")
+    try:
+        ws = websocket.create_connection(ws_url, timeout=10)
+        ws.send(json.dumps({"id": 1, "method": "Page.navigate", "params": {"url": "https://gemini.google.com/app"}}))
+        try:
+            ws.recv()  # ack
+        except Exception:
+            pass
+        ws.close()
+    except Exception as e:
+        p(f"  [warn] navigate failed: {e} — continuing")
+    time.sleep(4)  # wait for page load
+    # Re-fetch tab by index after navigation (URL will have changed to /app)
     fresh = get_brave_tab("gemini.google.com", tab_index)
     if fresh:
+        p(f"  Tab {tab_index} fresh URL: {fresh['url'][:60]}")
         return fresh["webSocketDebuggerUrl"]
     return ws_url
 
@@ -788,6 +792,19 @@ def main():
     p("Navigating to fresh chat...")
     ws_url = navigate_fresh(ws_url, tab_index)
 
+    # ── Verify this tab has a unique conversation URL ─────────
+    # Guard against two parallel agents landing on the same Gemini session.
+    # /app with no path suffix = true new chat. /app/<id> = existing convo (still ok, but log it).
+    try:
+        tab_now = get_brave_tab("gemini.google.com", tab_index)
+        tab_url = tab_now["url"] if tab_now else "unknown"
+        p(f"Tab {tab_index} URL after navigate: {tab_url}")
+        # If URL still has a long conversation ID and tab_index > 0, warn
+        if tab_index > 0 and "/app/" in tab_url and len(tab_url.split("/app/")[-1]) > 10:
+            p(f"  [warn] Tab {tab_index} landed on existing conversation — may not be isolated. Waiting 2s extra...")
+            time.sleep(2)
+    except Exception:
+        pass
 
     img_js = 'var i=Array.from(document.querySelectorAll("img")).filter(x=>(x.src.startsWith("blob:")||x.src.includes("lh3.googleusercontent"))&&x.naturalWidth>100); i.length?i[i.length-1].src:""'
     src_before = cdp(ws_url, img_js) or ""
