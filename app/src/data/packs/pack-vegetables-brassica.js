@@ -1,4 +1,4 @@
-// pack-vegetables-brassica.js - Brassica Vegetables pack
+// pack-vegetables-brassica.js - Brassica Vegetables pack  ✅ DO FIRST — straightforward garden plants
 // Loaded on demand when user opens the Brassica Vegetables category.
 // Keys are permanent - never rename or delete a key once a sticker is generated.
 

@@ -1,4 +1,4 @@
-// pack-vegetables-perennial.js - Perennial Vegetables pack
+// pack-vegetables-perennial.js - Perennial Vegetables pack  ⚠️ MIXED — do nine-star broccoli + perennial leek first, skip sea kale + turkish rocket (flagged wild)
 // Loaded on demand when user opens the Perennial Vegetables category.
 // Keys are permanent - never rename or delete a key once a sticker is generated.
 

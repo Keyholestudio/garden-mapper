@@ -1,4 +1,4 @@
-// pack-ferns-woodland.js - Woodland Ferns pack
+// pack-ferns-woodland.js - Woodland Ferns pack  ⚠️ MIXED — pack mostly complete, skip marsh fern (flagged wild)
 // Loaded on demand when user opens the Woodland Ferns category.
 // Keys are permanent - never rename or delete a key once a sticker is generated.
 
