@@ -17,4 +17,8 @@ export const entries = [
   { key: 'tree-fruit_papaya_L_CA-US-FR-GB-AU', label: 'Papaya', size: 'L', latinName: 'Carica papaya', searchTerms: ['papaya', 'pawpaw', 'carica'], traits: ['tropical', 'edible', 'fast-growing'] },
   { key: 'tree-fruit_starfruit_L_CA-US-FR-GB-AU', label: 'Starfruit', size: 'L', latinName: 'Averrhoa carambola', searchTerms: ['starfruit', 'carambola', 'averrhoa'], traits: ['tropical', 'evergreen', 'edible', 'tree'] },
 
+  { key: 'tree-fruit_avocado_XL_CA-US-FR-GB-AU', label: 'Avocado', size: 'XL', latinName: 'Persea americana', searchTerms: ['avocado', 'persea', 'alligator pear'], traits: ['tropical', 'evergreen', 'edible', 'large-tree'] },
+  { key: 'tree-fruit_guava_L_CA-US-FR-GB-AU', label: 'Guava', size: 'L', latinName: 'Psidium guajava', searchTerms: ['guava', 'psidium'], traits: ['tropical', 'evergreen', 'edible', 'tree'] },
+  { key: 'fruit-tropical_pineapple_M_CA-US-FR-GB-AU', label: 'Pineapple', size: 'M', latinName: 'Ananas comosus', searchTerms: ['pineapple', 'ananas'], traits: ['tropical', 'edible', 'bromeliad'] },
+
 ];

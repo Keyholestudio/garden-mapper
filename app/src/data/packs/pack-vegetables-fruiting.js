@@ -13,4 +13,6 @@ export const entries = [
   { key: 'vegetable-fruiting_ground-cherry_S_CA-US-FR-GB-AU', label: 'Ground Cherry', size: 'S', latinName: 'Physalis pruinosa', searchTerms: ['ground cherry', 'cape gooseberry', 'physalis', 'husk cherry'], traits: ['fruiting', 'edible', 'annual'] },
   { key: 'vegetable-fruiting_tomatillo_M_CA-US-FR-GB-AU', label: 'Tomatillo', size: 'M', latinName: 'Physalis philadelphica', searchTerms: ['tomatillo', 'husk tomato', 'physalis'], traits: ['fruiting', 'edible', 'annual'] },
 
+  { key: 'vegetable-fruiting_butternut-squash_L_CA-US-FR-GB-AU', label: 'Butternut Squash', size: 'L', latinName: 'Cucurbita moschata', searchTerms: ['butternut squash', 'butternut pumpkin', 'cucurbita'], traits: ['fruiting', 'edible', 'annual', 'vine'] },
+
 ];

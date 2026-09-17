@@ -10,4 +10,6 @@ export const entries = [
 
   // 🥦 Brassica Vegetables ─────────────────────────────────────────────────────
 
+  { key: 'vegetable-brassica_sprouting-broccoli_L_CA-US-FR-GB-AU', label: 'Sprouting Broccoli', size: 'L', latinName: 'Brassica oleracea italica', searchTerms: ['sprouting broccoli', 'purple sprouting broccoli', 'PSB'], traits: ['brassica', 'edible', 'annual', 'cool-season'] },
+
 ];

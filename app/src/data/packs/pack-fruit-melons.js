@@ -13,4 +13,8 @@ export const entries = [
   { key: 'fruit-melon_honeydew_M_CA-US-FR-GB-AU', label: 'Honeydew', size: 'M', latinName: 'Cucumis melo', searchTerms: ['honeydew', 'melon'], traits: ['fruit', 'melon', 'edible', 'annual', 'vine'] },
   { key: 'fruit-melon_winter-melon_XL_CA-US-FR-GB-AU', label: 'Winter Melon', size: 'XL', latinName: 'Benincasa hispida', searchTerms: ['winter melon', 'ash gourd', 'wax gourd'], traits: ['fruit', 'melon', 'edible', 'annual'] },
 
+  { key: 'fruit-melon_cantaloupe_M_CA-US-FR-GB-AU', label: 'Cantaloupe', size: 'M', latinName: 'Cucumis melo reticulatus', searchTerms: ['cantaloupe', 'rockmelon', 'muskmelon'], traits: ['fruit', 'melon', 'edible', 'annual', 'vine'] },
+  { key: 'fruit-melon_charentais_M_CA-US-FR-GB-AU', label: 'Charentais Melon', size: 'M', latinName: 'Cucumis melo cantalupensis', searchTerms: ['charentais', 'french melon', 'cantaloup'], traits: ['fruit', 'melon', 'edible', 'annual', 'vine'] },
+  { key: 'fruit-melon_galia_M_CA-US-FR-GB-AU', label: 'Galia Melon', size: 'M', latinName: 'Cucumis melo inodorus', searchTerms: ['galia melon', 'israeli melon'], traits: ['fruit', 'melon', 'edible', 'annual', 'vine'] },
+
 ];
