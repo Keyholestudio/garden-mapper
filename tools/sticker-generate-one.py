@@ -516,25 +516,12 @@ def navigate_fresh(ws_url, tab_index=0):
     return ws_url
 
 def send_telegram_preview(image_path, plant_name):
-    """Send the sticker preview to Rob via Telegram (Garden Mapper topic)."""
-    # Use pwsh to invoke the openclaw CLI (bare 'openclaw' only works in PowerShell context)
-    oc_cmd = (
-        f'openclaw message send '
-        f'--channel telegram '
-        f'--target "-1003881533717" '
-        f'--thread-id 3954 '
-        f'--file "{image_path}" '
-        f'--message "Sticker preview: {plant_name} - reply OK to commit, or describe changes."'
-    )
-    cmd = ["pwsh", "-NoProfile", "-Command", oc_cmd]
-    try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-        if result.returncode == 0:
-            p(f"Telegram preview sent for {plant_name}")
-        else:
-            p(f"Telegram send warning (rc={result.returncode}): {result.stderr[:300]}")
-    except Exception as e:
-        p(f"Telegram send failed: {e}")
+    """Log the pending sticker path for the main agent to send via Telegram.
+    The openclaw CLI hangs when called from a subprocess context — previews are
+    sent by the main agent using the message tool after the script completes.
+    """
+    p(f"PREVIEW_READY: {image_path}")
+    p(f"Sticker saved to pending. Main agent will send Telegram preview for: {plant_name}")
 
 def add_to_catalog(plant_id, label, family, src_path, size_tier):
     """Insert plant entry into usePlantCatalog.js before the closing ]."""
