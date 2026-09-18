@@ -12,4 +12,8 @@ export const entries = [
   { key: 'shrub-conifer_mugo-pine_S_CA-US-FR-GB-AU', label: 'Mugo Pine', size: 'S', latinName: 'Pinus mugo', searchTerms: ['mugo pine', 'mountain pine', 'pinus mugo'], traits: ['conifer', 'evergreen', 'compact', 'alpine', 'shrub'] },
   { key: 'shrub-conifer_dwarf-alberta-spruce_S_CA-US-FR-GB-AU', label: 'Dwarf Alberta Spruce', size: 'S', latinName: 'Picea glauca Conica', searchTerms: ['dwarf alberta spruce', 'picea conica'], traits: ['conifer', 'evergreen', 'compact', 'formal', 'shrub'] },
 
+
+
+  { key: 'shrub-conifer_globe-blue-spruce_S_CA-US-FR-GB-AU', label: 'Globe Blue Spruce', size: 'S', latinName: 'Picea pungens Globosa', searchTerms: ['globe blue spruce','globosa spruce'], traits: ['conifer','evergreen','compact','silver','shrub'] },
+
 ];
