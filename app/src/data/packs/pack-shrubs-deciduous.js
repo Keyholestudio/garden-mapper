@@ -17,4 +17,18 @@ export const entries = [
 
   { key: 'shrub-flowering_deutzia_S_CA-US-FR-GB-AU', label: 'Deutzia', size: 'S', latinName: 'Deutzia gracilis', searchTerms: ['deutzia', 'slender deutzia'], traits: ['deciduous', 'flowering', 'spring', 'shrub'] },
 
+  { key: 'shrub-flowering_abelia_M_CA-US-FR-GB-AU', label: 'Abelia', size: 'M', latinName: 'Abelia x grandiflora', searchTerms: ['abelia', 'glossy abelia'], traits: ['deciduous', 'flowering', 'long-blooming', 'pollinator', 'shrub'] },
+  { key: 'shrub-edible_black-currant_M_CA-US-FR-GB-AU', label: 'Black Currant', size: 'M', latinName: 'Ribes nigrum', searchTerms: ['black currant', 'blackcurrant', 'ribes nigrum'], traits: ['deciduous', 'edible', 'berries', 'shrub'] },
+  { key: 'shrub-edible_red-currant_S_CA-US-FR-GB-AU', label: 'Red Currant', size: 'S', latinName: 'Ribes rubrum', searchTerms: ['red currant', 'redcurrant', 'ribes rubrum'], traits: ['deciduous', 'edible', 'berries', 'shrub'] },
+  { key: 'shrub-edible_gooseberry_S_CA-US-FR-GB-AU', label: 'Gooseberry', size: 'S', latinName: 'Ribes uva-crispa', searchTerms: ['gooseberry', 'ribes uva-crispa'], traits: ['deciduous', 'edible', 'berries', 'shrub'] },
+  { key: 'shrub-edible_elderberry_L_CA-US-FR-GB-AU', label: 'Elderberry', size: 'L', latinName: 'Sambucus nigra', searchTerms: ['elderberry', 'elder', 'sambucus', 'elderflower'], traits: ['deciduous', 'edible', 'wildlife', 'medicinal', 'shrub'] },
+  { key: 'shrub-edible_goji-berry_M_CA-US-FR-GB-AU', label: 'Goji Berry', size: 'M', latinName: 'Lycium barbarum', searchTerms: ['goji berry', 'wolfberry', 'lycium', 'chinese wolfberry'], traits: ['deciduous', 'edible', 'berries', 'drought', 'shrub'] },
+  { key: 'shrub-ornamental_smokebush_L_CA-US-FR-GB-AU', label: 'Smokebush', size: 'L', latinName: 'Cotinus coggygria', searchTerms: ['smokebush', 'smoke tree', 'cotinus'], traits: ['deciduous', 'ornamental', 'autumn-colour', 'shrub'] },
+  { key: 'shrub-flowering_oakleaf-hydrangea_M_CA-US-FR-GB-AU', label: 'Oakleaf Hydrangea', size: 'M', latinName: 'Hydrangea quercifolia', searchTerms: ['oakleaf hydrangea', 'hydrangea quercifolia'], traits: ['deciduous', 'flowering', 'autumn-colour', 'shrub'] },
+  { key: 'shrub-ornamental_beautyberry_M_CA-US-FR-GB-AU', label: 'American Beautyberry', size: 'M', latinName: 'Callicarpa americana', searchTerms: ['beautyberry', 'callicarpa', 'beauty berry'], traits: ['deciduous', 'berries', 'ornamental', 'wildlife', 'shrub'] },
+  { key: 'shrub-flowering_fothergilla_M_CA-US-FR-GB-AU', label: 'Fothergilla', size: 'M', latinName: 'Fothergilla major', searchTerms: ['fothergilla', 'witch alder'], traits: ['deciduous', 'flowering', 'autumn-colour', 'shrub'] },
+  { key: 'shrub-hedge_hornbeam_L_CA-US-FR-GB-AU', label: 'Hornbeam', size: 'L', latinName: 'Carpinus betulus', searchTerms: ['hornbeam', 'carpinus', 'common hornbeam'], traits: ['deciduous', 'hedging', 'shade', 'shrub'] },
+  { key: 'shrub-edible_hazel_L_CA-US-FR-GB-AU', label: 'Hazel', size: 'L', latinName: 'Corylus avellana', searchTerms: ['hazel', 'cobnut', 'corylus', 'hazelnut'], traits: ['deciduous', 'edible', 'wildlife', 'catkins', 'shrub'] },
+  { key: 'shrub-ornamental_dogwood_M_CA-US-FR-GB-AU', label: 'Dogwood Shrub', size: 'M', latinName: 'Cornus alba', searchTerms: ['dogwood', 'cornus alba', 'red-twig dogwood'], traits: ['deciduous', 'stem-colour', 'wetland', 'winter', 'shrub'] },
+
 ];
