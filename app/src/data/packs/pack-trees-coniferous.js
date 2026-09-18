@@ -13,5 +13,8 @@ export const entries = [
   { key: 'tree-conifer_nordmann-fir_XL_CA-US-FR-GB-AU', label: 'Nordmann Fir', size: 'XL', latinName: 'Abies nordmanniana', searchTerms: ['nordmann fir', 'caucasian fir', 'abies nordmanniana', 'christmas tree'], traits: ['conifer', 'evergreen', 'christmas', 'tree'] },
   { key: 'tree-conifer_scots-pine_XXL_CA-US-FR-GB-AU', label: 'Scots Pine', size: 'XXL', latinName: 'Pinus sylvestris', searchTerms: ['scots pine', 'pinus sylvestris', 'scotch pine'], traits: ['conifer', 'evergreen', 'ornamental', 'tree'] },
   { key: 'tree-conifer_larch_XL_CA-US-FR-GB-AU', label: 'Larch', size: 'XL', latinName: 'Larix decidua', searchTerms: ['larch', 'european larch', 'larix'], traits: ['conifer', 'deciduous', 'autumn-colour', 'tree'] },
+  { key: 'tree-conifer_yew_XL_CA-US-FR-GB-AU', label: 'Yew', size: 'XL', latinName: 'Taxus baccata', searchTerms: ['english yew', 'taxus baccata', 'common yew', 'yew'], traits: ['conifer', 'evergreen', 'hedging', 'toxic', 'tree'] },
+  { key: 'tree-conifer_monkey-puzzle_XL_CA-US-FR-GB-AU', label: 'Monkey Puzzle', size: 'XL', latinName: 'Araucaria araucana', searchTerms: ['monkey puzzle', 'araucaria', 'chile pine'], traits: ['conifer', 'evergreen', 'architectural', 'ancient', 'tree'] },
+  { key: 'tree-conifer_dawn-redwood_XXL_CA-US-FR-GB-AU', label: 'Dawn Redwood', size: 'XXL', latinName: 'Metasequoia glyptostroboides', searchTerms: ['dawn redwood', 'metasequoia', 'living fossil'], traits: ['conifer', 'deciduous', 'ancient', 'wetland', 'tree'] },
 
 ];

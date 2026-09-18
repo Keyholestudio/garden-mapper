@@ -15,5 +15,8 @@ export const entries = [
   { key: 'tree-evergreen_holly_L_CA-US-FR-GB-AU', label: 'Holly', size: 'L', latinName: 'Ilex aquifolium', searchTerms: ['holly', 'ilex', 'common holly', 'english holly'], traits: ['evergreen', 'ornamental', 'hedging', 'wildlife', 'tree'] },
   { key: 'tree-evergreen_olive_L_CA-US-FR-GB-AU', label: 'Olive Tree', size: 'L', latinName: 'Olea europaea', searchTerms: ['olive', 'olea europaea', 'olivo'], traits: ['evergreen', 'ornamental', 'edible', 'drought', 'tree'] },
   { key: 'tree-evergreen_photinia_L_CA-US-FR-GB-AU', label: 'Photinia', size: 'L', latinName: 'Photinia fraseri', searchTerms: ['photinia', 'red robin', 'christmas berry'], traits: ['evergreen', 'screening', 'ornamental', 'tree'] },
+  { key: 'tree-evergreen_southern-magnolia_XXL_CA-US-FR-GB-AU', label: 'Southern Magnolia', size: 'XXL', latinName: 'Magnolia grandiflora', searchTerms: ['southern magnolia', 'bull bay', 'grandiflora'], traits: ['evergreen', 'flowering', 'ornamental', 'tree'] },
+  { key: 'tree-evergreen_bottlebrush_L_CA-US-FR-GB-AU', label: 'Bottlebrush', size: 'L', latinName: 'Callistemon citrinus', searchTerms: ['bottlebrush', 'callistemon', 'crimson bottlebrush'], traits: ['evergreen', 'flowering', 'coastal', 'tree'] },
+  { key: 'tree-evergreen_cordyline_XL_CA-US-FR-GB-AU', label: 'Cordyline', size: 'XL', latinName: 'Cordyline australis', searchTerms: ['cordyline', 'cabbage tree', 'ti tree'], traits: ['evergreen', 'architectural', 'coastal', 'tree'] },
 
 ];
