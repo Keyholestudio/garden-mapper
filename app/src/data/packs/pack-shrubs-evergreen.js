@@ -13,5 +13,6 @@ export const entries = [
   { key: 'shrub-evergreen_sweet-box_S_CA-US-FR-GB-AU', label: 'Sweet Box', size: 'S', latinName: 'Sarcococca hookeriana', searchTerms: ['sweet box', 'sarcococca', 'christmas box'], traits: ['evergreen', 'fragrant', 'winter', 'shade', 'shrub'] },
   { key: 'shrub-evergreen_skimmia_S_CA-US-FR-GB-AU', label: 'Skimmia', size: 'S', latinName: 'Skimmia japonica', searchTerms: ['skimmia', 'japanese skimmia'], traits: ['evergreen', 'berries', 'shade', 'ornamental', 'shrub'] },
   { key: 'shrub-evergreen_fatsia_L_CA-US-FR-GB-AU', label: 'Fatsia', size: 'L', latinName: 'Fatsia japonica', searchTerms: ['fatsia', 'japanese aralia', 'castor oil plant'], traits: ['evergreen', 'architectural', 'shade', 'tropical', 'shrub'] },
+  { key: 'shrub-evergreen_daphne_S_CA-US-FR-GB-AU', label: 'Daphne', size: 'S', latinName: 'Daphne odora', searchTerms: ['daphne', 'winter daphne', 'fragrant daphne'], traits: ['evergreen', 'fragrant', 'spring', 'shrub'] },
 
 ];
