@@ -1275,6 +1275,13 @@ export default function GardenEditor() {
     const d = state.structDataRef.current[sel.id]
     d.locked = !d.locked
     sel.shape.draggable(!d.locked)
+    // Always keep listening:true so click/tap still fires on locked shapes
+    sel.shape.listening(true)
+    // For textured paths: the group wraps the hit line — ensure both stay interactive
+    if (d.type === 'path' && sel.shape instanceof Konva.Group) {
+      const hitLine = sel.shape.findOne('#' + sel.id)
+      if (hitLine) { hitLine.listening(true); hitLine.draggable(false) }
+    }
     if (d.locked) {
       // Detach transformer and exit any active edit mode
       layersRef.current.tr?.nodes([])

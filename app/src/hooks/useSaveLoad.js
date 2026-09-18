@@ -665,7 +665,7 @@ export function loadGarden({
     } else if (entry.zIndex !== undefined) {
       try { shape.zIndex(entry.zIndex) } catch {}
     }
-    if (entry.locked) shape.draggable(false)  // restore locked state
+    if (entry.locked) { shape.draggable(false); shape.listening(true) }  // locked = no drag, but still selectable
   })
 
   structLayer?.batchDraw()
