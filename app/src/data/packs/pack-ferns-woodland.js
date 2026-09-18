@@ -153,5 +153,9 @@ export const entries = [
     traits: ['humid', 'container', 'cascading'],
     src: '/stickers/plant-fern_boston-fern_M_CA-US-FR-GB-AU.png',
   },
+  { key: 'plant-fern_tree-fern_XL_CA-US-FR-GB-AU', label: 'Tree Fern', size: 'XL', latinName: 'Dicksonia antarctica', searchTerms: ['tree fern', 'dicksonia', 'soft tree fern'], traits: ['fern', 'architectural', 'shade', 'tree'] },
+  { key: 'plant-fern_sword-fern_M_CA-US-FR-GB-AU', label: 'Sword Fern', size: 'M', latinName: 'Polystichum munitum', searchTerms: ['sword fern', 'polystichum', 'western sword fern'], traits: ['fern', 'evergreen', 'shade'] },
+  { key: 'plant-fern_autumn-fern_M_CA-US-FR-GB-AU', label: 'Autumn Fern', size: 'M', latinName: 'Dryopteris erythrosora', searchTerms: ['autumn fern', 'dryopteris erythrosora', 'copper shield fern'], traits: ['fern', 'semi-evergreen', 'shade', 'copper'] },
+  { key: 'plant-fern_wood-fern_M_CA-US-FR-GB-AU', label: 'Wood Fern', size: 'M', latinName: 'Dryopteris filix-mas', searchTerms: ['wood fern', 'dryopteris', 'male fern'], traits: ['fern', 'deciduous', 'shade', 'woodland'] },
 
 ];

@@ -254,6 +254,28 @@ export const PACK_REGISTRY = [
     loader: () => import('./pack-shrubs-coniferous.js'),
     families: ['Coniferous Shrub'],
   },
+  // Grasses, Groundcovers, Bulbs
+  {
+    id: 'grasses-ornamental',
+    label: 'Ornamental Grasses',
+    eager: false,
+    loader: () => import('./pack-grasses-ornamental.js'),
+    families: ['Ornamental Grass'],
+  },
+  {
+    id: 'groundcovers',
+    label: 'Groundcovers',
+    eager: false,
+    loader: () => import('./pack-groundcovers.js'),
+    families: ['Groundcover'],
+  },
+  {
+    id: 'bulbs-summer',
+    label: 'Summer Bulbs',
+    eager: false,
+    loader: () => import('./pack-bulbs-summer.js'),
+    families: ['Summer Bulb'],
+  },
 ];
 
 // Families served by lazy packs — used to exclude them from core tray render
