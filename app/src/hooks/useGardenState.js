@@ -16,7 +16,7 @@ export const BED_COLOURS     = ['#8B6340','#6D4C1F','#C8A96A','#9E9E9E','#BDBDBD
 export const BUILDING_COLOURS= ['#90A4AE','#BCAAA4','#78909C','#A1887F',
   '#TX:roof-cedar-shingles','#TX:roof-asphalt','#TX:roof-terracotta']
 export const FENCE_COLOURS   = ['#795548','#6D4C41','#4E342E','#BCAAA4','#90A4AE']
-export const HEDGE_COLOURS   = ['#388E3C','#2E7D32','#1B5E20','#558B2F']
+export const HEDGE_COLOURS   = ['#TX:hedge','#388E3C','#2E7D32','#1B5E20','#558B2F']
 export const PATH_COLOURS    = ['#TX:path-brick','#TX:path-brick-red','#TX:path-flagstone-beige',
   '#D7CCC8','#BCAAA4','#9E9E9E']
 export const WATER_COLOURS   = ['#64B5F6','#42A5F5','#1E88E5','#90CAF9','#B3E5FC']
@@ -42,6 +42,7 @@ export const TEXTURE_MAP = {
   '#TX:deck-medium-brown':   { src: '/textures/deck-medium-brown.jpg',   label: 'Medium Brown Planks' },
   '#TX:deck-dark-brown':     { src: '/textures/deck-dark-brown.jpg',     label: 'Dark Brown Planks' },
   '#TX:deck-cedar':          { src: '/textures/deck-cedar.jpg',          label: 'Cedar Planks' },
+  '#TX:hedge':               { src: '/textures/hedge.jpg',               label: 'Hedge Texture' },
 }
 export const PLANT_VARIANTS = {
   // Rule: first entry is always the default (src: null = use base catalog src, variantSrc cleared to null on click)
@@ -263,7 +264,7 @@ export function useGardenState() {
   const [undergroundColour, setUndergroundColour] = useState('#111111')
   const [undergroundWidth, setUndergroundWidth]   = useState(4)
   const [undergroundOpaque, setUndergroundOpaque] = useState(false)
-  const [defaultPathWidth, setDefaultPathWidth]   = useState(18)
+  const [defaultPathWidth, setDefaultPathWidth]   = useState(36)
 
   // Selection
   const [selectedPlant, setSelectedPlant]   = useState(null)

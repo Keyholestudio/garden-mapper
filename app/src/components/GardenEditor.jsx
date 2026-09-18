@@ -809,14 +809,28 @@ export default function GardenEditor() {
         triggerAutoSave()
         return
       }
+    } else if (colour === '#TX:hedge') {
+      // Restore hedge texture pattern — re-apply the hedge fill, clear stroke
+      const hedgeImg = new window.Image()
+      hedgeImg.onload = () => {
+        shape.fillPriority('pattern')
+        shape.fillPatternImage(hedgeImg)
+        shape.fillPatternRepeat('repeat')
+        shape.fillPatternOpacity(1)
+        shape.stroke('transparent')
+        shape.strokeWidth(0)
+        layersRef.current.structLayer?.batchDraw()
+      }
+      hedgeImg.src = '/textures/hedge.jpg'
     } else if (isTexture) {
       applyColourOrTexture(shape, colour, layersRef.current.structLayer, TEXTURE_MAP)
     } else {
       const isBed = d.type === 'bed' || d.type === 'bed-square'
+      const isHedge = d.type === 'hedge' || d.type === 'hedge-sq'
       const alpha = isBed ? 'FF' : 'CC'
-      if (shape instanceof Konva.Rect)        { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(colour + alpha) }
+      if (shape instanceof Konva.Rect)        { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(colour + alpha); if (isHedge) { shape.stroke('transparent'); shape.strokeWidth(0) } }
       else if (shape instanceof Konva.Circle) { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(colour + alpha); shape.stroke(colour) }
-      else { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(noFill ? 'transparent' : colour + alpha); if (noFill) shape.stroke(colour) }
+      else { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(noFill ? 'transparent' : colour + alpha); if (noFill) shape.stroke(colour); if (isHedge) { shape.stroke('transparent'); shape.strokeWidth(0) } }
     }
     layersRef.current.structLayer?.batchDraw()
     state.setSelectedStruct({ ...sel, colour })
@@ -1382,6 +1396,7 @@ export default function GardenEditor() {
         state.setSelectedPlant(null)
       },
       onClearSelection: clearSelection,
+      onEnterEdit: enterEdit,
       setGardenName: state.setGardenName,
       setGardenW:    state.setGardenW,
       setGardenH:    state.setGardenH,
@@ -1448,6 +1463,7 @@ export default function GardenEditor() {
         state.setSelectedPlant(null)
       },
       onClearSelection: clearSelection,
+      onEnterEdit: enterEdit,
       setGardenName: state.setGardenName,
       setGardenW:    state.setGardenW,
       setGardenH:    state.setGardenH,
@@ -1479,6 +1495,7 @@ export default function GardenEditor() {
         state.setSelectedPlant(null)
       },
       onClearSelection: clearSelection,
+      onEnterEdit: enterEdit,
       setGardenName: state.setGardenName,
       setGardenW:    state.setGardenW,
       setGardenH:    state.setGardenH,
@@ -1775,7 +1792,9 @@ export default function GardenEditor() {
               onCopyPlant={() => {
                 const sel = state.selectedPlant; if (!sel) return
                 const d = state.plantDataRef.current[sel.id]
-                const img = loadedImages[d?.key] || sel.group.findOne('Image')?.image()
+                // Use the current displayed image — variant if set, otherwise default
+                const currentKonvaImg = sel.group.findOne('Image')?.image()
+                const img = currentKonvaImg || loadedImages[d?.key]
                 if (!img) return
                 const scaleX = sel.group.scaleX(); const scaleY = sel.group.scaleY()
                 const srcX = sel.group.x(); const srcY = sel.group.y()
@@ -1786,6 +1805,8 @@ export default function GardenEditor() {
                 if (!plantLayer) return
                 const newId = addPlant({ entry, x: srcX + size + 8 + size / 2, y: srcY + size / 2, stage: stageRef.current, plantLayer, plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr, showGridRef, onSelect: handlePlantSelect })
                 if (newId) {
+                  // Preserve variantSrc in the new plant's data so save/load restores the right image
+                  if (d?.variantSrc) state.plantDataRef.current[newId].variantSrc = d.variantSrc
                   const group = plantLayer.findOne('#' + newId)
                   if (group) { group.scaleX(scaleX); group.scaleY(scaleY); placeInZone(group, d?.family || '', plantLayer) }
                   plantLayer.batchDraw()
@@ -1901,7 +1922,9 @@ export default function GardenEditor() {
           onCopyPlant={() => {
             const sel = state.selectedPlant; if (!sel) return
             const d = state.plantDataRef.current[sel.id]
-            const img = loadedImages[d?.key] || sel.group.findOne('Image')?.image()
+            // Use the current displayed image — variant if set, otherwise default
+            const currentKonvaImg = sel.group.findOne('Image')?.image()
+            const img = currentKonvaImg || loadedImages[d?.key]
             if (!img) return
             const scaleX = sel.group.scaleX()
             const scaleY = sel.group.scaleY()
@@ -1923,6 +1946,8 @@ export default function GardenEditor() {
               onSelect: handlePlantSelect,
             })
             if (newId) {
+              // Preserve variantSrc in the new plant's data so save/load restores the right image
+              if (d?.variantSrc) state.plantDataRef.current[newId].variantSrc = d.variantSrc
               const group = plantLayer.findOne('#' + newId)
               if (group) {
                 group.scaleX(scaleX); group.scaleY(scaleY)

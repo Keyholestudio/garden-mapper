@@ -472,8 +472,8 @@ export default function RightPanel({
             <>
               <div className="panel-title">LINE WIDTH</div>
               <div className="slider-wrap">
-                <input type="range" min={isUG?2:4} max={isUG?20:60}
-                  defaultValue={d.pathWidth || (isUG ? 4 : 18)}
+                <input type="range" min={isUG?2:16} max={isUG?20:140}
+                  defaultValue={d.pathWidth || (isUG ? 4 : 36)}
                   onChange={e => onPathWidthChange?.(+e.target.value)}
                 />
               </div>

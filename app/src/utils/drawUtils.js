@@ -307,7 +307,7 @@ export function getShapeStyle(type, opts = {}) {
     case 'path':       return { fillC: 'transparent', strokeC: PATH_COLOURS[0],    sWidth: defaultPathWidth || 18, tension: 0.4,  closed: false }
     case 'gate':       return { fillC: 'transparent', strokeC: gs.stroke,          sWidth: gs.strokeWidth,         tension: 0,    closed: false }
     case 'fence':      return { fillC: 'transparent', strokeC: FENCE_COLOURS[0],   sWidth: 8,  tension: 0,    closed: false }
-    case 'hedge':      return { fillC: HEDGE_COLOURS[0]+'CC',   strokeC: '#3A2A10', sWidth: 2,  tension: 0.45, closed: true  }
+    case 'hedge':      return { fillC: HEDGE_COLOURS[0]+'CC',   strokeC: 'transparent', sWidth: 0,  tension: 0.45, closed: true  }
     case 'pond':       return { fillC: WATER_COLOURS[0]+'CC',   strokeC: '#1976D2', sWidth: 2,  tension: 0.45, closed: true  }
     case 'deck':       return { fillC: DECKING_COLOURS[0]+'CC', strokeC: '#3A2A10', sWidth: 2,  tension: 0.45, closed: true  }
     case 'bed':        return { fillC: BED_COLOURS[0]+'FF',     strokeC: 'transparent', sWidth: 2,  tension: 0.45, closed: true  }
@@ -461,6 +461,8 @@ export function closeFreeShape({
 
   if (opacity < 1) shape.opacity(opacity)
   structLayer.add(shape)
+  // Paths should render above beds so they remain clickable when overlapping
+  if (isPath) shape.moveToTop()
   if (type === 'hedge') applyHedgeTexture(shape, structLayer)
   structLayer.batchDraw()
 
@@ -576,9 +578,10 @@ export function addRectStruct({
 
   const cornerR = type === 'building' ? 3 : 0
   const bedType = type === 'bed' || type === 'bed-square'
+  const hedgeType = type === 'hedge-sq'
   const rect = new Konva.Rect({
     id, x, y, width: w, height: h,
-    fill: colour + (bedType ? 'FF' : 'CC'), stroke: bedType ? 'transparent' : '#3A2A10', strokeWidth: 2,
+    fill: colour + (bedType ? 'FF' : 'CC'), stroke: (bedType || hedgeType) ? 'transparent' : '#3A2A10', strokeWidth: hedgeType ? 0 : 2,
     cornerRadius: cornerR, draggable: true, strokeScaleEnabled: false,
   })
   rect.on('transformend', () => {

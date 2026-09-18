@@ -114,10 +114,14 @@ cd projects/garden-planner/app && npm run dev
 - **Dream Garden resize** — Pull current JSON from local:5200, update w/h, re-lock. Do as part of next Dream Garden update trigger.
 
 ### 🟡 In Progress
-- **Plant catalog expansion** - full research complete for all 63 packs (~600 plants). See `research/PLANT-PACK-RESEARCH.md` for counts, `research/PLANT-STAGING.md` for schema rows ready to generate.
-- **Plant pipeline** - PLANT-STAGING.md (~617 plants, all 63 packs). Workflow 0 + 0a in WORKFLOWS.md. Generate pack-by-pack with Rob's approval.
-- **Completed packs:** `pack-fruit-pome.js` (4 stickers) ✅
-- **Completed:** `pack-ferns-woodland.js` - 14/14 stickers done ✅ (Hay-scented + Boston Fern added 2026-08-06; Marsh Fern retired)
+- **Plant catalog expansion** — ~590+ stickers in app. See `research/STICKER-TODO.md` for remaining queue.
+- **TODO checklist:** `research/STICKER-TODO.md` — grouped by pack, wild items flagged. Ground truth = `app/public/stickers/` PNGs.
+- **Completed packs (2026-09-17):** fruit-pome ✅, ferns-woodland ✅, cacti-succulents ✅, flowers-perennials ✅, herbs-culinary ✅, herbs-medicinal ✅, tropical ✅, vegetables-leafy ✅, vegetables-root ✅, all fruit packs ✅, all veg packs ✅, ALL SHRUB PACKS ✅ (deciduous, evergreen, flowering, coniferous)
+- **In progress:** pack-trees-deciduous (10 plants done: crabapple, dogwood, redbud, laburnum, amelanchier, ginkgo, rowan, hawthorn + more needed)
+- **Not started yet:** pack-trees-evergreen, pack-trees-coniferous, pack-climbers-* (all scaffolded, PLANT_LOOKUP ready)
+- **Wildflowers:** 15 plants done. Field poppy + California poppy held (decision pending: Option A separate stickers vs Option B colour variants).
+- **PLANT_LOOKUP:** 430 entries. 112 new plants added 2026-09-17 (trees, climbers, shrubs).
+- **Do-last flagged:** 9 wild/niche plants in PLANT_LOOKUP + do-last trees/climbers identified in staging docs.
 - **Sticker template fix** - TEMPLATES dict synced to STICKER-PROMPT-GUIDE.md (2026-06-18). Workflow 0a enforces this going forward.
 - **Colour variant rollout** - plan in `COLOUR-VARIANTS.md`. Chunk 1 next: Ornamental Cherry + Magnolia.
 - **In-app icon updates** — bed icons, printer icon etc (from Garden Organizer doc)

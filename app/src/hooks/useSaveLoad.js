@@ -370,6 +370,7 @@ export function loadGarden({
   onSelectPlant, onSelectStruct, onClearSelection,
   setGardenName, setGardenW, setGardenH, setGardenUnit, setIsSetup,
   onZoomToFit,
+  onEnterEdit,  // optional: called on dblclick/dbltap for editable shapes
 }) {
   const gardens = readGardens()
   const g = snapshot ? migrateGarden({ ...snapshot }) : gardens[idx]
@@ -498,7 +499,7 @@ export function loadGarden({
         strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round', draggable: true,
       })
       shape.on('click tap', e => { if (!state.editingShapeIdRef?.current) onSelectStruct(entry.id, shape, e) })
-      shape.on('dblclick dbltap', () => { /* enterEditMode wired via useSelection */ })
+      shape.on('dblclick dbltap', () => { if (onEnterEdit && !state.editingShapeIdRef?.current) onEnterEdit(entry.id) })
 
     } else if (entry.points !== undefined) {
       const isPath      = entry.type === 'path'
@@ -517,12 +518,15 @@ export function loadGarden({
         tension: entry.tension || 0,
         closed: cl,
         fill: (isPath || isFenceType || isUG) ? 'transparent' : isTxLine ? 'transparent' : entry.colour + (entry.type === 'bed' ? 'FF' : 'CC'),
-        stroke: (isPath || isFenceType || isUG) ? entry.colour : (entry.type === 'bed') ? 'transparent' : '#3A2A10',
-        strokeWidth: isPath ? (entry.pathWidth || 18) : isFenceType ? 6 : isUG ? ugWidth : 2,
+        stroke: (isPath || isFenceType || isUG) ? (entry.colour || (isFenceType ? '#795548' : '#9E9E9E')) : (entry.type === 'bed' || entry.type === 'hedge') ? 'transparent' : '#3A2A10',
+        strokeWidth: isPath ? (entry.pathWidth || 18) : isFenceType ? 6 : isUG ? ugWidth : (entry.type === 'hedge' ? 0 : 2),
         strokeScaleEnabled: false, lineCap: 'round', lineJoin: 'round', draggable: true,
         hitStrokeWidth: isPath ? (entry.pathWidth || 18) + 10 : isUG ? ugWidth + 10 : undefined,
       })
       shape.on('click tap', e => { if (!state.editingShapeIdRef?.current) onSelectStruct(entry.id, shape, e) })
+      // Wire dblclick/dbltap for editable line shapes (beds, fences, paths, hedges)
+      const noEditLine = isUG  // underground lines don't have editable points
+      if (!noEditLine) shape.on('dblclick dbltap', () => { if (onEnterEdit && !state.editingShapeIdRef?.current) onEnterEdit(entry.id) })
 
     } else if (entry.rx !== undefined) {
       const cornerR = entry.type === 'building' ? 3 : 0
@@ -531,7 +535,7 @@ export function loadGarden({
         id: entry.id,
         x: entry.rx + dX, y: entry.ry + dY,
         width: entry.rw, height: entry.rh,
-        fill: isTxRect ? 'transparent' : entry.colour + ((entry.type === 'bed' || entry.type === 'bed-square') ? 'FF' : 'CC'), stroke: (entry.type === 'bed' || entry.type === 'bed-square') ? 'transparent' : '#3A2A10', strokeWidth: 2,
+        fill: isTxRect ? 'transparent' : entry.colour + ((entry.type === 'bed' || entry.type === 'bed-square') ? 'FF' : 'CC'), stroke: (entry.type === 'bed' || entry.type === 'bed-square' || entry.type === 'hedge-sq') ? 'transparent' : '#3A2A10', strokeWidth: (entry.type === 'hedge-sq') ? 0 : 2,
         cornerRadius: cornerR, draggable: true, strokeScaleEnabled: false,
       })
       shape.on('transformend', () => {
@@ -555,12 +559,17 @@ export function loadGarden({
 
     if (shape) {
       structLayer?.add(shape)
+      // Paths should render above beds so they remain clickable when overlapping
+      if (entry.type === 'path') shape.moveToTop()
       if (entry.type === 'hedge' || entry.type === 'hedge-sq') applyHedgeTexture(shape, structLayer)
       // Restore texture fills (colours stored as '#TX:...' tokens)
       if (entry.colour?.startsWith('#TX:')) {
         if (entry.type === 'path') {
           const onSel = (id, grp, e) => { if (!state.editingShapeIdRef?.current) onSelectStruct(id, grp, e) }
           applyPathTexture(shape, entry.colour, entry.pathWidth || 18, structLayer, TEXTURE_MAP, onSel, null)
+        } else if (entry.colour === '#TX:hedge') {
+          // Hedge texture is already applied above via applyHedgeTexture — skip generic handler
+          // (generic handler applies 10% opacity which washes out the hedge pattern)
         } else {
           applyColourOrTexture(shape, entry.colour, structLayer, TEXTURE_MAP)
         }

@@ -673,9 +673,9 @@ export default function MobileSheet({
         {(isPath || isUG || d.type === 'gate') && (
           <>
             <div className="mobile-edit-label">LINE WIDTH</div>
-            <input type="range" min={isUG?2:4} max={isUG?20:60}
+            <input type="range" min={isUG?2:16} max={isUG?20:140}
               className="mobile-edit-slider"
-              defaultValue={d.pathWidth || (isUG ? 4 : 18)}
+              defaultValue={d.pathWidth || (isUG ? 4 : 36)}
               onChange={e => onPathWidthChange?.(+e.target.value)}
             />
           </>
