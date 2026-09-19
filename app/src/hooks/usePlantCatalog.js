@@ -1,6 +1,6 @@
-// usePlantCatalog.js — Full plant catalog (140 stickers, updated 2026-06-04)
+// usePlantCatalog.js - Full plant catalog (140 stickers, updated 2026-06-04)
 // src paths are relative to the public/ folder (Vite serves them as static assets)
-// Last updated: 2026-06-04 — Item #36: 27 new flowers + veg added
+// Last updated: 2026-06-04 - Item #36: 27 new flowers + veg added
 
 export const PLANT_CATALOG = [
 
@@ -262,7 +262,7 @@ export const PLANT_CATALOG = [
 
   { key:'decor_stairs-brick_M_CA-US-FR-GB-AU', label:'Brick Stairs', family:'Decor', src:'/stickers/decor_stairs-brick_M_CA-US-FR-GB-AU.png', size:'M' },
 
-  // decor_stairs-cement removed — PNG missing, no sticker generated
+  // decor_stairs-cement removed - PNG missing, no sticker generated
 
   { key:'decor_arch-wood_XL_CA-US-FR-GB-AU', label:'Wood Garden Arch', family:'Decor', src:'/stickers/decor_arch-wood_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
@@ -270,9 +270,15 @@ export const PLANT_CATALOG = [
 
 ]
 
-// Families that are placed via the Decor/Water menus — exclude from plant tray
+// Families that are placed via the Decor/Water menus - exclude from plant tray
 export const DECOR_FAMILIES = new Set(['Decor', 'Water Feature', 'Fern / Groundcover'])
-export const PLANT_CATALOG_TRAY = PLANT_CATALOG.filter(e => !DECOR_FAMILIES.has(e.family))
+
+// Static pack entries - imported at module load, no dynamic imports needed
+import { ALL_PACK_ENTRIES } from '../data/packs/index.js'
+export const PLANT_CATALOG_TRAY = [
+  ...PLANT_CATALOG.filter(e => !DECOR_FAMILIES.has(e.family)),
+  ...ALL_PACK_ENTRIES.filter(e => !DECOR_FAMILIES.has(e.family)),
+]
 
 // Group catalog by family for tray sections (excludes decor/non-plant entries)
 export function groupCatalog(catalog) {

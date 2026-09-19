@@ -1,4 +1,4 @@
-// packs/index.js — Pack registry
+// packs/index.js - Pack registry
 // Each pack is loaded on demand when its category is first opened.
 // 'core' is always pre-loaded at boot (backward compat).
 //
@@ -307,9 +307,62 @@ export const PACK_REGISTRY = [
   },
 ];
 
-// Families served by lazy packs — used to exclude them from core tray render
+// Families served by lazy packs - used to exclude them from core tray render
 export const LAZY_FAMILIES = new Set(
   PACK_REGISTRY
     .filter(p => !p.eager)
     .flatMap(p => p.families)
 );
+
+// Static imports of all pack entries - used for tray rendering (avoids dynamic import issues on mobile)
+import { entries as _cacti }         from './pack-cacti-succulents.js'
+import { entries as _tropical }      from './pack-tropical.js'
+import { entries as _fruitPome }     from './pack-fruit-pome.js'
+import { entries as _vegLeafy }      from './pack-vegetables-leafy.js'
+import { entries as _vegRoot }       from './pack-vegetables-root.js'
+import { entries as _vegBulb }       from './pack-vegetables-bulb.js'
+import { entries as _vegStem }       from './pack-vegetables-stem.js'
+import { entries as _vegFruiting }   from './pack-vegetables-fruiting.js'
+import { entries as _vegLegumes }    from './pack-vegetables-legumes.js'
+import { entries as _vegBrassica }   from './pack-vegetables-brassica.js'
+import { entries as _vegAsian }      from './pack-vegetables-asian-greens.js'
+import { entries as _vegPerennial }  from './pack-vegetables-perennial.js'
+import { entries as _fruitStone }    from './pack-fruit-stone.js'
+import { entries as _fruitCitrus }   from './pack-fruit-citrus.js'
+import { entries as _fruitBerry }    from './pack-fruit-berry.js'
+import { entries as _fruitVine }     from './pack-fruit-vine.js'
+import { entries as _fruitTropical } from './pack-fruit-tropical.js'
+import { entries as _fruitMelons }   from './pack-fruit-melons.js'
+import { entries as _fruitNuts }     from './pack-fruit-nuts.js'
+import { entries as _herbsCulinary } from './pack-herbs-culinary.js'
+import { entries as _herbsMedicinal }from './pack-herbs-medicinal.js'
+import { entries as _flowers }       from './pack-flowers-perennials.js'
+import { entries as _ferns }         from './pack-ferns-woodland.js'
+import { entries as _treesDecid }    from './pack-trees-deciduous.js'
+import { entries as _treesEverg }    from './pack-trees-evergreen.js'
+import { entries as _treesConif }    from './pack-trees-coniferous.js'
+import { entries as _climbFlower }   from './pack-climbers-flowering.js'
+import { entries as _climbEverg }    from './pack-climbers-evergreen.js'
+import { entries as _climbDecid }    from './pack-climbers-deciduous.js'
+import { entries as _shrubsDecid }   from './pack-shrubs-deciduous.js'
+import { entries as _shrubsEverg }   from './pack-shrubs-evergreen.js'
+import { entries as _shrubsFlower }  from './pack-shrubs-flowering.js'
+import { entries as _shrubsConif }   from './pack-shrubs-coniferous.js'
+import { entries as _aquatics }      from './pack-aquatics.js'
+import { entries as _architectural } from './pack-architectural.js'
+import { entries as _bulbsSpring }   from './pack-bulbs-spring.js'
+import { entries as _decor }         from './pack-decor.js'
+import { entries as _grasses }       from './pack-grasses-ornamental.js'
+import { entries as _groundcovers }  from './pack-groundcovers.js'
+import { entries as _bulbsSummer }   from './pack-bulbs-summer.js'
+
+export const ALL_PACK_ENTRIES = [
+  ..._cacti, ..._tropical, ..._fruitPome, ..._vegLeafy, ..._vegRoot, ..._vegBulb,
+  ..._vegStem, ..._vegFruiting, ..._vegLegumes, ..._vegBrassica, ..._vegAsian, ..._vegPerennial,
+  ..._fruitStone, ..._fruitCitrus, ..._fruitBerry, ..._fruitVine, ..._fruitTropical,
+  ..._fruitMelons, ..._fruitNuts, ..._herbsCulinary, ..._herbsMedicinal, ..._flowers,
+  ..._ferns, ..._treesDecid, ..._treesEverg, ..._treesConif, ..._climbFlower,
+  ..._climbEverg, ..._climbDecid, ..._shrubsDecid, ..._shrubsEverg, ..._shrubsFlower,
+  ..._shrubsConif, ..._aquatics, ..._architectural, ..._bulbsSpring, ..._decor,
+  ..._grasses, ..._groundcovers, ..._bulbsSummer,
+];
