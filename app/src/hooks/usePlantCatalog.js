@@ -262,7 +262,7 @@ export const PLANT_CATALOG = [
 
   { key:'decor_stairs-brick_M_CA-US-FR-GB-AU', label:'Brick Stairs', family:'Decor', src:'/stickers/decor_stairs-brick_M_CA-US-FR-GB-AU.png', size:'M' },
 
-  { key:'decor_stairs-cement_M_CA-US-FR-GB-AU', label:'Cement Stairs', family:'Decor', src:'/stickers/decor_stairs-cement_M_CA-US-FR-GB-AU.png', size:'M' },
+  // decor_stairs-cement removed — PNG missing, no sticker generated
 
   { key:'decor_arch-wood_XL_CA-US-FR-GB-AU', label:'Wood Garden Arch', family:'Decor', src:'/stickers/decor_arch-wood_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
