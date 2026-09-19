@@ -1,6 +1,17 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L093 — PLANT_CATALOG_TRAY is the source of truth for the tray — never revert to dynamic-only loading (2026-09-19)
+**What happened:** Lazy pack loading (dynamic `import()`) was unreliable on Capacitor/Android. 40 simultaneous dynamic imports on mount failed silently — packs never populated `loadedPacks` state, so the tray stopped at Feverfew (last core catalog entry). Scroll trigger also never fired on mobile.
+**Root cause:** Dynamic imports on Capacitor Android are not reliable for 40 packs at boot. The lazy loading architecture worked in browser dev but broke in the native WebView.
+**Fix:** Added `ALL_PACK_ENTRIES` static import in `packs/index.js` — all pack JS files are imported statically at module load. `PLANT_CATALOG_TRAY` in `usePlantCatalog.js` now merges core catalog + `ALL_PACK_ENTRIES` (filtered by `DECOR_FAMILIES`) at definition time. No dynamic imports needed for tray rendering.
+**Architecture (current — DO NOT REVERT):**
+- `packs/index.js` exports `ALL_PACK_ENTRIES` = static merge of all 40 pack entry arrays
+- `usePlantCatalog.js` → `PLANT_CATALOG_TRAY` = `PLANT_CATALOG` + `ALL_PACK_ENTRIES` (minus decor families)
+- Dynamic lazy loading (`loadPack`) still exists for save/load key resolution — that's fine
+- MobileSheet + PlantTray both use `PLANT_CATALOG_TRAY` as the base — full catalog visible immediately
+**Rule:** Never remove the static `ALL_PACK_ENTRIES` import or revert `PLANT_CATALOG_TRAY` to core-only. When adding new packs, add their entries to `ALL_PACK_ENTRIES` in `index.js`. Full plant access is non-negotiable.
+
 ## L092 — Non-plant packs MUST have family fields matching DECOR_FAMILIES (2026-09-19)
 **What happened:** Created `pack-decor.js` without `family` fields on entries. The tray filter (`PLANT_CATALOG_TRAY`) only filters the core catalog by `DECOR_FAMILIES` — lazy pack entries bypassed it entirely and leaked gates, fences, fountain, patio table into the plant tray.
 **Root cause:** Two separate filter paths: core catalog filtered at definition time, lazy pack entries merged raw into `allEntries` in PlantTray with no family filter applied.

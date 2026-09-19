@@ -196,6 +196,7 @@ _Split completed 2026-09-08. GardenEditor split plan TBD._
 
 ## Standing Rules
 1. Read `ARCHITECTURE.md` at session start
+0. **PLANT_CATALOG_TRAY is static — DO NOT revert to dynamic-only loading.** All pack entries are statically imported via `ALL_PACK_ENTRIES` in `packs/index.js` and merged into `PLANT_CATALOG_TRAY` at module load. This is what makes all plants visible on mobile. When adding new packs, add their static import + spread to `ALL_PACK_ENTRIES`. See L093.
 2. Read v8 before solving any canvas/visual/coordinate problem
 3. One fix at a time - verify compile + behaviour before moving on
 4. Commit after every confirmed working change
