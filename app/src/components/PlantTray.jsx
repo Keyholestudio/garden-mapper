@@ -1,7 +1,7 @@
 // PlantTray.jsx — Left sidebar: plant catalog, search, click-to-place, drag-to-place
 
 import { useState, useMemo, useEffect, useRef } from 'react'
-import { PLANT_CATALOG_TRAY as PLANT_CATALOG } from '../hooks/usePlantCatalog'
+import { PLANT_CATALOG_TRAY as PLANT_CATALOG, DECOR_FAMILIES } from '../hooks/usePlantCatalog'
 import { PLANT_VARIANTS } from '../hooks/useGardenState'
 import './PlantTray.css'
 
@@ -42,7 +42,8 @@ export default function PlantTray({
   // All entries: core + any loaded lazy packs
   const allEntries = useMemo(() => {
     if (!lazyPacks) return PLANT_CATALOG
-        const lazyEntries = Object.values(lazyPacks.loaded || {}).flat()
+    const lazyEntries = Object.values(lazyPacks.loaded || {}).flat()
+      .filter(e => !DECOR_FAMILIES.has(e.family))
     return [...PLANT_CATALOG, ...lazyEntries]
   }, [lazyPacks])
 
