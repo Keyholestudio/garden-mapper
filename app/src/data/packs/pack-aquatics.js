@@ -22,5 +22,6 @@ export const entries = [
   { key: 'aquatic_bulrush_L_CA-US-FR-GB-AU',              label: 'Bulrush',              size: 'L',  latinName: 'Typha latifolia',           searchTerms: ['bulrush', 'cattail', 'typha', 'reedmace'],             traits: ['aquatic', 'marginal', 'native', 'wildlife'],    src: '/stickers/aquatic_bulrush_L_CA-US-FR-GB-AU.png' },
   { key: 'aquatic_water-soldier_M_CA-US-FR-GB-AU',        label: 'Water Soldier',        size: 'M',  latinName: 'Stratiotes aloides',        searchTerms: ['water soldier', 'stratiotes', 'water aloe'],           traits: ['aquatic', 'submerged', 'native', 'unusual'],    src: '/stickers/aquatic_water-soldier_M_CA-US-FR-GB-AU.png' },
   { key: 'aquatic_water-forget-me-not_XS_CA-US-FR-GB-AU', label: 'Water Forget-Me-Not', size: 'XS', latinName: 'Myosotis scorpioides',      searchTerms: ['water forget-me-not', 'myosotis', 'forget me not'],    traits: ['aquatic', 'marginal', 'flowering', 'blue'],     src: '/stickers/aquatic_water-forget-me-not_XS_CA-US-FR-GB-AU.png' },
+  { key: 'aquatic_lotus_L_CA-US-FR-GB-AU',               label: 'Lotus',               size: 'L',  latinName: 'Nelumbo nucifera',          searchTerms: ['lotus', 'nelumbo', 'sacred lotus', 'water lotus'],     traits: ['aquatic', 'floating', 'flowering', 'pink'],     src: '/stickers/aquatic_lotus_L_CA-US-FR-GB-AU.png' },
 
 ];
