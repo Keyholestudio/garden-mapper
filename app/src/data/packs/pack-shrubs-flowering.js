@@ -22,4 +22,10 @@ export const entries = [
   { key: 'shrub-flowering_chaste-tree_L_CA-US-FR-GB-AU', label: 'Chaste Tree', size: 'L', latinName: 'Vitex agnus-castus', searchTerms: ['vitex', 'chaste tree', 'monks pepper'], traits: ['deciduous', 'flowering', 'summer', 'fragrant', 'pollinator', 'shrub'] },
   { key: 'shrub-flowering_mexican-sage_M_CA-US-FR-GB-AU', label: 'Mexican Sage', size: 'M', latinName: 'Salvia leucantha', searchTerms: ['mexican bush sage', 'salvia leucantha', 'velvet sage'], traits: ['deciduous', 'flowering', 'autumn', 'pollinator', 'shrub'] },
 
+  // 🌸 Batch 2 (2026-09-18) ─────────────────────────────────────────────────
+  { key: 'shrub-flowering_azalea_M_pink_CA-US-FR-GB-AU',     label: 'Azalea (Pink)',     size: 'M', latinName: 'Rhododendron spp.', searchTerms: ['azalea', 'pink azalea', 'rhododendron'],    traits: ['evergreen', 'flowering', 'spring', 'acidic-soil', 'shrub'], src: '/stickers/shrub-flowering_azalea_M_pink_CA-US-FR-GB-AU.png' },
+  { key: 'shrub-flowering_azalea_M_red_CA-US-FR-GB-AU',      label: 'Azalea (Red)',      size: 'M', latinName: 'Rhododendron spp.', searchTerms: ['azalea', 'red azalea', 'rhododendron'],     traits: ['evergreen', 'flowering', 'spring', 'acidic-soil', 'shrub'], src: '/stickers/shrub-flowering_azalea_M_red_CA-US-FR-GB-AU.png' },
+  { key: 'shrub-flowering_azalea_M_white_CA-US-FR-GB-AU',    label: 'Azalea (White)',    size: 'M', latinName: 'Rhododendron spp.', searchTerms: ['azalea', 'white azalea', 'rhododendron'],   traits: ['evergreen', 'flowering', 'spring', 'acidic-soil', 'shrub'], src: '/stickers/shrub-flowering_azalea_M_white_CA-US-FR-GB-AU.png' },
+  { key: 'shrub-flowering_limelight-hydrangea_M_CA-US-FR-GB-AU', label: 'Limelight Hydrangea', size: 'M', latinName: 'Hydrangea paniculata', searchTerms: ['limelight hydrangea', 'hydrangea paniculata limelight', 'panicle hydrangea'], traits: ['deciduous', 'flowering', 'summer', 'shrub'], src: '/stickers/shrub-flowering_limelight-hydrangea_M_CA-US-FR-GB-AU.png' },
+
 ];

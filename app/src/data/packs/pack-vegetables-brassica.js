@@ -11,5 +11,6 @@ export const entries = [
   // 🥦 Brassica Vegetables ─────────────────────────────────────────────────────
 
   { key: 'vegetable-brassica_sprouting-broccoli_L_CA-US-FR-GB-AU', label: 'Sprouting Broccoli', size: 'L', latinName: 'Brassica oleracea italica', searchTerms: ['sprouting broccoli', 'purple sprouting broccoli', 'PSB'], traits: ['brassica', 'edible', 'annual', 'cool-season'] },
+  { key: 'vegetable-brassica_savoy-cabbage_M_CA-US-FR-GB-AU', label: 'Savoy Cabbage', size: 'M', latinName: 'Brassica oleracea sabauda', searchTerms: ['savoy cabbage', 'crinkled cabbage', 'brassica oleracea'], traits: ['brassica', 'edible', 'annual', 'cool-season'], src: '/stickers/vegetable-brassica_savoy-cabbage_M_CA-US-FR-GB-AU.png' },
 
 ];

@@ -105,4 +105,7 @@ export const entries = [
     src: '/stickers/herb-medicinal_wormwood_L_CA-US-FR-GB-AU.png',
   },
 
+  // 🌿 Batch 2 (2026-09-18) ─────────────────────────────────────────────────
+  { key: 'herb-medicinal_sweet-marjoram_S_CA-US-FR-GB-AU', label: 'Sweet Marjoram (Small)', size: 'S', latinName: 'Origanum majorana', searchTerms: ['sweet marjoram', 'origanum majorana', 'marjoram'], traits: ['annual', 'herb', 'medicinal', 'culinary', 'aromatic'], src: '/stickers/herb-medicinal_sweet-marjoram_S_CA-US-FR-GB-AU.png' },
+
 ];

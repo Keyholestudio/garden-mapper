@@ -14,5 +14,6 @@ export const entries = [
   { key: 'tree-fruit_mandarin_M_CA-US-FR-GB-AU', label: 'Mandarin', size: 'M', latinName: 'Citrus reticulata', searchTerms: ['mandarin', 'clementine', 'satsuma', 'tangerine', 'citrus'], traits: ['fruit', 'citrus', 'edible', 'tree'] },
   { key: 'tree-fruit_orange_L_CA-US-FR-GB-AU', label: 'Orange', size: 'L', latinName: 'Citrus sinensis', searchTerms: ['orange', 'navel orange', 'citrus'], traits: ['fruit', 'citrus', 'edible', 'tree'] },
   { key: 'tree-fruit_pomelo_L_CA-US-FR-GB-AU', label: 'Pomelo', size: 'L', latinName: 'Citrus maxima', searchTerms: ['pomelo', 'pummelo', 'citrus'], traits: ['fruit', 'citrus', 'edible', 'tree'] },
+  { key: 'tree-fruit_meyer-lemon_M_CA-US-FR-GB-AU', label: 'Meyer Lemon', size: 'M', latinName: 'Citrus x meyeri', searchTerms: ['meyer lemon', 'dwarf lemon', 'citrus meyeri'], traits: ['fruit', 'citrus', 'edible', 'container', 'tree'], src: '/stickers/tree-fruit_meyer-lemon_M_CA-US-FR-GB-AU.png' },
 
 ];

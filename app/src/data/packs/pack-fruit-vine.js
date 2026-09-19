@@ -13,4 +13,8 @@ export const entries = [
   { key: 'fruit-vine_passion-fruit_XL_CA-US-FR-GB-AU', label: 'Passion Fruit', size: 'XL', latinName: 'Passiflora edulis', searchTerms: ['passion fruit', 'passiflora', 'granadilla'], traits: ['vine', 'tropical', 'edible', 'flowers'] },
   { key: 'fruit-vine_table-grape_XL_CA-US-FR-GB-AU', label: 'Table Grape', size: 'XL', latinName: 'Vitis vinifera', searchTerms: ['grape', 'table grape', 'vitis'], traits: ['vine', 'deciduous', 'edible'] },
 
+  // 🍇 Batch 2 (2026-09-18) ─────────────────────────────────────────────────
+  { key: 'fruit-vine_hardy-kiwi_XL_CA-US-FR-GB-AU', label: 'Hardy Kiwi', size: 'XL', latinName: 'Actinidia arguta', searchTerms: ['hardy kiwi', 'actinidia arguta', 'kiwi berry', 'mini kiwi'], traits: ['vine', 'deciduous', 'edible', 'cold-hardy'], src: '/stickers/fruit-vine_hardy-kiwi_XL_CA-US-FR-GB-AU.png' },
+  { key: 'fruit-vine_wine-grape_XL_CA-US-FR-GB-AU', label: 'Wine Grape', size: 'XL', latinName: 'Vitis vinifera', searchTerms: ['wine grape', 'vitis vinifera', 'grape vine'], traits: ['vine', 'deciduous', 'edible', 'winemaking'], src: '/stickers/fruit-vine_wine-grape_XL_CA-US-FR-GB-AU.png' },
+
 ];

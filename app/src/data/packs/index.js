@@ -254,6 +254,35 @@ export const PACK_REGISTRY = [
     loader: () => import('./pack-shrubs-coniferous.js'),
     families: ['Coniferous Shrub'],
   },
+  // Aquatics, Architectural, Bulbs (Spring), Decor
+  {
+    id: 'aquatics',
+    label: 'Aquatic Plants',
+    eager: false,
+    loader: () => import('./pack-aquatics.js'),
+    families: ['Aquatic'],
+  },
+  {
+    id: 'architectural',
+    label: 'Architectural Plants',
+    eager: false,
+    loader: () => import('./pack-architectural.js'),
+    families: ['Architectural'],
+  },
+  {
+    id: 'bulbs-spring',
+    label: 'Spring Bulbs',
+    eager: false,
+    loader: () => import('./pack-bulbs-spring.js'),
+    families: ['Spring Bulb'],
+  },
+  {
+    id: 'decor',
+    label: 'Garden Decor',
+    eager: false,
+    loader: () => import('./pack-decor.js'),
+    families: ['Decor', 'Water Feature'],
+  },
   // Grasses, Groundcovers, Bulbs
   {
     id: 'grasses-ornamental',

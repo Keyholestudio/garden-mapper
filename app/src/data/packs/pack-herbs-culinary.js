@@ -136,4 +136,15 @@ export const entries = [
     src: '/stickers/herb-culinary_cumin_S_CA-US-FR-GB-AU.png',
   },
 
+  // 🌿 Batch 2 (2026-09-18) ─────────────────────────────────────────────────
+  { key: 'herb-culinary_fennel_XL_CA-US-FR-GB-AU', label: 'Fennel (Large)', size: 'XL', latinName: 'Foeniculum vulgare', searchTerms: ['fennel', 'foeniculum', 'bronze fennel', 'giant fennel'], traits: ['perennial', 'herb', 'culinary', 'architectural', 'tall'], src: '/stickers/herb-culinary_fennel_XL_CA-US-FR-GB-AU.png' },
+
+  // 🌿 Herb variants (2026-09-18) ──────────────────────────────────────────────
+  { key: 'herb-small_basil_greek',    label: 'Basil (Greek)',    size: 'S', latinName: 'Ocimum minimum',       searchTerms: ['greek basil', 'bush basil', 'dwarf basil'],        traits: ['annual', 'herb', 'compact', 'culinary'],    src: '/stickers/herb-small_basil_S_greek_CA-US-FR-GB-AU.png' },
+  { key: 'herb-small_basil_opal',     label: 'Basil (Opal)',     size: 'S', latinName: 'Ocimum basilicum',     searchTerms: ['opal basil', 'purple basil', 'dark opal basil'],   traits: ['annual', 'herb', 'purple', 'culinary'],     src: '/stickers/herb-small_basil_S_opal_CA-US-FR-GB-AU.png' },
+  { key: 'herb-small_basil_purple',   label: 'Basil (Purple)',   size: 'S', latinName: 'Ocimum basilicum',     searchTerms: ['purple basil', 'dark basil', 'basil'],             traits: ['annual', 'herb', 'purple', 'culinary'],     src: '/stickers/herb-small_basil_S_purple_CA-US-FR-GB-AU.png' },
+  { key: 'herb-small_basil_thai',     label: 'Basil (Thai)',     size: 'S', latinName: 'Ocimum basilicum var.',searchTerms: ['thai basil', 'asian basil', 'holy basil'],          traits: ['annual', 'herb', 'asian', 'culinary'],      src: '/stickers/herb-small_basil_S_thai_CA-US-FR-GB-AU.png' },
+  { key: 'herb-small_chives_large',   label: 'Chives (Large)',   size: 'M', latinName: 'Allium schoenoprasum', searchTerms: ['chives', 'large chives', 'allium schoenoprasum'],   traits: ['perennial', 'herb', 'allium', 'culinary'],  src: '/stickers/herb-small_chives_M_CA-US-FR-GB-AU.png' },
+  { key: 'herb-small_parsley_large',  label: 'Parsley (Large)',  size: 'M', latinName: 'Petroselinum crispum',  searchTerms: ['parsley', 'large parsley', 'flat-leaf parsley'],   traits: ['biennial', 'herb', 'culinary', 'large'],    src: '/stickers/herb-small_parsley_M_CA-US-FR-GB-AU.png' },
+
 ];

@@ -90,4 +90,11 @@ export const entries = [
     src: '/stickers/vegetable-leafy_silverbeet_M_CA-US-FR-GB-AU.png',
   },
 
+  // 🥦 Batch 2 (2026-09-18) ─────────────────────────────────────────────────
+  { key: 'vegetable-leafy_lettuce_M_bronze',    label: 'Lettuce (Bronze)',     size: 'M', latinName: 'Lactuca sativa', searchTerms: ['lettuce', 'bronze lettuce', 'leaf lettuce'],    traits: ['annual', 'leafy', 'salad', 'bronze'],      src: '/stickers/vegetable-leafy_lettuce_M_bronze.png' },
+  { key: 'vegetable-leafy_lettuce_M_burgundy',  label: 'Lettuce (Burgundy)',   size: 'M', latinName: 'Lactuca sativa', searchTerms: ['lettuce', 'burgundy lettuce', 'red lettuce'],   traits: ['annual', 'leafy', 'salad', 'burgundy'],    src: '/stickers/vegetable-leafy_lettuce_M_burgundy.png' },
+  { key: 'vegetable-leafy_lettuce_M_dark-green',label: 'Lettuce (Dark Green)', size: 'M', latinName: 'Lactuca sativa', searchTerms: ['lettuce', 'dark green lettuce', 'romaine'],     traits: ['annual', 'leafy', 'salad', 'dark-green'],  src: '/stickers/vegetable-leafy_lettuce_M_dark-green.png' },
+  { key: 'vegetable-leafy_lettuce_M_light-green',label: 'Lettuce (Light Green)',size: 'M', latinName: 'Lactuca sativa', searchTerms: ['lettuce', 'butterhead', 'light green lettuce'], traits: ['annual', 'leafy', 'salad', 'light-green'], src: '/stickers/vegetable-leafy_lettuce_M_light-green.png' },
+  { key: 'vegetable-leafy_lettuce_M_red-green',  label: 'Lettuce (Red & Green)',size: 'M', latinName: 'Lactuca sativa', searchTerms: ['lettuce', 'mixed lettuce', 'red green'],       traits: ['annual', 'leafy', 'salad', 'mixed'],       src: '/stickers/vegetable-leafy_lettuce_M_red-green.png' },
+
 ];

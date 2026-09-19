@@ -158,4 +158,9 @@ export const entries = [
   { key: 'plant-fern_autumn-fern_M_CA-US-FR-GB-AU', label: 'Autumn Fern', size: 'M', latinName: 'Dryopteris erythrosora', searchTerms: ['autumn fern', 'dryopteris erythrosora', 'copper shield fern'], traits: ['fern', 'semi-evergreen', 'shade', 'copper'] },
   { key: 'plant-fern_wood-fern_M_CA-US-FR-GB-AU', label: 'Wood Fern', size: 'M', latinName: 'Dryopteris filix-mas', searchTerms: ['wood fern', 'dryopteris', 'male fern'], traits: ['fern', 'deciduous', 'shade', 'woodland'] },
 
+  // 🌿 Batch 2 (2026-09-18) ─────────────────────────────────────────────────
+  { key: 'plant-fern_cinnamon-fern_M_CA-US-FR-GB-AU', label: 'Cinnamon Fern', size: 'M', latinName: 'Osmundastrum cinnamomeum', searchTerms: ['cinnamon fern', 'osmundastrum', 'fertile fronds'], traits: ['fern', 'wetland', 'deciduous-fern', 'shade'], src: '/stickers/plant-fern_cinnamon-fern_M_CA-US-FR-GB-AU.png' },
+  { key: 'plant-fern_ostrich-fern_M_CA-US-FR-GB-AU', label: 'Ostrich Fern', size: 'M', latinName: 'Matteuccia struthiopteris', searchTerms: ['ostrich fern', 'matteuccia', 'shuttlecock fern'], traits: ['fern', 'deciduous-fern', 'vase-shaped', 'shade'], src: '/stickers/plant-fern_ostrich-fern_M_CA-US-FR-GB-AU.png' },
+  { key: 'plant-fern_royal-fern_M_CA-US-FR-GB-AU', label: 'Royal Fern', size: 'M', latinName: 'Osmunda regalis', searchTerms: ['royal fern', 'osmunda', 'flowering fern'], traits: ['fern', 'wetland', 'tall', 'deciduous-fern', 'shade'], src: '/stickers/plant-fern_royal-fern_M_CA-US-FR-GB-AU.png' },
+
 ];
