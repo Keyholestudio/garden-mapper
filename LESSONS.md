@@ -1,6 +1,36 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L091 — Lotus / white-flower plants can't use chroma key (2026-09-18)
+**What happened:** Lotus petals are white/pale pink — similar to any bright background. Tried magenta, cyan, red, orange — Gemini always generates dark purple BG for lotus regardless. Even rembg (AI removal) ate the white petals.
+**Root cause:** Gemini hardcodes a dark/moody background for lotus regardless of prompt. White petals can't be separated from bright backgrounds by colour. rembg treats white petals as background.
+**Fix:** Dark purple BG actually works — it's far enough from pink/white petals that chroma key strips it cleanly. Accept that Gemini will use dark purple for lotus and use that as the target colour for stripping.
+**Rule:** For plants with white/pale flowers, check the corner colour of the actual raw before assuming the BG is what the prompt specified. Sample corners, use that as chroma target.
+
+## L090 — Dual-tab generation: use from the start (2026-09-18)
+**What happened:** Rob pointed out mid-session that we had two Gemini tabs available but were only using one. Could have doubled throughput from the start.
+**Fix:** At the beginning of any sticker generation session, navigate both Gemini tabs to fresh sessions via `Page.navigate` to `gemini.google.com/app`, then run two background PowerShell jobs with `--tab 0` and `--tab 1` simultaneously.
+**Rule:** Always use dual-tab. Split the plant list in half, assign half to each tab job.
+
+## L089 — Chroma key halo = 3 outer rings of contaminated pixels (2026-09-18)
+**What happened:** Italian Cypress and others showed a persistent magenta/purple halo after standard pipeline processing.
+**Root cause:** Anti-aliasing at BG/subject boundary creates 3-4 rings of BG-colour-contaminated pixels that the standard `dist < 80` threshold doesn't catch.
+**Fix:** After primary removal, iterate 3-4 times: find outermost ring of opaque pixels adjacent to transparent, kill pixels matching BG tint. Confirmed ring RGB values for magenta: Ring1=#B925B1, Ring2=#780E72, Ring3=#4E0B4D.
+**Rule:** For any sticker with visible halo, add 3-ring strip post-process. Don't go more than 4 rings or you eat into the plant.
+
+## L088 — Cyan vs red vs magenta background choice (2026-09-18)
+**Best background per plant type:**
+- Magenta (#FF00FF): default for most plants. Avoid for blue/purple-flowered plants (bleeds into edge).
+- Cyan (#00FFFF): good for blue/purple plants (water hyacinth, pickerel weed, etc). Avoid for green plants (bleeds into leaves).
+- Red (#FF0000): good for green plants where cyan would bleed, and white-flowered plants. Avoid for red/orange-flowered plants.
+- Orange (#FF6600): good for blue/purple and white plants. Avoid for orange/yellow plants.
+**Gemini ignores bg colour for certain subjects** (lotus, some aquatics) — check raw corner pixels before assuming the bg matched the prompt.
+
+## L087 — "Plants vs animals" prompt artifact (2026-09-18)
+**What happened:** Agave and yucca prompts used the deciduous tree template which has "NO TRUNK, NO STEM, NO BARK VISIBLE" language. Gemini produced Plants-vs-Zombies-style stylized results.
+**Fix:** Use the `plant` template for architectural/non-tree plants. Write shape descriptions that are direct and plant-specific without tree-specific negations.
+**Rule:** Only use the `deciduous` template for actual trees. Use `plant` template for everything else.
+
 ## L086 — Re-processing sticker images introduces graininess (2026-09-17)
 **What happened:** Daphne sticker had a white border artifact. Tried to fix by re-running chroma key pipeline on the already-processed `_nobg.png` file. Result was grainy/blurry.
 **Root cause:** Re-processing an already-processed PNG compounds compression artifacts. The numpy float32 cast + chroma key soft transition creates noise when applied to an image that has already been through background removal.

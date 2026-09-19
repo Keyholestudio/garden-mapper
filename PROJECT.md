@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-09-17 (bug fixes batch + 30 new tree stickers in pending)_
+_Last updated: 2026-09-18 (bug fixes + 4 sticker batches ~684 stickers now live)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -101,7 +101,8 @@ cd projects/garden-planner/app && npm run dev
 ## Open Items
 
 ### 🔴 Immediate
-- **[PENDING REVIEW] 30 tree stickers in `stickers/generated/pending/`** — ready for Rob approval in morning. QC: most pass, scots pine + larch have top-down view issue, strawberry tree has fruit accuracy question.
+- **[PENDING] Lotus** — in pending, not committed. Rob to approve next session. Dark purple BG (Gemini won't generate orange/cyan for lotus). Pipeline strips it fine. Magenta edge = dark art stroke, not bleed.
+- **[PENDING] Strawberry tree + Eucalyptus** — raws sent to Rob for manual generation.
 - **[HIGH] Rock border drag on mobile — border doesn't follow finger** — Jumps to new location on release instead of smooth drag. Root issue: coordinate system for rock border Group children vs fence Line is not reconciled. Last commit (`1926d59`) changed to local-coord model (like fence) but still not smooth. Next session: read fence dragmove code, match rock border exactly to it. Do NOT mix Model A (world coords, normalize on dragend) and Model B (local coords, group accumulates).
 - **[HIGH] L061 in LESSONS.md is stale** — reflects old Model A. Update once coordinate model is settled next session.
 - **Rock border colour variants** — brown, white, sandstone PNGs needed. Colour picker in panel wired but all variants use grey sticker for now. Generate next session.
@@ -118,9 +119,11 @@ cd projects/garden-planner/app && npm run dev
 - **Plant catalog expansion** — ~590+ stickers in app. See `research/STICKER-TODO.md` for remaining queue.
 - **TODO checklist:** `research/STICKER-TODO.md` — grouped by pack, wild items flagged. Ground truth = `app/public/stickers/` PNGs.
 - **Completed packs (2026-09-17):** fruit-pome ✅, ferns-woodland ✅, cacti-succulents ✅, flowers-perennials ✅, herbs-culinary ✅, herbs-medicinal ✅, tropical ✅, vegetables-leafy ✅, vegetables-root ✅, all fruit packs ✅, all veg packs ✅, ALL SHRUB PACKS ✅ (deciduous, evergreen, flowering, coniferous)
-- **In progress:** pack-trees-deciduous (23 done in app, 16 more in pending); pack-trees-evergreen (9 in pending); pack-trees-coniferous (5 in pending)
-- **Pending approval (30 stickers):** all tree stickers generated overnight — see QC notes in memory/2026-09-17.md
-- **Not started yet:** pack-climbers-* (PLANT_LOOKUP entries ready)
+- **Sticker count:** 684 built + live (up from ~590 yesterday)
+- **Packs completed today:** trees-deciduous, trees-evergreen, trees-coniferous, climbers-flowering, climbers-deciduous, climbers-evergreen, grasses-ornamental, groundcovers, bulbs-summer, ferns-woodland (extended)
+- **In progress:** pack-aquatics (partial), pack-architectural (partial)
+- **Not started yet:** remaining wildflowers, more roses, spring bulb extensions
+- **Switch to dual-tab from batch 5** — `--tab 0 / --tab 1` splits across both Gemini sessions for ~2x throughput
 - **Wildflowers:** 15 plants done. Field poppy + California poppy held (decision pending: Option A separate stickers vs Option B colour variants).
 - **PLANT_LOOKUP:** 430 entries. 112 new plants added 2026-09-17 (trees, climbers, shrubs).
 - **Do-last flagged:** 9 wild/niche plants in PLANT_LOOKUP + do-last trees/climbers identified in staging docs.
