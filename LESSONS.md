@@ -1,6 +1,12 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L092 — Non-plant packs MUST have family fields matching DECOR_FAMILIES (2026-09-19)
+**What happened:** Created `pack-decor.js` without `family` fields on entries. The tray filter (`PLANT_CATALOG_TRAY`) only filters the core catalog by `DECOR_FAMILIES` — lazy pack entries bypassed it entirely and leaked gates, fences, fountain, patio table into the plant tray.
+**Root cause:** Two separate filter paths: core catalog filtered at definition time, lazy pack entries merged raw into `allEntries` in PlantTray with no family filter applied.
+**Fix:** (1) Add `family: 'Decor'` or `family: 'Water Feature'` to every entry in non-plant packs. (2) Apply `DECOR_FAMILIES` filter to lazy pack entries in PlantTray `allEntries` useMemo.
+**Rule:** Any new pack whose content should NOT appear in the plant tray must: (a) set correct `family` fields on all entries, AND (b) confirm those family names are in `DECOR_FAMILIES` in `usePlantCatalog.js`. Verify in the tray before deploying.
+
 ## L091 — Lotus / white-flower plants can't use chroma key (2026-09-18)
 **What happened:** Lotus petals are white/pale pink — similar to any bright background. Tried magenta, cyan, red, orange — Gemini always generates dark purple BG for lotus regardless. Even rembg (AI removal) ate the white petals.
 **Root cause:** Gemini hardcodes a dark/moody background for lotus regardless of prompt. White petals can't be separated from bright backgrounds by colour. rembg treats white petals as background.

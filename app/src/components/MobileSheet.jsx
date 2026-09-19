@@ -4,7 +4,7 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import Konva from 'konva'
-import { PLANT_CATALOG_TRAY as PLANT_CATALOG } from '../hooks/usePlantCatalog'
+import { PLANT_CATALOG_TRAY as PLANT_CATALOG, DECOR_FAMILIES } from '../hooks/usePlantCatalog'
 import { ToolMenu } from './toolMenuData.jsx'
 import {
   BED_COLOURS, BUILDING_COLOURS, FENCE_COLOURS, HEDGE_COLOURS,
@@ -78,13 +78,24 @@ export default function MobileSheet({
   // Determine if we're in edit panel mode
   const isEditing = !!(selectedPlant || selectedStruct)
 
-  // Merge core catalog + loaded lazy pack entries
+  // Merge core catalog + loaded lazy pack entries (filter out decor/non-plant families)
   const allEntries = useMemo(() => {
     const lazyEntries = Object.values(lazyPacks?.loaded || {}).flat()
+      .filter(e => !DECOR_FAMILIES.has(e.family))
     return [...PLANT_CATALOG, ...lazyEntries]
   }, [lazyPacks])
 
-  // Trigger loading all packs when search is used
+  // Load all packs on mount (mobile scroll trigger doesn't fire reliably)
+  useEffect(() => {
+    if (!lazyPacks?.registry) return
+    lazyPacks.registry.forEach(pack => {
+      if (!lazyPacks.loaded?.[pack.id] && !lazyPacks.loading?.[pack.id]) {
+        onLoadPack?.(pack.id)
+      }
+    })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Also trigger loading all packs when search is used
   useEffect(() => {
     if (!query.trim() || !lazyPacks?.registry) return
     lazyPacks.registry.forEach(pack => {
