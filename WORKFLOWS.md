@@ -41,61 +41,70 @@ W. [Remove Gemini watermark from a sticker](#w-remove-gemini-watermark-from-a-st
 
 ---
 
-## 13. Create / populate a lazy pack
+## 13. Create / populate a pack
 
-> **Rule:** Never add new plant families to `PLANT_CATALOG` in `usePlantCatalog.js`. That is core-only (always loaded at boot). All new plants go into lazy pack files.
+> **Architecture (updated 2026-09-20):** All packs are statically imported into `ALL_PACK_ENTRIES` in `packs/index.js`, merged into `PLANT_CATALOG_TRAY` at module load. This makes all 684 plants visible in the tray and searchable immediately on both web and Android. **Never revert this.** See L093, L094 in LESSONS.md.
 
-### Pack sizing rule
-- **Minimum ~10 stickers** before creating a pack file and registering it
-- Accumulate stickers in batches; commit them to `app/public/stickers/` + `stickers/` as approved
-- Only create the `.js` pack file and register it in `index.js` once you have ~10+ plants ready
-- Don't ship a pack with 1-2 stickers — it adds a lazy load event for near-zero benefit
+> **Rule:** Never add new plant families to `PLANT_CATALOG` in `usePlantCatalog.js`. That is core-only. All new plants go into pack files.
 
 ### Step 1 — Accumulate stickers
-- Generate and commit stickers to `app/public/stickers/` + `stickers/` normally (no catalog wiring yet)
-- Keep a running list of pending pack entries in your notes or the relevant PROJECT.md section
-- When count reaches ~10, proceed to Step 2
+- Generate and commit PNGs to `app/public/stickers/` + `stickers/` as approved
+- Minimum ~10 plants before creating a new pack file
+- For an existing pack, just add entries directly to the pack JS file
 
-### Step 2 — Create the pack file
+### Step 2 — Create or update the pack file
 ```js
 // app/src/data/packs/pack-<name>.js
 export const PACK_ID = '<name>';
-
 export const entries = [
   {
-    key: '<sticker-key>',
-    label: '<Display Name>',
-    family: '<Family Name>',   // must match the family string used in PACK_REGISTRY
-    src: '/stickers/<filename>.png',
+    key: 'prefix_plantname_M_CA-US-FR-GB-AU',  // full filename key
+    label: 'Display Name',
     size: 'M',
+    latinName: 'Genus species',
+    searchTerms: ['common name', 'alt name'],
+    traits: ['trait1', 'trait2'],
+    src: '/stickers/prefix_plantname_M_CA-US-FR-GB-AU.png',
+    // family: 'Decor'  <- ONLY add if this is non-plant (decor/water feature)
   },
-  // ... all plants in this pack
 ];
 ```
 
-### Step 3 — Register in index.js
+### Step 3 — Register in index.js (THREE places — all required)
 ```js
-// app/src/data/packs/index.js — add entry to PACK_REGISTRY:
+// 1. Static import near top of packs/index.js:
+import { entries as _mypack } from './pack-<name>.js'
+
+// 2. Spread into ALL_PACK_ENTRIES:
+export const ALL_PACK_ENTRIES = [
+  ...existing,
+  ..._mypack,   // <- ADD THIS or plants won't appear in tray/search
+]
+
+// 3. Add to PACK_REGISTRY (for save/load key resolution):
 {
   id: '<name>',
   label: '<Display Label>',
   eager: false,
   loader: () => import('./pack-<name>.js'),
-  families: ['<Family Name>'],   // must match the family field in entries
+  families: ['<Family Name>'],
 },
 ```
 
-### Step 4 — Commit
-```
-git add -A && git commit -m "Pack: create pack-<name>.js (<N> plants)"
-```
+⚠️ **Missing step 3.2 (ALL_PACK_ENTRIES) = plants invisible in tray and search. This was the bug that broke search on 2026-09-20.**
 
-### Current pending packs (as of 2026-09-16)
-| Pack | Family string | Plants accumulated | Status |
-|------|---------------|-------------------|--------|
-| `pack-flowers-perennials` | `Perennial` | 15 plants live (batches 1-3) | ✅ Active — add next batch directly to pack file |
+### Step 4 — Verify before committing
+- Run dev server: `npm run dev`
+- Search for a plant from the new pack by name — must appear in results
+- Scroll to bottom of tray — new plants must be visible
+- If decor/non-plant: confirm it does NOT appear in the plant tray
 
-> **Note:** Plants currently wired into `PLANT_CATALOG` incorrectly (Rudbeckia, Catmint, etc.) will be moved into the pack file when it's created. Remove their entries from `PLANT_CATALOG` at that time.
+### Step 5 — Commit AND push
+```
+git add -A && git commit -m "Pack: add pack-<name>.js (<N> plants)"
+git push origin main
+```
+⚠️ **Must `git push` — Vercel only deploys from GitHub, not local commits. Forgetting this cost a full session on 2026-09-20.**
 
 ---
 

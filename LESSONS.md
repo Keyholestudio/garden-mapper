@@ -1,6 +1,57 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L094 — Pack system architecture — how it works and how to add new packs correctly (2026-09-20)
+
+### How the pack system works (current architecture)
+
+**Two separate concerns: tray display vs save/load key resolution.**
+
+**Tray display (what users see):**
+- `PLANT_CATALOG_TRAY` in `usePlantCatalog.js` is the single source of truth
+- Built at module load from: `PLANT_CATALOG` (170 core entries) + `ALL_PACK_ENTRIES` (514 pack entries), filtered by `DECOR_FAMILIES`
+- `ALL_PACK_ENTRIES` is a static merge of all 40 pack files, exported from `packs/index.js`
+- Both `MobileSheet` and `PlantTray` use `PLANT_CATALOG_TRAY` directly as `allEntries` — no dynamic merging
+- Search runs against `allEntries` — covers all 684 plants immediately on load
+- `usePlantImages` preloads only core `PLANT_CATALOG` images (170) — pack images load inline on demand
+
+**Save/load key resolution:**
+- `useLazyPacks` still exists and `loadPack` is called in `GardenEditor` on mount
+- This populates `loadedPacks` state used by `allEntries()` callback in the hook
+- Used when a saved garden references a pack plant key — ensures the image can be restored
+- Does NOT affect the tray display (tray uses static `PLANT_CATALOG_TRAY`, not `lazyPacks.loaded`)
+
+**Decor/non-plant filtering:**
+- `DECOR_FAMILIES = Set(['Decor', 'Water Feature', 'Fern / Groundcover'])`
+- Any pack entry with a matching `family` field is excluded from the plant tray
+- Decor items are placed via the Decor/Buildings menus, not the plant tray
+
+### Workflow: adding a new plant pack
+
+1. **Create** `app/src/data/packs/pack-<name>.js` with entries (key, label, size, latinName, searchTerms, traits, src)
+2. **Add static import** to `packs/index.js`:
+   ```js
+   import { entries as _mypack } from './pack-<name>.js'
+   ```
+3. **Add to `ALL_PACK_ENTRIES`** in `packs/index.js`:
+   ```js
+   export const ALL_PACK_ENTRIES = [ ...existing..., ..._mypack ]
+   ```
+4. **Add to `PACK_REGISTRY`** in `packs/index.js` (for save/load key resolution):
+   ```js
+   { id: 'my-pack', label: '...', eager: false, loader: () => import('./pack-<name>.js'), families: ['...'] }
+   ```
+5. **If non-plant content** (decor, water features): set `family: 'Decor'` or `family: 'Water Feature'` on every entry so it's filtered from the tray
+6. **Verify** by running dev server and searching a plant from the new pack — must appear in search results
+7. **Commit PNG + pack JS + index.js together** — never commit a pack registration without its PNG files
+
+### What NOT to do
+- Never remove `ALL_PACK_ENTRIES` or revert `PLANT_CATALOG_TRAY` to core-only
+- Never rebuild `allEntries` in `MobileSheet`/`PlantTray` from `lazyPacks.loaded` — that was the old broken path
+- Never make `allEntries` a useMemo that depends on `lazyPacks` — it should just be `const allEntries = PLANT_CATALOG`
+- Never push without verifying search works for a plant from a newly added pack
+- Never forget to push to GitHub — Vercel only deploys from GitHub, not local commits
+
 ## L093 — PLANT_CATALOG_TRAY is the source of truth for the tray — never revert to dynamic-only loading (2026-09-19)
 **What happened:** Lazy pack loading (dynamic `import()`) was unreliable on Capacitor/Android. 40 simultaneous dynamic imports on mount failed silently — packs never populated `loadedPacks` state, so the tray stopped at Feverfew (last core catalog entry). Scroll trigger also never fired on mobile.
 **Root cause:** Dynamic imports on Capacitor Android are not reliable for 40 packs at boot. The lazy loading architecture worked in browser dev but broke in the native WebView.
