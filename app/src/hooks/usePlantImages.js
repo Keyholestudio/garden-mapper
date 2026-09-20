@@ -12,7 +12,7 @@
 
 import { useState, useEffect } from 'react'
 import { Capacitor } from '@capacitor/core'
-import { PLANT_CATALOG } from './usePlantCatalog'
+import { PLANT_CATALOG, PLANT_CATALOG_TRAY } from './usePlantCatalog'
 
 const IS_NATIVE = Capacitor.isNativePlatform()
 
@@ -63,20 +63,22 @@ export function usePlantImages() {
   const [ready, setReady]   = useState(false)
 
   useEffect(() => {
+    // Use full tray catalog (core + all pack entries) so search results have preloaded images
+    const fullCatalog = PLANT_CATALOG_TRAY
     if (IS_NATIVE) {
       // Native: mark ready immediately so canvas renders, then stream images in one-by-one
       setReady(true)
-      loadSequential(PLANT_CATALOG, (key, img) => {
+      loadSequential(fullCatalog, (key, img) => {
         setLoadedImages(prev => ({ ...prev, [key]: img }))
       })
     } else {
       // Web: batched loading, mark ready after first pass
-      loadBatched(PLANT_CATALOG, batchResult => {
+      loadBatched(fullCatalog, batchResult => {
         setLoadedImages(prev => ({ ...prev, ...batchResult }))
       }).then(results => {
         setReady(true)
         // Post-load sweep for anything that failed
-        const failed = PLANT_CATALOG.filter(p => !results[p.key])
+        const failed = fullCatalog.filter(p => !results[p.key])
         if (failed.length > 0) {
           loadBatched(failed, batchResult => {
             setLoadedImages(prev => ({ ...prev, ...batchResult }))
