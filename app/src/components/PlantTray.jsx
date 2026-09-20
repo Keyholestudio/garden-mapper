@@ -39,13 +39,9 @@ export default function PlantTray({
     })
   }, [query])
 
-  // All entries: core + any loaded lazy packs
-  const allEntries = useMemo(() => {
-    if (!lazyPacks) return PLANT_CATALOG
-    const lazyEntries = Object.values(lazyPacks.loaded || {}).flat()
-      .filter(e => !DECOR_FAMILIES.has(e.family))
-    return [...PLANT_CATALOG, ...lazyEntries]
-  }, [lazyPacks])
+  // PLANT_CATALOG (= PLANT_CATALOG_TRAY) contains core + all pack entries statically merged.
+  // Full catalog available immediately — no dynamic merging needed.
+  const allEntries = PLANT_CATALOG
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
