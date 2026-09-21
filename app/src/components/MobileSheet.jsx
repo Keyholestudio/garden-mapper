@@ -112,17 +112,12 @@ export default function MobileSheet({
     const wasSelected = prevSelectedPlantRef.current
     prevSelectedPlantRef.current = selectedPlant
     if (wasSelected && !selectedPlant && lastSelectedKeyRef.current && !query.trim()) {
-      // selectedPlant just cleared — scroll tray to that plant
+      // selectedPlant just cleared — find the exact DOM element and scroll it into view
       requestAnimationFrame(() => {
         if (!gridRef.current) return
         const key = lastSelectedKeyRef.current
-        const idx = allEntries.findIndex(e => e.key === key)
-        if (idx < 0) return
-        // Each item is ~80px tall in the 2-col grid (64px img + label + gap)
-        // Items are in 2 columns so row = Math.floor(idx / 2)
-        const ITEM_H = 88  // px — update if CSS changes
-        const row = Math.floor(idx / 2)
-        gridRef.current.scrollTop = Math.max(0, row * ITEM_H - ITEM_H)
+        const el = gridRef.current.querySelector(`[data-plant-key="${key}"]`)
+        el?.scrollIntoView({ block: 'start' })
       })
     }
   }, [selectedPlant])  // eslint-disable-line react-hooks/exhaustive-deps
@@ -318,6 +313,7 @@ export default function MobileSheet({
               return (
                 <div
                   key={entry.key}
+                  data-plant-key={entry.key}
                   className="mobile-plant-item"
                   onClick={() => {
                     if (preloaded) {
