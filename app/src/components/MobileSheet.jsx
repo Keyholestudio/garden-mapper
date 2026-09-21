@@ -2,7 +2,7 @@
 // Contains: ↑↓ toggle, plant search + 2-col grid, tool menu, edit panel
 // Season is now controlled by a tap-to-cycle button in LogoBar (top right)
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
 import Konva from 'konva'
 import { PLANT_CATALOG_TRAY as PLANT_CATALOG, DECOR_FAMILIES } from '../hooks/usePlantCatalog'
 import { ToolMenu } from './toolMenuData.jsx'
@@ -71,9 +71,61 @@ export default function MobileSheet({
 }) {
   const pxPerUnit = UNIT_PX * (gardenUnit === 'm' ? 3.281 : 1)
   const [expanded, setExpanded] = useState(() => sessionStorage.getItem('mobileSheetExpanded') === 'true')
-  const toggleExpanded = () => setExpanded(v => { const next = !v; sessionStorage.setItem('mobileSheetExpanded', next); return next })
   const [query, setQuery] = useState('')
   const [searchFocused, setSearchFocused] = useState(false)
+
+  // Scroll memory
+  const gridRef = useRef(null)
+  const lastSelectedKeyRef = useRef(null)  // track which plant was last selected
+
+  const toggleExpanded = () => setExpanded(v => {
+    const next = !v
+    sessionStorage.setItem('mobileSheetExpanded', next)
+    if (!next && gridRef.current) {
+      // Collapsing — save scroll position (only meaningful when no query)
+      sessionStorage.setItem('plantTrayScroll', gridRef.current.scrollTop)
+    }
+    return next
+  })
+
+  // Restore scroll position when expanding (no query = restore saved; has query = leave as-is)
+  useEffect(() => {
+    if (!expanded || !gridRef.current) return
+    if (query.trim()) return  // searching — don't restore
+    const saved = parseInt(sessionStorage.getItem('plantTrayScroll') || '0', 10)
+    requestAnimationFrame(() => {
+      if (gridRef.current) gridRef.current.scrollTop = saved
+    })
+  }, [expanded])  // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Track selected plant key so we know where to scroll back to on Back
+  useEffect(() => {
+    if (selectedPlant) {
+      const key = plantDataRef?.current?.[selectedPlant.id]?.key
+      if (key) lastSelectedKeyRef.current = key
+    }
+  }, [selectedPlant])
+
+  // Scroll-to-plant when Back is pressed (selectedPlant just cleared → tray shown)
+  const prevSelectedPlantRef = useRef(selectedPlant)
+  useEffect(() => {
+    const wasSelected = prevSelectedPlantRef.current
+    prevSelectedPlantRef.current = selectedPlant
+    if (wasSelected && !selectedPlant && lastSelectedKeyRef.current && !query.trim()) {
+      // selectedPlant just cleared — scroll tray to that plant
+      requestAnimationFrame(() => {
+        if (!gridRef.current) return
+        const key = lastSelectedKeyRef.current
+        const idx = allEntries.findIndex(e => e.key === key)
+        if (idx < 0) return
+        // Each item is ~80px tall in the 2-col grid (64px img + label + gap)
+        // Items are in 2 columns so row = Math.floor(idx / 2)
+        const ITEM_H = 88  // px — update if CSS changes
+        const row = Math.floor(idx / 2)
+        gridRef.current.scrollTop = Math.max(0, row * ITEM_H - ITEM_H)
+      })
+    }
+  }, [selectedPlant])  // eslint-disable-line react-hooks/exhaustive-deps
 
   // Determine if we're in edit panel mode
   const isEditing = !!(selectedPlant || selectedStruct)
@@ -247,7 +299,7 @@ export default function MobileSheet({
           )}
 
           {/* Plant grid - only in select mode */}
-          {currentMode === 'select' && <div className={`mobile-plant-grid${searchFocused ? ' search-active' : ''}`}>
+          {currentMode === 'select' && <div ref={gridRef} className={`mobile-plant-grid${searchFocused ? ' search-active' : ''}`}>
             {filtered.length === 0 && query.trim() && (
               <div className="mobile-no-results mobile-no-results--submit">
                 <span>No results for "{query}"</span>
