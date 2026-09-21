@@ -127,6 +127,8 @@ export function loadRockImage(src) {
     img.onload  = () => { _imgCache[src] = img; resolve(img) }
     img.onerror = () => resolve(null)
     img.src = src
+    // Browser cache: onload may not fire if image is already cached — resolve immediately
+    if (img.complete && img.naturalWidth) { _imgCache[src] = img; resolve(img) }
   })
 }
 export function getRockImageCached(variant) {
