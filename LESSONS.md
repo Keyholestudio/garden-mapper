@@ -1,6 +1,18 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L096 — scroll-to-item: use DOM querySelector + scrollIntoView, never estimated math (2026-09-21)
+**What happened:** Implemented scroll-to-plant on Back using `row * ITEM_H` estimation. Was 11–40 items off depending on how far down the list the plant was.
+**Root cause:** Section family headers between plant items add unaccounted height. The further down the list, the more headers have accumulated, so the error compounds.
+**Fix:** `gridRef.current.querySelector('[data-plant-key="${key}"]')?.scrollIntoView({ block: 'start' })` — finds the exact DOM node, no math.
+**Rule:** For any scroll-to-item feature, always use DOM element lookup + `scrollIntoView`. Never estimate pixel offsets from index — variable row heights, headers, gaps, and CSS changes will all break it.
+
+## L095 — Fence/rock image onload: same cached-image bug as L080, applies to loadRockImage too (2026-09-21)
+**What happened:** Picket fences loaded correctly from cloud but were invisible on page load. A colour change made them appear instantly.
+**Root cause:** `loadRockImage()` in `rockBorderUtils.js` creates `new Image()` and relies on `onload` to resolve the promise. Browser-cached PNGs don't fire `onload` — promise hangs forever, `drawPicketFences()` never renders.
+**Fix:** After `img.src = src`, immediately check: `if (img.complete && img.naturalWidth) { _imgCache[src] = img; resolve(img) }`. Commit: `8801c0a`.
+**Rule:** Every `new Image()` + `img.src` pattern must include the `img.complete && img.naturalWidth` guard. L080 established this for decor variants — now confirmed applies to rock/fence images too. Apply universally.
+
 ## L094 — Pack system architecture — how it works and how to add new packs correctly (2026-09-20)
 
 ### How the pack system works (current architecture)

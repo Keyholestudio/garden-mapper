@@ -57,7 +57,7 @@ export const PLANT_CATALOG = [
 
   // ── Flower Clusters ───────────────────────────────────────────────────────────
   { key:'flower-cluster_allium',           label:'Allium',              family:'Ornamental Bulb',      src:'/stickers/flower-cluster_allium_M_CA-US-FR-GB-AU.png',            size:'M' },
-  { key:'flower-cluster_hydrangea',        label:'Hydrangea',           family:'Shrub',                src:'/stickers/flower-cluster_hydrangea_M_CA-US-FR-GB-AU.png', size:'M' },
+  { key:'flower-cluster_hydrangea',        label:'Hydrangea',           family:'Shrub',                src:'/stickers/flower-cluster_hydrangea_M_arborescens_CA-US-FR-GB-AU.png', size:'M' },
 
   // ── Daisy-type Flowers ────────────────────────────────────────────────────────
   { key:'flower-daisy_black-eyed-susan',   label:'Black-eyed Susan',    family:'Perennial',            src:'/stickers/flower-daisy_black-eyed-susan_M_CA-US-FR-GB-AU.png',    size:'M' },

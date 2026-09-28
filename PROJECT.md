@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-09-18 (bug fixes + 4 sticker batches ~684 stickers now live)_
+_Last updated: 2026-09-21 (fence load fix, water-mint sticker, plant tray scroll memory)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -101,7 +101,9 @@ cd projects/garden-planner/app && npm run dev
 ## Open Items
 
 ### 🔴 Immediate
-- **[PENDING] Lotus** — in pending, not committed. Rob to approve next session. Dark purple BG (Gemini won't generate orange/cyan for lotus). Pipeline strips it fine. Magenta edge = dark art stroke, not bleed.
+- **[DONE] Lotus** — Rob provided image (cyan BG), processed + committed. Live on web. Android deploy pending USB.
+- **[DONE] water-mint PNG** — generated + committed. Live on web. Commit: `fc01fba`.
+- **[MISSING] water-iris PNG** — registered in pack-aquatics but no sticker generated yet.
 - **[PENDING] Strawberry tree + Eucalyptus** — raws sent to Rob for manual generation.
 - **[HIGH] Rock border drag on mobile — border doesn't follow finger** — Jumps to new location on release instead of smooth drag. Root issue: coordinate system for rock border Group children vs fence Line is not reconciled. Last commit (`1926d59`) changed to local-coord model (like fence) but still not smooth. Next session: read fence dragmove code, match rock border exactly to it. Do NOT mix Model A (world coords, normalize on dragend) and Model B (local coords, group accumulates).
 - **[HIGH] L061 in LESSONS.md is stale** — reflects old Model A. Update once coordinate model is settled next session.
@@ -116,25 +118,14 @@ cd projects/garden-planner/app && npm run dev
 - **Dream Garden resize** — Pull current JSON from local:5200, update w/h, re-lock. Do as part of next Dream Garden update trigger.
 
 ### 🟡 In Progress
-- **Plant catalog expansion** — ~590+ stickers in app. See `research/STICKER-TODO.md` for remaining queue.
-- **TODO checklist:** `research/STICKER-TODO.md` — grouped by pack, wild items flagged. Ground truth = `app/public/stickers/` PNGs.
-- **Completed packs (2026-09-17):** fruit-pome ✅, ferns-woodland ✅, cacti-succulents ✅, flowers-perennials ✅, herbs-culinary ✅, herbs-medicinal ✅, tropical ✅, vegetables-leafy ✅, vegetables-root ✅, all fruit packs ✅, all veg packs ✅, ALL SHRUB PACKS ✅ (deciduous, evergreen, flowering, coniferous)
-- **Sticker count:** 684 built + live (up from ~590 yesterday)
-- **Packs completed today:** trees-deciduous, trees-evergreen, trees-coniferous, climbers-flowering, climbers-deciduous, climbers-evergreen, grasses-ornamental, groundcovers, bulbs-summer, ferns-woodland (extended)
-- **In progress:** pack-aquatics (partial), pack-architectural (partial)
-- **Not started yet:** remaining wildflowers, more roses, spring bulb extensions
-- **Switch to dual-tab from batch 5** — `--tab 0 / --tab 1` splits across both Gemini sessions for ~2x throughput
-- **Wildflowers:** 15 plants done. Field poppy + California poppy held (decision pending: Option A separate stickers vs Option B colour variants).
-- **PLANT_LOOKUP:** 430 entries. 112 new plants added 2026-09-17 (trees, climbers, shrubs).
-- **Do-last flagged:** 9 wild/niche plants in PLANT_LOOKUP + do-last trees/climbers identified in staging docs.
-- **Sticker template fix** - TEMPLATES dict synced to STICKER-PROMPT-GUIDE.md (2026-06-18). Workflow 0a enforces this going forward.
+- **Sticker count:** 684 built + live. 0 orphans. All registered.
+- **Pack system:** 41 packs total. ALL_PACK_ENTRIES static merge in index.js. PLANT_CATALOG_TRAY covers all 684. Search works on web + Android. See L093, L094, WORKFLOWS.md Workflow 13.
+- **Next batch:** Batch 5 dual-tab (`--tab 0 / --tab 1`). Remaining: more wildflowers, aquatics regens, architectural. water-mint needs generating.
+- **Wildflowers:** Field poppy + California poppy decision pending (Option A vs B).
 - **Colour variant rollout** - plan in `COLOUR-VARIANTS.md`. Chunk 1 next: Ornamental Cherry + Magnolia.
 - **In-app icon updates** — bed icons, printer icon etc (from Garden Organizer doc)
 - **Gift cards** — $13/yr, $25/2yr purchasable gift cards (from Garden Organizer doc)
 - **RevenueCat Pub/Sub API** — GCP service account needs Pub/Sub permissions (from Garden Organizer doc)
-- **Fern pack files** - `pack-ferns-woodland.js` ✅ complete (14 stickers). Still needed: `pack-ferns-tree.js` (5), `pack-ferns-evergreen.js` (8). Plants in PLANT-STAGING.md.
-- **Core catalog searchMeta** - add `latinName`, `searchTerms`, `traits` to `usePlantCatalog.js` entries. Tropical pack needs same update.
-- **Pack architecture** - 63 pack files defined (WORKFLOWS.md). Create on demand as plants are added. Core migration deferred.
 
 ### 🟡 Play Store Submission (in progress)
 **All declarations complete.** Remaining tasks:

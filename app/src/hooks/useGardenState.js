@@ -125,7 +125,6 @@ export const PLANT_VARIANTS = {
     { label: 'French',        name: 'French Marigold', colour: '#FF6B00', src: '/stickers/flower-daisy_marigold_S_french_CA-US-FR-GB-AU.png' },
   ],
   'flower-cluster_hydrangea': [
-    { label: 'Shrub',       name: 'Hydrangea',             colour: '#5B8DD9', src: null },
     { label: 'Arborescens', name: 'Hydrangea Arborescens', colour: '#F0EEE0', src: '/stickers/flower-cluster_hydrangea_M_arborescens_CA-US-FR-GB-AU.png' },
     { label: 'Nikko Blue',  name: 'Nikko Blue Hydrangea',  colour: '#5B8DD9', src: '/stickers/flower-cluster_hydrangea_M_nikko-blue_CA-US-FR-GB-AU.png' },
     { label: 'Blue Deckle', name: 'Blue Deckle Hydrangea', colour: '#7AAAD8', src: '/stickers/flower-cluster_hydrangea_M_blue-deckle_CA-US-FR-GB-AU.png' },

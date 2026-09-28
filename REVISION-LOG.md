@@ -69,4 +69,19 @@ _History for v1–v7 and Phases 1–6 archived at: `memory/deep/garden-planner/r
 
 ---
 
+---
+
+## Plant Tray Scroll Memory (2026-09-21)
+**Goal:** Remember scroll position in the plant tray across open/close cycles. Scroll-to-plant when Back is pressed from a plant panel.
+**Before state:** MobileSheet.jsx — no scroll refs, no scroll restore logic. `expanded` toggle only saves expand state to sessionStorage.
+**Files changed:** `MobileSheet.jsx`
+
+| # | Change | Commit | Status |
+|---|--------|--------|--------|
+| — | Save scrollTop to sessionStorage on full collapse | f9f2717 | ✅ |
+| — | Restore scrollTop on expand (query === '' only) | f9f2717 | ✅ |
+| — | Track lastSelectedKey ref; on Back (selectedPlant clears), scroll-to-item in allEntries | f9f2717 | ✅ |
+
+---
+
 _Add new entries above this line. Archive completed phases when this file exceeds ~4KB._
