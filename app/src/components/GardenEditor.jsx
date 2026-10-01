@@ -7,6 +7,7 @@
 
 import { useRef, useState, useEffect, useCallback, lazy, Suspense } from 'react'
 import { Capacitor } from '@capacitor/core'
+import { IS_NATIVE, stickerSrc } from '../utils/cdnUtils'
 import Konva from 'konva'
 import { useGardenState, TEXTURE_MAP, PLANT_VARIANTS, SIZE_MAP, DECOR_VARIANTS }  from '../hooks/useGardenState'
 import { useDrawTools }    from '../hooks/useDrawTools'
@@ -150,7 +151,7 @@ export default function GardenEditor() {
   // Capacitor's WebViewLocalServer has a fixed thread pool for serving APK assets.
   // Concurrent image requests beyond pool size block each other → random onerror failures.
   // Fix: load sequentially (one at a time) on native to avoid thread pool contention.
-  const IS_NATIVE = Capacitor.isNativePlatform()
+  // IS_NATIVE imported from cdnUtils — same as Capacitor.isNativePlatform()
 
   const loadImgWithRetry = useCallback((src, maxRetries = 3, retryBase = 200) => {
     return new Promise(resolve => {
@@ -198,13 +199,13 @@ export default function GardenEditor() {
   const loadedImagesRef = useRef({}) // ref so setLocalGardens closure sees current images
   useEffect(() => {
     if (IS_NATIVE) {
-      // Native: sequential to avoid Capacitor WebViewLocalServer thread pool contention
-      loadSequentialImgs(PLANT_CATALOG, p => p.src, (key, img) => {
+      // Native: sequential loading from CDN to avoid WebViewLocalServer thread pool contention
+      loadSequentialImgs(PLANT_CATALOG, p => stickerSrc(p.src), (key, img) => {
         loadedImagesRef.current = { ...loadedImagesRef.current, [key]: img }
         setLoadedImages(prev => ({ ...prev, [key]: img }))
       })
     } else {
-      // Web: batched loading
+      // Web: batched loading (relative paths, served locally)
       loadBatchedImgs(PLANT_CATALOG, p => p.src, batchResult => {
         loadedImagesRef.current = { ...loadedImagesRef.current, ...batchResult }
         setLoadedImages(prev => ({ ...prev, ...batchResult }))
@@ -228,7 +229,7 @@ export default function GardenEditor() {
     const allPackEntries = Object.values(lazyPacksProps.loaded || {}).flat()
     const newEntries = allPackEntries.filter(p => !loadedPackKeysRef.current[p.key])
     if (newEntries.length === 0) return
-    loadBatchedImgs(newEntries, p => p.src || `/stickers/${p.key}.png`).then(result => {
+    loadBatchedImgs(newEntries, p => stickerSrc(p.src || `/stickers/${p.key}.png`)).then(result => {
       newEntries.forEach(p => { loadedPackKeysRef.current[p.key] = true })
       setLoadedImages(prev => ({ ...prev, ...result }))
       // Swap placeholder images on already-placed plants whose pack just loaded
@@ -539,7 +540,7 @@ export default function GardenEditor() {
       pendingPlantRef.current = { ...entry, _img: img }
     }
     img.onerror = () => console.warn('Decor sticker not found:', entry.src)
-    img.src = entry.src
+    img.src = stickerSrc(entry.src)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.decorSubTool, state.currentMode, state.fenceType])
 
@@ -1236,7 +1237,7 @@ export default function GardenEditor() {
     // null = default swatch selected - clear variantSrc, resolve to base catalog src
     d.variantSrc = variantSrc || null
     const baseSrc = PLANT_CATALOG.find(p => p.key === d.key)?.src || d.src
-    const resolvedSrc = variantSrc || baseSrc
+    const resolvedSrc = stickerSrc(variantSrc || baseSrc)
     const img = new window.Image()
     img.onload = () => {
       const konvaImg = sel.group.findOne('Image')

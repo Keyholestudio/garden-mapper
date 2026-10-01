@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:android": "vite build && node -e \"const fs=require('fs');const p='dist/stickers';if(fs.existsSync(p)){fs.rmSync(p,{recursive:true,force:true});console.log('Stickers excluded from Android build (CDN delivery)');}\" && npx cap sync android",
     "preview": "vite preview"
   },
   "devDependencies": {

@@ -3,6 +3,7 @@
 // Designed to run synchronously against Konva layer refs (no React state async issues)
 
 import Konva from 'konva'
+import { stickerSrc } from '../utils/cdnUtils'
 import { SIZE_MAP, TEXTURE_MAP, DECOR_VARIANTS } from './useGardenState'
 import { makePlantGroup } from '../utils/plantUtils'
 import { applyColourOrTexture, applyPathTexture } from '../utils/drawUtils'
@@ -635,7 +636,7 @@ export function loadGarden({
         plantLayer?.batchDraw()
       }
       vImg.onload = applyVariant
-      vImg.src = entry.variantSrc
+      vImg.src = stickerSrc(entry.variantSrc)
       // If browser already has this image cached, onload may not fire — apply immediately
       if (vImg.complete && vImg.naturalWidth) applyVariant()
     }
@@ -675,7 +676,7 @@ export function loadGarden({
   ;(g.plants || []).forEach(entry => {
     if (!entry.key) return
     // Use variantSrc if set (coloured gate/sticker), otherwise fall back to base src
-    const displaySrc = entry.variantSrc || entry.src || '/stickers/' + entry.key + '.png'
+    const displaySrc = stickerSrc(entry.variantSrc || entry.src || '/stickers/' + entry.key + '.png')
     const img = new window.Image()
     img.onload = () => {
       const group = plantLayer?.findOne('#' + entry.id)
