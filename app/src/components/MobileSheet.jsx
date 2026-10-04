@@ -3,6 +3,7 @@
 // Season is now controlled by a tap-to-cycle button in LogoBar (top right)
 
 import { useState, useMemo, useEffect, useRef, useCallback } from 'react'
+import { stickerSrc } from '../utils/cdnUtils'
 import Konva from 'konva'
 import { PLANT_CATALOG_TRAY as PLANT_CATALOG, DECOR_FAMILIES } from '../hooks/usePlantCatalog'
 import { ToolMenu } from './toolMenuData.jsx'
@@ -276,7 +277,7 @@ export default function MobileSheet({
                           title={entry.label}
                         >
                           {loaded
-                            ? <img src={entry.src || `/stickers/${entry.key}.png`} alt={entry.label} draggable={false} />
+                            ? <img src={stickerSrc(entry.src || `/stickers/${entry.key}.png`)} alt={entry.label} draggable={false} />
                             : <div className="mobile-plant-placeholder" />}
                         </div>
                         <button
@@ -309,7 +310,7 @@ export default function MobileSheet({
             {filtered.map(entry => {
               const img = loadedImages?.[entry.key]
               const preloaded = img && typeof img !== 'string'
-              const imgSrc = entry.src || `/stickers/${entry.key}.png`
+              const imgSrc = stickerSrc(entry.src || `/stickers/${entry.key}.png`)
               return (
                 <div
                   key={entry.key}

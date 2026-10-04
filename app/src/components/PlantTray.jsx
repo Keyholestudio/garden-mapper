@@ -1,6 +1,7 @@
 // PlantTray.jsx — Left sidebar: plant catalog, search, click-to-place, drag-to-place
 
 import { useState, useMemo, useEffect, useRef } from 'react'
+import { stickerSrc } from '../utils/cdnUtils'
 import { PLANT_CATALOG_TRAY as PLANT_CATALOG, DECOR_FAMILIES } from '../hooks/usePlantCatalog'
 import { PLANT_VARIANTS } from '../hooks/useGardenState'
 import './PlantTray.css'
@@ -179,7 +180,7 @@ function TrayItem({ entry, loadedImages, onClick, onDragStart, onRemove, showRem
       title={`${entry.label} — ${entry.family}`}
     >
       {loaded
-        ? <img src={entry.src || `/stickers/${entry.key}.png`} alt={entry.label} draggable={false} />
+        ? <img src={stickerSrc(entry.src || `/stickers/${entry.key}.png`)} alt={entry.label} draggable={false} />
         : <div className="tray-img-placeholder" />
       }
       <span>{entry.label}</span>

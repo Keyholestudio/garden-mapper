@@ -55,7 +55,7 @@ export default function LogoBar({
         </button>
 
         <div className="logo-center logo-center-mobile">
-          <img src="/stickers/Logo.png" alt="Garden Mapper" className="logo-img logo-img-mobile" />
+          <img src="/Logo.png" alt="Garden Mapper" className="logo-img logo-img-mobile" />
         </div>
 
         {/* Right group: Save + Profile */}
@@ -179,7 +179,7 @@ export default function LogoBar({
 
       {/* CENTER — logo (matches v8 #logo-center) */}
       <div className="logo-center">
-        <img src="/stickers/Logo.png" alt="Garden Mapper" className="logo-img" />
+        <img src="/Logo.png" alt="Garden Mapper" className="logo-img" />
       </div>
 
       {/* RIGHT — garden info + buttons (matches v8 #logo-right) */}
