@@ -29,7 +29,7 @@ DEST       = os.path.join(WORKSPACE, "app", "public", "stickers")
 RAW_ARCHIVE = os.path.join(WORKSPACE, "stickers", "raw-archive")  # local-only, never committed to git
 CATALOG    = os.path.join(WORKSPACE, "app", "src", "hooks", "usePlantCatalog.js")
 GEMINI_URL = "https://gemini.google.com/app"
-ROB_ACCOUNT = "contactsunsetpoetvintage"   # substring to match in signed-in account
+ROB_ACCOUNT = "k3yh0l35tud10"   # substring to match in signed-in account (updated 2026-10-08: using k3yh0l35tud10@gmail.com in Brave debug)
 IMAGE_WAIT  = 240
 os.makedirs(OUT_DIR, exist_ok=True)
 os.makedirs(RAW_ARCHIVE, exist_ok=True)
@@ -375,6 +375,12 @@ PLANT_LOOKUP = {
     "petunia":           ("flower-daisy_petunia",           "S",  160, "Annual Flower","plant", "vivid pink #E8207A, deep magenta #C41260, pale lavender #C4A8E0, bright white #F8F8F8, mid-green #4A7C2F, dark outline #0A1A0A", "Correct proportions. No roots."),
     "zinnia":            ("flower-daisy_zinnia",            "S",  160, "Annual Flower","plant", "vivid orange #FF6B1A, bright red #D42B2B, hot pink #E8407A, golden yellow #FFD700, mid-green #4A7C2F, dark outline #0A1A0A", "Correct proportions. No roots."),
     "phlox":             ("flower-cluster_phlox",       "M",  256, "Perennial Flower","plant",     "vivid purple #7B35C8, deep violet #5A1A9A, mid lavender #A06AE0, pale lilac centre #DCC8F0, bright green #4A7C2F, dark outline #1A0A2A", "Compact rounded mound of bright green leaves completely covered in dense flat five-petalled flowers in vivid purple and violet, stems at bottom and flowers covering top."),
+    # Day Lilies (pack-flowers-perennials)
+    "daylily red orange": ("flower-perennial_daylily-red-orange", "M", 256, "Perennial Flower", "plant", "vivid scarlet-orange #E84A1A, deep red-orange #C83A0A, golden yellow throat #FFD700, mid-green strap leaves #4A8A3A, dark outline #1A0A0A", "Upright clump of mid-green strap leaves with tall stems bearing large vivid scarlet-orange trumpet-shaped daylily blooms. Three to four open flowers per stem, ruffled petals, bright yellow throat centre. Correct proportions. No roots."),
+    "daylily pink":       ("flower-perennial_daylily-pink",       "M", 256, "Perennial Flower", "plant", "vivid soft pink #E87AA0, deep rose-pink #C8507A, pale blush centre #F5C8D8, mid-green strap leaves #4A8A3A, dark outline #1A0A0A", "Upright clump of mid-green strap leaves with tall stems bearing large soft pink trumpet-shaped daylily blooms. Three to four open flowers per stem, ruffled petals, pale blush throat. Correct proportions. No roots."),
+    "daylily fuchsia":    ("flower-perennial_daylily-fuchsia",    "M", 256, "Perennial Flower", "plant", "vivid fuchsia-magenta #D42090, deep magenta #A81070, pale pink centre #F5A8D0, mid-green strap leaves #4A8A3A, dark outline #1A0A0A", "Upright clump of mid-green strap leaves with tall stems bearing large vivid fuchsia-magenta trumpet-shaped daylily blooms. Three to four open flowers per stem, ruffled petals, pale pink throat. Correct proportions. No roots."),
+    "daylily yellow orange": ("flower-perennial_daylily-yellow-orange", "M", 256, "Perennial Flower", "plant", "vivid golden yellow #FFD700, warm orange #FF8C20, deep amber #E87020, mid-green strap leaves #4A8A3A, dark outline #1A0A0A", "Upright clump of mid-green strap leaves with tall stems bearing large vivid golden-yellow to warm orange trumpet-shaped daylily blooms. Three to four open flowers per stem, ruffled petals, deeper orange throat. Correct proportions. No roots."),
+    "daylily purple":     ("flower-perennial_daylily-purple",     "M", 256, "Perennial Flower", "plant", "vivid purple-lavender #8A40C8, deep violet-purple #6A20A8, pale lavender centre #C8A8E8, mid-green strap leaves #4A8A3A, dark outline #1A0A0A", "Upright clump of mid-green strap leaves with tall stems bearing large vivid purple-lavender trumpet-shaped daylily blooms. Three to four open flowers per stem, ruffled petals, pale lavender throat. Correct proportions. No roots."),
     "thyme":             ("herb-small_thyme",           "S",  160, "Herb",           "plant",     "silver-grey green #8FAF82, warm grey-green #7A9A6A, tiny pale lilac flowers #C8A8E0, dark olive stems #3D5A1A, warm brown woody base #7A5C3A", "Low creeping woody sub-shrub with dense tiny oval grey-green leaves covering wiry stems, tiny pale purple flower clusters at tips, stems at bottom and leafy florals at top."),
     "rosemary":          ("herb-small_rosemary",         "M",  256, "Herb",           "plant",     "silver-grey green #8FAF82, dark olive #3D5A1A, pale blue flower #A8C8E8, warm grey #A09070, brown stems #7A5C3A", "Upright woody sub-shrub with dense narrow needle-like silver-green leaves and tiny blue flowers, stems at bottom and leafy florals at top."),
     # Root veg
@@ -772,13 +778,13 @@ def cdp(ws_url, expr, timeout=15):
     return result
 
 def verify_account(ws_url):
-    """Check that Rob's account (contactsunsetpoetvintage) is signed in."""
+    """Check that the configured account is signed in."""
     # Check page source / profile for the account identifier
-    account_js = '''(function(){
+    account_js = f'''(function(){{
         // Try to find account email in page text or aria-labels
         var all = document.body.innerText + document.body.innerHTML;
-        return all.includes("contactsunsetpoetvintage") ? "ROB" : "OTHER";
-    })()'''
+        return all.includes("{ROB_ACCOUNT}") ? "ROB" : "OTHER";
+    }})()'''
     result = cdp(ws_url, account_js, timeout=10)
     return result == "ROB"
 

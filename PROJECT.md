@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-09-21 (fence load fix, water-mint sticker, plant tray scroll memory)_
+_Last updated: 2026-10-06 (CDN delivery for Android stickers, logo fix, signed AAB pending)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -105,6 +105,8 @@ cd projects/garden-planner/app && npm run dev
 - **[DONE] water-mint PNG** — generated + committed. Live on web. Commit: `fc01fba`.
 - **[MISSING] water-iris PNG** — registered in pack-aquatics but no sticker generated yet.
 - **[PENDING] Strawberry tree + Eucalyptus** — raws sent to Rob for manual generation.
+- **[DONE] CDN delivery for Android** — stickers load from Vercel, APK is 28 MB. Commits: 728d03d, 3b3382f.
+- **[NEXT] Signed AAB** — keystore ready, build:android script ready. Run via Android Studio: Build → Generate Signed Bundle.
 - **[HIGH] Rock border drag on mobile — border doesn't follow finger** — Jumps to new location on release instead of smooth drag. Root issue: coordinate system for rock border Group children vs fence Line is not reconciled. Last commit (`1926d59`) changed to local-coord model (like fence) but still not smooth. Next session: read fence dragmove code, match rock border exactly to it. Do NOT mix Model A (world coords, normalize on dragend) and Model B (local coords, group accumulates).
 - **[HIGH] L061 in LESSONS.md is stale** — reflects old Model A. Update once coordinate model is settled next session.
 - **Rock border colour variants** — brown, white, sandstone PNGs needed. Colour picker in panel wired but all variants use grey sticker for now. Generate next session.

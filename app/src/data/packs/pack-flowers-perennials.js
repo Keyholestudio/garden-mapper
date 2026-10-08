@@ -122,6 +122,13 @@ export const entries = [
   { key: 'flower-spike_wallflower',            label: 'Wallflower',              family: 'Biennial',      src: '/stickers/flower-spike_wallflower_S_CA-US-FR-GB-AU.png',             size: 'S' },
   { key: 'flower-spike_woodland-sage',         label: 'Woodland Sage',           family: 'Perennial',     src: '/stickers/flower-spike_woodland-sage_S_CA-US-FR-GB-AU.png',          size: 'S' },
 
+  // Day Lilies (2026-10-08)
+  { key: 'flower-perennial_daylily-red-orange',    label: 'Daylily (Red-Orange)',    family: 'Perennial', size: 'M', latinName: 'Hemerocallis spp.',  searchTerms: ['daylily', 'day lily', 'hemerocallis', 'red orange daylily'],    traits: ['perennial', 'flowering', 'summer', 'red', 'orange'],  src: '/stickers/flower-perennial_daylily-red-orange_M_CA-US-FR-GB-AU.png' },
+  { key: 'flower-perennial_daylily-pink',          label: 'Daylily (Pink)',          family: 'Perennial', size: 'M', latinName: 'Hemerocallis spp.',  searchTerms: ['daylily', 'day lily', 'hemerocallis', 'pink daylily'],         traits: ['perennial', 'flowering', 'summer', 'pink'],           src: '/stickers/flower-perennial_daylily-pink_M_CA-US-FR-GB-AU.png' },
+  { key: 'flower-perennial_daylily-fuchsia',       label: 'Daylily (Fuchsia)',       family: 'Perennial', size: 'M', latinName: 'Hemerocallis spp.',  searchTerms: ['daylily', 'day lily', 'hemerocallis', 'fuchsia daylily'],      traits: ['perennial', 'flowering', 'summer', 'fuchsia', 'magenta'], src: '/stickers/flower-perennial_daylily-fuchsia_M_CA-US-FR-GB-AU.png' },
+  { key: 'flower-perennial_daylily-yellow-orange', label: 'Daylily (Yellow-Orange)', family: 'Perennial', size: 'M', latinName: 'Hemerocallis spp.',  searchTerms: ['daylily', 'day lily', 'hemerocallis', 'yellow daylily'],       traits: ['perennial', 'flowering', 'summer', 'yellow', 'orange'], src: '/stickers/flower-perennial_daylily-yellow-orange_M_CA-US-FR-GB-AU.png' },
+  { key: 'flower-perennial_daylily-purple',        label: 'Daylily (Purple)',        family: 'Perennial', size: 'M', latinName: 'Hemerocallis spp.',  searchTerms: ['daylily', 'day lily', 'hemerocallis', 'purple daylily'],       traits: ['perennial', 'flowering', 'summer', 'purple', 'lavender'], src: '/stickers/flower-perennial_daylily-purple_M_CA-US-FR-GB-AU.png' },
+
   // Hydrangea variants
   { key: 'flower-cluster_hydrangea_arborescens', label: 'Hydrangea (Arborescens)', family: 'Shrub / Flower', src: '/stickers/flower-cluster_hydrangea_M_arborescens_CA-US-FR-GB-AU.png', size: 'M' },
   { key: 'flower-cluster_hydrangea_blue-deckle', label: 'Hydrangea (Blue Deckle)', family: 'Shrub / Flower', src: '/stickers/flower-cluster_hydrangea_M_blue-deckle_CA-US-FR-GB-AU.png',  size: 'M' },
