@@ -1,6 +1,14 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L097 — Sticker generator: ROB_ACCOUNT must match the Google account active in Brave debug (2026-10-08)
+**What happened:** `sticker-generate-one.py` failed account verification between every run because `ROB_ACCOUNT` was hardcoded to `contactsunsetpoetvintage` but Brave debug was signed into `k3yh0l35tud10@gmail.com`.
+**Two bugs found:**
+1. `ROB_ACCOUNT` constant was stale — pointed to the old personal Google account, not the OpenClaw account now used in Brave debug.
+2. `verify_account()` had `"contactsunsetpoetvintage"` baked directly into the injected JS string — it wasn't using the `ROB_ACCOUNT` variable at all, so updating the constant alone wasn't enough.
+**Fix:** Updated `ROB_ACCOUNT = "k3yh0l35tud10"` AND rewrote `verify_account()` to use an f-string so it references `ROB_ACCOUNT` dynamically.
+**Standing rule:** The Brave debug session uses `k3yh0l35tud10@gmail.com` (the OpenClaw Google account). If sticker generation fails account verification, check this constant first. Do NOT ask Rob to re-sign-in — fix the constant.
+
 ## L096 — scroll-to-item: use DOM querySelector + scrollIntoView, never estimated math (2026-09-21)
 **What happened:** Implemented scroll-to-plant on Back using `row * ITEM_H` estimation. Was 11–40 items off depending on how far down the list the plant was.
 **Root cause:** Section family headers between plant items add unaccounted height. The further down the list, the more headers have accumulated, so the error compounds.
