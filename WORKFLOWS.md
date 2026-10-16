@@ -309,6 +309,35 @@ git push
 
 ---
 
+## 1b. Add a new decor item
+
+> **Trigger:** Any time Rob asks to add a decor item, check what's missing, or wire up a colour variant for a decor item.
+
+**Step 1 — Check DECOR-DATABASE.md first (mandatory)**
+- File: `research/DECOR-DATABASE.md`
+- This is the single source of truth for all decor. Check it before saying what exists or what's missing.
+- Two code sources exist: `usePlantCatalog.js` (core decor) and `pack-decor.js` (pack decor). DECOR-DATABASE.md covers both.
+- Never answer "what decor do we have" by checking only one source.
+
+**Step 2 — Adding a new decor item**
+- Core decor (gazebo-style, with colour picker): add to `usePlantCatalog.js` with `family:'Decor'`
+- Pack decor (standalone, no variants): add to `pack-decor.js`
+- Colour variants: add entry to `PLANT_VARIANTS` in `useGardenState.js` (match gazebo pattern)
+- Do NOT add decor items to the plant tray — `family:'Decor'` gates this
+
+**Step 3 — Processing Rob-provided images (magenta background)**
+- Use `tools/process-rob-images.py <input.jpg> <output.png>`
+- These are Gemini-generated with magenta (#FF00FF) background
+- Pipeline: chroma key removal → crop to art bounds → scale to 85% fill → center on 512x512 canvas
+- Check actual empty margins in the source before cropping — Gemini sometimes generates art off-center in the canvas. Do not trim art; re-center by adjusting paste offset.
+- Send one preview to Rob before running all variants
+
+**Step 4 — Update DECOR-DATABASE.md**
+- Add the new item immediately after approval + commit
+- Mark status ✅ live once pushed to GitHub
+
+---
+
 ## 2. Add a new plant sticker (lazy pack)
 
 > Use this for: any plant that belongs to one of the 63 defined pack subtypes (see pack list below).

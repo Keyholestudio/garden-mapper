@@ -1,6 +1,11 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L098 — Decor inventory lives in TWO places — always check DECOR-DATABASE.md (2026-10-16)
+**What happened:** Answered "what decor is missing" by checking only `pack-decor.js` — missed all core decor items in `usePlantCatalog.js` (gazebos, arches, loungers, tables, pots, stairs, rocks).
+**Fix:** `research/DECOR-DATABASE.md` is now the single source of truth for all decor. Always check it first.
+**Rule:** Before answering any question about decor inventory or adding a decor item, read `DECOR-DATABASE.md`. Never grep only one source file.
+
 ## L097 — Sticker generator: ROB_ACCOUNT must match the Google account active in Brave debug (2026-10-08)
 **What happened:** `sticker-generate-one.py` failed account verification between every run because `ROB_ACCOUNT` was hardcoded to `contactsunsetpoetvintage` but Brave debug was signed into `k3yh0l35tud10@gmail.com`.
 **Two bugs found:**
