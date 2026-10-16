@@ -209,6 +209,10 @@ export const DECOR_VARIANTS = {
     { label: 'Enameled Table',   subtitle: 'Enameled Table',   size: 'XXL', colour: '#C8CDD0', src: '/stickers/decor_table-enameled_XXL_CA-US-FR-GB-AU.png' },
     { label: 'Bronzed Table',    subtitle: 'Bronzed Table',    size: 'XXL', colour: '#7B3F2E', src: '/stickers/decor_table-bronzed_XXL_CA-US-FR-GB-AU.png' },
   ],
+  beehives: [
+    { label: 'Classic',  subtitle: 'Classic Beehive',      size: 'L', colour: '#F5F0E0', src: '/stickers/decor_beehive-default_L_CA-US-FR-GB-AU.png' },
+    { label: 'Natural',  subtitle: 'Natural Wood Beehive',  size: 'L', colour: '#C8862A', src: '/stickers/decor_beehive-natural_L_CA-US-FR-GB-AU.png' },
+  ],
   greenhouses: [
     { label: 'Open Front',       subtitle: 'Open Front Greenhouse',   size: 'XXL', colour: '#6A8A5A', src: '/stickers/decor_greenhouse-default_XXL_CA-US-FR-GB-AU.png' },
     { label: 'Victorian Open',   subtitle: 'Victorian Open',          size: 'XXL', colour: '#7A8A6A', src: '/stickers/decor_greenhouse-victorian-open_XXL_CA-US-FR-GB-AU.png' },
