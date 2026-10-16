@@ -120,6 +120,7 @@ export const WATER_ITEMS = [
 export const DECOR_ITEMS = [
   { id: 'fountain-sm', label: 'Fountains', emoji: '⛲', hint: 'Tap to place a fountain', decorGroup: 'fountains' },
   { id: 'decor-rock-small', label: 'Rocks', emoji: '🪨', hint: 'Tap to place a rock', decorGroup: 'rocks' },
+  { id: 'decor-greenhouse-default', label: 'Greenhouses', emoji: '🌿', hint: 'Tap to place a greenhouse', decorGroup: 'greenhouses' },
   { id: 'decor-gazebo-square', label: 'Gazebos', emoji: '🗻', hint: 'Tap to place a gazebo', decorGroup: 'gazebos' },
   { id: 'decor-lounge-wood', label: 'Seating', emoji: '🪑', hint: 'Tap to place seating', decorGroup: 'seating' },
   { id: 'decor-umbrella', label: 'Beach Umbrella', emoji: '⛱', hint: 'Tap to place beach umbrella' },
