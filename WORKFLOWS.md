@@ -326,11 +326,15 @@ git push
 - Do NOT add decor items to the plant tray — `family:'Decor'` gates this
 
 **Step 3 — Processing Rob-provided images (magenta background)**
-- Use `tools/process-rob-images.py <input.jpg> <output.png>`
+- Script: `tools/process-rob-images.py <input.jpg|png> <output.png>`
 - These are Gemini-generated with magenta (#FF00FF) background
-- Pipeline: chroma key removal → crop to art bounds → scale to 85% fill → center on 512x512 canvas
-- Check actual empty margins in the source before cropping — Gemini sometimes generates art off-center in the canvas. Do not trim art; re-center by adjusting paste offset.
-- Send one preview to Rob before running all variants
+- **Correct order (do not change):**
+  1. Chroma key removal
+  2. Watermark erase AFTER keying (erasing before has no effect on JPEG)
+  3. Crop using `alpha > 128` — NOT `> 10` (feathered edge pixels at 10-127 skew the bounding box causing unequal margins)
+  4. Scale to fill canvas with equal padding (20px all sides)
+  5. Script auto-verifies margins and warns if top/bottom differ by >10px
+- Send **one** preview to Rob and wait for approval before running all variants
 
 **Step 4 — Update DECOR-DATABASE.md**
 - Add the new item immediately after approval + commit

@@ -1,6 +1,15 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L099 — Rob-provided images: use process-rob-images.py, alpha>128 crop, watermark erase AFTER keying (2026-10-16)
+**What happened:** Multiple failed attempts at centering greenhouse stickers from Rob-provided Gemini JPGs.
+**Root causes (three separate bugs):**
+1. **Watermark erase before keying** — JPEG inputs have no alpha channel until after chroma key. Erasing before had no effect. Always erase AFTER keying.
+2. **alpha > 10 crop threshold** — feathered edge pixels (alpha 10-127) at the art boundary were included in the bounding box, pulling the crop top/bottom outward and creating unequal margins. Use `alpha > 128` for crop bounds.
+3. **Not verifying output** — was processing and sending without checking margins programmatically or visually. Script now auto-prints margins and warns if top/bottom differ >10px.
+**Script:** `tools/process-rob-images.py` — use this for ALL Rob-provided images. Do not improvise a pipeline inline.
+**Rule:** When Rob provides images directly, always use `process-rob-images.py`. Check the margin output before sending preview.
+
 ## L098 — Decor inventory lives in TWO places — always check DECOR-DATABASE.md (2026-10-16)
 **What happened:** Answered "what decor is missing" by checking only `pack-decor.js` — missed all core decor items in `usePlantCatalog.js` (gazebos, arches, loungers, tables, pots, stairs, rocks).
 **Fix:** `research/DECOR-DATABASE.md` is now the single source of truth for all decor. Always check it first.
