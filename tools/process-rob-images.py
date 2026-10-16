@@ -92,9 +92,9 @@ def process(input_path, output_path):
     print(f"  Art {art_w}x{art_h} -> {new_w}x{new_h}")
     print(f"  Margins: top={ormin} bot={OUT_SIZE-ormax-1} left={ocmin} right={OUT_SIZE-ocmax-1}")
     if abs(ormin - (OUT_SIZE-ormax-1)) > 10:
-        print(f"  ⚠️  WARNING: top/bottom margins differ by more than 10px — check output visually")
+        print(f"  [WARN] top/bottom margins differ by more than 10px -- check output visually")
     else:
-        print(f"  ✅ Margins balanced")
+        print(f"  [OK] Margins balanced")
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
