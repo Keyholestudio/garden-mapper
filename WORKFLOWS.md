@@ -319,11 +319,13 @@ git push
 - Two code sources exist: `usePlantCatalog.js` (core decor) and `pack-decor.js` (pack decor). DECOR-DATABASE.md covers both.
 - Never answer "what decor do we have" by checking only one source.
 
-**Step 2 — Adding a new decor item**
-- Core decor (gazebo-style, with colour picker): add to `usePlantCatalog.js` with `family:'Decor'`
-- Pack decor (standalone, no variants): add to `pack-decor.js`
-- Colour variants: add entry to `PLANT_VARIANTS` in `useGardenState.js` (match gazebo pattern)
-- Do NOT add decor items to the plant tray — `family:'Decor'` gates this
+**Step 2 — Adding a new decor item (4 places required — all mandatory)**
+1. `usePlantCatalog.js` — base catalog entry with `family:'Decor'` (keeps it out of plant tray)
+2. `useGardenState.js` — `PLANT_VARIANTS` entry with all colour swatches (match gazebo pattern)
+3. `toolMenuData.jsx` — add to `DECOR_ITEMS` array so it appears in the Decor menu
+4. `GardenEditor.jsx` — add all variants to `DECOR_CATALOG` map
+
+Missing any one of these = item either invisible in menu (3,4) or missing colour picker (2) or missing from catalog (1). All four must be updated together.
 
 **Step 3 — Processing Rob-provided images (magenta background)**
 - Script: `tools/process-rob-images.py <input.jpg|png> <output.png>`
