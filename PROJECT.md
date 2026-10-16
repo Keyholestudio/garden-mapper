@@ -101,6 +101,8 @@ cd projects/garden-planner/app && npm run dev
 ## Open Items
 
 ### 🔴 Immediate
+- **[TODO] Better background removal tool** — current pipeline (chroma key) struggles with ombre/gradient Gemini backgrounds. Investigate `rembg` (AI-based, local) or Remove.bg API for Rob-provided images with complex backgrounds.
+
 - **[DONE] Lotus** — Rob provided image (cyan BG), processed + committed. Live on web. Android deploy pending USB.
 - **[DONE] water-mint PNG** — generated + committed. Live on web. Commit: `fc01fba`.
 - **[MISSING] water-iris PNG** — registered in pack-aquatics but no sticker generated yet.
