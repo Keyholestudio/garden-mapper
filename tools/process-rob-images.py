@@ -20,8 +20,10 @@ OUT_SIZE   = 512
 PADDING    = 20       # equal px margin on all sides in output
 FILL_PCT   = 0.85     # kept for reference; actual fill = (OUT_SIZE - 2*PADDING) / OUT_SIZE
 CHROMA     = np.array([255, 0, 255], dtype=np.float32)  # magenta
-TOLERANCE  = 80
-SOFT_RANGE = 40
+TOLERANCE  = 80   # Standard. Increase to 200 if Gemini background has ombre/gradient (measure: artifact dist < building dist)
+SOFT_RANGE = 40   # NOTE: if artifacts remain after standard removal, DO NOT use spatial erase (clips building).
+                  # Instead: sample raw pixel distances with np.sqrt((r-255)**2+g**2+(b-255)**2),
+                  # find max artifact distance vs min building distance, set TOLERANCE between them.
 
 def process(input_path, output_path):
     print(f"Input:  {os.path.basename(input_path)}")
