@@ -41,12 +41,12 @@
 | Square Gazebo | `decor_gazebo-square_XL_CA-US-FR-GB-AU` | core | XXL | done | ✅ live | PLANT_VARIANTS key: `gazebos` |
 | Octagon Gazebo | `decor_gazebo-oct_XL_CA-US-FR-GB-AU` | core | XXL | done | ✅ live | variant swatch |
 | Large Gazebo (Tiled) | `decor_gazebo-large_XL_CA-US-FR-GB-AU` | core | XXL | done | ✅ live | variant swatch |
-| Greenhouse (Default) | `decor_greenhouse-default_XXL_CA-US-FR-GB-AU` | core | XXL | done | 🔲 pending | PLANT_VARIANTS key: `greenhouses`. Default = l113hx image |
-| Greenhouse (Victorian Open) | `decor_greenhouse-victorian-open_XXL_CA-US-FR-GB-AU` | core | XXL | done | 🔲 pending | variant swatch |
-| Greenhouse (Victorian) | `decor_greenhouse-victorian_XXL_CA-US-FR-GB-AU` | core | XXL | done | 🔲 pending | variant swatch |
-| Greenhouse (White Frame) | `decor_greenhouse-white_XXL_CA-US-FR-GB-AU` | core | XXL | done | 🔲 pending | variant swatch |
-| Greenhouse (Rectangular) | `decor_greenhouse-rect_XXL_CA-US-FR-GB-AU` | core | XXL | done | 🔲 pending | variant swatch |
-| Greenhouse (oxoiki) | `decor_greenhouse-oxoiki_XXL_CA-US-FR-GB-AU` | core | XXL | done | 🔲 pending | 6th variant — not yet downloaded cleanly |
+| Greenhouse (Default / Open Front) | `decor_greenhouse-default_XXL_CA-US-FR-GB-AU` | core | XXL | done | ✅ live | PLANT_VARIANTS key: `greenhouses`. Default = l113hx |
+| Greenhouse (Victorian Open) | `decor_greenhouse-victorian-open_XXL_CA-US-FR-GB-AU` | core | XXL | done | ✅ live | variant swatch |
+| Greenhouse (Victorian) | `decor_greenhouse-victorian_XXL_CA-US-FR-GB-AU` | core | XXL | done | ✅ live | variant swatch |
+| Greenhouse (White Frame) | `decor_greenhouse-white_XXL_CA-US-FR-GB-AU` | core | XXL | done | ✅ live | variant swatch |
+| Greenhouse (Open Rectangular) | `decor_greenhouse-open-rect_XXL_CA-US-FR-GB-AU` | core | XXL | done | ✅ live | variant swatch |
+| Greenhouse (Rectangular) | `decor_greenhouse-rect_XXL_CA-US-FR-GB-AU` | core | XXL | done | ✅ live | variant swatch |
 | Wood Garden Arch | `decor_arch-wood_XL_CA-US-FR-GB-AU` | core | XL | none | ✅ live | |
 | Metal Garden Arch | `decor_arch-metal_XL_CA-US-FR-GB-AU` | core | XL | none | ✅ live | |
 
