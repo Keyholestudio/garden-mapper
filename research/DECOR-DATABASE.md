@@ -34,6 +34,15 @@
 
 ---
 
+## 🐝 Beehives
+
+| Label | Key | Source | Size | Variants | Status | Notes |
+|---|---|---|---|---|---|---|
+| Beehive (Classic) | `decor_beehive-default_L_CA-US-FR-GB-AU` | core | L | done | ✅ live | PLANT_VARIANTS key: `beehives`. Default = white+wood |
+| Beehive (Natural Wood) | `decor_beehive-natural_L_CA-US-FR-GB-AU` | core | L | done | ✅ live | variant swatch |
+
+---
+
 ## 🏛️ Structures
 
 | Label | Key | Source | Size | Variants | Status | Notes |
