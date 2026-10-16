@@ -209,6 +209,14 @@ export const DECOR_VARIANTS = {
     { label: 'Enameled Table',   subtitle: 'Enameled Table',   size: 'XXL', colour: '#C8CDD0', src: '/stickers/decor_table-enameled_XXL_CA-US-FR-GB-AU.png' },
     { label: 'Bronzed Table',    subtitle: 'Bronzed Table',    size: 'XXL', colour: '#7B3F2E', src: '/stickers/decor_table-bronzed_XXL_CA-US-FR-GB-AU.png' },
   ],
+  greenhouses: [
+    { label: 'Open Front',       subtitle: 'Open Front Greenhouse',   size: 'XXL', colour: '#6A8A5A', src: '/stickers/decor_greenhouse-default_XXL_CA-US-FR-GB-AU.png' },
+    { label: 'Victorian Open',   subtitle: 'Victorian Open',          size: 'XXL', colour: '#7A8A6A', src: '/stickers/decor_greenhouse-victorian-open_XXL_CA-US-FR-GB-AU.png' },
+    { label: 'Victorian',        subtitle: 'Victorian Greenhouse',    size: 'XXL', colour: '#5A7A5A', src: '/stickers/decor_greenhouse-victorian_XXL_CA-US-FR-GB-AU.png' },
+    { label: 'White Frame',      subtitle: 'White Frame Greenhouse',  size: 'XXL', colour: '#E8E8E0', src: '/stickers/decor_greenhouse-white_XXL_CA-US-FR-GB-AU.png' },
+    { label: 'Open Rectangular', subtitle: 'Open Rectangular',        size: 'XXL', colour: '#8A9A7A', src: '/stickers/decor_greenhouse-open-rect_XXL_CA-US-FR-GB-AU.png' },
+    { label: 'Rectangular',      subtitle: 'Rectangular Greenhouse',  size: 'XXL', colour: '#C8D8B8', src: '/stickers/decor_greenhouse-rect_XXL_CA-US-FR-GB-AU.png' },
+  ],
   gazebos: [
     { label: 'Square',     subtitle: 'Square Gazebo',  size: 'XXL', colour: '#7B5230', src: '/stickers/decor_gazebo-square_XL_CA-US-FR-GB-AU.png' },
     { label: 'Octagon',    subtitle: 'Octagon Gazebo', size: 'XXL', colour: '#C06A3A', src: '/stickers/decor_gazebo-oct_XL_CA-US-FR-GB-AU.png' },
