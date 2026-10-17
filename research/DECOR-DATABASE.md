@@ -61,6 +61,16 @@
 
 ---
 
+## 🪑 Benches
+
+| Label | Key | Source | Size | Variants | Status | Notes |
+|---|---|---|---|---|---|---|
+| Garden Bench (Wood) | `decor_bench-wood_L_CA-US-FR-GB-AU` | core | L | done | ✅ live | PLANT_VARIANTS key: `benches`. Default = wood |
+| Garden Bench (Stone) | `decor_bench-stone_L_CA-US-FR-GB-AU` | core | L | done | ✅ live | variant swatch |
+| Garden Bench (Iron) | `decor_bench-iron_L_CA-US-FR-GB-AU` | core | L | done | ✅ live | variant swatch |
+
+---
+
 ## 🪑 Furniture / Seating
 
 | Label | Key | Source | Size | Variants | Status | Notes |

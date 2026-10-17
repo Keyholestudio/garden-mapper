@@ -209,6 +209,11 @@ export const DECOR_VARIANTS = {
     { label: 'Enameled Table',   subtitle: 'Enameled Table',   size: 'XXL', colour: '#C8CDD0', src: '/stickers/decor_table-enameled_XXL_CA-US-FR-GB-AU.png' },
     { label: 'Bronzed Table',    subtitle: 'Bronzed Table',    size: 'XXL', colour: '#7B3F2E', src: '/stickers/decor_table-bronzed_XXL_CA-US-FR-GB-AU.png' },
   ],
+  benches: [
+    { label: 'Wood',  subtitle: 'Wood Garden Bench',  size: 'L', colour: '#C8862A', src: '/stickers/decor_bench-wood_L_CA-US-FR-GB-AU.png' },
+    { label: 'Stone', subtitle: 'Stone Garden Bench', size: 'L', colour: '#C8BEB0', src: '/stickers/decor_bench-stone_L_CA-US-FR-GB-AU.png' },
+    { label: 'Iron',  subtitle: 'Iron Garden Bench',  size: 'L', colour: '#4A5A45', src: '/stickers/decor_bench-iron_L_CA-US-FR-GB-AU.png' },
+  ],
   beehives: [
     { label: 'Classic',  subtitle: 'Classic Beehive',      size: 'L', colour: '#F5F0E0', src: '/stickers/decor_beehive-default_L_CA-US-FR-GB-AU.png' },
     { label: 'Natural',  subtitle: 'Natural Wood Beehive',  size: 'L', colour: '#C8862A', src: '/stickers/decor_beehive-natural_L_CA-US-FR-GB-AU.png' },
