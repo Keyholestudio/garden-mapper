@@ -116,6 +116,7 @@ cd projects/garden-planner/app && npm run dev
 - **[DONE] Benches decor** — 3 variants live (wood default, stone, iron). Added 2026-10-17.
 - **[DONE] Sheds decor** — 3 variants live (weathered default, cedar, pine). Added 2026-10-17.
 - **[DONE] Wheelbarrows decor** — 2 variants live (side default, front). Added 2026-10-17.
+- **[DONE] Gnomes decor** — 2 variants live (classic red-hat default, green-hat female). Added 2026-10-17.
 - **[DONE] Lights decor** — 3 variants live (solar stake default, Victorian lantern, stone lantern). Added 2026-10-17.
 - **[TODO] Decor gaps (pending images from Rob):**
   - 🔴 Raised bed (wood) — essential for veggie planners

@@ -80,6 +80,15 @@
 
 ---
 
+## 🧙 Gnomes
+
+| Label | Key | Source | Size | Variants | Status | Notes |
+|---|---|---|---|---|---|---|
+| Garden Gnome (Classic) | `decor_gnome-default_M_CA-US-FR-GB-AU` | core | M | done | ✅ live | PLANT_VARIANTS key: `gnomes`. Default = red hat (w51pvh) |
+| Garden Gnome (Green Hat) | `decor_gnome-green_M_CA-US-FR-GB-AU` | core | M | done | ✅ live | variant swatch — female gnome, yellow jacket |
+
+---
+
 ## 💡 Lights
 
 | Label | Key | Source | Size | Variants | Status | Notes |

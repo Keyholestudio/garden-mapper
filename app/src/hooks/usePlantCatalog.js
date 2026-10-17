@@ -241,6 +241,7 @@ export const PLANT_CATALOG = [
   { key:'decor_beehive-default_L_CA-US-FR-GB-AU', label:'Beehive', family:'Decor', src:'/stickers/decor_beehive-default_L_CA-US-FR-GB-AU.png' },
   { key:'decor_light-solar_M_CA-US-FR-GB-AU', label:'Garden Lights', family:'Decor', src:'/stickers/decor_light-solar_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'decor_gnome-default_M_CA-US-FR-GB-AU', label:'Garden Gnome', family:'Decor', src:'/stickers/decor_gnome-default_M_CA-US-FR-GB-AU.png', size:'M' },
+  { key:'decor_sundial-default_M_CA-US-FR-GB-AU', label:'Sundial', family:'Decor', src:'/stickers/decor_sundial-default_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'decor_greenhouse-default_XXL_CA-US-FR-GB-AU', label:'Greenhouse', family:'Decor', src:'/stickers/decor_greenhouse-default_XXL_CA-US-FR-GB-AU.png' },
   { key:'decor_gazebo-square_XL_CA-US-FR-GB-AU', label:'Square Gazebo',  family:'Decor', src:'/stickers/decor_gazebo-square_XL_CA-US-FR-GB-AU.png', size:'XL' },
   { key:'decor_gazebo-oct_XL_CA-US-FR-GB-AU',   label:'Octagon Gazebo', family:'Decor', src:'/stickers/decor_gazebo-oct_XL_CA-US-FR-GB-AU.png',   size:'XL' },
