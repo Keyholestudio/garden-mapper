@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-10-17 (Signed AAB generated, store listing text added, greenhouses + beehives decor added)_
+_Last updated: 2026-10-17 (Benches, Sheds, Wheelbarrows decor added; decor gap list updated)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -113,6 +113,21 @@ cd projects/garden-planner/app && npm run dev
 - **[DONE] Store listing text** — short + full description submitted 2026-10-08.
 - **[DONE] Greenhouses decor** — 6 variants live. `decor_greenhouse-*`. Wired in all 4 files.
 - **[DONE] Beehives decor** — 2 variants live. `decor_beehive-*`. Wired in all 4 files.
+- **[DONE] Benches decor** — 3 variants live (wood default, stone, iron). Added 2026-10-17.
+- **[DONE] Sheds decor** — 3 variants live (weathered default, cedar, pine). Added 2026-10-17.
+- **[DONE] Wheelbarrows decor** — 2 variants live (side default, front). Added 2026-10-17.
+- **[TODO] Decor gaps (pending images from Rob):**
+  - 🔴 Raised bed (wood) — essential for veggie planners
+  - 🔴 Pergola / arbour — major structural focal point
+  - 🟡 Compost bin
+  - 🟡 Cold frame
+  - 🟡 Half barrel / large urn planter
+  - 🔲 Garden gnome / sundial
+  - 🔲 Solar stake lights / lantern
+  - 🔲 Trellis arch / tunnel
+  - 🔲 Rain barrel
+  - 🔲 Hammock
+  - _(Bird bath covered by Fountain)_
 - **[TODO] Better background removal tool** — current chroma key pipeline can't handle ombre/gradient Gemini backgrounds without clipping art. Investigate `rembg` (AI-based, local pip install).
 - **[HIGH] Rock border drag on mobile — border doesn't follow finger** — Jumps to new location on release instead of smooth drag. Root issue: coordinate system for rock border Group children vs fence Line is not reconciled. Last commit (`1926d59`) changed to local-coord model (like fence) but still not smooth. Next session: read fence dragmove code, match rock border exactly to it. Do NOT mix Model A (world coords, normalize on dragend) and Model B (local coords, group accumulates).
 - **[HIGH] L061 in LESSONS.md is stale** — reflects old Model A. Update once coordinate model is settled next session.

@@ -84,4 +84,15 @@ _History for v1–v7 and Phases 1–6 archived at: `memory/deep/garden-planner/r
 
 ---
 
+## Decor Sprint — 2026-10-17
+
+| # | Change | Commit | Status |
+|---|--------|--------|--------|
+| — | Benches decor — wood (default), stone, iron (3 variants, all 4 files) | c910b05 | ✅ |
+| — | Sheds decor — weathered (default), cedar, pine (3 variants, all 4 files) | ac5b1ab | ✅ |
+| — | Wheelbarrows decor — side (default), front (2 variants, all 4 files) | 46157ce | ✅ |
+| — | DECOR-DATABASE.md updated, PROJECT.md pending decor list added | — | ✅ |
+
+---
+
 _Add new entries above this line. Archive completed phases when this file exceeds ~4KB._

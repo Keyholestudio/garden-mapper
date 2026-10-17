@@ -223,6 +223,11 @@ export const DECOR_VARIANTS = {
     { label: 'Stone', subtitle: 'Stone Garden Bench', size: 'L', colour: '#C8BEB0', src: '/stickers/decor_bench-stone_L_CA-US-FR-GB-AU.png' },
     { label: 'Iron',  subtitle: 'Iron Garden Bench',  size: 'L', colour: '#4A5A45', src: '/stickers/decor_bench-iron_L_CA-US-FR-GB-AU.png' },
   ],
+  lights: [
+    { label: 'Solar Stake',    subtitle: 'Solar Stake Light',    size: 'M', colour: '#C8C8B0', src: '/stickers/decor_light-solar_M_CA-US-FR-GB-AU.png' },
+    { label: 'Lantern',        subtitle: 'Victorian Lantern',    size: 'M', colour: '#8B6914', src: '/stickers/decor_light-lantern_M_CA-US-FR-GB-AU.png' },
+    { label: 'Stone Lantern',  subtitle: 'Stone Garden Lantern', size: 'M', colour: '#A89070', src: '/stickers/decor_light-stone-lantern_M_CA-US-FR-GB-AU.png' },
+  ],
   beehives: [
     { label: 'Classic',  subtitle: 'Classic Beehive',      size: 'L', colour: '#F5F0E0', src: '/stickers/decor_beehive-default_L_CA-US-FR-GB-AU.png' },
     { label: 'Natural',  subtitle: 'Natural Wood Beehive',  size: 'L', colour: '#C8862A', src: '/stickers/decor_beehive-natural_L_CA-US-FR-GB-AU.png' },
