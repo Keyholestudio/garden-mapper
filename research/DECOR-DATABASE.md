@@ -80,6 +80,16 @@
 
 ---
 
+## 💡 Lights
+
+| Label | Key | Source | Size | Variants | Status | Notes |
+|---|---|---|---|---|---|---|
+| Garden Light (Solar Stake) | `decor_light-solar_M_CA-US-FR-GB-AU` | core | M | done | ✅ live | PLANT_VARIANTS key: `lights`. Default = solar stake |
+| Garden Light (Victorian Lantern) | `decor_light-lantern_M_CA-US-FR-GB-AU` | core | M | done | ✅ live | variant swatch |
+| Garden Light (Stone Lantern) | `decor_light-stone-lantern_M_CA-US-FR-GB-AU` | core | M | done | ✅ live | variant swatch |
+
+---
+
 ## 🪑 Benches
 
 | Label | Key | Source | Size | Variants | Status | Notes |
