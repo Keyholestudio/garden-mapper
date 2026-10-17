@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-10-06 (CDN delivery for Android stickers, logo fix, signed AAB pending)_
+_Last updated: 2026-10-17 (Signed AAB generated, store listing text added, greenhouses + beehives decor added)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -108,7 +108,12 @@ cd projects/garden-planner/app && npm run dev
 - **[MISSING] water-iris PNG** — registered in pack-aquatics but no sticker generated yet.
 - **[PENDING] Strawberry tree + Eucalyptus** — raws sent to Rob for manual generation.
 - **[DONE] CDN delivery for Android** — stickers load from Vercel, APK is 28 MB. Commits: 728d03d, 3b3382f.
-- **[NEXT] Signed AAB** — keystore ready, build:android script ready. Run via Android Studio: Build → Generate Signed Bundle.
+- **[DONE] Signed AAB** — generated 2026-10-06 via Android Studio. Ready to upload to Play Console.
+- **[NEXT] Play Store upload** — upload AAB to Play Console → Internal/Closed Testing. Need: feature graphic (1024×500), screenshots (2-8, 9:16, min 1080px), app icon 512×512.
+- **[DONE] Store listing text** — short + full description submitted 2026-10-08.
+- **[DONE] Greenhouses decor** — 6 variants live. `decor_greenhouse-*`. Wired in all 4 files.
+- **[DONE] Beehives decor** — 2 variants live. `decor_beehive-*`. Wired in all 4 files.
+- **[TODO] Better background removal tool** — current chroma key pipeline can't handle ombre/gradient Gemini backgrounds without clipping art. Investigate `rembg` (AI-based, local pip install).
 - **[HIGH] Rock border drag on mobile — border doesn't follow finger** — Jumps to new location on release instead of smooth drag. Root issue: coordinate system for rock border Group children vs fence Line is not reconciled. Last commit (`1926d59`) changed to local-coord model (like fence) but still not smooth. Next session: read fence dragmove code, match rock border exactly to it. Do NOT mix Model A (world coords, normalize on dragend) and Model B (local coords, group accumulates).
 - **[HIGH] L061 in LESSONS.md is stale** — reflects old Model A. Update once coordinate model is settled next session.
 - **Rock border colour variants** — brown, white, sandstone PNGs needed. Colour picker in panel wired but all variants use grey sticker for now. Generate next session.
