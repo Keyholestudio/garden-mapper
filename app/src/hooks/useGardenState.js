@@ -209,6 +209,11 @@ export const DECOR_VARIANTS = {
     { label: 'Enameled Table',   subtitle: 'Enameled Table',   size: 'XXL', colour: '#C8CDD0', src: '/stickers/decor_table-enameled_XXL_CA-US-FR-GB-AU.png' },
     { label: 'Bronzed Table',    subtitle: 'Bronzed Table',    size: 'XXL', colour: '#7B3F2E', src: '/stickers/decor_table-bronzed_XXL_CA-US-FR-GB-AU.png' },
   ],
+  sheds: [
+    { label: 'Weathered', subtitle: 'Weathered Wood Shed', size: 'XXL', colour: '#A89880', src: '/stickers/decor_shed-default_XXL_CA-US-FR-GB-AU.png' },
+    { label: 'Cedar',     subtitle: 'Cedar Shed',          size: 'XXL', colour: '#C8862A', src: '/stickers/decor_shed-cedar_XXL_CA-US-FR-GB-AU.png' },
+    { label: 'Pine',      subtitle: 'Pine Wood Shed',      size: 'XXL', colour: '#D4A55A', src: '/stickers/decor_shed-pine_XXL_CA-US-FR-GB-AU.png' },
+  ],
   benches: [
     { label: 'Wood',  subtitle: 'Wood Garden Bench',  size: 'L', colour: '#C8862A', src: '/stickers/decor_bench-wood_L_CA-US-FR-GB-AU.png' },
     { label: 'Stone', subtitle: 'Stone Garden Bench', size: 'L', colour: '#C8BEB0', src: '/stickers/decor_bench-stone_L_CA-US-FR-GB-AU.png' },

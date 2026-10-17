@@ -61,6 +61,16 @@
 
 ---
 
+## 🛖 Sheds
+
+| Label | Key | Source | Size | Variants | Status | Notes |
+|---|---|---|---|---|---|---|
+| Garden Shed (Weathered) | `decor_shed-default_XXL_CA-US-FR-GB-AU` | core | XXL | done | ✅ live | PLANT_VARIANTS key: `sheds`. Default = weathered grey |
+| Garden Shed (Cedar) | `decor_shed-cedar_XXL_CA-US-FR-GB-AU` | core | XXL | done | ✅ live | variant swatch |
+| Garden Shed (Pine) | `decor_shed-pine_XXL_CA-US-FR-GB-AU` | core | XXL | done | ✅ live | variant swatch |
+
+---
+
 ## 🪑 Benches
 
 | Label | Key | Source | Size | Variants | Status | Notes |
