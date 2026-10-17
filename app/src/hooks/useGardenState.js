@@ -223,6 +223,10 @@ export const DECOR_VARIANTS = {
     { label: 'Stone', subtitle: 'Stone Garden Bench', size: 'L', colour: '#C8BEB0', src: '/stickers/decor_bench-stone_L_CA-US-FR-GB-AU.png' },
     { label: 'Iron',  subtitle: 'Iron Garden Bench',  size: 'L', colour: '#4A5A45', src: '/stickers/decor_bench-iron_L_CA-US-FR-GB-AU.png' },
   ],
+  compost: [
+    { label: 'Wood',    subtitle: 'Wood Compost Bin',    size: 'L', colour: '#C8A060', src: '/stickers/decor_compost-wood_L_CA-US-FR-GB-AU.png' },
+    { label: 'Plastic', subtitle: 'Plastic Compost Bin',  size: 'L', colour: '#5A8A5A', src: '/stickers/decor_compost-plastic_L_CA-US-FR-GB-AU.png' },
+  ],
   sundials: [
     { label: 'Stone', subtitle: 'Garden Sundial', size: 'M', colour: '#C8B090', src: '/stickers/decor_sundial-default_M_CA-US-FR-GB-AU.png' },
   ],

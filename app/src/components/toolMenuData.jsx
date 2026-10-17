@@ -123,6 +123,7 @@ export const DECOR_ITEMS = [
   { id: 'decor-wheelbarrow-default', label: 'Wheelbarrows', emoji: '🛑', hint: 'Tap to place a wheelbarrow', decorGroup: 'wheelbarrows' },
   { id: 'decor-shed-default', label: 'Sheds', emoji: '🛖', hint: 'Tap to place a garden shed', decorGroup: 'sheds' },
   { id: 'decor-bench-wood', label: 'Benches', emoji: '🪑', hint: 'Tap to place a garden bench', decorGroup: 'benches' },
+  { id: 'decor-compost-wood', label: 'Compost Bins', emoji: '🌿', hint: 'Tap to place a compost bin', decorGroup: 'compost' },
   { id: 'decor-sundial-default', label: 'Sundials', emoji: '☀️', hint: 'Tap to place a sundial', decorGroup: 'sundials' },
   { id: 'decor-gnome-default', label: 'Gnomes', emoji: '🧌', hint: 'Tap to place a garden gnome', decorGroup: 'gnomes' },
   { id: 'decor-light-solar', label: 'Lights', emoji: '💡', hint: 'Tap to place a garden light', decorGroup: 'lights' },
