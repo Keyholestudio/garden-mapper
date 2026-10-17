@@ -486,6 +486,8 @@ export default function GardenEditor() {
     'decor-rock-small':   { key: 'decor_rock-small_M_CA-US-FR-GB-AU',   label: 'Rocks', family: 'Decor', size: 'XS', decorGroup: 'rocks', src: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png'   },
     'decor-rock-medium':  { key: 'decor_rock-medium_L_CA-US-FR-GB-AU',  label: 'Rocks', family: 'Decor', size: 'XS', decorGroup: 'rocks', src: '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png'  },
     'decor-rock-large':   { key: 'decor_rock-large_XL_CA-US-FR-GB-AU',  label: 'Rocks', family: 'Decor', size: 'XS', decorGroup: 'rocks', src: '/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png'  },
+    'decor-wheelbarrow-default': { key: 'decor_wheelbarrow-default_L_CA-US-FR-GB-AU', label: 'Wheelbarrows', family: 'Decor', size: 'L', decorGroup: 'wheelbarrows', src: '/stickers/decor_wheelbarrow-default_L_CA-US-FR-GB-AU.png' },
+    'decor-wheelbarrow-front':   { key: 'decor_wheelbarrow-front_L_CA-US-FR-GB-AU',   label: 'Wheelbarrows', family: 'Decor', size: 'L', decorGroup: 'wheelbarrows', src: '/stickers/decor_wheelbarrow-front_L_CA-US-FR-GB-AU.png' },
     'decor-shed-default': { key: 'decor_shed-default_XXL_CA-US-FR-GB-AU', label: 'Sheds', family: 'Decor', size: 'XXL', decorGroup: 'sheds', src: '/stickers/decor_shed-default_XXL_CA-US-FR-GB-AU.png' },
     'decor-shed-cedar':   { key: 'decor_shed-cedar_XXL_CA-US-FR-GB-AU',   label: 'Sheds', family: 'Decor', size: 'XXL', decorGroup: 'sheds', src: '/stickers/decor_shed-cedar_XXL_CA-US-FR-GB-AU.png' },
     'decor-shed-pine':    { key: 'decor_shed-pine_XXL_CA-US-FR-GB-AU',    label: 'Sheds', family: 'Decor', size: 'XXL', decorGroup: 'sheds', src: '/stickers/decor_shed-pine_XXL_CA-US-FR-GB-AU.png' },

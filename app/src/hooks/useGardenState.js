@@ -209,6 +209,10 @@ export const DECOR_VARIANTS = {
     { label: 'Enameled Table',   subtitle: 'Enameled Table',   size: 'XXL', colour: '#C8CDD0', src: '/stickers/decor_table-enameled_XXL_CA-US-FR-GB-AU.png' },
     { label: 'Bronzed Table',    subtitle: 'Bronzed Table',    size: 'XXL', colour: '#7B3F2E', src: '/stickers/decor_table-bronzed_XXL_CA-US-FR-GB-AU.png' },
   ],
+  wheelbarrows: [
+    { label: 'Side',  subtitle: 'Wheelbarrow (Side)',  size: 'L', colour: '#8B4040', src: '/stickers/decor_wheelbarrow-default_L_CA-US-FR-GB-AU.png' },
+    { label: 'Front', subtitle: 'Wheelbarrow (Front)', size: 'L', colour: '#7A3A3A', src: '/stickers/decor_wheelbarrow-front_L_CA-US-FR-GB-AU.png' },
+  ],
   sheds: [
     { label: 'Weathered', subtitle: 'Weathered Wood Shed', size: 'XXL', colour: '#A89880', src: '/stickers/decor_shed-default_XXL_CA-US-FR-GB-AU.png' },
     { label: 'Cedar',     subtitle: 'Cedar Shed',          size: 'XXL', colour: '#C8862A', src: '/stickers/decor_shed-cedar_XXL_CA-US-FR-GB-AU.png' },

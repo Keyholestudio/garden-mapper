@@ -236,6 +236,7 @@ export const PLANT_CATALOG = [
   { key:'decor_rock-large_XL_CA-US-FR-GB-AU', label:'Large Garden Stone', family:'Decor', src:'/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
   { key:'decor_shed-default_XXL_CA-US-FR-GB-AU', label:'Garden Shed', family:'Decor', src:'/stickers/decor_shed-default_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
+  { key:'decor_wheelbarrow-default_L_CA-US-FR-GB-AU', label:'Wheelbarrow', family:'Decor', src:'/stickers/decor_wheelbarrow-default_L_CA-US-FR-GB-AU.png', size:'L' },
   { key:'decor_bench-wood_L_CA-US-FR-GB-AU',  label:'Garden Bench', family:'Decor', src:'/stickers/decor_bench-wood_L_CA-US-FR-GB-AU.png',  size:'L' },
   { key:'decor_beehive-default_L_CA-US-FR-GB-AU', label:'Beehive', family:'Decor', src:'/stickers/decor_beehive-default_L_CA-US-FR-GB-AU.png' },
   { key:'decor_greenhouse-default_XXL_CA-US-FR-GB-AU', label:'Greenhouse', family:'Decor', src:'/stickers/decor_greenhouse-default_XXL_CA-US-FR-GB-AU.png' },

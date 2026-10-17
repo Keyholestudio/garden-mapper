@@ -61,6 +61,15 @@
 
 ---
 
+## 🛑 Wheelbarrows
+
+| Label | Key | Source | Size | Variants | Status | Notes |
+|---|---|---|---|---|---|---|
+| Wheelbarrow (Side) | `decor_wheelbarrow-default_L_CA-US-FR-GB-AU` | core | L | done | ✅ live | PLANT_VARIANTS key: `wheelbarrows`. Default = side view |
+| Wheelbarrow (Front) | `decor_wheelbarrow-front_L_CA-US-FR-GB-AU` | core | L | done | ✅ live | variant swatch |
+
+---
+
 ## 🛖 Sheds
 
 | Label | Key | Source | Size | Variants | Status | Notes |
