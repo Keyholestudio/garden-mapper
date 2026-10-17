@@ -223,6 +223,10 @@ export const DECOR_VARIANTS = {
     { label: 'Stone', subtitle: 'Stone Garden Bench', size: 'L', colour: '#C8BEB0', src: '/stickers/decor_bench-stone_L_CA-US-FR-GB-AU.png' },
     { label: 'Iron',  subtitle: 'Iron Garden Bench',  size: 'L', colour: '#4A5A45', src: '/stickers/decor_bench-iron_L_CA-US-FR-GB-AU.png' },
   ],
+  gnomes: [
+    { label: 'Classic',      subtitle: 'Classic Garden Gnome',  size: 'M', colour: '#CC2222', src: '/stickers/decor_gnome-default_M_CA-US-FR-GB-AU.png' },
+    { label: 'Green Hat',    subtitle: 'Garden Gnome (Green)',   size: 'M', colour: '#4A7A3A', src: '/stickers/decor_gnome-green_M_CA-US-FR-GB-AU.png' },
+  ],
   lights: [
     { label: 'Solar Stake',    subtitle: 'Solar Stake Light',    size: 'M', colour: '#C8C8B0', src: '/stickers/decor_light-solar_M_CA-US-FR-GB-AU.png' },
     { label: 'Lantern',        subtitle: 'Victorian Lantern',    size: 'M', colour: '#8B6914', src: '/stickers/decor_light-lantern_M_CA-US-FR-GB-AU.png' },

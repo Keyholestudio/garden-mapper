@@ -341,3 +341,8 @@ _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/d
 **Fix:** Check `d?.type === 'rock-border'` before attaching transformer: `if (sel && !structLocked && !isRockBorder && (shape instanceof Konva.Rect || shape instanceof Konva.Group))`.
 **Rule:** Any new Group-based struct type must be explicitly excluded from the transformer in `useSelection`. The transformer should only attach to rect/circle structs and merged bed groups.
 
+## L101 — Washed-out pink BG on Rob-provided images: detect corner colour, don't assume #FF00FF (2026-10-17)
+**What happened:** Victorian lantern image had a washed-out pink background (~253,129,252) instead of standard magenta. Distance from #FF00FF was 130 — well outside process-rob-images.py's default tolerance of 80. Result: background survived the key pass and appeared in the output.
+**Fix:** Sample the 4 image corners to detect actual BG colour before keying. Key against detected colour with tolerance 80, not against hardcoded #FF00FF.
+**Rule:** Before running process-rob-images.py on any Rob image, sample the corners: `arr[0,0], arr[0,w-1], arr[h-1,0], arr[h-1,w-1]`. If the mean differs from (255,0,255) by more than 50, use corner-detected colour as the chroma key target. The script should be updated to do this automatically.
+

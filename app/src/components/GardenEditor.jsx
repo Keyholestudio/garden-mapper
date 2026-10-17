@@ -494,6 +494,8 @@ export default function GardenEditor() {
     'decor-bench-wood':  { key: 'decor_bench-wood_L_CA-US-FR-GB-AU',  label: 'Benches', family: 'Decor', size: 'L', decorGroup: 'benches', src: '/stickers/decor_bench-wood_L_CA-US-FR-GB-AU.png' },
     'decor-bench-stone': { key: 'decor_bench-stone_L_CA-US-FR-GB-AU', label: 'Benches', family: 'Decor', size: 'L', decorGroup: 'benches', src: '/stickers/decor_bench-stone_L_CA-US-FR-GB-AU.png' },
     'decor-bench-iron':  { key: 'decor_bench-iron_L_CA-US-FR-GB-AU',  label: 'Benches', family: 'Decor', size: 'L', decorGroup: 'benches', src: '/stickers/decor_bench-iron_L_CA-US-FR-GB-AU.png' },
+    'decor-gnome-default': { key: 'decor_gnome-default_M_CA-US-FR-GB-AU', label: 'Gnomes', family: 'Decor', size: 'M', decorGroup: 'gnomes', src: '/stickers/decor_gnome-default_M_CA-US-FR-GB-AU.png' },
+    'decor-gnome-green':   { key: 'decor_gnome-green_M_CA-US-FR-GB-AU',   label: 'Gnomes', family: 'Decor', size: 'M', decorGroup: 'gnomes', src: '/stickers/decor_gnome-green_M_CA-US-FR-GB-AU.png' },
     'decor-light-solar':        { key: 'decor_light-solar_M_CA-US-FR-GB-AU',        label: 'Lights', family: 'Decor', size: 'M', decorGroup: 'lights', src: '/stickers/decor_light-solar_M_CA-US-FR-GB-AU.png' },
     'decor-light-lantern':       { key: 'decor_light-lantern_M_CA-US-FR-GB-AU',       label: 'Lights', family: 'Decor', size: 'M', decorGroup: 'lights', src: '/stickers/decor_light-lantern_M_CA-US-FR-GB-AU.png' },
     'decor-light-stone-lantern': { key: 'decor_light-stone-lantern_M_CA-US-FR-GB-AU', label: 'Lights', family: 'Decor', size: 'M', decorGroup: 'lights', src: '/stickers/decor_light-stone-lantern_M_CA-US-FR-GB-AU.png' },
