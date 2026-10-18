@@ -117,15 +117,15 @@ cd projects/garden-planner/app && npm run dev
 - **[DONE] Sheds decor** — 3 variants live (weathered default, cedar, pine). Added 2026-10-17.
 - **[DONE] Wheelbarrows decor** — 2 variants live (side default, front). Added 2026-10-17.
 - **[DONE] Gnomes decor** — 2 variants live (classic red-hat default, green-hat female). Added 2026-10-17.
+- **[DONE] Sundial decor** — 1 variant live (stone). Added 2026-10-17.
+- **[DONE] Compost Bins decor** — 2 variants live (wood default, plastic green). Added 2026-10-17.
 - **[DONE] Lights decor** — 3 variants live (solar stake default, Victorian lantern, stone lantern). Added 2026-10-17.
 - **[TODO] Decor gaps (pending images from Rob):**
   - 🔴 Raised bed (wood) — essential for veggie planners
   - 🔴 Pergola / arbour — major structural focal point
-  - 🟡 Compost bin
   - 🟡 Cold frame
   - 🟡 Half barrel / large urn planter
-  - 🔲 Garden gnome / sundial
-  - 🔲 Solar stake lights / lantern
+  - 🔲 Solar stake lights / lantern (more variants)
   - 🔲 Trellis arch / tunnel
   - 🔲 Rain barrel
   - 🔲 Hammock
