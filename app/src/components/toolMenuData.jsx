@@ -63,14 +63,14 @@ export const TOP_TOOLS = [
 ]
 
 export const BED_SUBS = [
-  { id: 'curved',   label: 'Curved',   hint: 'Click points · Enter to close' },
-  { id: 'straight', label: 'Straight', hint: 'Click points · angular edges'  },
-  { id: 'square',   label: 'Square',   hint: 'Tap + drag rectangle'          },
+  { id: 'curved',   label: 'Curved',   emoji: '〜', hint: 'Click points · Enter to close' },
+  { id: 'straight', label: 'Straight', emoji: '📏', hint: 'Click points · angular edges'  },
+  { id: 'square',   label: 'Square',   emoji: '⬜', hint: 'Tap + drag rectangle'          },
 ]
 
 export const FENCE_ITEMS = [
-  { id: 'picket-fence', label: 'Fences', hint: 'Click points · Enter to finish' },
-  { id: 'gate',         label: 'Gates',  hint: 'Place a gate section' },
+  { id: 'picket-fence', label: 'Fences', emoji: '🪵', hint: 'Click points · Enter to finish' },
+  { id: 'gate',         label: 'Gates',  emoji: '🚪', hint: 'Place a gate section' },
   {
     id: '__hedges', label: 'Hedges', emoji: '🌳', group: true,
     children: [
@@ -93,7 +93,7 @@ export const PATH_SUBS = [
 ]
 
 export const BUILD_ITEMS = [
-  { id: 'building', label: 'Building', hint: 'Tap + drag footprint' },
+  { id: 'building', label: 'Building', emoji: '🏠', hint: 'Tap + drag footprint' },
   {
     id: '__decks', label: 'Decks', emoji: '🪵', group: true,
     children: [
@@ -114,7 +114,7 @@ export const WATER_ITEMS = [
       { id: 'pool-sq',     label: 'Square Pool',   hint: 'Tap + drag rectangular pool' },
     ],
   },
-  { id: 'pond', label: 'Pond', hint: 'Freeform pond outline' },
+  { id: 'pond', label: 'Pond', emoji: '🌊', hint: 'Freeform pond outline' },
 ]
 
 export const DECOR_ITEMS = [
@@ -210,6 +210,7 @@ export function ToolMenu({
         }
       }} title={s.hint}
     >
+      {s.emoji && <span className="tool-menu-emoji" style={{marginRight: 4}}>{s.emoji}</span>}
       <span className="tool-menu-label">{s.label}</span>
     </button>
   )
