@@ -35,6 +35,10 @@ const BED_SVG = (
   </svg>
 )
 
+const ROCK_ICON = (
+  <img src="/icons/icon-rock-48.png" width="16" height="16" style={{display:'inline-block',verticalAlign:'middle',objectFit:'contain'}} alt="rock" />
+)
+
 const FENCE_SVG = (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{display:'inline-block',verticalAlign:'middle'}}>
     {/* Rails */}
@@ -80,7 +84,7 @@ export const FENCE_ITEMS = [
     ],
   },
   {
-    id: '__rockborders', label: 'Rock Borders', emoji: '🪨', group: true,
+    id: '__rockborders', label: 'Rock Borders', emoji: '🪨', svg: ROCK_ICON, group: true,
     children: [
       { id: 'rock-border-straight', label: 'Straight Border', hint: 'Click points · Enter to finish' },
       { id: 'rock-border-curved',   label: 'Curved Border',   hint: 'Click points · Enter to finish' },
@@ -237,7 +241,7 @@ export function ToolMenu({
             }
           }}
         >
-          {g.emoji && <span className="tool-menu-emoji">{g.emoji}</span>}
+          {(g.svg || g.emoji) && <span className="tool-menu-emoji">{g.svg ?? g.emoji}</span>}
           <span className="tool-menu-label">{g.label}</span>
           <span className="tool-menu-chevron">{isOpen ? '▾' : '▸'}</span>
         </button>
