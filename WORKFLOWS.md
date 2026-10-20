@@ -330,8 +330,22 @@ Missing any one of these = item either invisible in menu (3,4) or missing colour
 **Step 3 — Processing Rob-provided images (magenta background)**
 - Script: `tools/process-rob-images.py <input.jpg|png> <output.png>`
 - These are Gemini-generated with magenta (#FF00FF) background
+
+> ⚠️ **GEMINI ACCOUNT — CRITICAL:** Always use `https://gemini.google.com/u/1/app` (authuser=1) for all sticker/decor/icon generation. This is Rob's `contactsunsetpoetvintage@gmail.com` account (R G Plus) where all sticker history lives. **Never use authuser=0** (`k3yh0l35tud10@gmail.com` / Robert G — OpenClaw account). Verify bottom-left shows "R G" before uploading or prompting anything.
+
+> ⚠️ **BLOB GRAB — CRITICAL (icon remix pipeline):** When grabbing Gemini-generated images via CDP/WebSocket, always use `tools/grab-gemini-image.py` or equivalent logic that selects the **largest blob** (`naturalWidth > 100`, sorted by size). The Gemini UI renders both a small preview thumbnail AND the full image as separate blobs. The thumbnail is rendered on Gemini's dark card UI (black background). The full image has the correct magenta background. Grabbing the wrong blob = black background = pipeline failure. **Always verify background colour before processing:**
+> ```python
+> bg = data[5,5]  # sample corner pixel
+> mag_dist = ((bg[0]-255)**2 + bg[1]**2 + (bg[2]-255)**2)**0.5
+> blk_dist = (bg[0]**2 + bg[1]**2 + bg[2]**2)**0.5
+> print('BG is:', 'MAGENTA' if mag_dist < blk_dist else 'BLACK')
+> ```
+> If BLACK: re-grab using grab-gemini-image.py. Do NOT attempt to key black — it destroys outlines.
+
+> ⚠️ **WATERMARK ERASE ZONES:** Default in process-rob-images.py is 150px corners + 30px bottom strip. For icon-sized art (512px canvas) this is too large and clips the art. For icon remixes use **30px corners, no bottom strip**. Only increase if Gemini watermark is visibly present after processing.
+
 - **Correct order (do not change):**
-  1. Chroma key removal
+  1. Chroma key removal (magenta by default — verify BG colour first)
   2. Watermark erase AFTER keying (erasing before has no effect on JPEG)
   3. Crop using `alpha > 128` — NOT `> 10` (feathered edge pixels at 10-127 skew the bounding box causing unequal margins)
   4. Scale to fill canvas with equal padding (20px all sides)

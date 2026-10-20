@@ -46,11 +46,16 @@ def process(input_path, output_path):
     data[:,:,0] = np.where(spill, g, r)
     data[:,:,2] = np.where(spill, g, b)
 
-    # Step 2: Erase Gemini watermark zones AFTER keying
-    # (keying sets alpha; erasing before has no effect on JPEG inputs)
-    data[h-150:h, w-150:w, 3] = 0   # bottom-right 150x150
-    data[h-150:h, 0:150, 3] = 0     # bottom-left 150x150
-    data[h-30:h, :, 3] = 0          # bottom 30px full strip
+    # Step 1b: Strip outer 15px border (white border from Gemini output)
+    BORDER = 15
+    data[:BORDER, :, 3] = 0          # top strip
+    data[h-BORDER:, :, 3] = 0       # bottom strip
+    data[:, :BORDER, 3] = 0          # left strip
+    data[:, w-BORDER:, 3] = 0       # right strip
+
+    # Step 2: Erase Gemini watermark (bottom strip only — no corner zones)
+    # Corner zones were too aggressive and destroyed art pixels near edges.
+    data[h-30:h, :, 3] = 0          # bottom 30px full strip (watermark zone)
 
     result = Image.fromarray(data.clip(0, 255).astype(np.uint8), "RGBA")
 

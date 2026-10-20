@@ -280,6 +280,10 @@ export const PLANT_CATALOG = [
 
   { key:'decor_arch-metal_XL_CA-US-FR-GB-AU', label:'Metal Garden Arch', family:'Decor', src:'/stickers/decor_arch-metal_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
+  { key:'decor_trellis-wood-default_L_CA-US-FR-GB-AU', label:'Wooden Trellis',  family:'Decor', src:'/stickers/decor_trellis-wood-default_L_CA-US-FR-GB-AU.png', size:'L' },
+  { key:'decor_trellis-lattice_L_CA-US-FR-GB-AU',      label:'Wooden Lattice', family:'Decor', src:'/stickers/decor_trellis-lattice_L_CA-US-FR-GB-AU.png',      size:'L' },
+  { key:'decor_trellis-metal_XL_CA-US-FR-GB-AU',       label:'Metal Trellis',  family:'Decor', src:'/stickers/decor_trellis-metal_XL_CA-US-FR-GB-AU.png',       size:'XL' },
+
 ]
 
 // Families that are placed via the Decor/Water menus - exclude from plant tray

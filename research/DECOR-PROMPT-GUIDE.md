@@ -1,5 +1,49 @@
 # Garden Mapper — Decor Sticker Prompt Guide
-_Last updated: 2026-09-11_
+_Last updated: 2026-10-19_
+
+---
+
+## 0d. Workflow — Adding a Custom PNG Icon to a Tool Menu Group (2026-10-19)
+
+Use this when Rob provides an image to use as a tool group icon (e.g. Rock Borders, Fences header, etc.).
+This is separate from decor stickers — these are UI icons, not canvas-placed assets.
+
+### Step 1 — Process the image
+- If Rob provides a raw image: run `tools/process-rob-images.py` to chroma-key + crop to 48×48 transparent PNG
+- Target output: `app/public/icons/icon-<name>-48.png`
+- Size: 48px square, transparent background, centred content
+- Also save the working copy at `projects/garden-planner/icon-<name>-48.png` (untracked)
+
+### Step 2 — Add to `toolMenuData.jsx`
+```jsx
+// At the top of the file, with BED_SVG / FENCE_SVG:
+const MYCAT_ICON = (
+  <img src="/icons/icon-mycat-48.png" width="16" height="16" style={{display:'inline-block',verticalAlign:'middle',objectFit:'contain'}} alt="mycat" />
+)
+
+// On the target group item:
+{ id: '__myCatGroup', label: 'My Category', emoji: '🪨', svg: MYCAT_ICON, group: true, ... }
+// OR for a TOP_TOOLS item:
+{ id: 'fences', label: 'Fences', emoji: '🪵', svg: FENCE_SVG }
+```
+
+### Step 3 — Verify
+- `npm run dev` at localhost:5200 — confirm no compile errors
+- Click into the relevant tool menu and confirm the icon renders
+- `renderGroup()` in `toolMenuData.jsx` already supports `g.svg ?? g.emoji` — no further changes needed
+
+### Step 4 — Commit
+```
+git add app/public/icons/icon-<name>-48.png app/src/components/toolMenuData.jsx
+git commit -m "Feat: custom <name> icon for <Group> tool menu"
+git push
+```
+
+### Notes
+- Icon files live in `app/public/icons/` (served at `/icons/...` in the app)
+- Source/working copies at `projects/garden-planner/icon-*.png` (gitignored, not committed)
+- The `svg:` key on tool items accepts any JSX — `<img>`, `<svg>`, etc.
+- Width/height 16px in the JSX is the display size in the tool button; the PNG can be larger (48px) for crispness on HiDPI
 
 ---
 

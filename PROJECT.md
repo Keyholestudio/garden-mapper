@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-10-17 (Benches, Sheds, Wheelbarrows decor added; decor gap list updated)_
+_Last updated: 2026-10-19 (Rock Borders tool icon added; decor icon pipeline documented)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -102,6 +102,7 @@ cd projects/garden-planner/app && npm run dev
 
 ### 🔴 Immediate
 - **[TODO] Better background removal tool** — current pipeline (chroma key) struggles with ombre/gradient Gemini backgrounds. Investigate `rembg` (AI-based, local) or Remove.bg API for Rob-provided images with complex backgrounds.
+- **[TODO] Enable Vercel Analytics** — one toggle in Vercel dashboard (Project → Analytics → Enable). Free on hobby plan. Gives country-level web traffic passively. **Privacy policy impact:** must disclose that anonymous usage data (page views, country, referrer) is collected via Vercel Analytics and processed by Vercel Inc. No IP addresses stored. Add a bullet to the Analytics/Tracking section of gardenmapper.ca/store-policy before enabling. Low effort — Vercel provides standard disclosure language. Do this before or same session as enabling the toggle.
 
 - **[DONE] Lotus** — Rob provided image (cyan BG), processed + committed. Live on web. Android deploy pending USB.
 - **[DONE] water-mint PNG** — generated + committed. Live on web. Commit: `fc01fba`.
@@ -120,6 +121,8 @@ cd projects/garden-planner/app && npm run dev
 - **[DONE] Sundial decor** — 1 variant live (stone). Added 2026-10-17.
 - **[DONE] Compost Bins decor** — 2 variants live (wood default, plastic green). Added 2026-10-17.
 - **[DONE] Lights decor** — 3 variants live (solar stake default, Victorian lantern, stone lantern). Added 2026-10-17.
+- **[DONE] Rock Borders tool icon** — custom PNG icon wired into Fences → Rock Borders group header. Commit `fbf6d64`. 2026-10-19.
+- **[NEXT] Decor category icon** — Rob will share an image next session. Process + wire into toolMenuData.jsx using `0d` workflow in DECOR-PROMPT-GUIDE.md.
 - **[TODO] Decor gaps (pending images from Rob):**
   - 🔴 Raised bed (wood) — essential for veggie planners
   - 🔴 Pergola / arbour — major structural focal point

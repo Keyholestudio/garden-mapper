@@ -194,6 +194,11 @@ export const DECOR_VARIANTS = {
     { label: 'Wood Arch',  subtitle: 'Wood Arch',  size: 'XL', colour: '#B5793B', src: '/stickers/decor_arch-wood_XL_CA-US-FR-GB-AU.png' },
     { label: 'Metal Arch', subtitle: 'Metal Arch', size: 'XL', colour: '#6B7080', src: '/stickers/decor_arch-metal_XL_CA-US-FR-GB-AU.png' },
   ],
+  trellises: [
+    { label: 'Wooden Trellis', subtitle: 'Wooden Trellis', size: 'L',  colour: '#C8862A', src: '/stickers/decor_trellis-wood-default_L_CA-US-FR-GB-AU.png' },
+    { label: 'Wooden Lattice', subtitle: 'Wooden Lattice', size: 'L',  colour: '#D4A55A', src: '/stickers/decor_trellis-lattice_L_CA-US-FR-GB-AU.png' },
+    { label: 'Metal Trellis',  subtitle: 'Metal Trellis',  size: 'XL', colour: '#4A4A50', src: '/stickers/decor_trellis-metal_XL_CA-US-FR-GB-AU.png' },
+  ],
   pots: [
     { label: 'Red Round',         subtitle: 'Red Round Pot',        size: 'S', colour: '#C82B2B', src: '/stickers/decor_pot-red-round_S_CA-US-FR-GB-AU.png' },
     { label: 'Terracotta Round',  subtitle: 'Terracotta Round Pot', size: 'M', colour: '#E87A7A', src: '/stickers/decor_pot-terracotta-round_M_CA-US-FR-GB-AU.png' },

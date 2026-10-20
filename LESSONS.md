@@ -1,6 +1,17 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L103 — Blob grab for icon remixes: always grab the LARGEST blob, verify BG colour before keying (2026-10-20)
+**What happened:** Batch icon generator grabbed the small Gemini preview thumbnail (rendered on dark UI card = black BG) instead of the full 1024x1024 image (magenta BG). Black-keying then destroyed art outlines.
+**Rule:** Always use grab-gemini-image.py logic (largest blob by naturalWidth). Before ANY pipeline run, sample corner pixel [5,5] and measure distance to magenta vs black. If closer to black, re-grab. Never key black — it destroys outlines. Watermark erase for icon remixes: 30px corners only, no bottom strip.
+
+---
+
+## L102 — Gemini account for sticker/decor/icon work = contactsunsetpoetvintage@gmail.com (2026-10-19)
+**Rule:** Always open Gemini at `https://gemini.google.com/u/1/app` (authuser=1). This is Rob's R G Plus account where all sticker history lives. `authuser=0` is the OpenClaw k3yhole account — wrong account for any image generation. Verify bottom-left shows "R G" before uploading or prompting. The `u/1/` URL segment is the reliable way to force the correct account in Brave.
+
+---
+
 ## L099 — Rob-provided images: use process-rob-images.py, alpha>128 crop, watermark erase AFTER keying (2026-10-16)
 **What happened:** Multiple failed attempts at centering greenhouse stickers from Rob-provided Gemini JPGs.
 **Root causes (three separate bugs):**

@@ -139,6 +139,7 @@ export const DECOR_ITEMS = [
   { id: 'decor-pot-red-round', label: 'Flower Pots', emoji: '🪴', hint: 'Tap to place a flower pot', decorGroup: 'pots' },
   { id: 'decor-stairs-stone', label: 'Stairs', emoji: '🪜', hint: 'Tap to place stairs', decorGroup: 'stairs' },
   { id: 'decor-arch-wood', label: 'Arches', emoji: '🌼', hint: 'Tap to place an arch', decorGroup: 'arches' },
+  { id: 'decor-trellis-wood-default', label: 'Trellis', emoji: '🪴', hint: 'Tap to place a trellis', decorGroup: 'trellises' },
 ]
 
 export const ITEMS_MAP = {

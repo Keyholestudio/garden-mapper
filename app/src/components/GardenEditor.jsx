@@ -534,6 +534,9 @@ export default function GardenEditor() {
     'decor-stairs-stone':      { key: 'decor_stairs-stone_M_CA-US-FR-GB-AU',      label: 'Stone Stairs',     family: 'Decor', size: 'M', decorGroup: 'stairs', src: '/stickers/decor_stairs-stone_M_CA-US-FR-GB-AU.png'      },
     'decor-arch-wood':    { key: 'decor_arch-wood_XL_CA-US-FR-GB-AU',    label: 'Arches', family: 'Decor', size: 'XL', decorGroup: 'arches', src: '/stickers/decor_arch-wood_XL_CA-US-FR-GB-AU.png'    },
     'decor-arch-metal':   { key: 'decor_arch-metal_XL_CA-US-FR-GB-AU',   label: 'Arches', family: 'Decor', size: 'XL', decorGroup: 'arches', src: '/stickers/decor_arch-metal_XL_CA-US-FR-GB-AU.png'   },
+    'decor-trellis-wood-default': { key: 'decor_trellis-wood-default_L_CA-US-FR-GB-AU', label: 'Trellis', family: 'Decor', size: 'L',  decorGroup: 'trellises', src: '/stickers/decor_trellis-wood-default_L_CA-US-FR-GB-AU.png' },
+    'decor-trellis-lattice':      { key: 'decor_trellis-lattice_L_CA-US-FR-GB-AU',      label: 'Trellis', family: 'Decor', size: 'L',  decorGroup: 'trellises', src: '/stickers/decor_trellis-lattice_L_CA-US-FR-GB-AU.png' },
+    'decor-trellis-metal':        { key: 'decor_trellis-metal_XL_CA-US-FR-GB-AU',       label: 'Trellis', family: 'Decor', size: 'XL', decorGroup: 'trellises', src: '/stickers/decor_trellis-metal_XL_CA-US-FR-GB-AU.png' },
     // Gates
     'gate-white':    { key: 'decor_gate-wood-white_XL_CA-US-FR-GB-AU',    label: 'White Gate',    family: 'Gate', size: 'XL', src: '/stickers/decor_gate-wood-white_XL_CA-US-FR-GB-AU.png'    },
     'gate-cedar':    { key: 'decor_gate-wood-cedar_XL_CA-US-FR-GB-AU',    label: 'Cedar Gate',    family: 'Gate', size: 'XL', src: '/stickers/decor_gate-wood-cedar_XL_CA-US-FR-GB-AU.png'    },
