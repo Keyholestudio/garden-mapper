@@ -58,6 +58,9 @@
 | Greenhouse (Rectangular) | `decor_greenhouse-rect_XXL_CA-US-FR-GB-AU` | core | XXL | done | ✅ live | variant swatch |
 | Wood Garden Arch | `decor_arch-wood_XL_CA-US-FR-GB-AU` | core | XL | none | ✅ live | |
 | Metal Garden Arch | `decor_arch-metal_XL_CA-US-FR-GB-AU` | core | XL | none | ✅ live | |
+| Wooden Trellis (default) | `decor_trellis-wood-default_L_CA-US-FR-GB-AU` | core | L | trellises | ✅ live | added 2026-10-20 |
+| Wooden Lattice | `decor_trellis-lattice_L_CA-US-FR-GB-AU` | core | L | trellises | ✅ live | added 2026-10-20 |
+| Metal Trellis | `decor_trellis-metal_XL_CA-US-FR-GB-AU` | core | XL | trellises | ✅ live | added 2026-10-20 |
 
 ---
 
