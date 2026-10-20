@@ -64,12 +64,15 @@
 
 ---
 
-## 🛑 Wheelbarrows
+## 🪣 Tools (formerly Wheelbarrows)
+
+_Menu button label: "Tools". decorGroup key: `wheelbarrows`. Sticker filenames unchanged._
 
 | Label | Key | Source | Size | Variants | Status | Notes |
 |---|---|---|---|---|---|---|
-| Wheelbarrow (Side) | `decor_wheelbarrow-default_L_CA-US-FR-GB-AU` | core | L | done | ✅ live | PLANT_VARIANTS key: `wheelbarrows`. Default = side view |
+| Wheelbarrow (Side) | `decor_wheelbarrow-default_L_CA-US-FR-GB-AU` | core | L | done | ✅ live | Default entry for Tools menu. PLANT_VARIANTS key: `wheelbarrows` |
 | Wheelbarrow (Front) | `decor_wheelbarrow-front_L_CA-US-FR-GB-AU` | core | L | done | ✅ live | variant swatch |
+| Shovel | `decor_tool-shovel_M_CA-US-FR-GB-AU` | core | M | none | ✅ live | added 2026-10-20 |
 
 ---
 

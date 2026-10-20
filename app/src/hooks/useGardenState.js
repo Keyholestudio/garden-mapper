@@ -215,8 +215,9 @@ export const DECOR_VARIANTS = {
     { label: 'Bronzed Table',    subtitle: 'Bronzed Table',    size: 'XXL', colour: '#7B3F2E', src: '/stickers/decor_table-bronzed_XXL_CA-US-FR-GB-AU.png' },
   ],
   wheelbarrows: [
-    { label: 'Side',  subtitle: 'Wheelbarrow (Side)',  size: 'L', colour: '#8B4040', src: '/stickers/decor_wheelbarrow-default_L_CA-US-FR-GB-AU.png' },
-    { label: 'Front', subtitle: 'Wheelbarrow (Front)', size: 'L', colour: '#7A3A3A', src: '/stickers/decor_wheelbarrow-front_L_CA-US-FR-GB-AU.png' },
+    { label: 'Wheelbarrow (Side)',  subtitle: 'Wheelbarrow (Side)',  size: 'L', colour: '#8B4040', src: '/stickers/decor_wheelbarrow-default_L_CA-US-FR-GB-AU.png' },
+    { label: 'Wheelbarrow (Front)', subtitle: 'Wheelbarrow (Front)', size: 'L', colour: '#7A3A3A', src: '/stickers/decor_wheelbarrow-front_L_CA-US-FR-GB-AU.png' },
+    { label: 'Shovel',             subtitle: 'Garden Shovel',        size: 'M', colour: '#6A6A70', src: '/stickers/decor_tool-shovel_M_CA-US-FR-GB-AU.png' },
   ],
   sheds: [
     { label: 'Weathered', subtitle: 'Weathered Wood Shed', size: 'XXL', colour: '#A89880', src: '/stickers/decor_shed-default_XXL_CA-US-FR-GB-AU.png' },

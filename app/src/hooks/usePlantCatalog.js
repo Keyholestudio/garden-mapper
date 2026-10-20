@@ -240,6 +240,7 @@ export const PLANT_CATALOG = [
 
   { key:'decor_shed-default_XXL_CA-US-FR-GB-AU', label:'Garden Shed', family:'Decor', src:'/stickers/decor_shed-default_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
   { key:'decor_wheelbarrow-default_L_CA-US-FR-GB-AU', label:'Wheelbarrow', family:'Decor', src:'/stickers/decor_wheelbarrow-default_L_CA-US-FR-GB-AU.png', size:'L' },
+  { key:'decor_tool-shovel_M_CA-US-FR-GB-AU',         label:'Shovel',      family:'Decor', src:'/stickers/decor_tool-shovel_M_CA-US-FR-GB-AU.png',         size:'M' },
   { key:'decor_bench-wood_L_CA-US-FR-GB-AU',  label:'Garden Bench', family:'Decor', src:'/stickers/decor_bench-wood_L_CA-US-FR-GB-AU.png',  size:'L' },
   { key:'decor_beehive-default_L_CA-US-FR-GB-AU', label:'Beehive', family:'Decor', src:'/stickers/decor_beehive-default_L_CA-US-FR-GB-AU.png' },
   { key:'decor_light-solar_M_CA-US-FR-GB-AU', label:'Garden Lights', family:'Decor', src:'/stickers/decor_light-solar_M_CA-US-FR-GB-AU.png', size:'M' },
