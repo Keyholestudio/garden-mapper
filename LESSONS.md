@@ -1,6 +1,12 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L104 — DECOR-DATABASE.md must be updated in the same git commit as new decor items (2026-10-20)
+**What happened:** DECOR-DATABASE.md was updated after the decor commit instead of being included in it.
+**Rule:** When adding any new decor category or variant, update `research/DECOR-DATABASE.md` BEFORE running `git commit`. It must be part of the same commit as the stickers + code changes. Never split it into a follow-up commit.
+
+---
+
 ## L103 — Blob grab for icon remixes: always grab the LARGEST blob, verify BG colour before keying (2026-10-20)
 **What happened:** Batch icon generator grabbed the small Gemini preview thumbnail (rendered on dark UI card = black BG) instead of the full 1024x1024 image (magenta BG). Black-keying then destroyed art outlines.
 **Rule:** Always use grab-gemini-image.py logic (largest blob by naturalWidth). Before ANY pipeline run, sample corner pixel [5,5] and measure distance to magenta vs black. If closer to black, re-grab. Never key black — it destroys outlines. Watermark erase for icon remixes: 30px corners only, no bottom strip.

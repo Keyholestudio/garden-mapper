@@ -352,8 +352,9 @@ Missing any one of these = item either invisible in menu (3,4) or missing colour
   5. Script auto-verifies margins and warns if top/bottom differ by >10px
 - Send **one** preview to Rob and wait for approval before running all variants
 
-**Step 4 — Update DECOR-DATABASE.md**
-- Add the new item immediately after approval + commit
+**Step 4 — Update DECOR-DATABASE.md** ⚠️ MANDATORY — do this BEFORE the git commit
+- Add every new decor item to `research/DECOR-DATABASE.md` as part of the same commit that adds the stickers and wires the code
+- Never commit a new decor item without its DECOR-DATABASE.md entry in the same commit
 - Mark status ✅ live once pushed to GitHub
 
 ---
