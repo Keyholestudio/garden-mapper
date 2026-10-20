@@ -259,7 +259,10 @@ export const DECOR_VARIANTS = {
   rocks: [
     { label: 'River Stone', subtitle: 'River Stone', size: 'XS', colour: '#C4A882', src: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png' },
     { label: 'Brown Rock',  subtitle: 'Brown Rock',  size: 'XS', colour: '#7A6A45', src: '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png' },
-    { label: 'Grey Rock',   subtitle: 'Grey Rock',   size: 'XS', colour: '#6E7A7A', src: '/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Grey Rock',       subtitle: 'Grey Rock',       size: 'XS', colour: '#6E7A7A', src: '/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Grey River Stone',  subtitle: 'Grey River Stone', size: 'XS', colour: '#B0AFA8', src: '/stickers/decor_rock-white_L_CA-US-FR-GB-AU.png' },
+    { label: 'Stepping Stone',    subtitle: 'Stepping Stone',   size: 'XS', colour: '#C8A87A', src: '/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.png' },
+    { label: 'Stepping Stone II', subtitle: 'Stepping Stone II',size: 'XS', colour: '#C8B890', src: '/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.png' },
   ],
   fountains: [
     { label: 'Small',  subtitle: 'Small Fountain',  size: 'S', colour: '#7EC8E3', src: '/stickers/water-feature_fountain-sm_S_CA-US-FR-GB-AU.png' },

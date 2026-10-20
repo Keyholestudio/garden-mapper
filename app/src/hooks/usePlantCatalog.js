@@ -234,6 +234,9 @@ export const PLANT_CATALOG = [
   { key:'decor_rock-medium_L_CA-US-FR-GB-AU', label:'Medium Garden Stone', family:'Decor', src:'/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png', size:'L' },
 
   { key:'decor_rock-large_XL_CA-US-FR-GB-AU', label:'Large Garden Stone', family:'Decor', src:'/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png', size:'XL' },
+  { key:'decor_rock-white_L_CA-US-FR-GB-AU', label:'Grey River Stone', family:'Decor', src:'/stickers/decor_rock-white_L_CA-US-FR-GB-AU.png', size:'L' },
+  { key:'decor_rock-brown_L_CA-US-FR-GB-AU', label:'Stepping Stone', family:'Decor', src:'/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.png', size:'L' },
+  { key:'decor_rock-flat_L_CA-US-FR-GB-AU', label:'Stepping Stone II', family:'Decor', src:'/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.png', size:'L' },
 
   { key:'decor_shed-default_XXL_CA-US-FR-GB-AU', label:'Garden Shed', family:'Decor', src:'/stickers/decor_shed-default_XXL_CA-US-FR-GB-AU.png', size:'XXL' },
   { key:'decor_wheelbarrow-default_L_CA-US-FR-GB-AU', label:'Wheelbarrow', family:'Decor', src:'/stickers/decor_wheelbarrow-default_L_CA-US-FR-GB-AU.png', size:'L' },
