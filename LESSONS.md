@@ -1,9 +1,9 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
-## L104 — DECOR-DATABASE.md must be updated in the same git commit as new decor items (2026-10-20)
-**What happened:** DECOR-DATABASE.md was updated after the decor commit instead of being included in it.
-**Rule:** When adding any new decor category or variant, update `research/DECOR-DATABASE.md` BEFORE running `git commit`. It must be part of the same commit as the stickers + code changes. Never split it into a follow-up commit.
+## L104 — Always update DECOR-DATABASE.md and PLANT-DATABASE.md when adding new items (2026-10-20)
+**What happened:** DECOR-DATABASE.md was not updated when new Trellis stickers were added — it had to be done as a follow-up.
+**Rule:** Updating the relevant database is a non-optional part of every add workflow. It doesn't matter whether it happens before or after the commit — it must always happen, every time, no exceptions. Rob should be able to trust these files as accurate without asking.
 
 ---
 

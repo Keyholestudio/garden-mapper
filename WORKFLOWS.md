@@ -352,9 +352,8 @@ Missing any one of these = item either invisible in menu (3,4) or missing colour
   5. Script auto-verifies margins and warns if top/bottom differ by >10px
 - Send **one** preview to Rob and wait for approval before running all variants
 
-**Step 4 — Update DECOR-DATABASE.md** ⚠️ MANDATORY — do this BEFORE the git commit
-- Add every new decor item to `research/DECOR-DATABASE.md` as part of the same commit that adds the stickers and wires the code
-- Never commit a new decor item without its DECOR-DATABASE.md entry in the same commit
+**Step 4 — Update DECOR-DATABASE.md** ⚠️ MANDATORY
+- Add every new decor item to `research/DECOR-DATABASE.md` — this is always done, no exceptions
 - Mark status ✅ live once pushed to GitHub
 
 ---
@@ -414,7 +413,7 @@ Missing any one of these = item either invisible in menu (3,4) or missing colour
 2. Add entries to the correct pack file - **NEVER to `usePlantCatalog.js`**
    - `key`, `label`, `size`, `latinName`, `searchTerms[]`, `traits[]` - use staging file as the source
 3. Run `pwsh tools/validate-tray.ps1` - must show 0 errors before committing
-4. Update `research/PLANT-DATABASE.md` → fill in the Sticker ID column for each approved plant
+4. Update `research/PLANT-DATABASE.md` → fill in the Sticker ID column for each approved plant ⚠️ MANDATORY — always done, no exceptions
 5. Delete the committed rows from the staging file
 6. `git add -A && git commit -m "Sticker: add [Name1], [Name2] ([pack name])"` - batch in one commit
 7. `git push` → Vercel auto-deploys in ~15s
