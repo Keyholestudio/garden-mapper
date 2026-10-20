@@ -122,6 +122,9 @@ cd projects/garden-planner/app && npm run dev
 - **[DONE] Compost Bins decor** — 2 variants live (wood default, plastic green). Added 2026-10-17.
 - **[DONE] Lights decor** — 3 variants live (solar stake default, Victorian lantern, stone lantern). Added 2026-10-17.
 - **[DONE] Rock Borders tool icon** — custom PNG icon wired into Fences → Rock Borders group header. Commit `fbf6d64`. 2026-10-19.
+- **[DONE] Trellis decor category** — 3 variants (Wooden Trellis default, Wooden Lattice, Metal Trellis). Commit `7f2c56d`. 2026-10-20.
+- **[DONE] Tools category** — renamed from Wheelbarrows (keys/filenames untouched). Shovel added as first tool sticker. Commit `0fd4ec3`. 2026-10-20.
+- **[DONE] Tree Trunks plant pack** — new pack, 1 tray entry (Oak default), 4 colour picker variants (Dead, Birch, Cherry, Cedar). Commit `dfafca4`. 2026-10-20.
 - **[NEXT] Decor category icon** — Rob will share an image next session. Process + wire into toolMenuData.jsx using `0d` workflow in DECOR-PROMPT-GUIDE.md.
 - **[TODO] Decor gaps (pending images from Rob):**
   - 🔴 Raised bed (wood) — essential for veggie planners

@@ -95,4 +95,16 @@ _History for v1–v7 and Phases 1–6 archived at: `memory/deep/garden-planner/r
 
 ---
 
+## Decor + Pack Sprint — 2026-10-20
+
+| # | Change | Commit | Status |
+|---|--------|--------|---------|
+| — | Trellis decor category — Wooden Trellis (default), Wooden Lattice, Metal Trellis | `7f2c56d` | ✅ |
+| — | DECOR-DATABASE updated for Trellis; L104 logged (always update databases) | `565b78f` / `9cf6af1` | ✅ |
+| — | Wheelbarrows → Tools rename (label only, keys/filenames unchanged) | `0fd4ec3` | ✅ |
+| — | Shovel sticker added to Tools category (`decor_tool-shovel_M`) | `0fd4ec3` | ✅ |
+| — | Tree Trunks pack — 1 tray entry (Oak), 4 colour variants (Dead, Birch, Cherry, Cedar) | `dfafca4` | ✅ |
+
+---
+
 _Add new entries above this line. Archive completed phases when this file exceeds ~4KB._
