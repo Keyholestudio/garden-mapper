@@ -305,6 +305,13 @@ export const PACK_REGISTRY = [
     loader: () => import('./pack-bulbs-summer.js'),
     families: ['Summer Bulb'],
   },
+  {
+    id: 'tree-trunks',
+    label: 'Tree Trunks',
+    eager: false,
+    loader: () => import('./pack-tree-trunks.js'),
+    families: ['Tree Trunk'],
+  },
 ];
 
 // Families served by lazy packs - used to exclude them from core tray render
@@ -355,6 +362,7 @@ import { entries as _decor }         from './pack-decor.js'
 import { entries as _grasses }       from './pack-grasses-ornamental.js'
 import { entries as _groundcovers }  from './pack-groundcovers.js'
 import { entries as _bulbsSummer }   from './pack-bulbs-summer.js'
+import { entries as _treeTrunks }    from './pack-tree-trunks.js'
 
 export const ALL_PACK_ENTRIES = [
   ..._cacti, ..._tropical, ..._fruitPome, ..._vegLeafy, ..._vegRoot, ..._vegBulb,
@@ -364,5 +372,5 @@ export const ALL_PACK_ENTRIES = [
   ..._ferns, ..._treesDecid, ..._treesEverg, ..._treesConif, ..._climbFlower,
   ..._climbEverg, ..._climbDecid, ..._shrubsDecid, ..._shrubsEverg, ..._shrubsFlower,
   ..._shrubsConif, ..._aquatics, ..._architectural, ..._bulbsSpring, ..._decor,
-  ..._grasses, ..._groundcovers, ..._bulbsSummer,
+  ..._grasses, ..._groundcovers, ..._bulbsSummer, ..._treeTrunks,
 ];

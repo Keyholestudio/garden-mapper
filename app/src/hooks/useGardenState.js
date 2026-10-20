@@ -47,6 +47,13 @@ export const TEXTURE_MAP = {
 export const PLANT_VARIANTS = {
   // Rule: first entry is always the default (src: null = use base catalog src, variantSrc cleared to null on click)
   // label = family value from usePlantCatalog.js — matches the subtitle shown for plants without a colour picker
+  'tree-trunk_oak': [
+    { label: 'Tree Trunk', name: 'Oak Trunk',    colour: '#C8862A', src: null },
+    { label: 'Dead',       name: 'Dead Trunk',   colour: '#8A9070', src: '/stickers/tree-trunk_dead_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Birch',      name: 'Birch Trunk',  colour: '#E8E8D8', src: '/stickers/tree-trunk_birch_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Cherry',     name: 'Cherry Trunk', colour: '#A0522D', src: '/stickers/tree-trunk_cherry_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Cedar',      name: 'Cedar Trunk',  colour: '#C87941', src: '/stickers/tree-trunk_cedar_XL_CA-US-FR-GB-AU.png' },
+  ],
   'tree-deciduous_maple': [
     { label: 'Deciduous Tree', name: 'Maple Tree',      colour: '#4CAF50', src: null },
     { label: 'Dark Green',     name: 'Maple Tree',      colour: '#2E7D32', src: '/stickers/tree-deciduous_maple_XXL_dark-green.png' },

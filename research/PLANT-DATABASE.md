@@ -422,3 +422,16 @@ _Backfilled 2026-08-05 — stickers were generated before the database workflow 
 | Bougainvillea | Bougainvillea spp. | Nyctaginaceae | AU US FR GB | XL | pack-tropical | tree-tropical_bougainvillea_XL_CA-US-FR-GB-AU | tropical, climbing, vivid-colour | bougainvillea | planned | |
 | Jacaranda Tree | Jacaranda mimosifolia | Bignoniaceae | AU US FR GB | XXL | pack-tropical | tree-tropical_jacaranda_XXL_CA-US-FR-GB-AU | tropical, purple-flower, deciduous | jacaranda, jacaranda mimosifolia | none | |
 | Plumeria / Frangipani | Plumeria spp. | Apocynaceae | AU US FR GB | M | pack-tropical | tree-tropical_plumeria_M_CA-US-FR-GB-AU | tropical, fragrant, flower | plumeria, frangipani | planned | |
+
+---
+
+## 🪵 Tree Trunks (pack-tree-trunks)
+_Added 2026-10-20. One tray entry (Oak). All 5 variants selectable via colour picker._
+
+| Common Name | Latin Name | Family Group | Regions | Size | Pack | Sticker ID | Traits | Search Terms | Variants | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Tree Trunk (Oak) | — | Tree Trunk | CA US FR GB AU | XL | pack-tree-trunks | tree-trunk_oak_XL_CA-US-FR-GB-AU | decorative, structural, bark | trunk, tree trunk, stump, bark, oak | done (5 variants) | ✅ live. Default tray entry. Colour picker: Oak, Dead, Birch, Cherry, Cedar |
+| Tree Trunk (Dead) | — | Tree Trunk | CA US FR GB AU | XL | pack-tree-trunks | tree-trunk_dead_XL_CA-US-FR-GB-AU | decorative, dead, mossy | dead trunk, snag, mossy trunk | variant | ✅ live. Variant only — not in tray |
+| Tree Trunk (Birch) | — | Tree Trunk | CA US FR GB AU | XL | pack-tree-trunks | tree-trunk_birch_XL_CA-US-FR-GB-AU | decorative, white bark, birch | birch trunk, white trunk | variant | ✅ live. Variant only — not in tray |
+| Tree Trunk (Cherry) | — | Tree Trunk | CA US FR GB AU | XL | pack-tree-trunks | tree-trunk_cherry_XL_CA-US-FR-GB-AU | decorative, bark, cherry | cherry trunk, red trunk | variant | ✅ live. Variant only — not in tray |
+| Tree Trunk (Cedar) | — | Tree Trunk | CA US FR GB AU | XL | pack-tree-trunks | tree-trunk_cedar_XL_CA-US-FR-GB-AU | decorative, tall, slim, cedar | cedar trunk, tall trunk | variant | ✅ live. Variant only — not in tray |
