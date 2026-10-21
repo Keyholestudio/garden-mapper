@@ -181,6 +181,14 @@ _Menu button label: "Tools". decorGroup key: `wheelbarrows`. Sticker filenames u
 
 ---
 
+## 🏊 Pool Accessories
+
+| Label | Key | Source | Size | Variants | Status | Notes |
+|---|---|---|---|---|---|---|
+| Pool Railing | `decor_pool-railing_M_CA-US-FR-GB-AU` | core | M | none | ✅ live | Water menu. Added 2026-10-21 |
+
+---
+
 ## 🪜 Stairs / Steps
 
 | Label | Key | Source | Size | Variants | Status | Notes |
