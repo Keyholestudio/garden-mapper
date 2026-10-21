@@ -225,6 +225,12 @@ export const DECOR_VARIANTS = {
     { label: 'Wheelbarrow (Side)',  subtitle: 'Wheelbarrow (Side)',  size: 'L', colour: '#8B4040', src: '/stickers/decor_wheelbarrow-default_L_CA-US-FR-GB-AU.png' },
     { label: 'Wheelbarrow (Front)', subtitle: 'Wheelbarrow (Front)', size: 'L', colour: '#7A3A3A', src: '/stickers/decor_wheelbarrow-front_L_CA-US-FR-GB-AU.png' },
     { label: 'Shovel',             subtitle: 'Garden Shovel',        size: 'M', colour: '#6A6A70', src: '/stickers/decor_tool-shovel_M_CA-US-FR-GB-AU.png' },
+    { label: 'Trowel',             subtitle: 'Garden Trowel',        size: 'M', colour: '#7A7A7A', src: '/stickers/decor_tool-trowel_M_CA-US-FR-GB-AU.png' },
+    { label: 'Watering Can',       subtitle: 'Watering Can',         size: 'M', colour: '#A0A0A8', src: '/stickers/decor_tool-watering-can_M_CA-US-FR-GB-AU.png' },
+    { label: 'Garden Fork',        subtitle: 'Garden Fork',          size: 'M', colour: '#6A6A70', src: '/stickers/decor_tool-garden-fork_M_CA-US-FR-GB-AU.png' },
+    { label: 'Rake',               subtitle: 'Garden Rake',          size: 'M', colour: '#4A7A4A', src: '/stickers/decor_tool-rake_M_CA-US-FR-GB-AU.png' },
+    { label: 'Hose',               subtitle: 'Garden Hose',          size: 'M', colour: '#3A8A70', src: '/stickers/decor_tool-hose_M_CA-US-FR-GB-AU.png' },
+    { label: 'Garden Hoe',         subtitle: 'Garden Hoe',           size: 'M', colour: '#6A6A70', src: '/stickers/decor_tool-garden-hoe_M_CA-US-FR-GB-AU.png' },
   ],
   sheds: [
     { label: 'Weathered', subtitle: 'Weathered Wood Shed', size: 'XXL', colour: '#A89880', src: '/stickers/decor_shed-default_XXL_CA-US-FR-GB-AU.png' },

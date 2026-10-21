@@ -72,7 +72,13 @@ _Menu button label: "Tools". decorGroup key: `wheelbarrows`. Sticker filenames u
 |---|---|---|---|---|---|---|
 | Wheelbarrow (Side) | `decor_wheelbarrow-default_L_CA-US-FR-GB-AU` | core | L | done | ✅ live | Default entry for Tools menu. PLANT_VARIANTS key: `wheelbarrows` |
 | Wheelbarrow (Front) | `decor_wheelbarrow-front_L_CA-US-FR-GB-AU` | core | L | done | ✅ live | variant swatch |
-| Shovel | `decor_tool-shovel_M_CA-US-FR-GB-AU` | core | M | none | ✅ live | added 2026-10-20 |
+| Shovel | `decor_tool-shovel_M_CA-US-FR-GB-AU` | core | M | none | ✅ live | replaced 2026-10-21 with new art |
+| Trowel | `decor_tool-trowel_M_CA-US-FR-GB-AU` | core | M | none | ✅ live | added 2026-10-21 |
+| Watering Can | `decor_tool-watering-can_M_CA-US-FR-GB-AU` | core | M | none | ✅ live | added 2026-10-21 |
+| Garden Fork | `decor_tool-garden-fork_M_CA-US-FR-GB-AU` | core | M | none | ✅ live | added 2026-10-21 |
+| Rake | `decor_tool-rake_M_CA-US-FR-GB-AU` | core | M | none | ✅ live | added 2026-10-21 |
+| Hose | `decor_tool-hose_M_CA-US-FR-GB-AU` | core | M | none | ✅ live | added 2026-10-21 |
+| Garden Hoe | `decor_tool-garden-hoe_M_CA-US-FR-GB-AU` | core | M | none | ✅ live | added 2026-10-21 |
 
 ---
 
