@@ -15,6 +15,7 @@ Usage: python process-rob-images.py <input.jpg|png> <output.png>
 from PIL import Image
 import numpy as np
 import sys, os
+from collections import deque
 
 OUT_SIZE   = 512
 PADDING    = 20       # equal px margin on all sides in output
@@ -56,6 +57,49 @@ def process(input_path, output_path):
     # Step 2: Erase Gemini watermark (bottom strip only — no corner zones)
     # Corner zones were too aggressive and destroyed art pixels near edges.
     data[h-30:h, :, 3] = 0          # bottom 30px full strip (watermark zone)
+
+    # Step 1c: Flood-fill shadow removal
+    # Removes dark semi-transparent drop shadow residue that chroma key misses.
+    # Floods from all 4 edges inward, clearing pixels that are:
+    #   - semi-transparent (alpha < 250), AND dark (luminance < 120)
+    # Stops at fully opaque art pixels, so art is never touched.
+    tmp = data.clip(0, 255).astype(np.uint8)
+    flood_h, flood_w = tmp.shape[:2]
+    visited = np.zeros((flood_h, flood_w), dtype=bool)
+    to_clear = np.zeros((flood_h, flood_w), dtype=bool)
+
+    def is_shadow(r, c):
+        a = tmp[r, c, 3]
+        if a >= 250:
+            return False
+        lum = 0.299 * tmp[r,c,0] + 0.587 * tmp[r,c,1] + 0.114 * tmp[r,c,2]
+        return lum < 120
+
+    q = deque()
+    for row in range(flood_h):
+        for col in [0, flood_w-1]:
+            if not visited[row, col] and is_shadow(row, col):
+                visited[row, col] = True
+                to_clear[row, col] = True
+                q.append((row, col))
+    for col in range(flood_w):
+        for row in [0, flood_h-1]:
+            if not visited[row, col] and is_shadow(row, col):
+                visited[row, col] = True
+                to_clear[row, col] = True
+                q.append((row, col))
+    while q:
+        row, col = q.popleft()
+        for dr, dc in [(-1,0),(1,0),(0,-1),(0,1)]:
+            nr, nc = row+dr, col+dc
+            if 0 <= nr < flood_h and 0 <= nc < flood_w and not visited[nr, nc]:
+                if is_shadow(nr, nc):
+                    visited[nr, nc] = True
+                    to_clear[nr, nc] = True
+                    q.append((nr, nc))
+    tmp[to_clear, 3] = 0
+    print(f"  Shadow flood-fill: cleared {int(to_clear.sum())} pixels")
+    data = tmp.astype(np.float32)
 
     result = Image.fromarray(data.clip(0, 255).astype(np.uint8), "RGBA")
 
