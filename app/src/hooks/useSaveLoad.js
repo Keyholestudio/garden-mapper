@@ -255,7 +255,7 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
     structs.push({
       id, type: d.type, colour: d.colour, label: d.label,
       tension: d.tension,
-      rockVariant: d.rockVariant || 'grey',
+      rockVariant: d.rockVariant || 'grey-river',
       picketVariant: d.picketVariant || 'white',
       transparent: d.transparent || false, locked: d.locked || false,
       points: hitLine.points(), lx: g.x(), ly: g.y(),
@@ -440,7 +440,7 @@ export function loadGarden({
       locked: entry.locked || false,
       notes: entry.notes || '',
       family: entry.family || '',
-      rockVariant: entry.rockVariant || 'grey',
+      rockVariant: entry.rockVariant || 'grey-river',
       picketVariant: entry.picketVariant || 'white',
       onPlantLayer: entry.onPlantLayer || false,
     }
@@ -476,7 +476,7 @@ export function loadGarden({
         id: entry.id,
         flatPoints: entry.points,
         tension: entry.tension || 0,
-        variant: entry.rockVariant || 'grey',
+        variant: entry.rockVariant || 'grey-river',
         x: (entry.lx || 0) + dX,
         y: (entry.ly || 0) + dY,
         Konva,

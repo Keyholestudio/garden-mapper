@@ -1191,7 +1191,7 @@ export default function GardenEditor() {
         id: newId,
         flatPoints: flatPts,
         tension: hitLine.tension(),
-        variant: d.rockVariant || 'grey',
+        variant: d.rockVariant || 'grey-river',
         x: shape.x() + OFFSET, y: shape.y() + OFFSET,
         Konva, showGrid: state.showGrid, snapCell: state.snapCell,
         onSelect: (id2, g) => {

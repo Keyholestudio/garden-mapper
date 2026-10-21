@@ -86,10 +86,18 @@ export function getStoneSize(type) {
 
 // ── Image cache ───────────────────────────────────────────────────────────────
 const ROCK_SRCS = {
-  grey:  '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',
-  brown: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',
-  white: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',
-  mixed: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',
+  // Legacy keys — kept for backward compat with saved gardens
+  grey:        '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',    // was the old default
+  brown:       '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png',
+  white:       '/stickers/decor_rock-white_L_CA-US-FR-GB-AU.png',
+  mixed:       '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',
+  // New named variants
+  'river-stone':      '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',
+  'brown-rock':       '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png',
+  'grey-rock':        '/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png',
+  'grey-river':       '/stickers/decor_rock-white_L_CA-US-FR-GB-AU.png',   // NEW DEFAULT
+  'stepping-stone':   '/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.png',
+  'stepping-stone-2': '/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.png',
 }
 
 export const PICKET_SRCS = {

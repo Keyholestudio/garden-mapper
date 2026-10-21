@@ -614,23 +614,28 @@ export default function MobileSheet({
     // Rock border - simple dedicated panel
     if (d.type === 'rock-border') {
       const ROCK_VARIANTS = [
-        { id: 'grey',  label: 'Grey',  colour: '#9E9E9E' },
-        { id: 'brown', label: 'Brown', colour: '#8D6E63' },
-        { id: 'white', label: 'White', colour: '#F5F5F5' },
-        { id: 'mixed', label: 'Mixed', colour: 'linear-gradient(135deg,#9E9E9E 33%,#8D6E63 33% 66%,#F5F5F5 66%)' },
+        { id: 'grey-river',       label: 'Grey River Stone',  src: '/stickers/decor_rock-white_L_CA-US-FR-GB-AU.png' },
+        { id: 'river-stone',      label: 'River Stone',       src: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png' },
+        { id: 'brown-rock',       label: 'Brown Rock',        src: '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png' },
+        { id: 'grey-rock',        label: 'Grey Rock',         src: '/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png' },
+        { id: 'stepping-stone',   label: 'Stepping Stone',    src: '/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.png' },
+        { id: 'stepping-stone-2', label: 'Stepping Stone II', src: '/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.png' },
       ]
+      const activeVariant = d.rockVariant || 'grey-river'
       return (
         <>
           <div className="mobile-edit-title">Rock Border</div>
-          <div className="mobile-edit-label">STONE COLOUR</div>
-          <div className="colour-row">
+          <div className="mobile-edit-label">STONE TYPE</div>
+          <div className="colour-row" style={{ flexWrap: 'wrap', gap: 6 }}>
             {ROCK_VARIANTS.map(v => (
               <div key={v.id}
-                className={`colour-swatch${(d.rockVariant || 'grey') === v.id ? ' selected' : ''}`}
-                style={{ background: v.colour, border: v.id === 'white' ? '1px solid #ccc' : undefined }}
+                className={`colour-swatch${activeVariant === v.id ? ' selected' : ''}`}
+                style={{ background: 'none', padding: 0, width: 36, height: 36, overflow: 'hidden', borderRadius: 6 }}
                 title={v.label}
                 onClick={() => onRockVariantChange?.(v.id)}
-              />
+              >
+                <img src={v.src} alt={v.label} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', borderRadius: 6 }} />
+              </div>
             ))}
           </div>
           <div className="mobile-edit-sep" />
