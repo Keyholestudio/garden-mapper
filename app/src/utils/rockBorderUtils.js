@@ -63,8 +63,16 @@ function sampleAtDist(densePts, arcTable, dist) {
   }
 }
 
-export function computeStonePositions(flatPoints, tension, type = 'rock-border') {
-  const { stoneSize, overlap } = ROCK_BORDER_PRESETS[type] || ROCK_BORDER_PRESETS['rock-border']
+// Default rock border overlap (used when no rockSpacing is set on struct)
+export const ROCK_BORDER_DEFAULT_SPACING = -0.15
+// Slider range: overlap 0.25 (tight) to -1.5 (very spread)
+export const ROCK_BORDER_SPACING_MIN = -1.5
+export const ROCK_BORDER_SPACING_MAX = 0.25
+
+export function computeStonePositions(flatPoints, tension, type = 'rock-border', spacingOverride = null) {
+  const preset = ROCK_BORDER_PRESETS[type] || ROCK_BORDER_PRESETS['rock-border']
+  const { stoneSize } = preset
+  const overlap = (type === 'rock-border' && spacingOverride !== null) ? spacingOverride : preset.overlap
   const spacing = stoneSize * (1 - overlap)
   const dense = buildDensePath(flatPoints, tension)
   if (dense.length < 2) return []
@@ -184,14 +192,14 @@ function shuffleIndexes(n, rng) {
 // ── Build stone images inside a Konva.Group ───────────────────────────────────
 // Points are in the group's LOCAL coordinate space (no external offset needed).
 // The group itself is positioned/dragged by Konva — stones move with it for free.
-export function addStonesToGroup(group, flatPoints, tension, variant, id, Konva) {
+export function addStonesToGroup(group, flatPoints, tension, variant, id, Konva, spacingOverride = null) {
   const img = getRockImageCached(variant)
   if (!img) return  // image not loaded yet — caller must await and call again
 
   // Remove any existing stone images (keeping the guide line child)
   group.getChildren(c => c instanceof Konva.Image).forEach(c => c.destroy())
 
-  const positions = computeStonePositions(flatPoints, tension, 'rock-border')
+  const positions = computeStonePositions(flatPoints, tension, 'rock-border', spacingOverride)
   if (positions.length === 0) return
 
   const stoneSize = getStoneSize('rock-border')
@@ -225,7 +233,7 @@ export function addStonesToGroup(group, flatPoints, tension, variant, id, Konva)
 //
 // The group id = structId so existing select/save/delete wiring works unchanged.
 // onReady(group) called after async image load completes (if image wasn't cached).
-export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, Konva, showGrid, snapCell, onSelect, onReady }) {
+export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, Konva, showGrid, snapCell, onSelect, onReady, spacingOverride = null }) {
   // flatPoints are in the group's LOCAL coordinate space.
   // x/y set the group's world position. getShapeWorldPts adds group.x/y to get world coords.
   // dragend absorbs the drag offset into flatPoints and resets group to (0,0) so they stay in sync.
@@ -268,7 +276,7 @@ export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, K
       hitLine.points(newFlat)
       hitLine.x(0); hitLine.y(0)
     }
-    addStonesToGroup(group, hitLine.points(), hitLine.tension(), variant, id, Konva)
+    addStonesToGroup(group, hitLine.points(), hitLine.tension(), variant, id, Konva, spacingOverride)
     group.getLayer()?.batchDraw()
   })
 
@@ -283,11 +291,11 @@ export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, K
   // Add stones — synchronous if image cached, async otherwise
   const src = getRockSrc(variant)
   if (_imgCache[src]) {
-    addStonesToGroup(group, flatPoints, tension, variant, id, Konva)
+    addStonesToGroup(group, flatPoints, tension, variant, id, Konva, spacingOverride)
   } else {
     loadRockImage(src).then(img => {
       if (!img) return
-      addStonesToGroup(group, flatPoints, tension, variant, id, Konva)
+      addStonesToGroup(group, flatPoints, tension, variant, id, Konva, spacingOverride)
       group.getLayer()?.batchDraw()
       if (onReady) onReady(group)
     })
@@ -311,9 +319,10 @@ export function refreshRockBorderGroup(group, structData, Konva) {
     hitLine.x(0); hitLine.y(0)
   }
   const flat    = hitLine.points()
-  const variant = structData?.rockVariant || 'grey'
+  const variant = structData?.rockVariant || 'grey-river'
+  const spacing = structData?.rockSpacing ?? null
   const id      = group.id()
-  addStonesToGroup(group, flat, hitLine.tension(), variant, id, Konva)
+  addStonesToGroup(group, flat, hitLine.tension(), variant, id, Konva, spacing)
   group.getLayer()?.batchDraw()
 }
 
@@ -339,7 +348,7 @@ export async function drawRockBorders(structLayer, structDataRef, Konva) {
       hitLine.points(normalized)
       hitLine.x(0); hitLine.y(0)
     }
-    addStonesToGroup(group, hitLine.points(), hitLine.tension(), d?.rockVariant, id, Konva)
+    addStonesToGroup(group, hitLine.points(), hitLine.tension(), d?.rockVariant, id, Konva, d?.rockSpacing ?? null)
     group.moveToTop()  // rock borders render above beds/water
   }
   structLayer.batchDraw()

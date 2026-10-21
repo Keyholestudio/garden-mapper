@@ -256,6 +256,7 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
       id, type: d.type, colour: d.colour, label: d.label,
       tension: d.tension,
       rockVariant: d.rockVariant || 'grey-river',
+      rockSpacing: d.rockSpacing ?? null,
       picketVariant: d.picketVariant || 'white',
       transparent: d.transparent || false, locked: d.locked || false,
       points: hitLine.points(), lx: g.x(), ly: g.y(),
@@ -441,6 +442,7 @@ export function loadGarden({
       notes: entry.notes || '',
       family: entry.family || '',
       rockVariant: entry.rockVariant || 'grey-river',
+      rockSpacing: entry.rockSpacing ?? null,
       picketVariant: entry.picketVariant || 'white',
       onPlantLayer: entry.onPlantLayer || false,
     }
@@ -477,6 +479,7 @@ export function loadGarden({
         flatPoints: entry.points,
         tension: entry.tension || 0,
         variant: entry.rockVariant || 'grey-river',
+        spacingOverride: entry.rockSpacing ?? null,
         x: (entry.lx || 0) + dX,
         y: (entry.ly || 0) + dY,
         Konva,

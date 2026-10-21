@@ -555,6 +555,7 @@ export default function GardenEditor() {
     'fountain-sm': { key: 'water-feature_fountain-sm_S_CA-US-FR-GB-AU', label: 'Fountains', family: 'Water Feature', size: 'S', decorGroup: 'fountains', src: '/stickers/water-feature_fountain-sm_S_CA-US-FR-GB-AU.png' },
     'fountain-md': { key: 'water-feature_fountain-md_M_CA-US-FR-GB-AU', label: 'Fountains', family: 'Water Feature', size: 'M', decorGroup: 'fountains', src: '/stickers/water-feature_fountain-md_M_CA-US-FR-GB-AU.png' },
     'fountain-lg': { key: 'water-feature_fountain-lg_L_CA-US-FR-GB-AU', label: 'Fountains', family: 'Water Feature', size: 'L', decorGroup: 'fountains', src: '/stickers/water-feature_fountain-lg_L_CA-US-FR-GB-AU.png' },
+    'decor-pool-railing': { key: 'decor_pool-railing_M_CA-US-FR-GB-AU', label: 'Pool Railing', family: 'Decor', size: 'M', decorGroup: 'pool-railings', src: '/stickers/decor_pool-railing_M_CA-US-FR-GB-AU.png' },
   }
 
   // When a decor sub-tool is clicked, load the image and queue it for placement (same as plant click-to-place)
@@ -885,6 +886,16 @@ export default function GardenEditor() {
     triggerAutoSave()
   }
 
+  const handleRockSpacingChange = (spacing) => {
+    const sel = state.selectedStruct; if (!sel) return
+    const d = state.structDataRef.current[sel.id]
+    if (!d || d.type !== 'rock-border') return
+    d.rockSpacing = spacing
+    drawRockBorders(layersRef.current.structLayer, state.structDataRef, Konva)
+    state.setSelectedStruct({ ...sel, rockSpacing: spacing })
+    triggerAutoSave()
+  }
+
   const handleRockVariantChange = (variant) => {
     const sel = state.selectedStruct; if (!sel) return
     const d = state.structDataRef.current[sel.id]
@@ -1192,6 +1203,7 @@ export default function GardenEditor() {
         flatPoints: flatPts,
         tension: hitLine.tension(),
         variant: d.rockVariant || 'grey-river',
+        spacingOverride: d.rockSpacing ?? null,
         x: shape.x() + OFFSET, y: shape.y() + OFFSET,
         Konva, showGrid: state.showGrid, snapCell: state.snapCell,
         onSelect: (id2, g) => {
@@ -1864,6 +1876,7 @@ export default function GardenEditor() {
               onPlantVariantChange={handlePlantVariantChange}
               onColourChange={handleColourChange}
               onRockVariantChange={handleRockVariantChange}
+              onRockSpacingChange={handleRockSpacingChange}
               onPathWidthChange={handlePathWidthChange}
               onDimRectApply={handleDimRectApply}
               onDimCircleApply={handleDimCircleApply}
@@ -2011,6 +2024,7 @@ export default function GardenEditor() {
           onPlantVariantChange={handlePlantVariantChange}
           onColourChange={handleColourChange}
           onRockVariantChange={handleRockVariantChange}
+          onRockSpacingChange={handleRockSpacingChange}
           onPathWidthChange={handlePathWidthChange}
           onEnterEdit={enterEdit}
           onExitEdit={exitEdit}

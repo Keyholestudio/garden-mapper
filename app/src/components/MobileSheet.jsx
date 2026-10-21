@@ -12,6 +12,7 @@ import {
   PATH_COLOURS, WATER_COLOURS, DECKING_COLOURS, ELEC_COLOURS, PLUMB_COLOURS,
   UNIT_PX, TEXTURE_MAP, PLANT_VARIANTS, GATE_VARIANTS, PICKET_VARIANTS, DECOR_VARIANTS,
 } from '../hooks/useGardenState'
+import { ROCK_BORDER_DEFAULT_SPACING, ROCK_BORDER_SPACING_MIN, ROCK_BORDER_SPACING_MAX } from '../utils/rockBorderUtils'
 import './MobileSheet.css'
 
 const TYPE_NAMES = {
@@ -48,7 +49,7 @@ export default function MobileSheet({
   onLockPlant,
   onLockStruct,
   onCopyStruct,
-  onColourChange, onRockVariantChange, onPathWidthChange,
+  onColourChange, onRockVariantChange, onRockSpacingChange, onPathWidthChange,
   onDimRectApply, onDimCircleApply,
   onLayerMove,
   onTransparentStruct,
@@ -622,6 +623,7 @@ export default function MobileSheet({
         { id: 'stepping-stone-2', label: 'Stepping Stone II', src: '/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.png' },
       ]
       const activeVariant = d.rockVariant || 'grey-river'
+      const activeSpacing = d.rockSpacing ?? ROCK_BORDER_DEFAULT_SPACING
       return (
         <>
           <div className="mobile-edit-title">Rock Border</div>
@@ -638,6 +640,25 @@ export default function MobileSheet({
               </div>
             ))}
           </div>
+          <div className="mobile-edit-label" style={{ marginTop: 8 }}>SPACING</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '0 4px' }}>
+            <span style={{ fontSize: 11, color: '#888', whiteSpace: 'nowrap' }}>Tight</span>
+            <input
+              type="range"
+              min={ROCK_BORDER_SPACING_MIN}
+              max={ROCK_BORDER_SPACING_MAX}
+              step={0.05}
+              value={activeSpacing}
+              style={{ flex: 1 }}
+              onChange={e => onRockSpacingChange?.(parseFloat(e.target.value))}
+            />
+            <span style={{ fontSize: 11, color: '#888', whiteSpace: 'nowrap' }}>Spread</span>
+          </div>
+          <button
+            className="mobile-edit-btn full"
+            style={{ marginTop: 2, fontSize: 11 }}
+            onClick={() => onRockSpacingChange?.(ROCK_BORDER_DEFAULT_SPACING)}
+          >Reset spacing</button>
           <div className="mobile-edit-sep" />
           <button className="mobile-edit-btn full" onClick={() => onEnterEdit?.(selectedStruct.id)}>✏️ Edit Shape</button>
           <div className="mobile-edit-sep" />

@@ -288,6 +288,9 @@ export const DECOR_VARIANTS = {
     { label: 'Medium', subtitle: 'Medium Fountain', size: 'M', colour: '#4A9CC7', src: '/stickers/water-feature_fountain-md_M_CA-US-FR-GB-AU.png' },
     { label: 'Large',  subtitle: 'Large Fountain',  size: 'L', colour: '#1A6A9A', src: '/stickers/water-feature_fountain-lg_L_CA-US-FR-GB-AU.png' },
   ],
+  'pool-railings': [
+    { label: 'Pool Railing', subtitle: 'Pool Railing', size: 'M', colour: '#C0C0C0', src: '/stickers/decor_pool-railing_M_CA-US-FR-GB-AU.png' },
+  ],
 }
 
 export const GATE_STYLES = {

@@ -119,6 +119,7 @@ export const WATER_ITEMS = [
     ],
   },
   { id: 'pond', label: 'Pond', emoji: '🌊', hint: 'Freeform pond outline' },
+  { id: 'decor-pool-railing', label: 'Pool Railing', emoji: '🏊', hint: 'Tap to place a pool railing', decorGroup: 'pool-railings' },
 ]
 
 export const DECOR_ITEMS = [

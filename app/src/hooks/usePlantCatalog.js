@@ -196,6 +196,7 @@ export const PLANT_CATALOG = [
   { key:'water-feature_fountain-sm_S_CA-US-FR-GB-AU', label:'Small Fountain',  family:'Water Feature', src:'/stickers/water-feature_fountain-sm_S_CA-US-FR-GB-AU.png', size:'S' },
   { key:'water-feature_fountain-md_M_CA-US-FR-GB-AU', label:'Medium Fountain', family:'Water Feature', src:'/stickers/water-feature_fountain-md_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'water-feature_fountain-lg_L_CA-US-FR-GB-AU', label:'Large Fountain',  family:'Water Feature', src:'/stickers/water-feature_fountain-lg_L_CA-US-FR-GB-AU.png', size:'L' },
+  { key:'decor_pool-railing_M_CA-US-FR-GB-AU',         label:'Pool Railing',   family:'Decor',         src:'/stickers/decor_pool-railing_M_CA-US-FR-GB-AU.png',         size:'M' },
 
   { key:'flower-daisy_feverfew_S_CA-US-FR-GB-AU', label:'Feverfew', family:'Perennial', src:'/stickers/flower-daisy_feverfew_S_CA-US-FR-GB-AU.png', size:'S' },
   // -- New additions --

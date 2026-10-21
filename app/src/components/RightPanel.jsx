@@ -10,6 +10,7 @@ import {
   PATH_COLOURS, WATER_COLOURS, DECKING_COLOURS, ELEC_COLOURS, PLUMB_COLOURS,
   UNIT_PX, TEXTURE_MAP, PLANT_VARIANTS, GATE_VARIANTS, PICKET_VARIANTS, DECOR_VARIANTS,
 } from '../hooks/useGardenState'
+import { ROCK_BORDER_DEFAULT_SPACING, ROCK_BORDER_SPACING_MIN, ROCK_BORDER_SPACING_MAX } from '../utils/rockBorderUtils'
 import './RightPanel.css'
 
 const TYPE_NAMES = {
@@ -40,7 +41,7 @@ export default function RightPanel({
   onTransparentPlant, onCopyPlant,
   onLockPlant, onLockStruct,
   onCopyStruct,
-  onColourChange, onRockVariantChange, onPathWidthChange,
+  onColourChange, onRockVariantChange, onRockSpacingChange, onPathWidthChange,
   onEnterEdit, onExitEdit,
   onDimRectApply, onDimCircleApply,
   onLayerMove,
@@ -321,6 +322,7 @@ export default function RightPanel({
         { id: 'stepping-stone-2', label: 'Stepping Stone II', src: '/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.png' },
       ]
       const activeVariant = d.rockVariant || 'grey-river'
+      const activeSpacing = d.rockSpacing ?? ROCK_BORDER_DEFAULT_SPACING
       return (
         <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
           <div className="panel-content">
@@ -343,6 +345,25 @@ export default function RightPanel({
                 </div>
               ))}
             </div>
+            <div className="panel-title" style={{ marginTop: 10 }}>SPACING</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ fontSize: 11, color: '#888', whiteSpace: 'nowrap' }}>Tight</span>
+              <input
+                type="range"
+                min={ROCK_BORDER_SPACING_MIN}
+                max={ROCK_BORDER_SPACING_MAX}
+                step={0.05}
+                value={activeSpacing}
+                style={{ flex: 1 }}
+                onChange={e => onRockSpacingChange?.(parseFloat(e.target.value))}
+              />
+              <span style={{ fontSize: 11, color: '#888', whiteSpace: 'nowrap' }}>Spread</span>
+            </div>
+            <button
+              className="btn-panel"
+              style={{ marginTop: 4, fontSize: 11, padding: '3px 0' }}
+              onClick={() => onRockSpacingChange?.(ROCK_BORDER_DEFAULT_SPACING)}
+            >Reset spacing</button>
             <button className="btn-panel" onClick={() => onEnterEdit?.(selectedStruct.id)}>✏️ Edit Shape</button>
 
             <div className="panel-sep" />

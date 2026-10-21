@@ -373,10 +373,11 @@ export function closeFreeShape({
     const id       = 'struct_' + structIdCtr.current++
     structDataRef.current[id] = {
       type: 'rock-border', label: 'Rock Border',
-      colour: '#888888', tension, rockVariant: 'grey-river',
+      colour: '#888888', tension, rockVariant: 'grey-river', rockSpacing: null,
     }
     const group = buildRockBorderGroup({
       id, flatPoints: flat, tension, variant: 'grey-river',
+      spacingOverride: null,
       x: 0, y: 0, Konva,
       showGrid, snapCell,
       onSelect,
