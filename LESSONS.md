@@ -1,6 +1,17 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L105 — Always verify browser state before running sticker-generate-one.py (2026-10-21)
+**What happened:** Script failed with "account not signed in" even though Gemini /u/1/app was open in Brave. Root cause: `ROB_ACCOUNT` config string was stale (pointed to wrong account substring). Instead of checking the browser directly, the error was accepted at face value and escalated to Rob.
+**Pre-flight checklist (mandatory before any sticker generation run):**
+1. `browser tabs` → confirm `gemini.google.com/u/1/` tab exists
+2. `browser snapshot` on that tab → confirm "R G Plus" visible in sidebar
+3. *Then* run the script
+**When script errors "account not signed in":** Never accept at face value. Always verify with browser tool first. Check `ROB_ACCOUNT` config string against what the page actually shows.
+**Standing fix:** `ROB_ACCOUNT` now checks for `contactsunsetpoetvintage` OR `R G Plus`. `GEMINI_URL` and `navigate_fresh` now use `/u/1/app`.
+
+---
+
 ## L104 — Always update DECOR-DATABASE.md and PLANT-DATABASE.md when adding new items (2026-10-20)
 **What happened:** DECOR-DATABASE.md was not updated when new Trellis stickers were added — it had to be done as a follow-up.
 **Rule:** Updating the relevant database is a non-optional part of every add workflow. It doesn't matter whether it happens before or after the commit — it must always happen, every time, no exceptions. Rob should be able to trust these files as accurate without asking.

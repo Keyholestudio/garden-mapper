@@ -160,6 +160,7 @@
 | Lupin | Lupinus spp. | Legume | CA US FR GB AU | L | core | flower-spike | sun, perennial | lupin, lupine, lupin | planned | perennial |
 | Salvia | Salvia nemorosa | Mint | CA US FR GB AU | M | core | shrub-lavender | sun, perennial | salvia, sage, sauge ornementale | planned | upright spikes |
 | Rudbeckia | Rudbeckia fulgida | Daisy | CA US FR GB | M | core | flower-daisy | sun, perennial | rudbeckia, black-eyed susan | planned | perennial |
+| False Sunflower | Heliopsis helianthoides | Daisy | CA US FR GB AU | L | pack-flowers-perennials | flower-daisy_false-sunflower_L_CA-US-FR-GB-AU | sun, perennial, long-blooming | false sunflower, heliopsis, oxeye sunflower | none | added 2026-10-21 |
 | Astilbe | Astilbe spp. | Saxifrage | CA US FR GB | M | core | flower-spike | shade, moisture, perennial | astilbe | none | feathery plumes |
 | Geranium | Geranium spp. | Geranium | CA US FR GB AU | S | core | flower-daisy | sun, perennial | geranium, cranesbill, geranium vivace | none | cranesbill |
 | Iris | Iris germanica | Iris | CA US FR GB AU | M | core | flower-spike | sun, perennial | iris, bearded iris, german iris | planned | perennial bulb |

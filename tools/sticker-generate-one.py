@@ -28,8 +28,8 @@ OUT_DIR    = os.path.join(WORKSPACE, "stickers", "generated", "pending")
 DEST       = os.path.join(WORKSPACE, "app", "public", "stickers")
 RAW_ARCHIVE = os.path.join(WORKSPACE, "stickers", "raw-archive")  # local-only, never committed to git
 CATALOG    = os.path.join(WORKSPACE, "app", "src", "hooks", "usePlantCatalog.js")
-GEMINI_URL = "https://gemini.google.com/app"
-ROB_ACCOUNT = "k3yh0l35tud10"   # substring to match in signed-in account (updated 2026-10-08: using k3yh0l35tud10@gmail.com in Brave debug)
+GEMINI_URL = "https://gemini.google.com/u/1/app"
+ROB_ACCOUNT = "contactsunsetpoetvintage"   # R G account for sticker work. Fallback check: 'R G Plus' also accepted.
 IMAGE_WAIT  = 240
 os.makedirs(OUT_DIR, exist_ok=True)
 os.makedirs(RAW_ARCHIVE, exist_ok=True)
@@ -412,6 +412,7 @@ PLANT_LOOKUP = {
     "kniphofia":         ("flower-spike_kniphofia",       "L",  384, "Perennial",        "plant", "vivid orange-red #E85A1A, deep scarlet #C43A0A, bright yellow tip #FFD700, mid-green strap leaves #4A7C3A, dark outline #0A1A0A", "Dramatic upright torch-like flower spike with vivid orange-red tubular florets at top grading to yellow at the tip, rising from a clump of long strap-like leaves. Correct proportions. No roots."),
     "japanese anemone":  ("flower-daisy_japanese-anemone","M",  256, "Perennial",        "plant", "soft pink #F0A8C0, pale blush #F8D8E8, bright yellow stamens #FFD700, deep rose centre #D47890, mid-green leaves #4A7C2F, dark outline #0A1A0A", "Elegant branching stems with large open five-petalled flowers in soft pink surrounding a central boss of bright yellow stamens. Correct proportions. No roots."),
     "helenium":          ("flower-daisy_helenium",        "M",  256, "Perennial",        "plant", "warm orange #E87820, deep copper-red #C05010, golden yellow #FFD700, dark brown centre #3A1A0A, mid-green #4A7C2F, dark outline #0A1A0A", "Cluster of daisy-like flowers with drooping reflexed petals in warm orange and copper-red tones around a prominent dark brown dome centre. Correct proportions. No roots."),
+    "false sunflower":   ("flower-daisy_false-sunflower",  "L",  384, "Perennial",        "plant", "vivid golden yellow #FFD700, deep yellow #E8C020, dark brown-olive centre #3A2A0A, bright green lance leaves #4A8A3A, mid-green stems #3A7A2A, dark outline #0A1A0A", "Upright branching plant with multiple vivid golden-yellow daisy-like flowers each with a small dark brown-olive disc centre and long lance-shaped bright green leaves. Tall and bushy. Correct proportions. No roots."),
     "sanguisorba":       ("flower-spike_sanguisorba",     "M",  256, "Perennial",        "plant", "deep burgundy-red #6A1A2A, dark maroon #4A0A1A, slender airy stems #4A7C2F, mid-green #3A6A2A, dark outline #0A1A0A", "Airy branching stems topped with small dense oval dark burgundy-red bottlebrush flower heads. Very light open silhouette with minimal foliage. Correct proportions. No roots."),
     "autumn joy sedum":  ("flower-cluster_autumn-joy-sedum","S", 160, "Perennial",       "plant", "deep rose-pink #C85878, dusty mauve #A84868, pale pink #E8A8B8, blue-grey succulent leaves #7A9A8A, dark outline #0A1A0A", "Compact mounding succulent with flat-topped domed clusters of tiny deep rose-pink flowers sitting above fleshy blue-grey oval leaves. Correct proportions. No roots."),
     "hellebore":         ("flower-cup_hellebore",           "S",  160, "Perennial",        "plant", "deep rose-pink flowers #C87890, pale blush #F0C0D0, soft cream #F5EED8, dark green nodding petals #2A6A3A, mid-green leaves #4A7C2F, dark outline #0A1A0A", "Low clump of deep green palmate leaves with several nodding cup-shaped flowers in soft pink and cream, flowers face slightly downward. Correct proportions. No roots."),
@@ -781,9 +782,9 @@ def verify_account(ws_url):
     """Check that the configured account is signed in."""
     # Check page source / profile for the account identifier
     account_js = f'''(function(){{
-        // Try to find account email in page text or aria-labels
+        // Try to find account email or display name in page text or aria-labels
         var all = document.body.innerText + document.body.innerHTML;
-        return all.includes("{ROB_ACCOUNT}") ? "ROB" : "OTHER";
+        return (all.includes("{ROB_ACCOUNT}") || all.includes("R G Plus") || all.includes("contactsunsetpoetvintage")) ? "ROB" : "OTHER";
     }})()'''
     result = cdp(ws_url, account_js, timeout=10)
     return result == "ROB"
@@ -795,7 +796,7 @@ def navigate_fresh(ws_url, tab_index=0):
     p(f"Navigating tab {tab_index} to fresh Gemini chat...")
     try:
         ws = websocket.create_connection(ws_url, timeout=10)
-        ws.send(json.dumps({"id": 1, "method": "Page.navigate", "params": {"url": "https://gemini.google.com/app"}}))
+        ws.send(json.dumps({"id": 1, "method": "Page.navigate", "params": {"url": "https://gemini.google.com/u/1/app"}}))
         try:
             ws.recv()  # ack
         except Exception:

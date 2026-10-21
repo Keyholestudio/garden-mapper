@@ -26,6 +26,7 @@ export const entries = [
   { key: 'flower-spike_kniphofia',             label: 'Kniphofia',              family: 'Perennial', src: '/stickers/flower-spike_kniphofia_L_CA-US-FR-GB-AU.png',             size: 'L' },
   { key: 'flower-daisy_japanese-anemone',      label: 'Japanese Anemone',       family: 'Perennial', src: '/stickers/flower-daisy_japanese-anemone_M_CA-US-FR-GB-AU.png',      size: 'M' },
   { key: 'flower-daisy_helenium',              label: 'Helenium',               family: 'Perennial', src: '/stickers/flower-daisy_helenium_M_CA-US-FR-GB-AU.png',              size: 'M' },
+  { key: 'flower-daisy_false-sunflower',        label: 'False Sunflower',        family: 'Perennial', src: '/stickers/flower-daisy_false-sunflower_L_CA-US-FR-GB-AU.png',        size: 'L', latinName: 'Heliopsis helianthoides', searchTerms: ['false sunflower', 'heliopsis', 'oxeye sunflower'], traits: ['flowering', 'summer', 'long-blooming', 'pollinator'] },
   { key: 'flower-spike_sanguisorba',           label: 'Sanguisorba',            family: 'Perennial', src: '/stickers/flower-spike_sanguisorba_M_CA-US-FR-GB-AU.png',           size: 'M' },
   { key: 'flower-cluster_autumn-joy-sedum',    label: 'Autumn Joy Sedum',       family: 'Perennial', src: '/stickers/flower-cluster_autumn-joy-sedum_S_CA-US-FR-GB-AU.png',    size: 'S' },
 
