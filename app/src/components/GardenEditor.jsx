@@ -436,15 +436,48 @@ export default function GardenEditor() {
   // Delete all items in multiSelection
   const handleMultiDelete = () => {
     const { plantLayer } = layersRef.current
+    // Capture all plants before destroying (for undo)
+    const saved = state.multiSelection
+      .filter(({ kind }) => kind === 'plant')
+      .map(({ id, shape }) => ({
+        id,
+        data:   { ...state.plantDataRef.current[id] },
+        x:      shape.x(), y: shape.y(),
+        scaleX: shape.scaleX(), scaleY: shape.scaleY(),
+        img:    shape.findOne('Image')?.image(),
+      }))
     state.multiSelection.forEach(({ kind, id, shape }) => {
-      if (kind === 'plant') {
-        shape?.destroy()
-        delete state.plantDataRef.current[id]
-      }
-      // struct multi-delete could be added later
+      if (kind === 'plant') { shape?.destroy(); delete state.plantDataRef.current[id] }
     })
     plantLayer?.batchDraw()
     state.setMultiSelection([])
+    state.pushUndo(() => {
+      if (!plantLayer) return
+      saved.forEach(({ id: savedId, data, x, y, scaleX, scaleY, img }) => {
+        const entry = { ...data, _img: img }
+        const newId = addPlant({
+          entry, x: x + (img?.naturalWidth || 64) / 2, y: y + (img?.naturalHeight || 64) / 2,
+          stage: stageRef.current, plantLayer,
+          plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr,
+          showGridRef,
+          onSelect: handlePlantSelect,
+          onLongPress: handleLongPressPlant,
+          multiSelectionRef,
+          autoSelect: false,
+        })
+        if (newId) {
+          const group = plantLayer.findOne('#' + newId)
+          if (group) {
+            group.id(savedId); group.x(x); group.y(y)
+            group.scaleX(scaleX); group.scaleY(scaleY)
+            state.plantDataRef.current[savedId] = { ...data }
+            delete state.plantDataRef.current[newId]
+          }
+        }
+      })
+      plantLayer.batchDraw()
+      triggerAutoSave()
+    })
     triggerAutoSave()
   }
 
@@ -953,6 +986,51 @@ export default function GardenEditor() {
     }
     layersRef.current.structLayer?.batchDraw()
     state.setSelectedStruct({ ...sel, colour })
+    triggerAutoSave()
+  }
+
+  const handleDeletePlant = () => {
+    const sel = state.selectedPlant; if (!sel) return
+    const { plantLayer } = layersRef.current
+    // Capture state before destroying for undo
+    const savedData  = { ...state.plantDataRef.current[sel.id] }
+    const savedX     = sel.group.x()
+    const savedY     = sel.group.y()
+    const savedScaleX = sel.group.scaleX()
+    const savedScaleY = sel.group.scaleY()
+    const savedImg   = sel.group.findOne('Image')?.image()
+    const savedId    = sel.id
+    sel.group.destroy()
+    delete state.plantDataRef.current[savedId]
+    plantLayer?.batchDraw()
+    clearSelection()
+    state.pushUndo(() => {
+      if (!plantLayer) return
+      const entry = { ...savedData, _img: savedImg }
+      const newId = addPlant({
+        entry, x: savedX + (savedImg?.naturalWidth || 64) / 2, y: savedY + (savedImg?.naturalHeight || 64) / 2,
+        stage: stageRef.current, plantLayer,
+        plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr,
+        showGridRef,
+        onSelect: handlePlantSelect,
+        onLongPress: handleLongPressPlant,
+        multiSelectionRef,
+        autoSelect: false,
+      })
+      if (newId) {
+        // Restore the original id by remapping
+        const group = plantLayer.findOne('#' + newId)
+        if (group) {
+          group.id(savedId)
+          group.x(savedX); group.y(savedY)
+          group.scaleX(savedScaleX); group.scaleY(savedScaleY)
+          state.plantDataRef.current[savedId] = { ...savedData }
+          delete state.plantDataRef.current[newId]
+        }
+        plantLayer.batchDraw()
+      }
+      triggerAutoSave()
+    })
     triggerAutoSave()
   }
 
@@ -1950,7 +2028,7 @@ export default function GardenEditor() {
               layers={layersRef.current}
               gardenUnit={state.gardenUnit}
               // Edit handlers
-              onDeletePlant={() => { state.selectedPlant?.group.destroy(); delete state.plantDataRef.current[state.selectedPlant?.id]; layersRef.current.plantLayer?.batchDraw(); clearSelection(); triggerAutoSave() }}
+              onDeletePlant={handleDeletePlant}
               onDeleteStruct={handleDeleteStruct}
               onTransparentPlant={handleTransparentPlant}
               onLockPlant={handleLockPlant}
@@ -2089,7 +2167,7 @@ export default function GardenEditor() {
           panMode={state.panMode}                  onTogglePan={() => state.setPanMode(v => !v)}
           onResetView={handleResetView}
           onClearAll={handleClearAll}
-          onDeletePlant={() => { state.selectedPlant?.group.destroy(); delete state.plantDataRef.current[state.selectedPlant?.id]; layersRef.current.plantLayer?.batchDraw(); clearSelection(); triggerAutoSave() }}
+          onDeletePlant={handleDeletePlant}
           onDeleteStruct={handleDeleteStruct}
           onDeleteMulti={handleMultiDelete}
           onMultiSeasonChange={handleMultiSeasonChange}
