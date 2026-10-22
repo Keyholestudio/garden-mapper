@@ -1,6 +1,26 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L110 — Decor pipeline gate: flag any plant trying to enter the decor pipeline (2026-10-22)
+**Rule:** Before wiring ANY new item into `DECOR_VARIANTS`, `DECOR_CATALOG` (GardenEditor), or `DECOR_ITEMS` (toolMenuData), check the sticker key prefix:
+- `decor_*` → decor pipeline ✅
+- `water-feature_*` → decor pipeline ✅
+- Anything else (`bulb-*`, `flower-*`, `herb-*`, `tree-*`, `shrub-*`, `vegetable-*`, etc.) → **STOP. This is a plant. Use the plant pipeline (PLANT_VARIANTS + pack entry). Never wire a plant key into decor objects.**
+
+**Decor pipeline = 4 files, all required:**
+1. `usePlantCatalog.js` — catalog entry with `family:'Decor'`
+2. `useGardenState.js` → `DECOR_VARIANTS` — colour/size swatches (uses `subtitle`, keyed by `decorGroup`)
+3. `toolMenuData.jsx` → `DECOR_ITEMS` — menu entry with `decorGroup`
+4. `GardenEditor.jsx` → `DECOR_CATALOG` — placement entry
+
+**Plant colour picker pipeline = 2 files:**
+1. Pack file (e.g. `pack-bulbs-summer.js`) — tray entry with `key`, `src`, `label`
+2. `useGardenState.js` → `PLANT_VARIANTS` — colour swatches (uses `name`, keyed by plant `key`, `src: null` on default)
+
+**If you're ever unsure which pipeline:** look at the sticker key prefix. `decor_` = decor. Everything else = plant.
+
+---
+
 ## L109 — PLANT_VARIANTS placement in useGardenState.js: always verify object boundary before editing (2026-10-22)
 **What happened:** Adding Gladiolus colour variants to PLANT_VARIANTS failed 3 times. The entry landed in DECOR_VARIANTS, then GATE_VARIANTS, then GATE_VARIANTS again. Each time, proximity-based anchor text (the last gate entry) was used without verifying which object it was actually inside. The build always succeeded because the syntax was valid — the error was purely logical.
 **Root cause:** `useGardenState.js` has 5+ large objects defined sequentially. Using a nearby line as an edit anchor without checking the enclosing object boundary causes silent misplacement. The validator and build don't catch it.
