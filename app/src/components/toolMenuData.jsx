@@ -114,12 +114,12 @@ export const WATER_ITEMS = [
   {
     id: '__pools', label: 'Pools', emoji: '🏊', group: true,
     children: [
-      { id: 'pool-circle', label: 'Circular Pool', hint: 'Tap to place circular pool' },
-      { id: 'pool-sq',     label: 'Square Pool',   hint: 'Tap + drag rectangular pool' },
+      { id: 'pool-circle',        label: 'Circular Pool', hint: 'Tap to place circular pool' },
+      { id: 'pool-sq',            label: 'Square Pool',   hint: 'Tap + drag rectangular pool' },
+      { id: 'decor-pool-railing', label: 'Pool Railing',  hint: 'Tap to place a pool railing', decorGroup: 'pool-railings' },
     ],
   },
   { id: 'pond', label: 'Pond', emoji: '🌊', hint: 'Freeform pond outline' },
-  { id: 'decor-pool-railing', label: 'Pool Railing', emoji: '🏊', hint: 'Tap to place a pool railing', decorGroup: 'pool-railings' },
 ]
 
 export const DECOR_ITEMS = [
@@ -171,7 +171,7 @@ export function handleSubChange(id, currentMode, { onBedSubTool, onFenceType, on
   }
   if (currentMode === 'paths')    { onPathSubTool(id); return }
   if (currentMode === 'building') { onBuildingSubTool(id); return }
-  if (currentMode === 'water')    { onWaterSubTool(id); return }
+  if (currentMode === 'water')    { if (id?.startsWith('decor-')) { onModeChange?.('decor'); onDecorSubTool(id); return } onWaterSubTool(id); return }
   if (currentMode === 'decor')    { onDecorSubTool(id); return }
 }
 
@@ -194,7 +194,7 @@ export function ToolMenu({
   const items = ITEMS_MAP[currentMode] || []
 
   const doSubChange = (id) => handleSubChange(id, currentMode, {
-    onBedSubTool, onFenceType, onFenceSubTool, onPathSubTool, onBuildingSubTool, onWaterSubTool, onDecorSubTool,
+    onBedSubTool, onFenceType, onFenceSubTool, onPathSubTool, onBuildingSubTool, onWaterSubTool, onDecorSubTool, onModeChange,
   })
 
   const groupHasActive = (g) =>
