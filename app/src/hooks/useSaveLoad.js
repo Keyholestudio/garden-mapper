@@ -677,17 +677,57 @@ export function loadGarden({
       _prevDragY = group.y()
     })
     // ── Long-press timer (mobile multi-select) ────────────────────
+    // Native DOM events on stage container — survives layer.listening(false) during pinch
     let _lpTimer = null
     let _lpFired  = false
-    group.on('touchstart', () => {
+    let _lpStartX = 0, _lpStartY = 0
+    const _LP_THRESHOLD = 10
+    const _LP_DELAY = 600
+
+    const _hitTest = (clientX, clientY) => {
+      if (!stage) return false
+      const rect = stage.container().getBoundingClientRect()
+      const sc   = stage.scaleX()
+      const gx   = stage.x() + group.x() * sc
+      const gy   = stage.y() + group.y() * sc
+      const gw   = (group.width()  || 64) * sc
+      const gh   = (group.height() || 64) * sc
+      const tx   = clientX - rect.left
+      const ty   = clientY - rect.top
+      return tx >= gx && tx <= gx + gw && ty >= gy && ty <= gy + gh
+    }
+    const _onNativeTouchStart = (e) => {
+      if (e.touches.length !== 1) return
+      const t = e.touches[0]
+      if (!_hitTest(t.clientX, t.clientY)) return
+      _lpStartX = t.clientX; _lpStartY = t.clientY
       _lpFired = false
+      clearTimeout(_lpTimer)
       _lpTimer = setTimeout(() => {
         _lpFired = true
         if (onLongPressPlant) onLongPressPlant(entry.id, group)
-      }, 500)
-    })
-    group.on('touchend touchcancel', () => { clearTimeout(_lpTimer); _lpTimer = null })
-    group.on('touchmove', () => { clearTimeout(_lpTimer); _lpTimer = null })
+      }, _LP_DELAY)
+    }
+    const _onNativeTouchMove = (e) => {
+      if (!_lpTimer || !e.touches.length) return
+      const t = e.touches[0]
+      const dx = t.clientX - _lpStartX, dy = t.clientY - _lpStartY
+      if (Math.sqrt(dx*dx + dy*dy) > _LP_THRESHOLD) { clearTimeout(_lpTimer); _lpTimer = null }
+    }
+    const _onNativeTouchEnd = () => { clearTimeout(_lpTimer); _lpTimer = null }
+    const _container = stage?.container()
+    if (_container) {
+      _container.addEventListener('touchstart',  _onNativeTouchStart, { passive: true })
+      _container.addEventListener('touchmove',   _onNativeTouchMove,  { passive: true })
+      _container.addEventListener('touchend',    _onNativeTouchEnd)
+      _container.addEventListener('touchcancel', _onNativeTouchEnd)
+      group.on('destroy', () => {
+        _container.removeEventListener('touchstart',  _onNativeTouchStart)
+        _container.removeEventListener('touchmove',   _onNativeTouchMove)
+        _container.removeEventListener('touchend',    _onNativeTouchEnd)
+        _container.removeEventListener('touchcancel', _onNativeTouchEnd)
+      })
+    }
     group.on('click tap', e => {
       if (_lpFired) { _lpFired = false; e.cancelBubble = true; return }
       onSelectPlant(entry.id, group)
