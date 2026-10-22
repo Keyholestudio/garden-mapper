@@ -40,6 +40,7 @@ export default function MobileSheet({
   recents, onAddRecent, onRemoveRecent, onClearRecents, recentsHidden, onSetRecentsHidden,
   // Selection state
   selectedPlant, selectedStruct,
+  multiSelection,
   plantDataRef, structDataRef,
   layers, gardenUnit,
   // Handlers
@@ -58,6 +59,10 @@ export default function MobileSheet({
   selectedSeasons,
   onSeasonToggle,
   onClearSelection,
+  // Multi-select
+  onMultiDelete,
+  onMultiSeasonChange,
+  onMultiMove,
   onUndo,
   canUndo,
   onPlantVariantChange,
@@ -188,6 +193,97 @@ export default function MobileSheet({
             )}
             <div className="mobile-edit-sep" />
             <button className="mobile-edit-btn full active" onClick={() => onExitEdit?.()}>✓ Done Editing</button>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  // ── Multi-select panel ─────────────────────────────────
+  if (multiSelection?.length > 0) {
+    const SEASONS = ['spring', 'summer', 'fall', 'winter']
+    const SEASON_ICONS = { spring: '🌼', summer: '☀️', fall: '🍂', winter: '❄️' }
+    // Determine if all selected items are plants (decor has no seasons)
+    const allPlants = multiSelection.every(item => {
+      const d = plantDataRef?.current?.[item.id]
+      return d && !['Decor', 'Water Feature'].includes(d.family)
+    })
+    const mixedSeasonState = (() => {
+      // Per season: true = all selected plants have it, false = none, 'mixed' = some
+      if (!allPlants) return null
+      return SEASONS.reduce((acc, s) => {
+        const hasCount = multiSelection.filter(item => {
+          const d = plantDataRef?.current?.[item.id]
+          return d?.seasons?.includes(s)
+        }).length
+        acc[s] = hasCount === multiSelection.length ? true : hasCount === 0 ? false : 'mixed'
+        return acc
+      }, {})
+    })()
+
+    return (
+      <div className="mobile-sheet mobile-sheet--edit" onPointerDown={e => e.stopPropagation()}>
+        <div className="mobile-sheet-handle mobile-sheet-handle--edit">
+          <button className="mobile-edit-back-inline" onClick={() => onClearSelection?.()}>← Done</button>
+          <span style={{fontSize:12, fontWeight:600, color:'#FFD600', flex:1, textAlign:'center'}}>
+            {multiSelection.length} selected
+          </span>
+          <button className="mobile-edit-undo-inline" style={{visibility: canUndo ? 'visible' : 'hidden'}} onClick={() => onUndo?.()}>↩ Undo</button>
+        </div>
+        {expanded && (
+          <div className="mobile-sheet-body mobile-edit-body">
+            <div className="mobile-edit-title" style={{marginBottom:4}}>📌 Multi-Select</div>
+            <div style={{fontSize:11, opacity:.65, marginBottom:10}}>
+              Long-press or {navigator.maxTouchPoints > 1 ? 'tap' : 'double-click'} more items to add them
+            </div>
+
+            {/* Move buttons */}
+            <div className="mobile-edit-title" style={{marginTop:4}}>MOVE</div>
+            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:4, marginBottom:8}}>
+              <div />
+              <button className="mobile-edit-btn" onClick={() => onMultiMove?.(0, -8)}>▲</button>
+              <div />
+              <button className="mobile-edit-btn" onClick={() => onMultiMove?.(-8, 0)}>◀</button>
+              <button className="mobile-edit-btn" style={{fontSize:10, padding:'4px 2px'}} onClick={() => onMultiMove?.(0, 0)}>·</button>
+              <button className="mobile-edit-btn" onClick={() => onMultiMove?.(8, 0)}>▶</button>
+              <div />
+              <button className="mobile-edit-btn" onClick={() => onMultiMove?.(0, 8)}>▼</button>
+              <div />
+            </div>
+
+            {/* Season toggles (plants only) */}
+            {allPlants && mixedSeasonState && (
+              <>
+                <div className="mobile-edit-sep" />
+                <div className="mobile-edit-title">SEASONS</div>
+                <div style={{display:'flex', gap:6, flexWrap:'wrap', marginBottom:8}}>
+                  {SEASONS.map(s => {
+                    const state = mixedSeasonState[s]
+                    return (
+                      <button
+                        key={s}
+                        className={`mobile-edit-btn${state === true ? ' active' : ''}`}
+                        style={{flex:1, fontSize:11, position:'relative'}}
+                        onClick={() => {
+                          // If all have it → remove; otherwise add to all
+                          const next = state !== true
+                          onMultiSeasonChange?.(s, next)
+                        }}
+                      >
+                        {SEASON_ICONS[s]} {s.slice(0,3)}
+                        {state === 'mixed' && <span style={{position:'absolute',top:1,right:3,fontSize:8,color:'#FFD600'}}>~</span>}
+                      </button>
+                    )
+                  })}
+                </div>
+              </>
+            )}
+
+            <div className="mobile-edit-sep" />
+            <button className="mobile-edit-btn full danger" onClick={() => onMultiDelete?.()}
+              style={{background:'#c0392b', color:'#fff', border:'none'}}>
+              🗑 Delete All ({multiSelection.length})
+            </button>
           </div>
         )}
       </div>

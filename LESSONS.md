@@ -1,6 +1,20 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L106 — addPlant `autoSelect` flag: always pass `onSelect`, use `autoSelect: false` to suppress post-placement call (2026-10-22)
+**What happened:** Passed `onSelect: null` to suppress premature auto-select during copy. This permanently broke the `click tap` closure on the Konva group — the plant could never be re-selected without a page refresh.
+**Rule:** Never pass `onSelect: null` to `addPlant`. The click handler captures `onSelect` in a closure at creation time. Use `autoSelect: false` to suppress the automatic post-placement call while keeping the click handler wired.
+
+## L107 — `defaultChecked` vs `checked`: uncontrolled inputs don't update on prop change (2026-10-22)
+**What happened:** Season checkboxes used `defaultChecked={d.seasons?.includes(s)}`. Switching between plants didn't update the checkboxes because React only reads `defaultChecked` on mount.
+**Rule:** Any checkbox that needs to reflect external state changes must use controlled `checked` + `onChange`. `defaultChecked` is only safe for truly fire-and-forget forms that never need to reset.
+
+## L108 — Season opacity useEffect doesn't re-fire on load; call `applySeasonOpacity` explicitly after every load path (2026-10-22)
+**What happened:** On page refresh, plants loaded at full opacity. The `useEffect([state.currentSeason, stageReady])` didn't re-fire because neither value changed after load completed.
+**Rule:** Any time plants are placed onto the canvas (load, garden switch, cloud restore), call `applySeasonOpacity(plantLayer)` explicitly immediately after. Don't rely on the season useEffect to catch it.
+
+---
+
 ## L105 — Always verify browser state before running sticker-generate-one.py (2026-10-21)
 **What happened:** Script failed with "account not signed in" even though Gemini /u/1/app was open in Brave. Root cause: `ROB_ACCOUNT` config string was stale (pointed to wrong account substring). Instead of checking the browser directly, the error was accepted at face value and escalated to Rob.
 **Pre-flight checklist (mandatory before any sticker generation run):**

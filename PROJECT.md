@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-10-19 (Rock Borders tool icon added; decor icon pipeline documented)_
+_Last updated: 2026-10-22 (Season visibility bugs fixed; copy seasons; load opacity fix)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -142,6 +142,7 @@ cd projects/garden-planner/app && npm run dev
   - 🔲 Hammock
   - _(Bird bath covered by Fountain)_
 - **[TODO] Better background removal tool** - current chroma key pipeline can't handle ombre/gradient Gemini backgrounds without clipping art. Investigate `rembg` (AI-based, local pip install).
+- **[HIGH] Forward/Back ripple on touching plants** - TOUCH_PAD changed to -1 (require genuine overlap) but ripple still exists. z-index swap approach in place. Root cause not yet isolated — needs fresh investigation. Resume: read handleLayerMove in GardenEditor.jsx.
 - **[HIGH] Rock border drag on mobile - border doesn't follow finger** - Jumps to new location on release instead of smooth drag. Root issue: coordinate system for rock border Group children vs fence Line is not reconciled. Last commit (`1926d59`) changed to local-coord model (like fence) but still not smooth. Next session: read fence dragmove code, match rock border exactly to it. Do NOT mix Model A (world coords, normalize on dragend) and Model B (local coords, group accumulates).
 - **[HIGH] L061 in LESSONS.md is stale** - reflects old Model A. Update once coordinate model is settled next session.
 - **Rock border colour variants** - brown, white, sandstone PNGs needed. Colour picker in panel wired but all variants use grey sticker for now. Generate next session.

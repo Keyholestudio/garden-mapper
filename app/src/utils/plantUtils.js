@@ -22,7 +22,8 @@ export function makePlantGroup(id, img, SIZE, gx, gy) {
 // showGridRef: a React ref so dragmove always sees the current grid toggle state
 // onSelect: fired on click/tap AND auto-called after placement (pass handlePlantSelect)
 // autoSelect: if false, suppresses the auto-call after placement (used by copy handler which selects manually after writing data)
-export function addPlant({ entry, x, y, stage, plantLayer, plantDataRef, plantIdCtr, showGridRef, onSelect, autoSelect = true }) {
+// onLongPress: fired after 500 ms touch hold or double-click — triggers multi-select mode
+export function addPlant({ entry, x, y, stage, plantLayer, plantDataRef, plantIdCtr, showGridRef, onSelect, onLongPress, autoSelect = true }) {
   const id = 'plant_' + plantIdCtr.current++
   const SIZE = SIZE_MAP[entry.size] || 64
   const loadedImg = entry._img
@@ -54,8 +55,40 @@ export function addPlant({ entry, x, y, stage, plantLayer, plantDataRef, plantId
     }
   })
 
+  // ── Long-press timer for mobile multi-select ───────────────────
+  let _lpTimer = null
+  let _lpFired  = false
+  group.on('touchstart', () => {
+    _lpFired = false
+    _lpTimer = setTimeout(() => {
+      _lpFired = true
+      if (onLongPress) onLongPress(id, group)
+    }, 500)
+  })
+  group.on('touchend touchcancel', () => {
+    clearTimeout(_lpTimer)
+    _lpTimer = null
+  })
+  group.on('touchmove', () => {
+    // Movement cancels long-press so drag still works normally
+    clearTimeout(_lpTimer)
+    _lpTimer = null
+  })
+
+  // ── Click / tap → select (normal) or add-to-multi (after long-press) ──
   group.on('click tap', e => {
+    if (_lpFired) {
+      // Long-press already fired — suppress this tap so it doesn't also single-select
+      _lpFired = false
+      e.cancelBubble = true
+      return
+    }
     if (onSelect) onSelect(id, group, e)
+  })
+
+  // ── Double-click → multi-select (desktop) ────────────────────
+  group.on('dblclick', e => {
+    if (onLongPress) { onLongPress(id, group, e); e.cancelBubble = true }
   })
 
   plantLayer.add(group)

@@ -410,6 +410,65 @@ export default function GardenEditor() {
     applySeasonOpacity()
   }
 
+  // ── Long-press / double-click handler → adds to multiSelection ────────────
+  const handleLongPressPlant = (id, group) => {
+    if (isFreeToolActive() || isDrawToolActive()) return
+    // Clear any single selection first
+    state.setSelectedPlant(null)
+    state.setSelectedStruct(null)
+    state.setEditingShapeId(null)
+    // Add or remove from multi-selection
+    state.setMultiSelection(prev => {
+      const already = prev.findIndex(x => x.id === id)
+      if (already >= 0) return prev.filter(x => x.id !== id)
+      return [...prev, { kind: 'plant', id, shape: group }]
+    })
+  }
+
+  // ── Multi-select actions ─────────────────────────────────────────────────
+  // Delete all items in multiSelection
+  const handleMultiDelete = () => {
+    const { plantLayer } = layersRef.current
+    state.multiSelection.forEach(({ kind, id, shape }) => {
+      if (kind === 'plant') {
+        shape?.destroy()
+        delete state.plantDataRef.current[id]
+      }
+      // struct multi-delete could be added later
+    })
+    plantLayer?.batchDraw()
+    state.setMultiSelection([])
+    triggerAutoSave()
+  }
+
+  // Set seasons on all plant items in multiSelection
+  const handleMultiSeasonChange = (season, checked) => {
+    state.multiSelection.forEach(({ kind, id }) => {
+      if (kind !== 'plant') return
+      const d = state.plantDataRef.current[id]
+      if (!d) return
+      const next = checked
+        ? [...new Set([...(d.seasons || []), season])]
+        : (d.seasons || []).filter(s => s !== season)
+      d.seasons = next
+    })
+    applySeasonOpacity()
+    triggerAutoSave()
+  }
+
+  // Move all multiSelection items by dx, dy (world px)
+  const handleMultiMove = (dx, dy) => {
+    state.multiSelection.forEach(({ shape }) => {
+      if (!shape) return
+      shape.x(shape.x() + dx)
+      shape.y(shape.y() + dy)
+    })
+    layersRef.current.plantLayer?.batchDraw()
+    // Redraw multi-select highlights
+    state.setMultiSelection(prev => [...prev])
+    triggerAutoSave()
+  }
+
   // ── Selection hook ──
   const { enterEdit, exitEdit, deleteSelected, buildEditHandles } = useSelection({
     stage:  stageReady ? stageRef.current : null,
@@ -634,6 +693,7 @@ export default function GardenEditor() {
       plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr,
       showGridRef,
       onSelect: handlePlantSelect,
+      onLongPress: handleLongPressPlant,
     })
     if (newId) {
       const group = plantLayer.findOne('#' + newId)
@@ -676,6 +736,7 @@ export default function GardenEditor() {
       plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr,
       showGridRef,
       onSelect: handlePlantSelect,
+      onLongPress: handleLongPressPlant,
     })
     // Push undo: remove the placed plant
     if (newId) {
@@ -804,6 +865,7 @@ export default function GardenEditor() {
           plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr,
           showGridRef,
           onSelect: handlePlantSelect,
+          onLongPress: handleLongPressPlant,
         })
         // Apply stored scale + place in correct layer zone
         if (newId) {
@@ -1468,6 +1530,7 @@ export default function GardenEditor() {
       loadedImages,
       showGridRef,
       onSelectPlant: handlePlantSelect,
+      onLongPressPlant: handleLongPressPlant,
       onSelectStruct: (id, shape) => {
         if (isFreeToolActive()) return
         if (isDrawToolActive()) {
@@ -1538,6 +1601,7 @@ export default function GardenEditor() {
       loadedImages,
       showGridRef,
       onSelectPlant: handlePlantSelect,
+      onLongPressPlant: handleLongPressPlant,
       onSelectStruct: (id, shape) => {
         if (isFreeToolActive()) return
         if (isDrawToolActive()) {
@@ -1576,6 +1640,7 @@ export default function GardenEditor() {
       loadedImages: loadedImagesRef.current,
       showGridRef,
       onSelectPlant: handlePlantSelect,
+      onLongPressPlant: handleLongPressPlant,
       onSelectStruct: (id, shape) => {
         state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
         state.setSelectedPlant(null)
@@ -1866,6 +1931,7 @@ export default function GardenEditor() {
               // Selection
               selectedPlant={state.selectedPlant}
               selectedStruct={state.selectedStruct}
+              multiSelection={state.multiSelection}
               plantDataRef={state.plantDataRef}
               structDataRef={state.structDataRef}
               layers={layersRef.current}
@@ -1934,6 +2000,10 @@ export default function GardenEditor() {
                 triggerAutoSave()
               }}
               onClearSelection={clearSelection}
+              // Multi-select
+              onMultiDelete={handleMultiDelete}
+              onMultiSeasonChange={handleMultiSeasonChange}
+              onMultiMove={handleMultiMove}
               // Edit points
               editingShapeId={state.editingShapeId}
               onEnterEdit={enterEdit}
@@ -2008,7 +2078,9 @@ export default function GardenEditor() {
           onClearAll={handleClearAll}
           onDeletePlant={() => { state.selectedPlant?.group.destroy(); delete state.plantDataRef.current[state.selectedPlant?.id]; layersRef.current.plantLayer?.batchDraw(); clearSelection(); triggerAutoSave() }}
           onDeleteStruct={handleDeleteStruct}
-          onDeleteMulti={deleteSelected}
+          onDeleteMulti={handleMultiDelete}
+          onMultiSeasonChange={handleMultiSeasonChange}
+          onMultiMove={handleMultiMove}
           onTransparentPlant={handleTransparentPlant}
           onLockPlant={handleLockPlant}
           onLockStruct={handleLockStruct}

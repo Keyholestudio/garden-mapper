@@ -370,6 +370,7 @@ export function loadGarden({
   stage, layers, state, loadedImages,
   showGridRef,
   onSelectPlant, onSelectStruct, onClearSelection,
+  onLongPressPlant,  // optional: fired on 500ms hold or dblclick — triggers multi-select
   setGardenName, setGardenW, setGardenH, setGardenUnit, setIsSetup,
   onZoomToFit,
   onEnterEdit,  // optional: called on dblclick/dbltap for editable shapes
@@ -651,7 +652,25 @@ export function loadGarden({
         group.y(Math.round(group.y() / SNAP_CELL) * SNAP_CELL)
       }
     })
-    group.on('click tap', () => onSelectPlant(entry.id, group))
+    // ── Long-press timer (mobile multi-select) ────────────────────
+    let _lpTimer = null
+    let _lpFired  = false
+    group.on('touchstart', () => {
+      _lpFired = false
+      _lpTimer = setTimeout(() => {
+        _lpFired = true
+        if (onLongPressPlant) onLongPressPlant(entry.id, group)
+      }, 500)
+    })
+    group.on('touchend touchcancel', () => { clearTimeout(_lpTimer); _lpTimer = null })
+    group.on('touchmove', () => { clearTimeout(_lpTimer); _lpTimer = null })
+    group.on('click tap', e => {
+      if (_lpFired) { _lpFired = false; e.cancelBubble = true; return }
+      onSelectPlant(entry.id, group)
+    })
+    group.on('dblclick', e => {
+      if (onLongPressPlant) { onLongPressPlant(entry.id, group); e.cancelBubble = true }
+    })
     plantLayer?.add(group)
   })
 

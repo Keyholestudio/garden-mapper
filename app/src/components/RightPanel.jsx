@@ -38,6 +38,7 @@ export default function RightPanel({
   plantDataRef, structDataRef,
   layers, gardenUnit,
   onDeletePlant, onDeleteStruct, onDeleteMulti,
+  onMultiSeasonChange, onMultiMove,
   onTransparentPlant, onCopyPlant,
   onLockPlant, onLockStruct,
   onCopyStruct,
@@ -106,14 +107,67 @@ export default function RightPanel({
   }
 
   // ── Multi-select panel ────────────────────────────────────
-  if (multiSelection?.length > 1) {
+  if (multiSelection?.length > 0) {
+    const SEASONS = ['spring', 'summer', 'fall', 'winter']
+    const SEASON_ICONS = { spring: '🌼', summer: '☀️', fall: '🍂', winter: '❄️' }
+    const allPlants = multiSelection.every(item => {
+      const d = plantDataRef?.current?.[item.id]
+      return d && !['Decor', 'Water Feature'].includes(d.family)
+    })
+    const mixedSeasonState = allPlants ? SEASONS.reduce((acc, s) => {
+      const hasCount = multiSelection.filter(item => {
+        const d = plantDataRef?.current?.[item.id]
+        return d?.seasons?.includes(s)
+      }).length
+      acc[s] = hasCount === multiSelection.length ? true : hasCount === 0 ? false : 'mixed'
+      return acc
+    }, {}) : null
     return (
       <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
         <div className="panel-content">
-          <div className="panel-h2">Multiple Selected</div>
-          <div className="panel-sub">{multiSelection.length} objects</div>
+          <div className="panel-back-row">
+            <button className="panel-back-btn" onClick={() => onClearSelection?.()}>← Done</button>
+            <button className="panel-undo-btn" style={{visibility: canUndo ? 'visible' : 'hidden'}} onClick={() => onUndo?.()}>↩</button>
+          </div>
+          <div className="panel-h2">📌 Multi-Select</div>
+          <div className="panel-sub">{multiSelection.length} selected • Shift+click or double-click to add</div>
           <div className="panel-sep" />
-          <button className="btn-panel danger" onClick={onDeleteMulti}>🗑 Delete All</button>
+          <div className="panel-title">MOVE</div>
+          <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:4, marginBottom:8}}>
+            <div />
+            <button className="btn-panel" style={{padding:'4px'}} onClick={() => onMultiMove?.(0, -8)}>▲</button>
+            <div />
+            <button className="btn-panel" style={{padding:'4px'}} onClick={() => onMultiMove?.(-8, 0)}>◀</button>
+            <div style={{display:'flex',alignItems:'center',justifyContent:'center',fontSize:9,opacity:.5}}>8px</div>
+            <button className="btn-panel" style={{padding:'4px'}} onClick={() => onMultiMove?.(8, 0)}>▶</button>
+            <div />
+            <button className="btn-panel" style={{padding:'4px'}} onClick={() => onMultiMove?.(0, 8)}>▼</button>
+            <div />
+          </div>
+          {allPlants && mixedSeasonState && (
+            <>
+              <div className="panel-sep" />
+              <div className="panel-title">SEASONS</div>
+              <div style={{display:'flex', gap:4, flexWrap:'wrap', marginBottom:8}}>
+                {SEASONS.map(s => {
+                  const st = mixedSeasonState[s]
+                  return (
+                    <button
+                      key={s}
+                      className={`btn-panel${st === true ? ' active' : ''}`}
+                      style={{flex:1, fontSize:11, position:'relative', minWidth:48}}
+                      onClick={() => onMultiSeasonChange?.(s, st !== true)}
+                    >
+                      {SEASON_ICONS[s]} {s.slice(0,3)}
+                      {st === 'mixed' && <span style={{position:'absolute',top:1,right:3,fontSize:8,color:'#FFD600'}}>~</span>}
+                    </button>
+                  )
+                })}
+              </div>
+            </>
+          )}
+          <div className="panel-sep" />
+          <button className="btn-panel danger" onClick={onDeleteMulti}>🗑 Delete All ({multiSelection.length})</button>
         </div>
       </div>
     )
