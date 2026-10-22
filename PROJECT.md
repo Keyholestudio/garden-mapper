@@ -101,34 +101,39 @@ cd projects/garden-planner/app && npm run dev
 ## Open Items
 
 ### 🔴 Immediate
-- **[TODO] Better background removal tool** — current pipeline (chroma key) struggles with ombre/gradient Gemini backgrounds. Investigate `rembg` (AI-based, local) or Remove.bg API for Rob-provided images with complex backgrounds.
-- **[TODO] Enable Vercel Analytics** — one toggle in Vercel dashboard (Project → Analytics → Enable). Free on hobby plan. Gives country-level web traffic passively. **Privacy policy impact:** must disclose that anonymous usage data (page views, country, referrer) is collected via Vercel Analytics and processed by Vercel Inc. No IP addresses stored. Add a bullet to the Analytics/Tracking section of gardenmapper.ca/store-policy before enabling. Low effort — Vercel provides standard disclosure language. Do this before or same session as enabling the toggle.
+- **[TODO] Better background removal tool** - current pipeline (chroma key) struggles with ombre/gradient Gemini backgrounds. Investigate `rembg` (AI-based, local) or Remove.bg API for Rob-provided images with complex backgrounds.
+- **[TODO] Enable Vercel Analytics** - one toggle in Vercel dashboard (Project → Analytics → Enable). Free on hobby plan. Gives country-level web traffic passively. **Privacy policy impact:** must disclose that anonymous usage data (page views, country, referrer) is collected via Vercel Analytics and processed by Vercel Inc. No IP addresses stored. Add a bullet to the Analytics/Tracking section of gardenmapper.ca/store-policy before enabling. Low effort - Vercel provides standard disclosure language. Do this before or same session as enabling the toggle.
 
-- **[DONE] Lotus** — Rob provided image (cyan BG), processed + committed. Live on web. Android deploy pending USB.
-- **[DONE] water-mint PNG** — generated + committed. Live on web. Commit: `fc01fba`.
-- **[MISSING] water-iris PNG** — registered in pack-aquatics but no sticker generated yet.
-- **[PENDING] Strawberry tree + Eucalyptus** — raws sent to Rob for manual generation.
-- **[DONE] CDN delivery for Android** — stickers load from Vercel, APK is 28 MB. Commits: 728d03d, 3b3382f.
-- **[DONE] Signed AAB** — generated 2026-10-06 via Android Studio. Ready to upload to Play Console.
-- **[NEXT] Play Store upload** — upload AAB to Play Console → Internal/Closed Testing. Need: feature graphic (1024×500), screenshots (2-8, 9:16, min 1080px), app icon 512×512.
-- **[DONE] Store listing text** — short + full description submitted 2026-10-08.
-- **[DONE] Greenhouses decor** — 6 variants live. `decor_greenhouse-*`. Wired in all 4 files.
-- **[DONE] Beehives decor** — 2 variants live. `decor_beehive-*`. Wired in all 4 files.
-- **[DONE] Benches decor** — 3 variants live (wood default, stone, iron). Added 2026-10-17.
-- **[DONE] Sheds decor** — 3 variants live (weathered default, cedar, pine). Added 2026-10-17.
-- **[DONE] Wheelbarrows decor** — 2 variants live (side default, front). Added 2026-10-17.
-- **[DONE] Gnomes decor** — 2 variants live (classic red-hat default, green-hat female). Added 2026-10-17.
-- **[DONE] Sundial decor** — 1 variant live (stone). Added 2026-10-17.
-- **[DONE] Compost Bins decor** — 2 variants live (wood default, plastic green). Added 2026-10-17.
-- **[DONE] Lights decor** — 3 variants live (solar stake default, Victorian lantern, stone lantern). Added 2026-10-17.
-- **[DONE] Rock Borders tool icon** — custom PNG icon wired into Fences → Rock Borders group header. Commit `fbf6d64`. 2026-10-19.
-- **[DONE] Trellis decor category** — 3 variants (Wooden Trellis default, Wooden Lattice, Metal Trellis). Commit `7f2c56d`. 2026-10-20.
-- **[DONE] Tools category** — renamed from Wheelbarrows (keys/filenames untouched). Shovel added as first tool sticker. Commit `0fd4ec3`. 2026-10-20.
-- **[DONE] Tree Trunks plant pack** — new pack, 1 tray entry (Oak default), 4 colour picker variants (Dead, Birch, Cherry, Cedar). Commit `dfafca4`. 2026-10-20.
-- **[NEXT] Decor category icon** — Rob will share an image next session. Process + wire into toolMenuData.jsx using `0d` workflow in DECOR-PROMPT-GUIDE.md.
+- **[DONE] Lotus** - Rob provided image (cyan BG), processed + committed. Live on web. Android deploy pending USB.
+- **[DONE] water-mint PNG** - generated + committed. Live on web. Commit: `fc01fba`.
+- **[MISSING] water-iris PNG** - registered in pack-aquatics but no sticker generated yet.
+- **[PENDING] Strawberry tree + Eucalyptus** - raws sent to Rob for manual generation.
+- **[DONE] CDN delivery for Android** - stickers load from Vercel, APK is 28 MB. Commits: 728d03d, 3b3382f.
+- **[DONE] Signed AAB** - generated 2026-10-06 via Android Studio. Ready to upload to Play Console.
+- **[NEXT] Play Store upload** - upload AAB to Play Console → Internal/Closed Testing. Need: feature graphic (1024×500), screenshots (2-8, 9:16, min 1080px), app icon 512×512.
+- **[DONE] Store listing text** - short + full description submitted 2026-10-08.
+- **[DONE] Greenhouses decor** - 6 variants live. `decor_greenhouse-*`. Wired in all 4 files.
+- **[DONE] Beehives decor** - 2 variants live. `decor_beehive-*`. Wired in all 4 files.
+- **[DONE] Benches decor** - 3 variants live (wood default, stone, iron). Added 2026-10-17.
+- **[DONE] Sheds decor** - 3 variants live (weathered default, cedar, pine). Added 2026-10-17.
+- **[DONE] Wheelbarrows decor** - 2 variants live (side default, front). Added 2026-10-17.
+- **[DONE] Gnomes decor** - 2 variants live (classic red-hat default, green-hat female). Added 2026-10-17.
+- **[DONE] Sundial decor** - 1 variant live (stone). Added 2026-10-17.
+- **[DONE] Compost Bins decor** - 2 variants live (wood default, plastic green). Added 2026-10-17.
+- **[DONE] Lights decor** - 3 variants live (solar stake default, Victorian lantern, stone lantern). Added 2026-10-17.
+- **[DONE] Rock Borders tool icon** - custom PNG icon wired into Fences → Rock Borders group header. Commit `fbf6d64`. 2026-10-19.
+- **[DONE] Trellis decor category** - 3 variants (Wooden Trellis default, Wooden Lattice, Metal Trellis). Commit `7f2c56d`. 2026-10-20.
+- **[DONE] Tools category** - renamed from Wheelbarrows (keys/filenames untouched). Shovel added as first tool sticker. Commit `0fd4ec3`. 2026-10-20.
+- **[DONE] Tree Trunks plant pack** - new pack, 1 tray entry (Oak default), 4 colour picker variants (Dead, Birch, Cherry, Cedar). Commit `dfafca4`. 2026-10-20.
+- **[DONE] 7 Tool stickers** - Shovel (replaced), Trowel, Watering Can, Garden Fork, Rake, Hose, Garden Hoe. Flood-fill shadow removal added to pipeline permanently. Commits: `f1e9a62`, `b9ff45b`. 2026-10-21.
+- **[DONE] False Sunflower** - `flower-daisy_false-sunflower_L`. pack-flowers-perennials. Commit `b9c0129`. 2026-10-21.
+- **[DONE] Pool Railing sticker** - `decor_pool-railing_M`. Water menu. Commit `2b1b007`. 2026-10-21.
+- **[DONE] Rock border stone picker** - 8 options: 4 natural, 2 stepping, Mixed Natural, Mixed Sandstone. Grey River Stone default. Commits `051dc91`, `4706d88`. 2026-10-21.
+- **[DONE] Rock border spacing control** - ◀ ↻ ▶ buttons, step 0.1, range -1.5→0.25, persisted per border. Commit `4706d88`. 2026-10-21.
+- **[NEXT] Decor category icon** - Rob will share an image next session. Process + wire into toolMenuData.jsx using `0d` workflow in DECOR-PROMPT-GUIDE.md.
 - **[TODO] Decor gaps (pending images from Rob):**
-  - 🔴 Raised bed (wood) — essential for veggie planners
-  - 🔴 Pergola / arbour — major structural focal point
+  - 🔴 Raised bed (wood) - essential for veggie planners
+  - 🔴 Pergola / arbour - major structural focal point
   - 🟡 Cold frame
   - 🟡 Half barrel / large urn planter
   - 🔲 Solar stake lights / lantern (more variants)
@@ -136,18 +141,18 @@ cd projects/garden-planner/app && npm run dev
   - 🔲 Rain barrel
   - 🔲 Hammock
   - _(Bird bath covered by Fountain)_
-- **[TODO] Better background removal tool** — current chroma key pipeline can't handle ombre/gradient Gemini backgrounds without clipping art. Investigate `rembg` (AI-based, local pip install).
-- **[HIGH] Rock border drag on mobile — border doesn't follow finger** — Jumps to new location on release instead of smooth drag. Root issue: coordinate system for rock border Group children vs fence Line is not reconciled. Last commit (`1926d59`) changed to local-coord model (like fence) but still not smooth. Next session: read fence dragmove code, match rock border exactly to it. Do NOT mix Model A (world coords, normalize on dragend) and Model B (local coords, group accumulates).
-- **[HIGH] L061 in LESSONS.md is stale** — reflects old Model A. Update once coordinate model is settled next session.
-- **Rock border colour variants** — brown, white, sandstone PNGs needed. Colour picker in panel wired but all variants use grey sticker for now. Generate next session.
-- **Stepping stone path** — same Group architecture, different preset (stoneSize: 48, overlap: -0.40). Add to Fences menu under Rock Borders.
-- **Picket fence** — same system, bottom-edge anchor calc different from centre-anchor stones.
-- **Android APK rebuild** — all rock border fixes need USB deploy.
+- **[TODO] Better background removal tool** - current chroma key pipeline can't handle ombre/gradient Gemini backgrounds without clipping art. Investigate `rembg` (AI-based, local pip install).
+- **[HIGH] Rock border drag on mobile - border doesn't follow finger** - Jumps to new location on release instead of smooth drag. Root issue: coordinate system for rock border Group children vs fence Line is not reconciled. Last commit (`1926d59`) changed to local-coord model (like fence) but still not smooth. Next session: read fence dragmove code, match rock border exactly to it. Do NOT mix Model A (world coords, normalize on dragend) and Model B (local coords, group accumulates).
+- **[HIGH] L061 in LESSONS.md is stale** - reflects old Model A. Update once coordinate model is settled next session.
+- **Rock border colour variants** - brown, white, sandstone PNGs needed. Colour picker in panel wired but all variants use grey sticker for now. Generate next session.
+- **Stepping stone path** - same Group architecture, different preset (stoneSize: 48, overlap: -0.40). Add to Fences menu under Rock Borders.
+- **Picket fence** - same system, bottom-edge anchor calc different from centre-anchor stones.
+- **Android APK rebuild** - all rock border fixes need USB deploy.
 
-- **[HIGH] Texture opacity not applying on live/cached site** — 10% opacity set in `drawUtils.js` but not rendering correctly on mobile. Suspected cache issue.
-- **[HIGH] Merging textured beds goes black** — `tryMergeRects` uses `d.colour + 'CC'` where colour is `#TX:soil-brown` — not valid CSS. Fix: exclude texture beds from merge or apply texture to each child rect.
-- **Android APK rebuild** — all rock border + bundle fixes need USB deploy.
-- **Dream Garden resize** — Pull current JSON from local:5200, update w/h, re-lock. Do as part of next Dream Garden update trigger.
+- **[HIGH] Texture opacity not applying on live/cached site** - 10% opacity set in `drawUtils.js` but not rendering correctly on mobile. Suspected cache issue.
+- **[HIGH] Merging textured beds goes black** - `tryMergeRects` uses `d.colour + 'CC'` where colour is `#TX:soil-brown` - not valid CSS. Fix: exclude texture beds from merge or apply texture to each child rect.
+- **Android APK rebuild** - all rock border + bundle fixes need USB deploy.
+- **Dream Garden resize** - Pull current JSON from local:5200, update w/h, re-lock. Do as part of next Dream Garden update trigger.
 
 ### 🟡 In Progress
 - **Sticker count:** 684 built + live. 0 orphans. All registered.
@@ -155,19 +160,19 @@ cd projects/garden-planner/app && npm run dev
 - **Next batch:** Batch 5 dual-tab (`--tab 0 / --tab 1`). Remaining: more wildflowers, aquatics regens, architectural. water-mint needs generating.
 - **Wildflowers:** Field poppy + California poppy decision pending (Option A vs B).
 - **Colour variant rollout** - plan in `COLOUR-VARIANTS.md`. Chunk 1 next: Ornamental Cherry + Magnolia.
-- **In-app icon updates** — bed icons, printer icon etc (from Garden Organizer doc)
-- **Gift cards** — $13/yr, $25/2yr purchasable gift cards (from Garden Organizer doc)
-- **RevenueCat Pub/Sub API** — GCP service account needs Pub/Sub permissions (from Garden Organizer doc)
+- **In-app icon updates** - bed icons, printer icon etc (from Garden Organizer doc)
+- **Gift cards** - $13/yr, $25/2yr purchasable gift cards (from Garden Organizer doc)
+- **RevenueCat Pub/Sub API** - GCP service account needs Pub/Sub permissions (from Garden Organizer doc)
 
 ### 🟡 Play Store Submission (in progress)
 **All declarations complete.** Remaining tasks:
-- ✅ Privacy policy URL — gardenmapper.ca/store-policy live, submitted to Play Console
+- ✅ Privacy policy URL - gardenmapper.ca/store-policy live, submitted to Play Console
 - ✅ Government apps, Financial features, Health, Sign-in details, Ads, Content rating, Target audience, Data safety, Advertising ID, External marketing, App category (House & Home) + contact details
-- **Store listing** 🔴 NEXT — need: screenshots (min 2, max 8, phone 16:9 or 9:16), feature graphic (1024×500 PNG/JPG), icon (512×512 PNG), short desc (80 chars), full desc (4000 chars)
-- **Release build** — signed AAB required (not debug APK)
-- **Closed test** — ≥12 testers, ≥14 days → then apply for production
-- **More modal** ✅ — `MoreModal.jsx` live. Privacy Policy + Delete Account + Visit site. Satisfies Google Play in-app requirements.
-- **AccountModal** ✅ — legal links updated (Privacy Policy + Delete Account, correct URLs)
+- **Store listing** 🔴 NEXT - need: screenshots (min 2, max 8, phone 16:9 or 9:16), feature graphic (1024×500 PNG/JPG), icon (512×512 PNG), short desc (80 chars), full desc (4000 chars)
+- **Release build** - signed AAB required (not debug APK)
+- **Closed test** - ≥12 testers, ≥14 days → then apply for production
+- **More modal** ✅ - `MoreModal.jsx` live. Privacy Policy + Delete Account + Visit site. Satisfies Google Play in-app requirements.
+- **AccountModal** ✅ - legal links updated (Privacy Policy + Delete Account, correct URLs)
 
 ### 🔲 Deferred
 - **Wire `isSubscribed` from RevenueCat (Android)** - web billing live via Stripe. Android: wire `useRevenueCat().isSubscribed` when Play Billing is set up (Session D).
@@ -175,8 +180,8 @@ cd projects/garden-planner/app && npm run dev
 - **Google Play Developer account** - ✅ complete (2026-07-16, $25 paid)
 - **Capacitor.js Android/iOS** - deferred until catalog expansion stable.
 - **App icons + splash screen** - Rob designing.
-- Phase 8 Textures, Dream Garden update, multi-device sync, SM campaign — all deferred.
-- Parabolic Stocks crons disabled — re-enable when Rob says go.
+- Phase 8 Textures, Dream Garden update, multi-device sync, SM campaign - all deferred.
+- Parabolic Stocks crons disabled - re-enable when Rob says go.
 
 ### Architecture (June 2026)
 - Auth: Google (Android) + Apple (iOS). Billing: Play/StoreKit. Backend: FastAPI + Supabase. Anon-first. Web = try-it only.
@@ -212,14 +217,14 @@ cd projects/garden-planner/app && npm run dev
 | File | Size | Rule |
 |------|------|------|
 | `research/PLANT-STAGING.md` | ~1 KB | Index only (split complete 2026-09-08). Load the category file, not this. |
-| `research/PLANT-STAGING-flowers-grasses-climbers-groundcovers.md` | 52 KB | Use offset/limit — read only the target pack section. |
+| `research/PLANT-STAGING-flowers-grasses-climbers-groundcovers.md` | 52 KB | Use offset/limit - read only the target pack section. |
 | `research/PLANT-PACK-RESEARCH.md` | 60 KB | Read-only reference. Use offset/limit or grep. |
 | `app/src/components/GardenEditor.jsx` | 72 KB | Grep or offset/limit first. Consider splitting into smaller modules. |
 _Split completed 2026-09-08. GardenEditor split plan TBD._
 
 ## Standing Rules
 1. Read `ARCHITECTURE.md` at session start
-0. **PLANT_CATALOG_TRAY is static — DO NOT revert to dynamic-only loading.** All pack entries are statically imported via `ALL_PACK_ENTRIES` in `packs/index.js` and merged into `PLANT_CATALOG_TRAY` at module load. This is what makes all plants visible on mobile. When adding new packs, add their static import + spread to `ALL_PACK_ENTRIES`. See L093.
+0. **PLANT_CATALOG_TRAY is static - DO NOT revert to dynamic-only loading.** All pack entries are statically imported via `ALL_PACK_ENTRIES` in `packs/index.js` and merged into `PLANT_CATALOG_TRAY` at module load. This is what makes all plants visible on mobile. When adding new packs, add their static import + spread to `ALL_PACK_ENTRIES`. See L093.
 2. Read v8 before solving any canvas/visual/coordinate problem
 3. One fix at a time - verify compile + behaviour before moving on
 4. Commit after every confirmed working change
