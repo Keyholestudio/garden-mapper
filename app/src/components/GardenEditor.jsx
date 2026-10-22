@@ -959,6 +959,21 @@ export default function GardenEditor() {
     triggerAutoSave()
   }
 
+  // ── Apply season opacity to entire plant layer ────────────────────────────
+  const applySeasonOpacity = () => {
+    const { plantLayer } = layersRef.current
+    if (!plantLayer) return
+    const SEASON_NAMES = ['spring','summer','fall','winter']
+    const sN = SEASON_NAMES[state.currentSeason]
+    plantLayer.find('Group').forEach(g => {
+      const pd = state.plantDataRef.current[g.id()]
+      if (!pd) return
+      if (pd.transparent) { g.opacity(0.35); return }
+      g.opacity(pd.seasons?.includes(sN) ? 1 : 0.1)
+    })
+    plantLayer.batchDraw()
+  }
+
   // ── Overlap-aware layer stepping ─────────────────────────────────────────
   // Finds siblings whose bounding boxes intersect the selected item, then
   // jumps directly to the nearest overlapping sibling in the requested direction.
@@ -1868,14 +1883,20 @@ export default function GardenEditor() {
                 const entry = { ...d, _img: img, scaleX, scaleY }
                 const { plantLayer } = layersRef.current
                 if (!plantLayer) return
-                const newId = addPlant({ entry, x: srcX + size + 8 + size / 2, y: srcY + size / 2, stage: stageRef.current, plantLayer, plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr, showGridRef, onSelect: handlePlantSelect })
+                const newId = addPlant({ entry, x: srcX + size + 8 + size / 2, y: srcY + size / 2, stage: stageRef.current, plantLayer, plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr, showGridRef, onSelect: null })
                 if (newId) {
-                  // Preserve variantSrc in the new plant's data so save/load restores the right image
+                  // Preserve variantSrc + seasons BEFORE selecting so panel shows correct state immediately
                   if (d?.variantSrc) state.plantDataRef.current[newId].variantSrc = d.variantSrc
-                  // Preserve season visibility from source plant
-                  if (d?.seasons) state.plantDataRef.current[newId].seasons = [...d.seasons]
+                  const copiedSeasons = d?.seasons ? [...d.seasons] : ['spring','summer','fall','winter']
+                  state.plantDataRef.current[newId].seasons = copiedSeasons
                   const group = plantLayer.findOne('#' + newId)
                   if (group) { group.scaleX(scaleX); group.scaleY(scaleY); placeInZone(group, d?.family || '', plantLayer) }
+                  // Select the new plant and sync season panel state
+                  state.setMultiSelection([])
+                  state.setSelectedPlant({ id: newId, group, ...state.plantDataRef.current[newId] })
+                  state.setSelectedStruct(null)
+                  setSelectedSeasons(copiedSeasons)
+                  applySeasonOpacity()
                   plantLayer.batchDraw()
                   state.pushUndo(() => { const g = layersRef.current.plantLayer?.findOne('#' + newId); if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() } })
                   triggerAutoSave()
@@ -1903,17 +1924,7 @@ export default function GardenEditor() {
                   : (d.seasons || []).filter(s => s !== season)
                 d.seasons = next
                 setSelectedSeasons([...next])
-                const { plantLayer } = layersRef.current
-                if (!plantLayer) return
-                const SEASON_NAMES = ['spring','summer','fall','winter']
-                const sN = SEASON_NAMES[state.currentSeason]
-                plantLayer.find('Group').forEach(g => {
-                  const pd = state.plantDataRef.current[g.id()]
-                  if (!pd) return
-                  if (pd.transparent) { g.opacity(0.35); return }
-                  g.opacity(pd.seasons?.includes(sN) ? 1 : 0.1)
-                })
-                plantLayer.batchDraw()
+                applySeasonOpacity()
                 triggerAutoSave()
               }}
               onClearSelection={clearSelection}
@@ -2019,18 +2030,24 @@ export default function GardenEditor() {
               stage: stageRef.current, plantLayer,
               plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr,
               showGridRef,
-              onSelect: handlePlantSelect,
+              onSelect: null,
             })
             if (newId) {
-              // Preserve variantSrc in the new plant's data so save/load restores the right image
+              // Preserve variantSrc + seasons BEFORE selecting so panel shows correct state immediately
               if (d?.variantSrc) state.plantDataRef.current[newId].variantSrc = d.variantSrc
-              // Preserve season visibility from source plant
-              if (d?.seasons) state.plantDataRef.current[newId].seasons = [...d.seasons]
+              const copiedSeasons = d?.seasons ? [...d.seasons] : ['spring','summer','fall','winter']
+              state.plantDataRef.current[newId].seasons = copiedSeasons
               const group = plantLayer.findOne('#' + newId)
               if (group) {
                 group.scaleX(scaleX); group.scaleY(scaleY)
                 placeInZone(group, entry.family || '', plantLayer)
               }
+              // Select the new plant and sync season panel state
+              state.setMultiSelection([])
+              state.setSelectedPlant({ id: newId, group, ...state.plantDataRef.current[newId] })
+              state.setSelectedStruct(null)
+              setSelectedSeasons(copiedSeasons)
+              applySeasonOpacity()
               plantLayer.batchDraw()
               state.pushUndo(() => {
                 const g = layersRef.current.plantLayer?.findOne('#' + newId)
@@ -2087,17 +2104,7 @@ export default function GardenEditor() {
               : (d.seasons || []).filter(s => s !== season)
             d.seasons = next
             setSelectedSeasons([...next])
-            const { plantLayer } = layersRef.current
-            if (!plantLayer) return
-            const SEASON_NAMES = ['spring','summer','fall','winter']
-            const sN = SEASON_NAMES[state.currentSeason]
-            plantLayer.find('Group').forEach(g => {
-              const pd = state.plantDataRef.current[g.id()]
-              if (!pd) return
-              if (pd.transparent) { g.opacity(0.35); return }
-              g.opacity(pd.seasons?.includes(sN) ? 1 : 0.1)
-            })
-            plantLayer.batchDraw()
+            applySeasonOpacity()
             triggerAutoSave()
           }}
           onClearSelection={clearSelection}
