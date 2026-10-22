@@ -27,6 +27,27 @@ cd projects/garden-planner/app && npm run dev
 - **Reference prototype:** `prototype/index-v8.html`
 - **Garden Organizer doc:** `1F3mA5UZw1qo2wxd3pqMuSvyph3L4biChiJ18kbhRf5Q`
 
+## ✅ Dev / Test / Deploy Workflow
+
+| Step | Where | How |
+|------|-------|-----|
+| Write + hot-reload | **5200** (dev) | Computer writes code, changes appear instantly in browser |
+| Test under load / prod build | **5201** (preview) | Say **"prepare 5201"** → Computer runs build + starts preview server |
+| Approve a feature | git commit | Say **"I approve the feature"** → Computer commits to git (checkpoint) |
+| Push to production | Vercel deploy | Say **"push to live"** or **"deploy"** → Computer pushes to GitHub → app.gardenmapper.ca live in ~15s |
+
+**Trigger phrases (unambiguous):**
+- `"prepare 5201"` → build dist + start preview at localhost:5201
+- `"I approve the feature"` → commit current work to git, nothing else
+- `"push to live"` / `"deploy"` → git push to GitHub → Vercel auto-deploys
+- `"back to 5200"` / `"dev mode"` → ensure dev server is running at localhost:5200
+
+**Rules:**
+- Computer always states what action it's about to take before doing it (build? commit? deploy?)
+- "I approve" alone = feature sign-off only, NOT a deploy trigger
+- dist/ is generated output — Computer never edits it directly, never treats it as source
+- Future staging option: Vercel preview branch (separate URL, cloud-hosted) — set up closer to launch
+
 ## Dream Garden Update Workflow
 1. Design at localhost:5200 - full canvas access, save works, no sandbox restriction
 2. Say **"update the Dream Garden to the website"** - I pull JSON, validate, bump `_dreamVersion`, write to `src/data/dreamGarden.json`, commit + push

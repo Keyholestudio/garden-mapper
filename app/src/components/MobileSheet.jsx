@@ -255,24 +255,18 @@ export default function MobileSheet({
             {allPlants && mixedSeasonState && (
               <>
                 <div className="mobile-edit-sep" />
-                <div className="mobile-edit-title">SEASONS</div>
-                <div style={{display:'flex', gap:6, flexWrap:'wrap', marginBottom:8}}>
+                <div className="mobile-edit-title">VISIBLE IN SEASONS</div>
+                <div className="season-checks" style={{marginBottom:8}}>
                   {SEASONS.map(s => {
-                    const state = mixedSeasonState[s]
+                    const st = mixedSeasonState[s]
                     return (
-                      <button
-                        key={s}
-                        className={`mobile-edit-btn${state === true ? ' active' : ''}`}
-                        style={{flex:1, fontSize:11, position:'relative'}}
-                        onClick={() => {
-                          // If all have it → remove; otherwise add to all
-                          const next = state !== true
-                          onMultiSeasonChange?.(s, next)
-                        }}
-                      >
-                        {SEASON_ICONS[s]} {s.slice(0,3)}
-                        {state === 'mixed' && <span style={{position:'absolute',top:1,right:3,fontSize:8,color:'#FFD600'}}>~</span>}
-                      </button>
+                      <label key={s} style={{position:'relative'}}>
+                        <input type="checkbox"
+                          checked={st === true}
+                          ref={el => { if (el) el.indeterminate = st === 'mixed' }}
+                          onChange={e => onMultiSeasonChange?.(s, e.target.checked)}
+                        /> {s.charAt(0).toUpperCase()+s.slice(1)}
+                      </label>
                     )
                   })}
                 </div>

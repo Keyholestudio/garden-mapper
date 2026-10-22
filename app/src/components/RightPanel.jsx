@@ -147,20 +147,18 @@ export default function RightPanel({
           {allPlants && mixedSeasonState && (
             <>
               <div className="panel-sep" />
-              <div className="panel-title">SEASONS</div>
-              <div style={{display:'flex', gap:4, flexWrap:'wrap', marginBottom:8}}>
+              <div className="panel-title">VISIBLE IN SEASONS</div>
+              <div className="season-checks">
                 {SEASONS.map(s => {
                   const st = mixedSeasonState[s]
                   return (
-                    <button
-                      key={s}
-                      className={`btn-panel${st === true ? ' active' : ''}`}
-                      style={{flex:1, fontSize:11, position:'relative', minWidth:48}}
-                      onClick={() => onMultiSeasonChange?.(s, st !== true)}
-                    >
-                      {SEASON_ICONS[s]} {s.slice(0,3)}
-                      {st === 'mixed' && <span style={{position:'absolute',top:1,right:3,fontSize:8,color:'#FFD600'}}>~</span>}
-                    </button>
+                    <label key={s} style={{position:'relative'}}>
+                      <input type="checkbox"
+                        checked={st === true}
+                        ref={el => { if (el) el.indeterminate = st === 'mixed' }}
+                        onChange={e => onMultiSeasonChange?.(s, e.target.checked)}
+                      /> {s.charAt(0).toUpperCase()+s.slice(1)}
+                    </label>
                   )
                 })}
               </div>

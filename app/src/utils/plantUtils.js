@@ -23,7 +23,8 @@ export function makePlantGroup(id, img, SIZE, gx, gy) {
 // onSelect: fired on click/tap AND auto-called after placement (pass handlePlantSelect)
 // autoSelect: if false, suppresses the auto-call after placement (used by copy handler which selects manually after writing data)
 // onLongPress: fired after 500 ms touch hold or double-click — triggers multi-select mode
-export function addPlant({ entry, x, y, stage, plantLayer, plantDataRef, plantIdCtr, showGridRef, onSelect, onLongPress, autoSelect = true }) {
+// multiSelectionRef: ref to the current multiSelection array — used for drag-all-together
+export function addPlant({ entry, x, y, stage, plantLayer, plantDataRef, plantIdCtr, showGridRef, onSelect, onLongPress, multiSelectionRef, autoSelect = true }) {
   const id = 'plant_' + plantIdCtr.current++
   const SIZE = SIZE_MAP[entry.size] || 64
   const loadedImg = entry._img
@@ -47,12 +48,38 @@ export function addPlant({ entry, x, y, stage, plantLayer, plantDataRef, plantId
   const group = makePlantGroup(id, loadedImg, SIZE, x - _W / 2, y - _H / 2)
   group._family = entry.family || ''  // stamp family for zone-aware layer stepping
 
+  // Track previous position so we can compute delta for drag-all
+  let _prevDragX = group.x()
+  let _prevDragY = group.y()
+
+  group.on('dragstart', () => {
+    _prevDragX = group.x()
+    _prevDragY = group.y()
+  })
+
   group.on('dragmove', () => {
     const snap = showGridRef?.current ?? false
     if (snap) {
       group.x(Math.round(group.x() / SNAP_CELL) * SNAP_CELL)
       group.y(Math.round(group.y() / SNAP_CELL) * SNAP_CELL)
     }
+    // ── Drag-all: move every other selected shape by the same delta ──
+    const sel = multiSelectionRef?.current
+    if (sel && sel.length > 1) {
+      const dx = group.x() - _prevDragX
+      const dy = group.y() - _prevDragY
+      if (dx !== 0 || dy !== 0) {
+        sel.forEach(({ id: otherId, shape }) => {
+          if (otherId !== id && shape) {
+            shape.x(shape.x() + dx)
+            shape.y(shape.y() + dy)
+          }
+        })
+        plantLayer?.batchDraw()
+      }
+    }
+    _prevDragX = group.x()
+    _prevDragY = group.y()
   })
 
   // ── Long-press timer for mobile multi-select ───────────────────

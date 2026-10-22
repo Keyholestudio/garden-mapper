@@ -371,6 +371,7 @@ export function loadGarden({
   showGridRef,
   onSelectPlant, onSelectStruct, onClearSelection,
   onLongPressPlant,  // optional: fired on 500ms hold or dblclick — triggers multi-select
+  multiSelectionRef, // optional: always-current ref used for drag-all-together
   setGardenName, setGardenW, setGardenH, setGardenUnit, setIsSetup,
   onZoomToFit,
   onEnterEdit,  // optional: called on dblclick/dbltap for editable shapes
@@ -645,12 +646,35 @@ export function loadGarden({
       if (vImg.complete && vImg.naturalWidth) applyVariant()
     }
     group._family = entry.family || ''  // stamp family for zone-aware layer stepping
+    let _prevDragX = group.x()
+    let _prevDragY = group.y()
+    group.on('dragstart', () => {
+      _prevDragX = group.x()
+      _prevDragY = group.y()
+    })
     group.on('dragmove', () => {
       if (showGridRef?.current) {
         const SNAP_CELL = 16
         group.x(Math.round(group.x() / SNAP_CELL) * SNAP_CELL)
         group.y(Math.round(group.y() / SNAP_CELL) * SNAP_CELL)
       }
+      // ── Drag-all: move every other selected shape by the same delta ──
+      const sel = multiSelectionRef?.current
+      if (sel && sel.length > 1) {
+        const dx = group.x() - _prevDragX
+        const dy = group.y() - _prevDragY
+        if (dx !== 0 || dy !== 0) {
+          sel.forEach(({ id: otherId, shape }) => {
+            if (otherId !== entry.id && shape) {
+              shape.x(shape.x() + dx)
+              shape.y(shape.y() + dy)
+            }
+          })
+          plantLayer?.batchDraw()
+        }
+      }
+      _prevDragX = group.x()
+      _prevDragY = group.y()
     })
     // ── Long-press timer (mobile multi-select) ────────────────────
     let _lpTimer = null

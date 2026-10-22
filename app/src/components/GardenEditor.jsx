@@ -92,6 +92,7 @@ export default function GardenEditor() {
   const stageRef    = useRef(null)
   const layersRef   = useRef({})
   const showGridRef = useRef(state.showGrid) // always-current ref for snap in dragmove closures
+  const multiSelectionRef = useRef([])       // always-current ref for drag-all in multiSelect
   const [stageReady, setStageReady] = useState(false)
   const stageReadyRef = useRef(false) // ref so closures always see current value
   const [scaleLabel, setScaleLabel] = useState('1 cell = 3 in')
@@ -322,6 +323,11 @@ export default function GardenEditor() {
   }, [state.currentSeason, stageReady])
 
   // ── Multi-select yellow highlight ──
+  // Keep multiSelectionRef in sync for drag-all closures
+  useEffect(() => {
+    multiSelectionRef.current = state.multiSelection || []
+  }, [state.multiSelection])
+
   // Redraws highlight rects on uiLayer whenever multiSelection changes
   const multiHighlightRef = useRef([])
   useEffect(() => {
@@ -694,6 +700,7 @@ export default function GardenEditor() {
       showGridRef,
       onSelect: handlePlantSelect,
       onLongPress: handleLongPressPlant,
+      multiSelectionRef,
     })
     if (newId) {
       const group = plantLayer.findOne('#' + newId)
@@ -737,6 +744,7 @@ export default function GardenEditor() {
       showGridRef,
       onSelect: handlePlantSelect,
       onLongPress: handleLongPressPlant,
+      multiSelectionRef,
     })
     // Push undo: remove the placed plant
     if (newId) {
@@ -866,6 +874,7 @@ export default function GardenEditor() {
           showGridRef,
           onSelect: handlePlantSelect,
           onLongPress: handleLongPressPlant,
+      multiSelectionRef,
         })
         // Apply stored scale + place in correct layer zone
         if (newId) {
@@ -1531,6 +1540,7 @@ export default function GardenEditor() {
       showGridRef,
       onSelectPlant: handlePlantSelect,
       onLongPressPlant: handleLongPressPlant,
+      multiSelectionRef,
       onSelectStruct: (id, shape) => {
         if (isFreeToolActive()) return
         if (isDrawToolActive()) {
@@ -1602,6 +1612,7 @@ export default function GardenEditor() {
       showGridRef,
       onSelectPlant: handlePlantSelect,
       onLongPressPlant: handleLongPressPlant,
+      multiSelectionRef,
       onSelectStruct: (id, shape) => {
         if (isFreeToolActive()) return
         if (isDrawToolActive()) {
@@ -1641,6 +1652,7 @@ export default function GardenEditor() {
       showGridRef,
       onSelectPlant: handlePlantSelect,
       onLongPressPlant: handleLongPressPlant,
+      multiSelectionRef,
       onSelectStruct: (id, shape) => {
         state.setSelectedStruct({ id, shape, ...state.structDataRef.current[id] })
         state.setSelectedPlant(null)
