@@ -988,19 +988,19 @@ export default function GardenEditor() {
         const above = overlapping.filter(g => g.zIndex() > targetZ)
         if (above.length === 0) { triggerAutoSave(); return }
         const nextZ = Math.min(...above.map(g => g.zIndex()))
-        // Move target to just above that sibling
         const nextSib = above.find(g => g.zIndex() === nextZ)
-        nextSib.moveDown()    // sibling steps down one
-        // Re-read zIndex after sibling move, then match
-        target.zIndex(nextSib.zIndex() + 1)
+        // Swap z-indices directly — avoids Konva renormalization ripple to non-overlapping nodes
+        nextSib.zIndex(targetZ)
+        target.zIndex(nextZ)
       } else {
         // Find the overlapping sibling with the largest zIndex that is still below target
         const below = overlapping.filter(g => g.zIndex() < targetZ)
         if (below.length === 0) { triggerAutoSave(); return }
         const nextZ = Math.max(...below.map(g => g.zIndex()))
         const nextSib = below.find(g => g.zIndex() === nextZ)
-        nextSib.moveUp()      // sibling steps up one
-        target.zIndex(nextSib.zIndex() - 1)
+        // Swap z-indices directly
+        nextSib.zIndex(targetZ)
+        target.zIndex(nextZ)
       }
 
       layer.batchDraw()
@@ -1060,15 +1060,17 @@ export default function GardenEditor() {
         if (above.length === 0) { triggerAutoSave(); return }
         const nextZ   = Math.min(...above.map(s => s.zIndex()))
         const nextSib = above.find(s => s.zIndex() === nextZ)
-        nextSib.moveDown()
-        target.zIndex(nextSib.zIndex() + 1)
+        // Swap z-indices directly — avoids Konva renormalization ripple to non-overlapping nodes
+        nextSib.zIndex(targetZ)
+        target.zIndex(nextZ)
       } else {
         const below = overlapping.filter(s => s.zIndex() < targetZ)
         if (below.length === 0) { triggerAutoSave(); return }
         const nextZ   = Math.max(...below.map(s => s.zIndex()))
         const nextSib = below.find(s => s.zIndex() === nextZ)
-        nextSib.moveUp()
-        target.zIndex(nextSib.zIndex() - 1)
+        // Swap z-indices directly
+        nextSib.zIndex(targetZ)
+        target.zIndex(nextZ)
       }
 
       layer.batchDraw()
@@ -1864,6 +1866,8 @@ export default function GardenEditor() {
                 if (newId) {
                   // Preserve variantSrc in the new plant's data so save/load restores the right image
                   if (d?.variantSrc) state.plantDataRef.current[newId].variantSrc = d.variantSrc
+                  // Preserve season visibility from source plant
+                  if (d?.seasons) state.plantDataRef.current[newId].seasons = [...d.seasons]
                   const group = plantLayer.findOne('#' + newId)
                   if (group) { group.scaleX(scaleX); group.scaleY(scaleY); placeInZone(group, d?.family || '', plantLayer) }
                   plantLayer.batchDraw()
@@ -2006,6 +2010,8 @@ export default function GardenEditor() {
             if (newId) {
               // Preserve variantSrc in the new plant's data so save/load restores the right image
               if (d?.variantSrc) state.plantDataRef.current[newId].variantSrc = d.variantSrc
+              // Preserve season visibility from source plant
+              if (d?.seasons) state.plantDataRef.current[newId].seasons = [...d.seasons]
               const group = plantLayer.findOne('#' + newId)
               if (group) {
                 group.scaleX(scaleX); group.scaleY(scaleY)

@@ -199,7 +199,7 @@ export default function MobileSheet({
       : renderStructPanel()
 
     return (
-      <div className="mobile-sheet mobile-sheet--edit" onPointerDown={e => e.stopPropagation()}>
+      <div key={selectedPlant?.id || selectedStruct?.id} className="mobile-sheet mobile-sheet--edit" onPointerDown={e => e.stopPropagation()}>
         <div className="mobile-sheet-handle mobile-sheet-handle--edit">
           <button className="mobile-edit-back-inline" onClick={() => onClearSelection?.()}>← Back</button>
           <button className="mobile-sheet-toggle" onClick={toggleExpanded}

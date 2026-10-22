@@ -221,7 +221,7 @@ export default function RightPanel({
     }
 
     return (
-      <div className="right-panel" onPointerDown={e => e.stopPropagation()}>
+      <div key={selectedPlant.id} className="right-panel" onPointerDown={e => e.stopPropagation()}>
         <div className="panel-content">
           <div className="panel-back-row">
             <button className="panel-back-btn" onClick={() => onClearSelection?.()}>← Back</button>
