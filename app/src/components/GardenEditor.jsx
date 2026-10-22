@@ -658,6 +658,10 @@ export default function GardenEditor() {
     'decor-trellis-wood-default': { key: 'decor_trellis-wood-default_L_CA-US-FR-GB-AU', label: 'Trellis', family: 'Decor', size: 'L',  decorGroup: 'trellises', src: '/stickers/decor_trellis-wood-default_L_CA-US-FR-GB-AU.png' },
     'decor-trellis-lattice':      { key: 'decor_trellis-lattice_L_CA-US-FR-GB-AU',      label: 'Trellis', family: 'Decor', size: 'L',  decorGroup: 'trellises', src: '/stickers/decor_trellis-lattice_L_CA-US-FR-GB-AU.png' },
     'decor-trellis-metal':        { key: 'decor_trellis-metal_XL_CA-US-FR-GB-AU',       label: 'Trellis', family: 'Decor', size: 'XL', decorGroup: 'trellises', src: '/stickers/decor_trellis-metal_XL_CA-US-FR-GB-AU.png' },
+    // GM Brand
+    'decor-gm-text':   { key: 'brand_gm-text_M',   label: 'GM', family: 'Decor', size: 'M', decorGroup: 'gm', src: '/stickers/brand_gm-text_M.png' },
+    'decor-gm-ornate': { key: 'brand_gm-ornate_M', label: 'GM', family: 'Decor', size: 'M', decorGroup: 'gm', src: '/stickers/brand_gm-ornate_M.png' },
+    'decor-gm-badge':  { key: 'brand_gm-badge_M',  label: 'GM', family: 'Decor', size: 'M', decorGroup: 'gm', src: '/stickers/brand_gm-badge_M.png' },
     // Gates
     'gate-white':    { key: 'decor_gate-wood-white_XL_CA-US-FR-GB-AU',    label: 'White Gate',    family: 'Gate', size: 'XL', src: '/stickers/decor_gate-wood-white_XL_CA-US-FR-GB-AU.png'    },
     'gate-cedar':    { key: 'decor_gate-wood-cedar_XL_CA-US-FR-GB-AU',    label: 'Cedar Gate',    family: 'Gate', size: 'XL', src: '/stickers/decor_gate-wood-cedar_XL_CA-US-FR-GB-AU.png'    },

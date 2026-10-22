@@ -295,6 +295,11 @@ export const PLANT_CATALOG = [
   { key:'decor_trellis-lattice_L_CA-US-FR-GB-AU',      label:'Wooden Lattice', family:'Decor', src:'/stickers/decor_trellis-lattice_L_CA-US-FR-GB-AU.png',      size:'L' },
   { key:'decor_trellis-metal_XL_CA-US-FR-GB-AU',       label:'Metal Trellis',  family:'Decor', src:'/stickers/decor_trellis-metal_XL_CA-US-FR-GB-AU.png',       size:'XL' },
 
+  // GM Brand
+  { key:'brand_gm-text_M',   label:'GM Text Logo',  family:'Decor', src:'/stickers/brand_gm-text_M.png',   size:'M' },
+  { key:'brand_gm-ornate_M', label:'GM Ornate Logo', family:'Decor', src:'/stickers/brand_gm-ornate_M.png', size:'M' },
+  { key:'brand_gm-badge_M',  label:'GM App Icon',   family:'Decor', src:'/stickers/brand_gm-badge_M.png',  size:'M' },
+
 ]
 
 // Families that are placed via the Decor/Water menus - exclude from plant tray

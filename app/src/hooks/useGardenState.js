@@ -300,6 +300,11 @@ export const DECOR_VARIANTS = {
   'pool-railings': [
     { label: 'Pool Railing', subtitle: 'Pool Railing', size: 'M', colour: '#C0C0C0', src: '/stickers/decor_pool-railing_M_CA-US-FR-GB-AU.png' },
   ],
+  gm: [
+    { label: 'Text Logo',   subtitle: 'Garden Mapper', size: 'M', colour: '#2D6A2D', src: '/stickers/brand_gm-text_M.png' },
+    { label: 'Ornate Logo', subtitle: 'Garden Mapper', size: 'M', colour: '#1A4A1A', src: '/stickers/brand_gm-ornate_M.png' },
+    { label: 'App Icon',    subtitle: 'Garden Mapper', size: 'M', colour: '#4A7C4A', src: '/stickers/brand_gm-badge_M.png' },
+  ],
 }
 
 export const GATE_STYLES = {

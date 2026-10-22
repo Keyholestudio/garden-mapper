@@ -141,6 +141,7 @@ export const DECOR_ITEMS = [
   { id: 'decor-stairs-stone', label: 'Stairs', emoji: '🪜', hint: 'Tap to place stairs', decorGroup: 'stairs' },
   { id: 'decor-arch-wood', label: 'Arches', emoji: '🌼', hint: 'Tap to place an arch', decorGroup: 'arches' },
   { id: 'decor-trellis-wood-default', label: 'Trellis', emoji: '🪴', hint: 'Tap to place a trellis', decorGroup: 'trellises' },
+  { id: 'decor-gm-text', label: 'GM', emoji: '🌿', hint: 'Tap to place a Garden Mapper logo', decorGroup: 'gm' },
 ]
 
 export const ITEMS_MAP = {
