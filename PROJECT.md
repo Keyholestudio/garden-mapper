@@ -163,6 +163,7 @@ cd projects/garden-planner/app && npm run dev
   - 🔲 Hammock
   - _(Bird bath covered by Fountain)_
 - **[TODO] Better background removal tool** - current chroma key pipeline can't handle ombre/gradient Gemini backgrounds without clipping art. Investigate `rembg` (AI-based, local pip install).
+- **[TODO] Yarrow Pink Cassis PLANT_VARIANTS** — colour picker not yet wired. Use L109 checklist before editing useGardenState.js.
 - **[DONE] Transparent plants becoming visible when clicked** — stale `currentSeason` closure in `applySeasonOpacity`. Fixed via `currentSeasonRef`. Commit `495efea`. 2026-10-22.
 - **[DONE] Pool Railing** — moved into Pools group; placement + highlight fixed via water-mode decor pattern (same as gate). Commits `43599f0`, `cc4e80d`. 2026-10-22.
 - **[DONE] Pergola stickers** — 3 variants (Corner, Cedar, White) added to Gazebos colour group, subtitle "Pergola". Commit `a37c458`. 2026-10-22.
