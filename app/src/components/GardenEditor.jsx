@@ -1492,6 +1492,9 @@ export default function GardenEditor() {
     // drawPicketFences is async: preloads all variant images first, then renders in one pass
     drawRockBorders(layersRef.current.structLayer, state.structDataRef, Konva)
     drawPicketFences(layersRef.current.structLayer, state.structDataRef, Konva, layersRef.current.plantLayer)
+    // Apply season opacity immediately after load so plants start in correct state
+    // (the useEffect on currentSeason won't re-fire since season hasn't changed)
+    applySeasonOpacity(layersRef.current.plantLayer)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stageReady, loadedImagesCount])
 
@@ -1558,6 +1561,7 @@ export default function GardenEditor() {
       setCurrentGardenIndex(idx)
       writeLastGardenIndex(idx)
       drawRockBorders(layersRef.current.structLayer, state.structDataRef, Konva)
+      applySeasonOpacity(layersRef.current.plantLayer)
     }
   }
 
@@ -1588,6 +1592,7 @@ export default function GardenEditor() {
     currentGardenIndexRef.current = loadIdx
     setCurrentGardenIndex(loadIdx)
     drawRockBorders(layersRef.current.structLayer, state.structDataRef, Konva)
+    applySeasonOpacity(layersRef.current.plantLayer)
   }
 
   // ── Phase 5: New garden (mirrors v8 newGarden exactly) ──
