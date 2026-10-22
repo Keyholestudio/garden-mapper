@@ -55,6 +55,8 @@ export default function MobileSheet({
   onTransparentStruct,
   onDisconnect,
   onSeasonsChange,
+  selectedSeasons,
+  onSeasonToggle,
   onClearSelection,
   onUndo,
   canUndo,
@@ -532,12 +534,8 @@ export default function MobileSheet({
               {['spring','summer','fall','winter'].map(s => (
                 <label key={s} className="mobile-season-check">
                   <input type="checkbox"
-                    defaultChecked={d.seasons?.includes(s)}
-                    onChange={e => {
-                      if (e.target.checked) d.seasons = [...(d.seasons||[]), s]
-                      else d.seasons = (d.seasons||[]).filter(x => x !== s)
-                      onSeasonsChange?.()
-                    }}
+                    checked={selectedSeasons ? selectedSeasons.includes(s) : (d.seasons?.includes(s) ?? true)}
+                    onChange={e => onSeasonToggle?.(s, e.target.checked)}
                   />
                   <span>{s.charAt(0).toUpperCase()+s.slice(1)}</span>
                 </label>

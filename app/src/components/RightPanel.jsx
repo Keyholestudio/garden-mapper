@@ -47,6 +47,8 @@ export default function RightPanel({
   onLayerMove,
   onTransparentStruct, onDisconnect,
   onSeasonsChange,
+  selectedSeasons,
+  onSeasonToggle,
   onClearSelection,
   onUndo,
   canUndo,
@@ -272,12 +274,8 @@ export default function RightPanel({
                 {['spring','summer','fall','winter'].map(s => (
                   <label key={s}>
                     <input type="checkbox"
-                      defaultChecked={d.seasons?.includes(s)}
-                      onChange={e => {
-                        if (e.target.checked) d.seasons = [...(d.seasons||[]), s]
-                        else d.seasons = (d.seasons||[]).filter(x => x !== s)
-                        onSeasonsChange?.()
-                      }}
+                      checked={selectedSeasons ? selectedSeasons.includes(s) : (d.seasons?.includes(s) ?? true)}
+                      onChange={e => onSeasonToggle?.(s, e.target.checked)}
                     /> {s.charAt(0).toUpperCase()+s.slice(1)}
                   </label>
                 ))}

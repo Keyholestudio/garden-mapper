@@ -72,6 +72,9 @@ const placeInZone = (group, family, layer) => {
 export default function GardenEditor() {
   const state = useGardenState()
   const { isMobile, isTablet, isDesktop, breakpoint } = useBreakpoint()
+
+  // Controlled season visibility state — resets from plantDataRef when selection changes
+  const [selectedSeasons, setSelectedSeasons] = useState(['spring','summer','fall','winter'])
   const { recents, addRecent, removeRecent, clearRecents, hidden: recentsHidden, setHidden: setRecentsHidden } = useRecentPlants()
   const { loadPack, getPackEntries, isPackLoaded, isPackLoading, PACK_REGISTRY } = useLazyPacks()
 
@@ -398,7 +401,10 @@ export default function GardenEditor() {
       return
     }
     state.setMultiSelection([])
-    state.setSelectedPlant({ id, group, ...state.plantDataRef.current[id] })
+    const plantData = state.plantDataRef.current[id]
+    state.setSelectedPlant({ id, group, ...plantData })
+    // Sync controlled season state from the newly selected plant
+    setSelectedSeasons(plantData?.seasons ? [...plantData.seasons] : ['spring','summer','fall','winter'])
     state.setSelectedStruct(null)
   }
 
@@ -958,7 +964,7 @@ export default function GardenEditor() {
   // jumps directly to the nearest overlapping sibling in the requested direction.
   // If nothing overlaps, does nothing (Option B).
   const handleLayerMove = (kind, dir) => {
-    const TOUCH_PAD = 2 // px tolerance - catches items that are flush/touching
+    const TOUCH_PAD = -1 // require genuine pixel overlap — 0 or positive catches flush/touching plants and causes ripple
 
     if (kind === 'plant' && state.selectedPlant) {
       const target = state.selectedPlant.group
@@ -1888,16 +1894,24 @@ export default function GardenEditor() {
               onTransparentStruct={handleTransparentStruct}
               onCopyStruct={handleCopyStruct}
               onDisconnect={handleDisconnect}
-              onSeasonsChange={() => {
+              selectedSeasons={selectedSeasons}
+              onSeasonToggle={(season, checked) => {
+                const sel = state.selectedPlant; if (!sel) return
+                const d = state.plantDataRef.current[sel.id]; if (!d) return
+                const next = checked
+                  ? [...(d.seasons || []), season]
+                  : (d.seasons || []).filter(s => s !== season)
+                d.seasons = next
+                setSelectedSeasons([...next])
                 const { plantLayer } = layersRef.current
                 if (!plantLayer) return
                 const SEASON_NAMES = ['spring','summer','fall','winter']
                 const sN = SEASON_NAMES[state.currentSeason]
                 plantLayer.find('Group').forEach(g => {
-                  const d = state.plantDataRef.current[g.id()]
-                  if (!d) return
-                  if (d.transparent) { g.opacity(0.35); return }
-                  g.opacity(d.seasons?.includes(sN) ? 1 : 0.1)
+                  const pd = state.plantDataRef.current[g.id()]
+                  if (!pd) return
+                  if (pd.transparent) { g.opacity(0.35); return }
+                  g.opacity(pd.seasons?.includes(sN) ? 1 : 0.1)
                 })
                 plantLayer.batchDraw()
                 triggerAutoSave()
@@ -2064,16 +2078,24 @@ export default function GardenEditor() {
           onTransparentStruct={handleTransparentStruct}
           onCopyStruct={handleCopyStruct}
           onDisconnect={handleDisconnect}
-          onSeasonsChange={() => {
+          selectedSeasons={selectedSeasons}
+          onSeasonToggle={(season, checked) => {
+            const sel = state.selectedPlant; if (!sel) return
+            const d = state.plantDataRef.current[sel.id]; if (!d) return
+            const next = checked
+              ? [...(d.seasons || []), season]
+              : (d.seasons || []).filter(s => s !== season)
+            d.seasons = next
+            setSelectedSeasons([...next])
             const { plantLayer } = layersRef.current
             if (!plantLayer) return
             const SEASON_NAMES = ['spring','summer','fall','winter']
             const sN = SEASON_NAMES[state.currentSeason]
             plantLayer.find('Group').forEach(g => {
-              const d = state.plantDataRef.current[g.id()]
-              if (!d) return
-              if (d.transparent) { g.opacity(0.35); return }
-              g.opacity(d.seasons?.includes(sN) ? 1 : 0.1)
+              const pd = state.plantDataRef.current[g.id()]
+              if (!pd) return
+              if (pd.transparent) { g.opacity(0.35); return }
+              g.opacity(pd.seasons?.includes(sN) ? 1 : 0.1)
             })
             plantLayer.batchDraw()
             triggerAutoSave()
