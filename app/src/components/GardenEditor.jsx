@@ -470,12 +470,14 @@ export default function GardenEditor() {
           if (group) {
             group.id(savedId); group.x(x); group.y(y)
             group.scaleX(scaleX); group.scaleY(scaleY)
+            // Restore full saved data including seasons — overwrite addPlant defaults
             state.plantDataRef.current[savedId] = { ...data }
             delete state.plantDataRef.current[newId]
           }
         }
       })
       plantLayer.batchDraw()
+      applySeasonOpacity()  // re-apply correct opacity for all restored plants
       triggerAutoSave()
     })
     triggerAutoSave()
@@ -1024,10 +1026,14 @@ export default function GardenEditor() {
           group.id(savedId)
           group.x(savedX); group.y(savedY)
           group.scaleX(savedScaleX); group.scaleY(savedScaleY)
+          // Restore full saved data (including seasons) — overwrite addPlant defaults
           state.plantDataRef.current[savedId] = { ...savedData }
           delete state.plantDataRef.current[newId]
+          plantLayer.batchDraw()
+          // Re-select the plant so panel state (selectedSeasons etc.) reinitializes correctly
+          handlePlantSelect(savedId, group)
+          applySeasonOpacity()
         }
-        plantLayer.batchDraw()
       }
       triggerAutoSave()
     })
