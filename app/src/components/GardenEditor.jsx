@@ -406,6 +406,8 @@ export default function GardenEditor() {
     // Sync controlled season state from the newly selected plant
     setSelectedSeasons(plantData?.seasons ? [...plantData.seasons] : ['spring','summer','fall','winter'])
     state.setSelectedStruct(null)
+    // Re-apply season opacity in case it drifted (e.g. immediately after copy)
+    applySeasonOpacity()
   }
 
   // ── Selection hook ──
@@ -960,8 +962,8 @@ export default function GardenEditor() {
   }
 
   // ── Apply season opacity to entire plant layer ────────────────────────────
-  const applySeasonOpacity = () => {
-    const { plantLayer } = layersRef.current
+  const applySeasonOpacity = (plantLayerOverride) => {
+    const plantLayer = plantLayerOverride || layersRef.current?.plantLayer
     if (!plantLayer) return
     const SEASON_NAMES = ['spring','summer','fall','winter']
     const sN = SEASON_NAMES[state.currentSeason]
@@ -1896,8 +1898,7 @@ export default function GardenEditor() {
                   state.setSelectedPlant({ id: newId, group, ...state.plantDataRef.current[newId] })
                   state.setSelectedStruct(null)
                   setSelectedSeasons(copiedSeasons)
-                  applySeasonOpacity()
-                  plantLayer.batchDraw()
+                  applySeasonOpacity(plantLayer)
                   state.pushUndo(() => { const g = layersRef.current.plantLayer?.findOne('#' + newId); if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() } })
                   triggerAutoSave()
                 }
@@ -2047,8 +2048,7 @@ export default function GardenEditor() {
               state.setSelectedPlant({ id: newId, group, ...state.plantDataRef.current[newId] })
               state.setSelectedStruct(null)
               setSelectedSeasons(copiedSeasons)
-              applySeasonOpacity()
-              plantLayer.batchDraw()
+              applySeasonOpacity(plantLayer)
               state.pushUndo(() => {
                 const g = layersRef.current.plantLayer?.findOne('#' + newId)
                 if (g) { g.destroy(); delete state.plantDataRef.current[newId]; layersRef.current.plantLayer?.batchDraw() }
