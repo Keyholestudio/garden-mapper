@@ -174,6 +174,7 @@ export default function RightPanel({
   // ── Plant / Decor panel ──────────────────────────────────
   if (selectedPlant) {
     const d = plantDataRef?.current[selectedPlant.id] || {}
+    console.log('[DEBUG] plant panel d.key:', d.key, '| PLANT_VARIANTS has it:', !!PLANT_VARIANTS[d.key])
     const isDecor = ['Decor', 'Water Feature'].includes(d.family)
     const isGate = d.family === 'Gate'
     const gateVariants = isGate ? (GATE_VARIANTS[d.key] || null) : null
