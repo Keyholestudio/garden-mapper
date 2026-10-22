@@ -13,6 +13,15 @@ _History for v1–v7 and Phases 1–6 archived at: `memory/deep/garden-planner/r
 
 ---
 
+### 2026-10-22 Session
+
+| Change | Commit | Status |
+|--------|--------|--------|
+| Pergola stickers (Corner, Cedar, White) added to Gazebos colour group | `a37c458` | ✅ |
+| Fix: transparent plants becoming visible on click (stale currentSeason closure) | `495efea` | ✅ |
+| Fix: Pool Railing moved into Pools group in Water menu | `43599f0` | ✅ |
+| Fix: Pool Railing highlights + places correctly from Water menu (water-mode decor pattern) | `cc4e80d` | ✅ |
+
 ### Phase 7 — Completed
 
 | # | Change | Commit | Status |

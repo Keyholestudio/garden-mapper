@@ -163,6 +163,9 @@ cd projects/garden-planner/app && npm run dev
   - 🔲 Hammock
   - _(Bird bath covered by Fountain)_
 - **[TODO] Better background removal tool** - current chroma key pipeline can't handle ombre/gradient Gemini backgrounds without clipping art. Investigate `rembg` (AI-based, local pip install).
+- **[DONE] Transparent plants becoming visible when clicked** — stale `currentSeason` closure in `applySeasonOpacity`. Fixed via `currentSeasonRef`. Commit `495efea`. 2026-10-22.
+- **[DONE] Pool Railing** — moved into Pools group; placement + highlight fixed via water-mode decor pattern (same as gate). Commits `43599f0`, `cc4e80d`. 2026-10-22.
+- **[DONE] Pergola stickers** — 3 variants (Corner, Cedar, White) added to Gazebos colour group, subtitle "Pergola". Commit `a37c458`. 2026-10-22.
 - **[HIGH] Forward/Back ripple on touching plants** - TOUCH_PAD changed to -1 (require genuine overlap) but ripple still exists. z-index swap approach in place. Root cause not yet isolated — needs fresh investigation. Resume: read handleLayerMove in GardenEditor.jsx.
 - **[HIGH] Rock border drag on mobile - border doesn't follow finger** - Jumps to new location on release instead of smooth drag. Root issue: coordinate system for rock border Group children vs fence Line is not reconciled. Last commit (`1926d59`) changed to local-coord model (like fence) but still not smooth. Next session: read fence dragmove code, match rock border exactly to it. Do NOT mix Model A (world coords, normalize on dragend) and Model B (local coords, group accumulates).
 - **[HIGH] L061 in LESSONS.md is stale** - reflects old Model A. Update once coordinate model is settled next session.
