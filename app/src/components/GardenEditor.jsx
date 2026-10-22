@@ -395,7 +395,8 @@ export default function GardenEditor() {
       return
     }
     const ne = evt?.evt || evt
-    if (ne && (ne.ctrlKey || ne.metaKey || ne.shiftKey)) {
+    // If already in multi-select mode, any tap adds/removes — no modifier needed
+    if (state.multiSelection.length > 0 || (ne && (ne.ctrlKey || ne.metaKey || ne.shiftKey))) {
       state.setSelectedPlant(null)
       state.setSelectedStruct(null)
       state.setEditingShapeId(null)

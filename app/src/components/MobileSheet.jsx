@@ -225,16 +225,18 @@ export default function MobileSheet({
       <div className="mobile-sheet mobile-sheet--edit" onPointerDown={e => e.stopPropagation()}>
         <div className="mobile-sheet-handle mobile-sheet-handle--edit">
           <button className="mobile-edit-back-inline" onClick={() => onClearSelection?.()}>← Done</button>
-          <span style={{fontSize:12, fontWeight:600, color:'#FFD600', flex:1, textAlign:'center'}}>
-            {multiSelection.length} selected
-          </span>
+          <button className="mobile-sheet-toggle" onClick={toggleExpanded}
+            aria-label={expanded ? 'Collapse' : 'Expand'}>
+            <span style={{color:'#FFD600', fontWeight:600}}>{multiSelection.length} selected</span>
+            {' '}{expanded ? '↓' : '↑'}
+          </button>
           <button className="mobile-edit-undo-inline" style={{visibility: canUndo ? 'visible' : 'hidden'}} onClick={() => onUndo?.()}>↩ Undo</button>
         </div>
         {expanded && (
           <div className="mobile-sheet-body mobile-edit-body">
             <div className="mobile-edit-title" style={{marginBottom:4}}>📌 Multi-Select</div>
             <div style={{fontSize:11, opacity:.65, marginBottom:10}}>
-              Long-press or {navigator.maxTouchPoints > 1 ? 'tap' : 'double-click'} more items to add them
+              Tap any plant to add or remove it from the selection
             </div>
 
             {/* Move buttons */}
