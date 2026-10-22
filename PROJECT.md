@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-10-22 (Season visibility bugs fixed; copy seasons; load opacity fix)_
+_Last updated: 2026-10-22 (Multi-select feature complete ✅; delete undo fixed; season restore fixed)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---

@@ -271,9 +271,12 @@ export const DECOR_VARIANTS = {
     { label: 'Rectangular',      subtitle: 'Rectangular Greenhouse',  size: 'XXL', colour: '#C8D8B8', src: '/stickers/decor_greenhouse-rect_XXL_CA-US-FR-GB-AU.png' },
   ],
   gazebos: [
-    { label: 'Square',     subtitle: 'Square Gazebo',  size: 'XXL', colour: '#7B5230', src: '/stickers/decor_gazebo-square_XL_CA-US-FR-GB-AU.png' },
-    { label: 'Octagon',    subtitle: 'Octagon Gazebo', size: 'XXL', colour: '#C06A3A', src: '/stickers/decor_gazebo-oct_XL_CA-US-FR-GB-AU.png' },
-    { label: 'Tiled Roof', subtitle: 'Tiled Roof Gazebo', size: 'XXL', colour: '#7A8B95', src: '/stickers/decor_gazebo-large_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Square',     subtitle: 'Square Gazebo',       size: 'XXL', colour: '#7B5230', src: '/stickers/decor_gazebo-square_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Octagon',    subtitle: 'Octagon Gazebo',      size: 'XXL', colour: '#C06A3A', src: '/stickers/decor_gazebo-oct_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Tiled Roof', subtitle: 'Tiled Roof Gazebo',   size: 'XXL', colour: '#7A8B95', src: '/stickers/decor_gazebo-large_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Corner',     subtitle: 'Pergola',              size: 'XXL', colour: '#C8824A', src: '/stickers/decor_pergola-corner_XL_CA-US-FR-GB-AU.png' },
+    { label: 'Cedar',      subtitle: 'Pergola',              size: 'XXL', colour: '#A0603A', src: '/stickers/decor_pergola-cedar_XL_CA-US-FR-GB-AU.png' },
+    { label: 'White',      subtitle: 'Pergola',              size: 'XXL', colour: '#E8E8F0', src: '/stickers/decor_pergola-white_XL_CA-US-FR-GB-AU.png' },
   ],
   rocks: [
     { label: 'River Stone', subtitle: 'River Stone', size: 'XS', colour: '#C4A882', src: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png' },

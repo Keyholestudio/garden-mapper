@@ -258,6 +258,9 @@ export const PLANT_CATALOG = [
   { key:'decor_gazebo-square_XL_CA-US-FR-GB-AU', label:'Square Gazebo',  family:'Decor', src:'/stickers/decor_gazebo-square_XL_CA-US-FR-GB-AU.png', size:'XL' },
   { key:'decor_gazebo-oct_XL_CA-US-FR-GB-AU',   label:'Octagon Gazebo', family:'Decor', src:'/stickers/decor_gazebo-oct_XL_CA-US-FR-GB-AU.png',   size:'XL' },
   { key:'decor_gazebo-large_XL_CA-US-FR-GB-AU',  label:'Large Gazebo',   family:'Decor', src:'/stickers/decor_gazebo-large_XL_CA-US-FR-GB-AU.png',  size:'XL' },
+  { key:'decor_pergola-corner_XL_CA-US-FR-GB-AU', label:'Pergola',        family:'Decor', src:'/stickers/decor_pergola-corner_XL_CA-US-FR-GB-AU.png', size:'XL' },
+  { key:'decor_pergola-cedar_XL_CA-US-FR-GB-AU',  label:'Pergola',        family:'Decor', src:'/stickers/decor_pergola-cedar_XL_CA-US-FR-GB-AU.png',  size:'XL' },
+  { key:'decor_pergola-white_XL_CA-US-FR-GB-AU',  label:'Pergola',        family:'Decor', src:'/stickers/decor_pergola-white_XL_CA-US-FR-GB-AU.png',  size:'XL' },
 
   { key:'decor_lounge-modern_XL_CA-US-FR-GB-AU', label:'Plastic Loungers', family:'Decor', src:'/stickers/decor_lounge-modern_XL_CA-US-FR-GB-AU.png', size:'XL' },
 
