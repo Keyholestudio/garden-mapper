@@ -186,6 +186,11 @@ export const GATE_VARIANTS = {
   'decor_gate-wood-red_XL_CA-US-FR-GB-AU':      GATE_VARIANT_LIST,
   'decor_gate-wood-blue_XL_CA-US-FR-GB-AU':     GATE_VARIANT_LIST,
   'decor_gate-wood-sage_XL_CA-US-FR-GB-AU':     GATE_VARIANT_LIST,
+  'bulb-summer_gladiolus_L_CA-US-FR-GB-AU': [
+    { label: 'Reddish Pink', name: 'Gladiolus',            colour: '#D43060', src: null },
+    { label: 'Light Pink',   name: 'Gladiolus (Light Pink)', colour: '#F5C0D0', src: '/stickers/bulb-summer_gladiolus_light-pink_L_CA-US-FR-GB-AU.png' },
+    { label: 'Yellow',       name: 'Gladiolus (Yellow)',    colour: '#FFD700', src: '/stickers/bulb-summer_gladiolus_yellow_L_CA-US-FR-GB-AU.png' },
+  ],
 }
 
 
