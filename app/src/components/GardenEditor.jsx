@@ -677,11 +677,12 @@ export default function GardenEditor() {
     const id = state.decorSubTool
     // Explicit deselect (null while in decor mode) - cancel pending placement
     const isGatePlacement = state.currentMode === 'fences' && state.fenceType === 'gate'
-    if (id === null && (state.currentMode === 'decor' || isGatePlacement)) {
+    const isWaterDecor    = state.currentMode === 'water'  && id?.startsWith('decor-')
+    if (id === null && (state.currentMode === 'decor' || isGatePlacement || isWaterDecor)) {
       pendingPlantRef.current = null
       return
     }
-    if (!id || (state.currentMode !== 'decor' && !isGatePlacement)) return
+    if (!id || (state.currentMode !== 'decor' && !isGatePlacement && !isWaterDecor)) return
     const entry = DECOR_CATALOG[id]
     if (!entry) return
     // Do NOT clear decorSubTool here - keep it set so the button stays highlighted
@@ -699,7 +700,8 @@ export default function GardenEditor() {
   // When leaving decor mode (Back button or switching tools), cancel any pending decor placement
   useEffect(() => {
     const isGatePlacement = state.currentMode === 'fences' && state.fenceType === 'gate'
-    if (state.currentMode !== 'decor' && !isGatePlacement) {
+    const isWaterDecor    = state.currentMode === 'water'  && state.decorSubTool?.startsWith('decor-')
+    if (state.currentMode !== 'decor' && !isGatePlacement && !isWaterDecor) {
       if (pendingPlantRef.current?._img && state.decorSubTool) {
         pendingPlantRef.current = null
         state.setDecorSubTool(null)

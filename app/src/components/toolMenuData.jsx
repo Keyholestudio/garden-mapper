@@ -154,7 +154,7 @@ export function getActiveSub(currentMode, bedSubTool, fenceSubTool, fenceType, p
   if (currentMode === 'fences')   return fenceType === 'picket-fence' ? 'picket-fence' : fenceType === 'gate' ? 'gate' : fenceSubTool
   if (currentMode === 'paths')    return pathSubTool
   if (currentMode === 'building') return buildingSubTool
-  if (currentMode === 'water')    return waterSubTool
+  if (currentMode === 'water')    return decorSubTool?.startsWith('decor-') ? decorSubTool : waterSubTool
   if (currentMode === 'decor')    return decorSubTool
   return null
 }
@@ -171,7 +171,7 @@ export function handleSubChange(id, currentMode, { onBedSubTool, onFenceType, on
   }
   if (currentMode === 'paths')    { onPathSubTool(id); return }
   if (currentMode === 'building') { onBuildingSubTool(id); return }
-  if (currentMode === 'water')    { if (id?.startsWith('decor-')) { onModeChange?.('decor'); onDecorSubTool(id); return } onWaterSubTool(id); return }
+  if (currentMode === 'water')    { if (id?.startsWith('decor-')) { onDecorSubTool(id); return } onWaterSubTool(id); return }
   if (currentMode === 'decor')    { onDecorSubTool(id); return }
 }
 
