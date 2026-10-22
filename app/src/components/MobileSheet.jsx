@@ -231,36 +231,32 @@ export default function MobileSheet({
         {expanded && (
           <div className="mobile-sheet-body mobile-edit-body">
             <div className="mobile-edit-title">{multiSelection.length} Plants Selected</div>
-            <div className="mobile-edit-subtitle" style={{fontSize:10, opacity:.65}}>Tap any plant to add or remove. Tap background to exit.</div>
+            <div className="mobile-edit-subtitle">Tap any plant to add or remove. Tap background to exit.</div>
             <div className="mobile-edit-sep" />
 
-            <div className="mobile-edit-title">MOVE</div>
-            <div style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:4, marginBottom:8}}>
-              <div />
-              <button className="mobile-edit-btn" onClick={() => onMultiMove?.(0, -8)}>▲</button>
-              <div />
-              <button className="mobile-edit-btn" onClick={() => onMultiMove?.(-8, 0)}>◀</button>
-              <div />
-              <button className="mobile-edit-btn" onClick={() => onMultiMove?.(8, 0)}>▶</button>
-              <div />
-              <button className="mobile-edit-btn" onClick={() => onMultiMove?.(0, 8)}>▼</button>
-              <div />
+            <div className="mobile-edit-label">MOVE</div>
+            <div style={{display:'flex', gap:6, marginBottom:8, marginTop:4}}>
+              <button className="mobile-edit-btn" style={{flex:1}} onClick={() => onMultiMove?.(-8, 0)}>◀</button>
+              <button className="mobile-edit-btn" style={{flex:1}} onClick={() => onMultiMove?.(0, -8)}>▲</button>
+              <button className="mobile-edit-btn" style={{flex:1}} onClick={() => onMultiMove?.(0, 8)}>▼</button>
+              <button className="mobile-edit-btn" style={{flex:1}} onClick={() => onMultiMove?.(8, 0)}>▶</button>
             </div>
 
             {allPlants && mixedSeasonState && (
               <>
                 <div className="mobile-edit-sep" />
-                <div className="mobile-edit-title">VISIBLE IN SEASONS</div>
-                <div className="season-checks">
+                <div className="mobile-edit-label">VISIBLE IN SEASONS</div>
+                <div className="mobile-season-checks" style={{marginTop:4}}>
                   {SEASONS.map(s => {
                     const st = mixedSeasonState[s]
                     return (
-                      <label key={s}>
+                      <label key={s} className="mobile-season-check">
                         <input type="checkbox"
                           checked={st === true}
                           ref={el => { if (el) el.indeterminate = st === 'mixed' }}
                           onChange={e => onMultiSeasonChange?.(s, e.target.checked)}
-                        /> {s.charAt(0).toUpperCase()+s.slice(1)}
+                        />
+                        <span>{s.charAt(0).toUpperCase()+s.slice(1)}</span>
                       </label>
                     )
                   })}
