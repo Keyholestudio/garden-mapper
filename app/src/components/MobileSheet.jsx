@@ -621,6 +621,8 @@ export default function MobileSheet({
         { id: 'grey-rock',        label: 'Grey Rock',         src: '/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png' },
         { id: 'stepping-stone',   label: 'Stepping Stone',    src: '/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.png' },
         { id: 'stepping-stone-2', label: 'Stepping Stone II', src: '/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.png' },
+        { id: 'mixed-natural',    label: 'Mixed Natural',    mixed: 'natural' },
+        { id: 'mixed-sandstone',  label: 'Mixed Sandstone',  mixed: 'sandstone' },
       ]
       const activeVariant = d.rockVariant || 'grey-river'
       const activeSpacing = d.rockSpacing ?? ROCK_BORDER_DEFAULT_SPACING
@@ -636,29 +638,38 @@ export default function MobileSheet({
                 title={v.label}
                 onClick={() => onRockVariantChange?.(v.id)}
               >
-                <img src={v.src} alt={v.label} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', borderRadius: 6 }} />
+                {v.mixed === 'natural' ? (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', width: '100%', height: '100%', borderRadius: 6, overflow: 'hidden' }}>
+                    <img src='/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png'  alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src='/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png' alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src='/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png' alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src='/stickers/decor_rock-white_L_CA-US-FR-GB-AU.png'  alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                ) : v.mixed === 'sandstone' ? (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', width: '100%', height: '100%', borderRadius: 6, overflow: 'hidden' }}>
+                    <img src='/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.png' alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src='/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.png'  alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src='/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.png'  alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src='/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.png' alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                ) : (
+                  <img src={v.src} alt={v.label} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', borderRadius: 6 }} />
+                )}
               </div>
             ))}
           </div>
           <div className="mobile-edit-label" style={{ marginTop: 8 }}>SPACING</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '0 4px' }}>
-            <span style={{ fontSize: 11, color: '#888', whiteSpace: 'nowrap' }}>Tight</span>
-            <input
-              type="range"
-              min={ROCK_BORDER_SPACING_MIN}
-              max={ROCK_BORDER_SPACING_MAX}
-              step={0.05}
-              value={activeSpacing}
-              style={{ flex: 1 }}
-              onChange={e => onRockSpacingChange?.(parseFloat(e.target.value))}
-            />
-            <span style={{ fontSize: 11, color: '#888', whiteSpace: 'nowrap' }}>Spread</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <button className="mobile-edit-btn" style={{ flex: 1, fontSize: 13, padding: '6px 0' }}
+              onClick={() => onRockSpacingChange?.(Math.max(ROCK_BORDER_SPACING_MIN, parseFloat((activeSpacing - 0.1).toFixed(2))))}
+            >&#9664;</button>
+            <button className="mobile-edit-btn" style={{ flex: 1, fontSize: 11, padding: '6px 0' }}
+              onClick={() => onRockSpacingChange?.(ROCK_BORDER_DEFAULT_SPACING)}
+            >&#8635;</button>
+            <button className="mobile-edit-btn" style={{ flex: 1, fontSize: 13, padding: '6px 0' }}
+              onClick={() => onRockSpacingChange?.(Math.min(ROCK_BORDER_SPACING_MAX, parseFloat((activeSpacing + 0.1).toFixed(2))))}
+            >&#9654;</button>
           </div>
-          <button
-            className="mobile-edit-btn full"
-            style={{ marginTop: 2, fontSize: 11 }}
-            onClick={() => onRockSpacingChange?.(ROCK_BORDER_DEFAULT_SPACING)}
-          >Reset spacing</button>
           <div className="mobile-edit-sep" />
           <button className="mobile-edit-btn full" onClick={() => onEnterEdit?.(selectedStruct.id)}>✏️ Edit Shape</button>
           <div className="mobile-edit-sep" />

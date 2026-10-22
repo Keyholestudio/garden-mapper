@@ -106,7 +106,23 @@ const ROCK_SRCS = {
   'grey-river':       '/stickers/decor_rock-white_L_CA-US-FR-GB-AU.png',   // NEW DEFAULT
   'stepping-stone':   '/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.png',
   'stepping-stone-2': '/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.png',
+  'mixed-natural':    null,  // special: cycles through all 4 natural rock images
+  'mixed-sandstone':  null,  // special: cycles through 2 stepping stone images
 }
+
+// The 4 natural rock srcs used for the mixed variant (no stepping stones)
+const MIXED_NATURAL_SRCS = [
+  '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',
+  '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png',
+  '/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png',
+  '/stickers/decor_rock-white_L_CA-US-FR-GB-AU.png',
+]
+
+// The 2 stepping stone srcs used for the mixed sandstone variant
+const MIXED_SANDSTONE_SRCS = [
+  '/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.png',
+  '/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.png',
+]
 
 export const PICKET_SRCS = {
   white: {
@@ -148,11 +164,27 @@ export function loadRockImage(src) {
   })
 }
 export function getRockImageCached(variant) {
+  if (variant === 'mixed-natural')   return _imgCache[MIXED_NATURAL_SRCS[0]] || null
+  if (variant === 'mixed-sandstone') return _imgCache[MIXED_SANDSTONE_SRCS[0]] || null
   const src = ROCK_SRCS[variant || 'grey'] || ROCK_SRCS.grey
   return _imgCache[src] || null
 }
 export function getRockSrc(variant) {
+  if (variant === 'mixed-natural')   return MIXED_NATURAL_SRCS[0]
+  if (variant === 'mixed-sandstone') return MIXED_SANDSTONE_SRCS[0]
   return ROCK_SRCS[variant || 'grey'] || ROCK_SRCS.grey
+}
+export function loadMixedNaturalImages() {
+  return Promise.all(MIXED_NATURAL_SRCS.map(src => loadRockImage(src)))
+}
+export function getMixedNaturalImages() {
+  return MIXED_NATURAL_SRCS.map(src => _imgCache[src]).filter(Boolean)
+}
+export function loadMixedSandstoneImages() {
+  return Promise.all(MIXED_SANDSTONE_SRCS.map(src => loadRockImage(src)))
+}
+export function getMixedSandstoneImages() {
+  return MIXED_SANDSTONE_SRCS.map(src => _imgCache[src]).filter(Boolean)
 }
 export function getPicketSrc(variant, type = 'h') {
   const entry = PICKET_SRCS[variant || 'white'] || PICKET_SRCS.white
@@ -193,8 +225,13 @@ function shuffleIndexes(n, rng) {
 // Points are in the group's LOCAL coordinate space (no external offset needed).
 // The group itself is positioned/dragged by Konva — stones move with it for free.
 export function addStonesToGroup(group, flatPoints, tension, variant, id, Konva, spacingOverride = null) {
-  const img = getRockImageCached(variant)
-  if (!img) return  // image not loaded yet — caller must await and call again
+  const isMixed = variant === 'mixed-natural' || variant === 'mixed-sandstone'
+  const mixedImgs = isMixed
+    ? (variant === 'mixed-sandstone' ? getMixedSandstoneImages() : getMixedNaturalImages())
+    : null
+  const img = isMixed ? null : getRockImageCached(variant)
+  if (!isMixed && !img) return  // image not loaded yet — caller must await and call again
+  if (isMixed && (!mixedImgs || mixedImgs.length === 0)) return  // mixed images not loaded yet
 
   // Remove any existing stone images (keeping the guide line child)
   group.getChildren(c => c instanceof Konva.Image).forEach(c => c.destroy())
@@ -207,16 +244,21 @@ export function addStonesToGroup(group, flatPoints, tension, variant, id, Konva,
   const rng  = seededRandom(seed)
   const drawOrder = shuffleIndexes(positions.length, rng)
 
+  // For mixed: pre-assign a random rock type to each stone position using seeded RNG
+  // so the pattern is deterministic and stable across redraws
+  const stoneImgs = isMixed
+    ? positions.map(() => mixedImgs[Math.floor(rng() * mixedImgs.length)])
+    : null
+
   for (let i = 0; i < drawOrder.length; i++) {
     const { x, y, angle } = positions[drawOrder[i]]
     const rotJitter = (rng() - 0.5) * 50
+    const stoneImg = isMixed ? stoneImgs[drawOrder[i]] : img
     group.add(new Konva.Image({
-      image: img, x, y,
+      image: stoneImg, x, y,
       width: stoneSize, height: stoneSize,
       rotation: (angle * 180 / Math.PI) + rotJitter,
       offsetX: stoneSize / 2, offsetY: stoneSize / 2,
-      // listening:true so touch events on stones bubble up to the draggable Group.
-      // Without this, Konva can't initiate drag on mobile when the touch lands on a stone.
       listening: true,
     }))
   }
@@ -289,16 +331,32 @@ export function buildRockBorderGroup({ id, flatPoints, tension, variant, x, y, K
   })
 
   // Add stones — synchronous if image cached, async otherwise
-  const src = getRockSrc(variant)
-  if (_imgCache[src]) {
-    addStonesToGroup(group, flatPoints, tension, variant, id, Konva, spacingOverride)
-  } else {
-    loadRockImage(src).then(img => {
-      if (!img) return
+  if (variant === 'mixed-natural' || variant === 'mixed-sandstone') {
+    const loader = variant === 'mixed-sandstone' ? loadMixedSandstoneImages : loadMixedNaturalImages
+    const getter = variant === 'mixed-sandstone' ? getMixedSandstoneImages : getMixedNaturalImages
+    const srcList = variant === 'mixed-sandstone' ? MIXED_SANDSTONE_SRCS : MIXED_NATURAL_SRCS
+    const mixedImgs = getter()
+    if (mixedImgs.length === srcList.length) {
       addStonesToGroup(group, flatPoints, tension, variant, id, Konva, spacingOverride)
-      group.getLayer()?.batchDraw()
-      if (onReady) onReady(group)
-    })
+    } else {
+      loader().then(() => {
+        addStonesToGroup(group, flatPoints, tension, variant, id, Konva, spacingOverride)
+        group.getLayer()?.batchDraw()
+        if (onReady) onReady(group)
+      })
+    }
+  } else {
+    const src = getRockSrc(variant)
+    if (_imgCache[src]) {
+      addStonesToGroup(group, flatPoints, tension, variant, id, Konva, spacingOverride)
+    } else {
+      loadRockImage(src).then(img => {
+        if (!img) return
+        addStonesToGroup(group, flatPoints, tension, variant, id, Konva, spacingOverride)
+        group.getLayer()?.batchDraw()
+        if (onReady) onReady(group)
+      })
+    }
   }
 
   return group
@@ -339,8 +397,14 @@ export async function drawRockBorders(structLayer, structDataRef, Konva) {
     if (!hitLine) continue
     const d = structDataRef.current[id]
     const src = getRockSrc(d?.rockVariant)
-    const img = await loadRockImage(src)
-    if (!img) continue
+    if (d?.rockVariant === 'mixed-natural') {
+      await loadMixedNaturalImages()
+    } else if (d?.rockVariant === 'mixed-sandstone') {
+      await loadMixedSandstoneImages()
+    } else {
+      const img = await loadRockImage(src)
+      if (!img) continue
+    }
     // Normalize hitLine position on load
     const lx = hitLine.x(), ly = hitLine.y()
     if (lx !== 0 || ly !== 0) {
