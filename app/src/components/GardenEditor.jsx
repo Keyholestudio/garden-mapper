@@ -93,6 +93,7 @@ export default function GardenEditor() {
   const layersRef   = useRef({})
   const showGridRef = useRef(state.showGrid) // always-current ref for snap in dragmove closures
   const multiSelectionRef = useRef([])       // always-current ref for drag-all in multiSelect
+  const currentSeasonRef  = useRef(state.currentSeason) // always-current ref so applySeasonOpacity closures don't go stale
   const [stageReady, setStageReady] = useState(false)
   const stageReadyRef = useRef(false) // ref so closures always see current value
   const [scaleLabel, setScaleLabel] = useState('1 cell = 3 in')
@@ -277,8 +278,9 @@ export default function GardenEditor() {
     if (needsDraw) plantLayer.batchDraw()
   }, [loadedImages])
 
-  // Keep showGridRef current
+  // Keep showGridRef + currentSeasonRef current
   useEffect(() => { showGridRef.current = state.showGrid }, [state.showGrid])
+  useEffect(() => { currentSeasonRef.current = state.currentSeason }, [state.currentSeason])
 
   // ── Window resize ─────────────────────────────────────────────────────────
   // GardenCanvas has a ResizeObserver that handles most resize cases.
@@ -1125,7 +1127,7 @@ export default function GardenEditor() {
     const plantLayer = plantLayerOverride || layersRef.current?.plantLayer
     if (!plantLayer) return
     const SEASON_NAMES = ['spring','summer','fall','winter']
-    const sN = SEASON_NAMES[state.currentSeason]
+    const sN = SEASON_NAMES[currentSeasonRef.current]  // use ref — not state — so closures always see live season
     plantLayer.find('Group').forEach(g => {
       const pd = state.plantDataRef.current[g.id()]
       if (!pd) return
