@@ -20,7 +20,9 @@ export function makePlantGroup(id, img, SIZE, gx, gy) {
 
 // Place a plant on the canvas at world coords (x, y)
 // showGridRef: a React ref so dragmove always sees the current grid toggle state
-export function addPlant({ entry, x, y, stage, plantLayer, plantDataRef, plantIdCtr, showGridRef, onSelect }) {
+// onSelect: fired on click/tap AND auto-called after placement (pass handlePlantSelect)
+// autoSelect: if false, suppresses the auto-call after placement (used by copy handler which selects manually after writing data)
+export function addPlant({ entry, x, y, stage, plantLayer, plantDataRef, plantIdCtr, showGridRef, onSelect, autoSelect = true }) {
   const id = 'plant_' + plantIdCtr.current++
   const SIZE = SIZE_MAP[entry.size] || 64
   const loadedImg = entry._img
@@ -59,6 +61,6 @@ export function addPlant({ entry, x, y, stage, plantLayer, plantDataRef, plantId
   plantLayer.add(group)
   plantLayer.batchDraw()
 
-  if (onSelect) onSelect(id, group)
+  if (autoSelect && onSelect) onSelect(id, group)
   return id
 }

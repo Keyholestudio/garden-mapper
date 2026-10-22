@@ -1885,7 +1885,7 @@ export default function GardenEditor() {
                 const entry = { ...d, _img: img, scaleX, scaleY }
                 const { plantLayer } = layersRef.current
                 if (!plantLayer) return
-                const newId = addPlant({ entry, x: srcX + size + 8 + size / 2, y: srcY + size / 2, stage: stageRef.current, plantLayer, plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr, showGridRef, onSelect: null })
+                const newId = addPlant({ entry, x: srcX + size + 8 + size / 2, y: srcY + size / 2, stage: stageRef.current, plantLayer, plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr, showGridRef, onSelect: handlePlantSelect, autoSelect: false })
                 if (newId) {
                   // Preserve variantSrc + seasons BEFORE selecting so panel shows correct state immediately
                   if (d?.variantSrc) state.plantDataRef.current[newId].variantSrc = d.variantSrc
@@ -2031,7 +2031,8 @@ export default function GardenEditor() {
               stage: stageRef.current, plantLayer,
               plantDataRef: state.plantDataRef, plantIdCtr: state.plantIdCtr,
               showGridRef,
-              onSelect: null,
+              onSelect: handlePlantSelect,
+              autoSelect: false,
             })
             if (newId) {
               // Preserve variantSrc + seasons BEFORE selecting so panel shows correct state immediately
