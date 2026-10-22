@@ -7,7 +7,9 @@ export const entries = [
 
   // 🌸 Summer Bulbs ──────────────────────────────────────────────────────────────
 
-  { key: 'bulb-summer_gladiolus_L_CA-US-FR-GB-AU', label: 'Gladiolus', size: 'L', latinName: 'Gladiolus x hortulanus', searchTerms: ['gladiolus', 'gladioli', 'sword lily'], traits: ['bulb', 'summer', 'flowering', 'tall'] },
+  { key: 'bulb-summer_gladiolus_L_CA-US-FR-GB-AU',            label: 'Gladiolus',             size: 'L', latinName: 'Gladiolus x hortulanus', searchTerms: ['gladiolus', 'gladioli', 'sword lily'],           traits: ['bulb', 'summer', 'flowering', 'tall'],   src: '/stickers/bulb-summer_gladiolus_L_CA-US-FR-GB-AU.png' },
+  { key: 'bulb-summer_gladiolus_light-pink_L_CA-US-FR-GB-AU', label: 'Gladiolus (Light Pink)', size: 'L', latinName: 'Gladiolus x hortulanus', searchTerms: ['gladiolus', 'gladioli', 'sword lily', 'pink'],   traits: ['bulb', 'summer', 'flowering', 'pink'],   src: '/stickers/bulb-summer_gladiolus_light-pink_L_CA-US-FR-GB-AU.png' },
+  { key: 'bulb-summer_gladiolus_yellow_L_CA-US-FR-GB-AU',     label: 'Gladiolus (Yellow)',     size: 'L', latinName: 'Gladiolus x hortulanus', searchTerms: ['gladiolus', 'gladioli', 'sword lily', 'yellow'], traits: ['bulb', 'summer', 'flowering', 'yellow'], src: '/stickers/bulb-summer_gladiolus_yellow_L_CA-US-FR-GB-AU.png' },
   { key: 'bulb-summer_canna_L_CA-US-FR-GB-AU', label: 'Canna', size: 'L', latinName: 'Canna indica', searchTerms: ['canna', 'canna lily', 'indian shot'], traits: ['bulb', 'summer', 'tropical', 'flowering'] },
   { key: 'bulb-summer_elephant-ear_XL_CA-US-FR-GB-AU', label: 'Elephant Ear', size: 'XL', latinName: 'Colocasia esculenta', searchTerms: ['elephant ear', 'colocasia', 'taro', 'alocasia'], traits: ['bulb', 'summer', 'tropical', 'foliage'] },
   { key: 'bulb-summer_agapanthus_M_CA-US-FR-GB-AU', label: 'Agapanthus', size: 'M', latinName: 'Agapanthus africanus', searchTerms: ['agapanthus', 'lily of the nile', 'african lily'], traits: ['bulb', 'summer', 'flowering', 'blue'] },

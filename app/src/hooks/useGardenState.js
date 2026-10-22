@@ -294,6 +294,16 @@ export const DECOR_VARIANTS = {
   'pool-railings': [
     { label: 'Pool Railing', subtitle: 'Pool Railing', size: 'M', colour: '#C0C0C0', src: '/stickers/decor_pool-railing_M_CA-US-FR-GB-AU.png' },
   ],
+  // Plant colour variants
+  'bulb-summer_gladiolus_L_CA-US-FR-GB-AU': [
+    { label: 'Reddish Pink', subtitle: 'Gladiolus', colour: '#D43060', src: '/stickers/bulb-summer_gladiolus_L_CA-US-FR-GB-AU.png' },
+    { label: 'Light Pink',   subtitle: 'Gladiolus', colour: '#F5C0D0', src: '/stickers/bulb-summer_gladiolus_light-pink_L_CA-US-FR-GB-AU.png' },
+    { label: 'Yellow',       subtitle: 'Gladiolus', colour: '#FFD700', src: '/stickers/bulb-summer_gladiolus_yellow_L_CA-US-FR-GB-AU.png' },
+  ],
+  'flower-cluster_yarrow': [
+    { label: 'White',      subtitle: 'Yarrow', colour: '#F8F8F8', src: '/stickers/flower-cluster_yarrow_M_CA-US-FR-GB-AU.png' },
+    { label: 'Pink Cassis', subtitle: 'Yarrow Pink Cassis', colour: '#C84878', src: '/stickers/flower-cluster_yarrow_pink-cassis_M_CA-US-FR-GB-AU.png' },
+  ],
 }
 
 export const GATE_STYLES = {

@@ -146,5 +146,6 @@ export const entries = [
   { key: 'herb-small_basil_thai',     label: 'Basil (Thai)',     size: 'S', latinName: 'Ocimum basilicum var.',searchTerms: ['thai basil', 'asian basil', 'holy basil'],          traits: ['annual', 'herb', 'asian', 'culinary'],      src: '/stickers/herb-small_basil_S_thai_CA-US-FR-GB-AU.png' },
   { key: 'herb-small_chives_large',   label: 'Chives (Large)',   size: 'M', latinName: 'Allium schoenoprasum', searchTerms: ['chives', 'large chives', 'allium schoenoprasum'],   traits: ['perennial', 'herb', 'allium', 'culinary'],  src: '/stickers/herb-small_chives_M_CA-US-FR-GB-AU.png' },
   { key: 'herb-small_parsley_large',  label: 'Parsley (Large)',  size: 'M', latinName: 'Petroselinum crispum',  searchTerms: ['parsley', 'large parsley', 'flat-leaf parsley'],   traits: ['biennial', 'herb', 'culinary', 'large'],    src: '/stickers/herb-small_parsley_M_CA-US-FR-GB-AU.png' },
+  { key: 'herb-small_licorice-plant_S_CA-US-FR-GB-AU', label: 'Licorice Plant', size: 'S', latinName: 'Helichrysum petiolare', searchTerms: ['licorice plant', 'helichrysum', 'liquorice plant', 'silver foliage'], traits: ['annual', 'foliage', 'silver', 'trailing'], src: '/stickers/herb-small_licorice-plant_S_CA-US-FR-GB-AU.png' },
 
 ];
