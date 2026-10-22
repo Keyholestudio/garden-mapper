@@ -1,6 +1,22 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L109 — PLANT_VARIANTS placement in useGardenState.js: always verify object boundary before editing (2026-10-22)
+**What happened:** Adding Gladiolus colour variants to PLANT_VARIANTS failed 3 times. The entry landed in DECOR_VARIANTS, then GATE_VARIANTS, then GATE_VARIANTS again. Each time, proximity-based anchor text (the last gate entry) was used without verifying which object it was actually inside. The build always succeeded because the syntax was valid — the error was purely logical.
+**Root cause:** `useGardenState.js` has 5+ large objects defined sequentially. Using a nearby line as an edit anchor without checking the enclosing object boundary causes silent misplacement. The validator and build don't catch it.
+**Mandatory checklist before any `PLANT_VARIANTS` edit:**
+1. Read the target file section — confirm `export const PLANT_VARIANTS = {` is the enclosing block (not `GATE_VARIANTS`, `DECOR_VARIANTS`, `PICKET_VARIANTS`)
+2. Count the closing `}` — PLANT_VARIANTS closes at the line immediately before `export const ELEC_COLOURS`
+3. Insert the new entry **before that closing `}`**, not after any gate/decor entry
+4. After editing: run `Select-String -Pattern "gladiolus|<new key>" useGardenState.js` and confirm the line number is between 47 (PLANT_VARIANTS start) and ~165 (PLANT_VARIANTS end)
+5. Build and check the debug log (`PLANT_VARIANTS has it: true`) before removing the log
+**How to distinguish plant variants from decor variants:**
+- `PLANT_VARIANTS` — keyed by plant `key` field (e.g. `bulb-summer_gladiolus_L_CA-US-FR-GB-AU`). Used for plants with colour swatches. `src: null` on default swatch. Uses `name` field (not `subtitle`).
+- `DECOR_VARIANTS` — keyed by `decorGroup` string (e.g. `gazebos`, `fountains`). Used for decor items. Uses `subtitle` field.
+- `GATE_VARIANTS` — keyed by full sticker key of gate decor items only.
+**Never add a plant entry to GATE_VARIANTS or DECOR_VARIANTS. Never add a decor entry to PLANT_VARIANTS.**
+**Standing rule:** After any `useGardenState.js` edit, run `Select-String -Pattern "export const" useGardenState.js` to see all object boundaries and confirm placement is correct.
+
 ## L106 — addPlant `autoSelect` flag: always pass `onSelect`, use `autoSelect: false` to suppress post-placement call (2026-10-22)
 **What happened:** Passed `onSelect: null` to suppress premature auto-select during copy. This permanently broke the `click tap` closure on the Konva group — the plant could never be re-selected without a page refresh.
 **Rule:** Never pass `onSelect: null` to `addPlant`. The click handler captures `onSelect` in a closure at creation time. Use `autoSelect: false` to suppress the automatic post-placement call while keeping the click handler wired.

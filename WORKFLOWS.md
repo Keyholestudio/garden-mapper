@@ -474,16 +474,24 @@ Missing any one of these = item either invisible in menu (3,4) or missing colour
 **Step 6 - Commit**
 1. Copy **only the clean PNG** (never `_raw`) → `app/public/stickers/` AND `stickers/`
 2. Add (or update) the `PLANT_VARIANTS` entry in `app/src/hooks/useGardenState.js`:
+
+   ⚠️ **MANDATORY: Verify object boundary before editing (L109)**
+   - Read lines around the target insertion point
+   - Confirm you are inside `export const PLANT_VARIANTS = {` — it closes at the line immediately before `export const ELEC_COLOURS`
+   - **Never** insert after a gate or decor entry — those are in `GATE_VARIANTS` and `DECOR_VARIANTS`
+   - After editing, run: `Select-String -Pattern "<new-key>" app/src/hooks/useGardenState.js` and confirm the line number is between the `PLANT_VARIANTS` start and `ELEC_COLOURS` line
+
    ```js
    'plant_key': [
-     { label: 'Green',     name: 'Plant Name',      colour: '#hex', src: '/stickers/base-key.png' },  // default - always first, points to base PNG
+     { label: 'Default',   name: 'Plant Name',      colour: '#hex', src: null },               // default — src:null resolves to pack/catalog src
      { label: 'Deep Pink', name: 'Cultivar Name',   colour: '#hex', src: '/stickers/key_deep-pink.png' },
      { label: 'White',     name: 'Cultivar Name',   colour: '#hex', src: '/stickers/key_white.png' },
    ]
    ```
-   - First entry = default, always points to existing base PNG, no new sticker needed
+   - **First entry always has `src: null`** — resolves to the plant’s base pack/catalog PNG
+   - **Use `name` field, never `subtitle`** — `subtitle` is for decor items only
    - `label` = colour word shown on the swatch
-   - `name` = cultivar name shown in the panel subtitle when that swatch is selected
+   - `name` = cultivar name shown in panel subtitle when that swatch is selected
 3. Update `research/PLANT-DATABASE.md` → Variants column = `done`
 4. Update `COLOUR-VARIANTS.md` → mark plant as ✅ Done with swatch count
 5. Run `pwsh tools/validate-tray.ps1` - 0 errors
