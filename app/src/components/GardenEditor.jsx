@@ -100,6 +100,12 @@ export default function GardenEditor() {
 
   // Phase 5: save/load state
   const [currentGardenIndex, setCurrentGardenIndex] = useState(0)
+
+  // ── Lasso select mode ──────────────────────────────────────────────────────
+  const [lassoMode, setLassoMode] = useState(false)
+  const lassoModeRef = useRef(false)  // always-current for pointer event closures
+  const lassoRectRef = useRef(null)   // Konva.Rect drawn on uiLayer during drag
+  const lassoStartRef = useRef(null)  // { x, y } world coords where drag started
   const [switcherOpen, setSwitcherOpen] = useState(false)
   const [exportOpen, setExportOpen] = useState(false)
   const [saveFlash, setSaveFlash] = useState(false)
@@ -328,7 +334,15 @@ export default function GardenEditor() {
   // Keep multiSelectionRef in sync for drag-all closures
   useEffect(() => {
     multiSelectionRef.current = state.multiSelection || []
+    // Auto-exit lasso when selection is cleared (e.g. user taps background)
+    if (!state.multiSelection || state.multiSelection.length === 0) {
+      lassoModeRef.current = false
+      setLassoMode(false)
+    }
   }, [state.multiSelection])
+
+  // Keep lassoModeRef in sync for event handler closures
+  useEffect(() => { lassoModeRef.current = lassoMode }, [lassoMode])
 
   // Redraws highlight rects on uiLayer whenever multiSelection changes
   const multiHighlightRef = useRef([])
@@ -366,6 +380,107 @@ export default function GardenEditor() {
     uiLayer.batchDraw()
   }, [state.multiSelection, stageReady])
 
+  // ── Lasso: wire/unwire stage pointer events whenever lassoMode toggles ──────────────────
+  useEffect(() => {
+    const stage = stageRef.current
+    const { uiLayer, plantLayer } = layersRef.current
+    if (!stage || !uiLayer || !plantLayer) return
+
+    if (!lassoMode) {
+      // Clean up any lingering rect when mode is turned off
+      if (lassoRectRef.current) { lassoRectRef.current.destroy(); lassoRectRef.current = null }
+      return
+    }
+
+    // Lasso active: capture mousedown/mousemove/mouseup on the stage container
+    const container = stage.container()
+
+    const onDown = (e) => {
+      if (!lassoModeRef.current) return
+      if (e.button !== 0) return  // left button only
+      // Get world coords from stage
+      const stageBox = container.getBoundingClientRect()
+      const sc = stage.scaleX()
+      const wx = (e.clientX - stageBox.left - stage.x()) / sc
+      const wy = (e.clientY - stageBox.top  - stage.y()) / sc
+      lassoStartRef.current = { x: wx, y: wy }
+      // Create the dashed selection rect on uiLayer
+      if (lassoRectRef.current) { lassoRectRef.current.destroy() }
+      const rect = new Konva.Rect({
+        x: wx, y: wy, width: 0, height: 0,
+        stroke: '#FFD600', strokeWidth: 1.5,
+        strokeScaleEnabled: false,
+        dash: [6, 4], fill: 'rgba(255,214,0,0.08)',
+        listening: false,
+      })
+      uiLayer.add(rect)
+      lassoRectRef.current = rect
+      uiLayer.batchDraw()
+    }
+
+    const onMove = (e) => {
+      if (!lassoModeRef.current || !lassoStartRef.current || !lassoRectRef.current) return
+      const stageBox = container.getBoundingClientRect()
+      const sc = stage.scaleX()
+      const wx = (e.clientX - stageBox.left - stage.x()) / sc
+      const wy = (e.clientY - stageBox.top  - stage.y()) / sc
+      const x  = Math.min(wx, lassoStartRef.current.x)
+      const y  = Math.min(wy, lassoStartRef.current.y)
+      const w  = Math.abs(wx - lassoStartRef.current.x)
+      const h  = Math.abs(wy - lassoStartRef.current.y)
+      lassoRectRef.current.x(x); lassoRectRef.current.y(y)
+      lassoRectRef.current.width(w); lassoRectRef.current.height(h)
+      uiLayer.batchDraw()
+    }
+
+    const onUp = (e) => {
+      if (!lassoModeRef.current || !lassoStartRef.current || !lassoRectRef.current) return
+      const lx = lassoRectRef.current.x(), ly = lassoRectRef.current.y()
+      const lw = lassoRectRef.current.width(), lh = lassoRectRef.current.height()
+      lassoRectRef.current.destroy(); lassoRectRef.current = null
+      lassoStartRef.current = null
+      uiLayer.batchDraw()
+      // Skip tiny drags (user just clicked, didn't drag)
+      if (lw < 5 && lh < 5) return
+      // Find all plant groups whose bounding box intersects the lasso rect
+      const hit = []
+      plantLayer.find('Group').forEach(group => {
+        const id = group.id()
+        if (!state.plantDataRef.current[id]) return  // not a plant group
+        const box = group.getClientRect({ skipTransform: false })
+        const sc2 = stage.scaleX()
+        // Convert box back to world coords
+        const bx = (box.x - stage.x()) / sc2
+        const by = (box.y - stage.y()) / sc2
+        const bw = box.width  / sc2
+        const bh = box.height / sc2
+        // Intersection check
+        if (bx + bw > lx && bx < lx + lw && by + bh > ly && by < ly + lh) {
+          hit.push({ id, kind: 'plant', shape: group })
+        }
+      })
+      if (hit.length === 0) return
+      // Add to (or replace) multiSelection
+      state.setMultiSelection(prev => {
+        const existing = prev || []
+        const existingIds = new Set(existing.map(i => i.id))
+        const newItems = hit.filter(i => !existingIds.has(i.id))
+        return [...existing, ...newItems]
+      })
+    }
+
+    container.addEventListener('mousedown', onDown)
+    window.addEventListener('mousemove',   onMove)
+    window.addEventListener('mouseup',     onUp)
+    return () => {
+      container.removeEventListener('mousedown', onDown)
+      window.removeEventListener('mousemove',   onMove)
+      window.removeEventListener('mouseup',     onUp)
+      if (lassoRectRef.current) { lassoRectRef.current.destroy(); lassoRectRef.current = null }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lassoMode, stageReady])
+
   // ── Clear selection ──
   const clearSelection = () => {
     exitEdit()  // destroy any stale edit handles before clearing selection
@@ -375,6 +490,10 @@ export default function GardenEditor() {
     state.setEditingShapeId(null)
     state.setAddingPt(false)
     state.setRemovingPt(false)
+    // Exit lasso mode when clearing selection
+    lassoModeRef.current = false
+    setLassoMode(false)
+    if (lassoRectRef.current) { lassoRectRef.current.destroy(); lassoRectRef.current = null }
   }
 
   // ── Plant selection handler (shared) - handles Ctrl+click multi-select ──
@@ -2148,6 +2267,8 @@ export default function GardenEditor() {
               onMultiDelete={handleMultiDelete}
               onMultiSeasonChange={handleMultiSeasonChange}
               onMultiMove={handleMultiMove}
+              isLassoMode={lassoMode}
+              onToggleLasso={() => { const next = !lassoMode; lassoModeRef.current = next; setLassoMode(next) }}
               // Edit points
               editingShapeId={state.editingShapeId}
               onEnterEdit={enterEdit}
@@ -2195,6 +2316,8 @@ export default function GardenEditor() {
               showGrid={state.showGrid}         onToggleGrid={() => state.setShowGrid(v => !v)}
               panMode={state.panMode}            onTogglePan={() => state.setPanMode(v => !v)}
               onResetView={handleResetView}     onClearAll={handleClearAll}
+              isLassoMode={lassoMode}
+              onToggleLasso={() => { const next = !lassoMode; lassoModeRef.current = next; setLassoMode(next) }}
             />
           )}
         </div>
@@ -2334,6 +2457,8 @@ export default function GardenEditor() {
           onClearSelection={clearSelection}
           onUndo={handleUndo}
           canUndo={state.canUndo}
+          isLassoMode={lassoMode}
+          onToggleLasso={() => { const next = !lassoMode; lassoModeRef.current = next; setLassoMode(next) }}
         />}
       </div>
 

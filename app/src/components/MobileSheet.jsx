@@ -63,6 +63,8 @@ export default function MobileSheet({
   onMultiDelete,
   onMultiSeasonChange,
   onMultiMove,
+  isLassoMode,
+  onToggleLasso,
   onUndo,
   canUndo,
   onPlantVariantChange,
@@ -232,6 +234,11 @@ export default function MobileSheet({
           <div className="mobile-sheet-body mobile-edit-body">
             <div className="mobile-edit-title">{multiSelection.length} Plants Selected</div>
             <div className="mobile-edit-subtitle">Tap any plant to add or remove. Tap background to exit.</div>
+            <button
+              className="mobile-edit-btn full"
+              onClick={() => onToggleLasso?.()}
+              style={isLassoMode ? {background:'#FFD600', color:'#333', border:'none', borderRadius:6, marginBottom:6} : {marginBottom:6}}
+            >⛶ {isLassoMode ? 'Lasso Active — Drag to select' : 'Lasso Select'}</button>
             <div className="mobile-edit-sep" />
 
             <div className="mobile-edit-label">MOVE</div>

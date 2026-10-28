@@ -56,6 +56,7 @@ export default function RightPanel({
   onPlantVariantChange,
   addingPt, onToggleAddPt,
   removingPt, onToggleRemovePt,
+  isLassoMode, onToggleLasso,
   // Tool menu props
   currentMode, onModeChange,
   bedSubTool, fenceSubTool, fenceType, pathSubTool, buildingSubTool, waterSubTool, decorSubTool,
@@ -131,6 +132,12 @@ export default function RightPanel({
           </div>
           <div className="panel-h2">📌 Multi-Select</div>
           <div className="panel-sub">{multiSelection.length} selected • Shift+click or double-click to add</div>
+          <button
+            className={`btn-panel${isLassoMode ? ' active' : ''}`}
+            onClick={() => onToggleLasso?.()}
+            title="Drag to select multiple plants"
+            style={{marginBottom: 4, background: isLassoMode ? '#FFD600' : undefined, color: isLassoMode ? '#333' : undefined}}
+          >⛶ {isLassoMode ? 'Lasso Active — Drag to select' : 'Lasso Select'}</button>
           <div className="panel-sep" />
           <div className="panel-title">MOVE</div>
           <div style={{display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:4, marginBottom:8}}>
