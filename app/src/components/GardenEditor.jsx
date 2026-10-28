@@ -1016,9 +1016,22 @@ export default function GardenEditor() {
     // Auto-save on any drag or resize completing - catches all shapes without per-shape wiring
     stage.on('dragend', () => triggerAutoSave())
     stage.on('transformend', () => triggerAutoSave())
-    // Track pan drag state so handleCanvasClick can suppress clearSelection on click-after-pan
-    stage.on('pan:start', () => { isPanDraggingRef.current = true })
+    // Track pan drag state so handleCanvasClick can suppress clearSelection on click-after-pan.
+    // Only set true if the mouse actually moved during the pan (not a stationary click).
+    let _panStartPos = null
+    stage.on('pan:start', () => {
+      _panStartPos = stage.getPointerPosition()
+      isPanDraggingRef.current = false  // not a drag yet — wait for mousemove
+    })
+    stage.on('mousemove', () => {
+      if (_panStartPos === null) return
+      const pos = stage.getPointerPosition()
+      if (!pos) return
+      const dx = pos.x - _panStartPos.x, dy = pos.y - _panStartPos.y
+      if (Math.sqrt(dx*dx + dy*dy) > 4) isPanDraggingRef.current = true  // real drag threshold
+    })
     stage.on('mouseup touchend', () => {
+      _panStartPos = null
       // Use a short timeout so the click event (which fires after mouseup) sees the flag
       if (isPanDraggingRef.current) setTimeout(() => { isPanDraggingRef.current = false }, 50)
     })
