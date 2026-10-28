@@ -469,13 +469,40 @@ export default function GardenEditor() {
       })
     }
 
-    container.addEventListener('mousedown', onDown)
-    window.addEventListener('mousemove',   onMove)
-    window.addEventListener('mouseup',     onUp)
+    // Touch helpers — extract clientX/Y from first touch
+    const onTouchDown = (e) => {
+      if (!lassoModeRef.current) return
+      if (e.touches.length !== 1) return
+      const t = e.touches[0]
+      e.preventDefault()  // prevent scroll/pan while lasso is drawing
+      onDown({ button: 0, clientX: t.clientX, clientY: t.clientY })
+    }
+    const onTouchMove = (e) => {
+      if (!lassoModeRef.current || !lassoStartRef.current) return
+      if (e.touches.length !== 1) return
+      const t = e.touches[0]
+      e.preventDefault()
+      onMove({ clientX: t.clientX, clientY: t.clientY })
+    }
+    const onTouchUp = (e) => {
+      if (!lassoModeRef.current || !lassoStartRef.current) return
+      const t = e.changedTouches[0]
+      onUp({ clientX: t.clientX, clientY: t.clientY })
+    }
+
+    container.addEventListener('mousedown',  onDown,      { passive: false })
+    window.addEventListener('mousemove',    onMove)
+    window.addEventListener('mouseup',      onUp)
+    container.addEventListener('touchstart', onTouchDown, { passive: false })
+    container.addEventListener('touchmove',  onTouchMove, { passive: false })
+    container.addEventListener('touchend',   onTouchUp)
     return () => {
-      container.removeEventListener('mousedown', onDown)
-      window.removeEventListener('mousemove',   onMove)
-      window.removeEventListener('mouseup',     onUp)
+      container.removeEventListener('mousedown',  onDown)
+      window.removeEventListener('mousemove',    onMove)
+      window.removeEventListener('mouseup',      onUp)
+      container.removeEventListener('touchstart', onTouchDown)
+      container.removeEventListener('touchmove',  onTouchMove)
+      container.removeEventListener('touchend',   onTouchUp)
       if (lassoRectRef.current) { lassoRectRef.current.destroy(); lassoRectRef.current = null }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -495,6 +522,8 @@ export default function GardenEditor() {
     setLassoMode(false)
     if (lassoRectRef.current) { lassoRectRef.current.destroy(); lassoRectRef.current = null }
   }
+  // Keep ref current so stage event closures (registered once in handleStageReady) always call latest version
+  clearSelectionRef.current = clearSelection
 
   // ── Plant selection handler (shared) - handles Ctrl+click multi-select ──
   // Returns true if any draw/place tool is currently active (not idle select)
@@ -839,7 +868,8 @@ export default function GardenEditor() {
   const pendingPlantRef  = useRef(null)
   const draggingPlantRef = useRef(null)  // tracks plant being HTML5 drag-dropped
   const suppressNextClearRef = useRef(false) // set after struct placed via tap, prevents synthesized click from clearing selection
-  const isPanDraggingRef = useRef(false)  // true while a pan drag is in progress — suppress clearSelection on click-after-pan
+  const isPanDraggingRef = useRef(false)    // true while a pan drag is in progress — suppress clearSelection on click-after-pan
+  const clearSelectionRef = useRef(null)    // kept current below so stage event closures can call clearSelection without going stale
 
   const handlePlantClick = (enrichedEntry) => {
     pendingPlantRef.current = enrichedEntry
@@ -991,6 +1021,18 @@ export default function GardenEditor() {
       // Use a short timeout so the click event (which fires after mouseup) sees the flag
       if (isPanDraggingRef.current) setTimeout(() => { isPanDraggingRef.current = false }, 50)
     })
+    // Double-tap on empty canvas exits multiselect (mobile-friendly alternative to ← Done)
+    let lastTapTime = 0
+    stage.container().addEventListener('touchend', (e) => {
+      if (multiSelectionRef.current?.length === 0) return  // not in multiselect
+      if (lassoModeRef.current) return                     // lasso active — ignore taps
+      const now = Date.now()
+      if (now - lastTapTime < 350) {
+        // Double-tap detected — exit multiselect via ref so closure doesn’t go stale
+        clearSelectionRef.current?.()
+      }
+      lastTapTime = now
+    }, { passive: true })
     stageReadyRef.current = true
     setStageReady(true)
   }
