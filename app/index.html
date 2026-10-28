@@ -18,6 +18,17 @@
     <title>Garden Mapper</title>
   </head>
   <body>
+    <!-- Splash screen: shown instantly, faded out by main.tsx after app mounts -->
+    <div id="splash" style="
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #1a3a0a url('/splash-web.jpg') center center / cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 1.2s ease;
+    "></div>
     <div id="app"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
