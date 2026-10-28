@@ -657,6 +657,8 @@ export default function GardenEditor() {
     layers: stageReady ? layersRef.current : null,
     propBoundsRef: state.propBoundsRef,
     state,
+    lassoModeRef,
+    multiSelectionRef,
     onPushUndo: state.pushUndo,
     onEnterEdit: (id) => { enterEdit(id) },
     onAddPointDone: (id) => {
@@ -837,6 +839,7 @@ export default function GardenEditor() {
   const pendingPlantRef  = useRef(null)
   const draggingPlantRef = useRef(null)  // tracks plant being HTML5 drag-dropped
   const suppressNextClearRef = useRef(false) // set after struct placed via tap, prevents synthesized click from clearing selection
+  const isPanDraggingRef = useRef(false)  // true while a pan drag is in progress — suppress clearSelection on click-after-pan
 
   const handlePlantClick = (enrichedEntry) => {
     pendingPlantRef.current = enrichedEntry
@@ -884,6 +887,12 @@ export default function GardenEditor() {
       // After a touch-place of a struct, the browser fires a synthetic click on the stage.
       // Suppress the clearSelection for that one click so the struct edit panel stays open.
       if (suppressNextClearRef.current) { suppressNextClearRef.current = false; return }
+      // Suppress clearSelection if this click is the tail-end of a pan drag
+      // (pan fires mouseup then a click — isPanDraggingRef stays true for 50ms)
+      if (isPanDraggingRef.current) return
+      // Suppress clearSelection while multiSelection is active — panning shouldn’t dismiss the panel.
+      // User must explicitly press ← Done or double-click to exit multiselect.
+      if (multiSelectionRef.current?.length > 0) return
       clearSelection(); return
     }
     // Block placements outside sandbox when viewing Dream Garden (bypass on localhost for editing)
@@ -976,6 +985,12 @@ export default function GardenEditor() {
     // Auto-save on any drag or resize completing - catches all shapes without per-shape wiring
     stage.on('dragend', () => triggerAutoSave())
     stage.on('transformend', () => triggerAutoSave())
+    // Track pan drag state so handleCanvasClick can suppress clearSelection on click-after-pan
+    stage.on('pan:start', () => { isPanDraggingRef.current = true })
+    stage.on('mouseup touchend', () => {
+      // Use a short timeout so the click event (which fires after mouseup) sees the flag
+      if (isPanDraggingRef.current) setTimeout(() => { isPanDraggingRef.current = false }, 50)
+    })
     stageReadyRef.current = true
     setStageReady(true)
   }

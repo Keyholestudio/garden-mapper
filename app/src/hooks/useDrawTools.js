@@ -12,6 +12,8 @@ import { addStonesToGroup } from '../utils/rockBorderUtils'
 
 export function useDrawTools({
   stage, layers, propBoundsRef, state, onStructSelect, onModeChange, onPushUndo, onEnterEdit, onAddPointDone,
+  lassoModeRef,        // ref: true when lasso select is active — suppress pan:start
+  multiSelectionRef,   // ref: current multiSelection array — suppress pan:start to preserve selection
 }) {
   // Keep current state in refs so event handlers always see latest values
   const sRef = useRef(state)
@@ -263,8 +265,12 @@ export function useDrawTools({
       const free = isFreeMode(s.currentMode, s.bedSubTool, s.fenceSubTool, s.fenceType, s.buildingSubTool, s.waterSubTool, s.pathSubTool)
 
       // Select mode — hand off to canvas pan handler
+      // Exception: when lasso mode is active, suppress pan so lasso mousedown handler takes over
       if (s.currentMode === 'select' || free) {
-        if (s.currentMode === 'select') stage.fire('pan:start')
+        if (s.currentMode === 'select') {
+          if (lassoModeRef?.current) return  // lasso active — do not pan
+          stage.fire('pan:start')            // normal select mode — pan canvas
+        }
         return
       }
 
