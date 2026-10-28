@@ -9,10 +9,52 @@
 //           onerror failures that aren't real missing-file errors. Sequential loading
 //           eliminates thread pool contention entirely.
 //           Garden renders immediately (ready=true fires before loading starts).
+//
+// Load order (garden-first priority):
+//   1. Plants used in the saved garden (extracted from localStorage)
+//   2. All remaining catalog entries (PLANT_CATALOG + ALL_PACK_ENTRIES)
+//   This ensures the canvas renders with correct stickers immediately,
+//   and the full tray populates progressively instead of freezing mid-way.
 
 import { useState, useEffect } from 'react'
 import { Capacitor } from '@capacitor/core'
-import { PLANT_CATALOG } from './usePlantCatalog'
+import { PLANT_CATALOG, PLANT_CATALOG_TRAY } from './usePlantCatalog'
+
+// Extract plant keys from the saved garden in localStorage.
+// Reads gardenData (array of gardens) and returns a Set of plant keys in use.
+function getGardenPlantKeys() {
+  try {
+    const raw = localStorage.getItem('gardenData')
+    if (!raw) return new Set()
+    const gardens = JSON.parse(raw)
+    const keys = new Set()
+    const list = Array.isArray(gardens) ? gardens : [gardens]
+    list.forEach(garden => {
+      if (!garden) return
+      const plants = garden.plants || []
+      plants.forEach(p => { if (p.key) keys.add(p.key) })
+    })
+    return keys
+  } catch {
+    return new Set()
+  }
+}
+
+// Build the full load order: garden-used plants first, then the rest.
+// Deduplicates by key so no image is loaded twice.
+function buildLoadOrder(catalog) {
+  const gardenKeys = getGardenPlantKeys()
+  const seen = new Set()
+  const priority = []
+  const rest = []
+  catalog.forEach(p => {
+    if (seen.has(p.key)) return
+    seen.add(p.key)
+    if (gardenKeys.has(p.key)) priority.push(p)
+    else rest.push(p)
+  })
+  return [...priority, ...rest]
+}
 
 const IS_NATIVE = Capacitor.isNativePlatform()
 
@@ -63,20 +105,23 @@ export function usePlantImages() {
   const [ready, setReady]   = useState(false)
 
   useEffect(() => {
+    // Full catalog: core PLANT_CATALOG + all pack entries, garden-used plants first
+    const fullCatalog = buildLoadOrder(PLANT_CATALOG_TRAY)
+
     if (IS_NATIVE) {
       // Native: mark ready immediately so canvas renders, then stream images in one-by-one
       setReady(true)
-      loadSequential(PLANT_CATALOG, (key, img) => {
+      loadSequential(fullCatalog, (key, img) => {
         setLoadedImages(prev => ({ ...prev, [key]: img }))
       })
     } else {
       // Web: batched loading, mark ready after first pass
-      loadBatched(PLANT_CATALOG, batchResult => {
+      loadBatched(fullCatalog, batchResult => {
         setLoadedImages(prev => ({ ...prev, ...batchResult }))
       }).then(results => {
         setReady(true)
         // Post-load sweep for anything that failed
-        const failed = PLANT_CATALOG.filter(p => !results[p.key])
+        const failed = fullCatalog.filter(p => !results[p.key])
         if (failed.length > 0) {
           loadBatched(failed, batchResult => {
             setLoadedImages(prev => ({ ...prev, ...batchResult }))
