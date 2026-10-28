@@ -262,7 +262,9 @@ export default function GardenEditor() {
         }
       })
     }
-  }, [IS_NATIVE, loadSequentialImgs, loadBatchedImgs, buildImgLoadOrder])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  // Intentionally empty deps: loaders are stable useCallbacks, IS_NATIVE is a module constant.
+  // Re-running this effect would reset imgQueueRef and restart the entire load from scratch.
 
   // Inject keys to the front of the image load queue (search priority).
   // Safe to call at any time; skips already-loaded keys and keys already near the front.
@@ -282,28 +284,29 @@ export default function GardenEditor() {
     ]
   }, [])
 
-  // Load images for pack entries when a pack loads
+  // This effect is now a no-op — pack images are loaded via the main imgQueueRef pipeline
+  // (PLANT_CATALOG_TRAY includes all pack entries). Kept as a stub to preserve the
+  // Konva canvas swap logic for already-placed plants whose image arrives late.
   const loadedPackKeysRef = useRef({})
   useEffect(() => {
     const allPackEntries = Object.values(lazyPacksProps.loaded || {}).flat()
     const newEntries = allPackEntries.filter(p => !loadedPackKeysRef.current[p.key])
     if (newEntries.length === 0) return
-    loadBatchedImgs(newEntries, p => stickerSrc(p.src || `/stickers/${p.key}.png`)).then(result => {
-      newEntries.forEach(p => { loadedPackKeysRef.current[p.key] = true })
-      setLoadedImages(prev => ({ ...prev, ...result }))
-      // Swap placeholder images on already-placed plants whose pack just loaded
-      const plantLayer = layersRef.current.plantLayer
-      if (!plantLayer) return
-      let needsDraw = false
-      plantLayer.find('Group').forEach(group => {
-        const id = group.id()
-        const d  = state.plantDataRef.current[id]
-        if (!d || !result[d.key]) return
-        const konvaImg = group.findOne('Image')
-        if (konvaImg) { konvaImg.image(result[d.key]); needsDraw = true }
-      })
-      if (needsDraw) plantLayer.batchDraw()
+    newEntries.forEach(p => { loadedPackKeysRef.current[p.key] = true })
+    // Images already streamed in via imgQueueRef — just do the Konva canvas swap
+    const plantLayer = layersRef.current.plantLayer
+    if (!plantLayer) return
+    let needsDraw = false
+    plantLayer.find('Group').forEach(group => {
+      const id = group.id()
+      const d  = state.plantDataRef.current[id]
+      if (!d) return
+      const img = loadedImagesRef.current[d.key]
+      if (!img) return
+      const konvaImg = group.findOne('Image')
+      if (konvaImg && konvaImg.image() !== img) { konvaImg.image(img); needsDraw = true }
     })
+    if (needsDraw) plantLayer.batchDraw()
   }, [lazyPacksProps.loaded])
 
   // ── Swap placeholder Konva nodes when catalog images arrive ──────────────
