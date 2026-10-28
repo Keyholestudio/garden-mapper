@@ -653,13 +653,25 @@ export function loadGarden({
       _prevDragY = group.y()
     })
     group.on('dragmove', () => {
+      // ── Guard: if a multiselection is active and this plant is NOT in it, cancel its drag ──
+      // Prevents non-selected plants under the finger from being moved along with the group.
+      const sel = multiSelectionRef?.current
+      if (sel && sel.length > 0) {
+        const inSelection = sel.some(item => item.id === entry.id)
+        if (!inSelection) {
+          // Snap back to where it started and stop the drag
+          group.x(_prevDragX)
+          group.y(_prevDragY)
+          group.stopDrag()
+          return
+        }
+      }
       if (showGridRef?.current) {
         const SNAP_CELL = 16
         group.x(Math.round(group.x() / SNAP_CELL) * SNAP_CELL)
         group.y(Math.round(group.y() / SNAP_CELL) * SNAP_CELL)
       }
       // ── Drag-all: move every other selected shape by the same delta ──
-      const sel = multiSelectionRef?.current
       if (sel && sel.length > 1) {
         const dx = group.x() - _prevDragX
         const dy = group.y() - _prevDragY

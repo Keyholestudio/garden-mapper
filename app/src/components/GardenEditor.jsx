@@ -870,6 +870,7 @@ export default function GardenEditor() {
   const draggingPlantRef = useRef(null)  // tracks plant being HTML5 drag-dropped
   const suppressNextClearRef = useRef(false) // set after struct placed via tap, prevents synthesized click from clearing selection
   const isPanDraggingRef = useRef(false)    // true while a pan drag is in progress — suppress clearSelection on click-after-pan
+  const postPinchRef = useRef(false)         // true briefly after pinch ends — suppress stray tap that clears multiselect
 
   const handlePlantClick = (enrichedEntry) => {
     pendingPlantRef.current = enrichedEntry
@@ -918,10 +919,10 @@ export default function GardenEditor() {
       // Suppress the clearSelection for that one click so the struct edit panel stays open.
       if (suppressNextClearRef.current) { suppressNextClearRef.current = false; return }
       // Suppress clearSelection if this click is the tail-end of a pan drag
-      // (pan fires mouseup then a click — isPanDraggingRef stays true for 50ms)
       if (isPanDraggingRef.current) return
-      // Suppress clearSelection while multiSelection is active — panning shouldn’t dismiss the panel.
-      // User must explicitly press ← Done or double-click to exit multiselect.
+      // Suppress clearSelection briefly after a pinch ends (stray tap fires post-pinch)
+      if (postPinchRef.current) return
+      // Suppress clearSelection while multiSelection is active — only ← Done or double-tap exits
       if (multiSelectionRef.current?.length > 0) return
       clearSelection(); return
     }
@@ -2238,6 +2239,9 @@ export default function GardenEditor() {
                 const d = state.structDataRef.current[n.id()]
                 if (d?.locked) n.draggable(false)
               })
+              // Suppress the stray tap that fires after pinch ends — prevents multiselect being cleared
+              postPinchRef.current = true
+              setTimeout(() => { postPinchRef.current = false }, 300)
             }}
           />
           <div id="draw-hint" className="draw-hint" style={{ display: 'none' }} />
