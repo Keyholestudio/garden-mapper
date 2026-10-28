@@ -194,14 +194,16 @@ export default function GardenEditor() {
   }, [loadImgWithRetry])
 
   // Batched loader (web): drains queueRef in groups of 10, 50ms delay between batches.
+  // onBatch receives only the NEW entries from each batch (not cumulative) — keeps state updates small.
   const loadBatchedImgs = useCallback(async (qRef, getSrc, onBatch) => {
     const BATCH = 10; const DELAY = 50
     const result = {}
     while (qRef.current.length > 0) {
       const batch = qRef.current.splice(0, BATCH)
+      const batchResult = {}
       const settled = await Promise.all(batch.map(p => loadImgWithRetry(getSrc(p)).then(img => ({ key: p.key, img }))))
-      settled.forEach(({ key, img }) => { if (img) result[key] = img })
-      if (onBatch) onBatch({ ...result })
+      settled.forEach(({ key, img }) => { if (img) { result[key] = img; batchResult[key] = img } })
+      if (onBatch && Object.keys(batchResult).length > 0) onBatch(batchResult)
       if (qRef.current.length > 0) await new Promise(r => setTimeout(r, DELAY))
     }
     return result

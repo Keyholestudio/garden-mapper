@@ -87,7 +87,7 @@ async function loadSequential(initialQueue, onLoad, queueRef) {
 }
 
 // Batched loader (web) — groups of BATCH_SIZE with delay between batches.
-// Accepts a priorityRef: keys added here get loaded in the next batch slot.
+// onBatchDone receives only the NEW entries per batch (not cumulative) — keeps state updates small.
 async function loadBatched(initialQueue, onBatchDone, queueRef) {
   const BATCH_SIZE = 10
   const BATCH_DELAY = 50
@@ -95,11 +95,12 @@ async function loadBatched(initialQueue, onBatchDone, queueRef) {
   queueRef.current = [...initialQueue]
   while (queueRef.current.length > 0) {
     const batch = queueRef.current.splice(0, BATCH_SIZE)
+    const batchResult = {}
     const settled = await Promise.all(
       batch.map(p => loadImageWithRetry(p.src, 3, 200).then(img => ({ key: p.key, img })))
     )
-    settled.forEach(({ key, img }) => { if (img) results[key] = img })
-    onBatchDone({ ...results })
+    settled.forEach(({ key, img }) => { if (img) { results[key] = img; batchResult[key] = img } })
+    if (Object.keys(batchResult).length > 0) onBatchDone(batchResult)
     if (queueRef.current.length > 0) await new Promise(r => setTimeout(r, BATCH_DELAY))
   }
   return results
