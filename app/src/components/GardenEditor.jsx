@@ -239,15 +239,19 @@ export default function GardenEditor() {
   useEffect(() => {
     const ordered = buildImgLoadOrder()
     imgQueueRef.current = [...ordered]
+    // getSrc: pack entries omit src and rely on key-based filename convention
+    const getSrc = p => p.src || `/stickers/${p.key}.png`
+    const getSrcNative = p => stickerSrc(p.src || `/stickers/${p.key}.png`)
+
     if (IS_NATIVE) {
       // Native: sequential loading from CDN to avoid WebViewLocalServer thread pool contention
-      loadSequentialImgs(imgQueueRef, p => stickerSrc(p.src), (key, img) => {
+      loadSequentialImgs(imgQueueRef, getSrcNative, (key, img) => {
         loadedImagesRef.current = { ...loadedImagesRef.current, [key]: img }
         setLoadedImages(prev => ({ ...prev, [key]: img }))
       })
     } else {
       // Web: batched loading (relative paths, served locally)
-      loadBatchedImgs(imgQueueRef, p => p.src, batchResult => {
+      loadBatchedImgs(imgQueueRef, getSrc, batchResult => {
         loadedImagesRef.current = { ...loadedImagesRef.current, ...batchResult }
         setLoadedImages(prev => ({ ...prev, ...batchResult }))
       }).then(() => {
@@ -255,7 +259,7 @@ export default function GardenEditor() {
         const failed = PLANT_CATALOG_TRAY.filter(p => !loadedImagesRef.current[p.key])
         if (failed.length > 0) {
           const retryQ = { current: [...failed] }
-          loadBatchedImgs(retryQ, p => p.src, batchResult => {
+          loadBatchedImgs(retryQ, getSrc, batchResult => {
             loadedImagesRef.current = { ...loadedImagesRef.current, ...batchResult }
             setLoadedImages(prev => ({ ...prev, ...batchResult }))
           })
