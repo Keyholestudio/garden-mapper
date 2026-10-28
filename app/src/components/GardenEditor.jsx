@@ -1626,9 +1626,20 @@ export default function GardenEditor() {
     const gardens = readGardens()
     if (gardens.length === 0) return  // still empty after seed - show setup overlay (shouldn't happen)
     fetchDreamGardenUpdate()  // silent background fetch - updates dream garden if newer version available
+
+    // Option A: if the only garden is the Dream Garden (no user gardens yet),
+    // skip loading and leave SetupOverlay open so the user creates their first garden.
+    const isDream = (g) => !!(g?._isDreamGarden || g?.name === '🌸 Dream Garden' || g?.name === 'Dream Garden')
+    const userGardens = gardens.filter(g => !isDream(g))
+    if (userGardens.length === 0) return  // new user — show setup overlay, wait for first garden creation
+
     const lastIdx = Math.min(readLastGardenIndex(), gardens.length - 1)
+    // If last index points to Dream Garden and user has their own gardens, load their first user garden instead
+    const resolvedIdx = (isDream(gardens[lastIdx]) && userGardens.length > 0)
+      ? gardens.findIndex(g => !isDream(g))
+      : lastIdx
     loadGarden({
-      idx: lastIdx,
+      idx: resolvedIdx,
       stage: stageRef.current,
       layers: layersRef.current,
       state,
@@ -1655,8 +1666,8 @@ export default function GardenEditor() {
       setIsSetup:    state.setIsSetup,
       onZoomToFit:   handleResetView,
     })
-    currentGardenIndexRef.current = lastIdx
-    setCurrentGardenIndex(lastIdx)
+    currentGardenIndexRef.current = resolvedIdx
+    setCurrentGardenIndex(resolvedIdx)
     // Draw rock borders + picket fences after garden loads
     // drawPicketFences is async: preloads all variant images first, then renders in one pass
     drawRockBorders(layersRef.current.structLayer, state.structDataRef, Konva)

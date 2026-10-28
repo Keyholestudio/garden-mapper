@@ -137,6 +137,19 @@ async function upsertSubscription(db: any, userId: string, fields: Record<string
 }
 
 async function revokeSubscription(db: any, userId: string, subscriptionId: string) {
+  // Never revoke lifetime purchasers — they are immune to subscription deletion events.
+  // Lifetime is a one-time payment; any subscription.deleted event for them is a sandbox
+  // artifact or billing system quirk and should be ignored.
+  const { data: existing } = await db
+    .from('user_subscriptions')
+    .select('plan')
+    .eq('user_id', userId)
+    .single();
+  if (existing?.plan === 'lifetime') {
+    console.log('[stripe-webhook] Skipping revoke for lifetime user:', userId);
+    return;
+  }
+
   const { error } = await db
     .from('user_subscriptions')
     .update({

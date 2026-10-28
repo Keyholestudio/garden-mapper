@@ -103,8 +103,12 @@ export default function GardenSwitcher({
                   {g.name || `Garden ${i + 1}`}
                 </span>
                 {i === currentIndex && <span className="switcher-badge">current</span>}
+                {isDream(g) && <span className="switcher-badge switcher-badge--soon">Coming Soon</span>}
                 <span className="switcher-dims">{g.w}×{g.h} {g.unit}</span>
-                <button className="btn-load" onClick={() => { onLoad(i); onClose() }}>Load</button>
+                {isDream(g)
+                  ? <button className="btn-load btn-load--disabled" disabled title="Dream Garden coming soon">Coming Soon</button>
+                  : <button className="btn-load" onClick={() => { onLoad(i); onClose() }}>Load</button>
+                }
                 <button
                   className="btn-delete"
                   onClick={() => !isDream(g) && handleDelete(i)}

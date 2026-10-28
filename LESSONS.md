@@ -1,6 +1,16 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L111 — Stripe sandbox subscriptions auto-expire; lifetime webhook guard required (2026-10-27)
+**What happened:** Rob's test account (manually granted `subscription_flag = TRUE`) lost access on Oct 14. A Stripe sandbox `customer.subscription.deleted` event fired and our webhook set the flag to FALSE. Stripe sandbox treats even one-time purchases as expiring subscriptions after ~3 months.
+**Root cause:** `revokeSubscription()` in `stripe-webhook/index.ts` had no guard — it revoked any user regardless of their plan type.
+**Fix:** Added plan check before revoking — if `plan = 'lifetime'`, skip the revoke and log. Deployed 2026-10-27.
+**Rob's test account:** user_id `8d873a54-a9b8-43ae-b632-505c457336ad`, plan `lifetime`, manually granted (no real Stripe/RC purchase). Restore with `UPDATE user_subscriptions SET subscription_flag = TRUE, expires_at = NULL WHERE user_id = '8d873a54-...'` in Supabase SQL Editor.
+**Production safety:** Confirmed Stripe lifetime price (`price_1TttCpQlAMq7rOt83v0Vs9LD`) is `one_time` — real customers won't trigger `subscription.deleted`. Sandbox behaviour does not replicate in production.
+**RevenueCat:** Web purchases go through Stripe only. RC has zero purchase history for Rob's account. RC is wired for future Android Play billing only.
+
+---
+
 ## L110 — Decor pipeline gate: flag any plant trying to enter the decor pipeline (2026-10-22)
 **Rule:** Before wiring ANY new item into `DECOR_VARIANTS`, `DECOR_CATALOG` (GardenEditor), or `DECOR_ITEMS` (toolMenuData), check the sticker key prefix:
 - `decor_*` → decor pipeline ✅

@@ -115,6 +115,12 @@
   max-width: none;
 }
 
+.switcher-badge--soon {
+  background: #FFF9C4;
+  color: #F57F17;
+  white-space: nowrap;
+}
+
 .switcher-dims {
   font-size: 11px;
   color: #888;
@@ -134,6 +140,14 @@
   flex-shrink: 0;
 }
 .btn-load:hover { background: #33691E; }
+
+.btn-load--disabled {
+  background: #e0e0e0 !important;
+  color: #aaa !important;
+  cursor: not-allowed !important;
+  font-size: 10px !important;
+  padding: 5px 8px !important;
+}
 
 .btn-delete {
   background: #fde8e8;
