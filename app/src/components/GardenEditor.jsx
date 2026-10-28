@@ -103,9 +103,10 @@ export default function GardenEditor() {
 
   // ── Lasso select mode ──────────────────────────────────────────────────────
   const [lassoMode, setLassoMode] = useState(false)
-  const lassoModeRef = useRef(false)  // always-current for pointer event closures
-  const lassoRectRef = useRef(null)   // Konva.Rect drawn on uiLayer during drag
-  const lassoStartRef = useRef(null)  // { x, y } world coords where drag started
+  const lassoModeRef = useRef(false)   // always-current for pointer event closures
+  const lassoRectRef = useRef(null)    // Konva.Rect drawn on uiLayer during drag
+  const lassoStartRef = useRef(null)   // { x, y } world coords where drag started
+  const clearSelectionRef = useRef(null) // kept current after clearSelection is defined; used by stage event closures
   const [switcherOpen, setSwitcherOpen] = useState(false)
   const [exportOpen, setExportOpen] = useState(false)
   const [saveFlash, setSaveFlash] = useState(false)
@@ -869,7 +870,6 @@ export default function GardenEditor() {
   const draggingPlantRef = useRef(null)  // tracks plant being HTML5 drag-dropped
   const suppressNextClearRef = useRef(false) // set after struct placed via tap, prevents synthesized click from clearing selection
   const isPanDraggingRef = useRef(false)    // true while a pan drag is in progress — suppress clearSelection on click-after-pan
-  const clearSelectionRef = useRef(null)    // kept current below so stage event closures can call clearSelection without going stale
 
   const handlePlantClick = (enrichedEntry) => {
     pendingPlantRef.current = enrichedEntry
