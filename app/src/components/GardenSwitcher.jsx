@@ -103,7 +103,6 @@ export default function GardenSwitcher({
                   {g.name || `Garden ${i + 1}`}
                 </span>
                 {i === currentIndex && <span className="switcher-badge">current</span>}
-                {isDream(g) && <span className="switcher-badge switcher-badge--soon">Coming Soon</span>}
                 <span className="switcher-dims">{g.w}×{g.h} {g.unit}</span>
                 {isDream(g)
                   ? <button className="btn-load btn-load--disabled" disabled title="Dream Garden coming soon">Coming Soon</button>

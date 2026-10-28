@@ -1908,6 +1908,31 @@ export default function GardenEditor() {
               // texImg.src = LAWN_TEXTURES[sName]
               handleResetView()
             }
+            // Save the new garden to localStorage and point currentGardenIndex at it.
+            // For a brand-new user: gardens = [DreamGarden]. We append the new garden at index 1.
+            // For an existing user adding a new garden via setup (edge case): append at end.
+            const gardensNow = readGardens()
+            const newGardenEntry = {
+              _schemaVersion: 2,
+              garden_id: crypto.randomUUID(),
+              _savedAt: new Date().toISOString(),
+              _lastSynced: null,
+              _deviceId: null,
+              _deviceLabel: null,
+              lockedDimensions: true,
+              name,
+              unit,
+              w,
+              h,
+              plants: [],
+              structs: [],
+            }
+            gardensNow.push(newGardenEntry)
+            try { localStorage.setItem('gardenData', JSON.stringify(gardensNow)) } catch {}
+            const newIdx = gardensNow.length - 1
+            try { localStorage.setItem('gardenLastIndex', String(newIdx)) } catch {}
+            currentGardenIndexRef.current = newIdx
+            setCurrentGardenIndex(newIdx)
             state.setIsSetup(true)
           }}
         />
