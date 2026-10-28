@@ -12,7 +12,7 @@ import Konva from 'konva'
 import { useGardenState, TEXTURE_MAP, PLANT_VARIANTS, SIZE_MAP, DECOR_VARIANTS }  from '../hooks/useGardenState'
 import { useDrawTools }    from '../hooks/useDrawTools'
 import { useSelection }    from '../hooks/useSelection'
-import { PLANT_CATALOG, useLazyPacks }   from '../hooks/usePlantCatalog'
+import { PLANT_CATALOG, PLANT_CATALOG_TRAY, useLazyPacks } from '../hooks/usePlantCatalog'
 import { addPlant }        from '../utils/plantUtils'
 import { insertPointNearestSegment } from '../hooks/useSelection'
 import { saveGarden, loadGarden, createNewGarden, readGardens, readLastGardenIndex, writeLastGardenIndex } from '../hooks/useSaveLoad'
@@ -182,26 +182,27 @@ export default function GardenEditor() {
     })
   }, [])
 
-  // Sequential loader (native): one image at a time, calls onEach after each loaded image.
-  const loadSequentialImgs = useCallback(async (entries, getSrc, onEach) => {
+  // Sequential loader (native): drains queueRef one at a time, calls onEach after each load.
+  const loadSequentialImgs = useCallback(async (qRef, getSrc, onEach) => {
     const result = {}
-    for (const p of entries) {
+    while (qRef.current.length > 0) {
+      const p = qRef.current.shift()
       const img = await loadImgWithRetry(getSrc(p), 3, 300)
       if (img) { result[p.key] = img; if (onEach) onEach(p.key, img) }
     }
     return result
   }, [loadImgWithRetry])
 
-  // Batched loader (web): groups of 10, 50ms delay between batches.
-  const loadBatchedImgs = useCallback(async (entries, getSrc, onBatch) => {
+  // Batched loader (web): drains queueRef in groups of 10, 50ms delay between batches.
+  const loadBatchedImgs = useCallback(async (qRef, getSrc, onBatch) => {
     const BATCH = 10; const DELAY = 50
     const result = {}
-    for (let i = 0; i < entries.length; i += BATCH) {
-      const batch = entries.slice(i, i + BATCH)
+    while (qRef.current.length > 0) {
+      const batch = qRef.current.splice(0, BATCH)
       const settled = await Promise.all(batch.map(p => loadImgWithRetry(getSrc(p)).then(img => ({ key: p.key, img }))))
       settled.forEach(({ key, img }) => { if (img) result[key] = img })
       if (onBatch) onBatch({ ...result })
-      if (i + BATCH < entries.length) await new Promise(r => setTimeout(r, DELAY))
+      if (qRef.current.length > 0) await new Promise(r => setTimeout(r, DELAY))
     }
     return result
   }, [loadImgWithRetry])
@@ -209,31 +210,75 @@ export default function GardenEditor() {
   // ── Image loading ──
   const [loadedImages, setLoadedImages] = useState({})
   const loadedImagesRef = useRef({}) // ref so setLocalGardens closure sees current images
+  const imgQueueRef    = useRef([])  // mutable load queue — prioritize() prepends to this
+
+  // Build garden-first load order: plants used in saved garden load before the rest.
+  const buildImgLoadOrder = useCallback(() => {
+    let gardenKeys = new Set()
+    try {
+      const raw = localStorage.getItem('gardenData')
+      if (raw) {
+        const gardens = JSON.parse(raw)
+        const list = Array.isArray(gardens) ? gardens : [gardens]
+        list.forEach(g => (g?.plants || []).forEach(p => { if (p.key) gardenKeys.add(p.key) }))
+      }
+    } catch {}
+    const seen = new Set()
+    const priority = [], rest = []
+    PLANT_CATALOG_TRAY.forEach(p => {
+      if (seen.has(p.key)) return
+      seen.add(p.key)
+      if (gardenKeys.has(p.key)) priority.push(p)
+      else rest.push(p)
+    })
+    return [...priority, ...rest]
+  }, [])
+
   useEffect(() => {
+    const ordered = buildImgLoadOrder()
+    imgQueueRef.current = [...ordered]
     if (IS_NATIVE) {
       // Native: sequential loading from CDN to avoid WebViewLocalServer thread pool contention
-      loadSequentialImgs(PLANT_CATALOG, p => stickerSrc(p.src), (key, img) => {
+      loadSequentialImgs(imgQueueRef, p => stickerSrc(p.src), (key, img) => {
         loadedImagesRef.current = { ...loadedImagesRef.current, [key]: img }
         setLoadedImages(prev => ({ ...prev, [key]: img }))
       })
     } else {
       // Web: batched loading (relative paths, served locally)
-      loadBatchedImgs(PLANT_CATALOG, p => p.src, batchResult => {
+      loadBatchedImgs(imgQueueRef, p => p.src, batchResult => {
         loadedImagesRef.current = { ...loadedImagesRef.current, ...batchResult }
         setLoadedImages(prev => ({ ...prev, ...batchResult }))
-      }).then(result => {
-        loadedImagesRef.current = { ...loadedImagesRef.current, ...result }
-        setLoadedImages(prev => ({ ...prev, ...result }))
-        const failed = PLANT_CATALOG.filter(p => !loadedImagesRef.current[p.key])
+      }).then(() => {
+        // Post-load sweep: retry anything still missing
+        const failed = PLANT_CATALOG_TRAY.filter(p => !loadedImagesRef.current[p.key])
         if (failed.length > 0) {
-          loadBatchedImgs(failed, p => p.src, batchResult => {
+          const retryQ = { current: [...failed] }
+          loadBatchedImgs(retryQ, p => p.src, batchResult => {
             loadedImagesRef.current = { ...loadedImagesRef.current, ...batchResult }
             setLoadedImages(prev => ({ ...prev, ...batchResult }))
           })
         }
       })
     }
-  }, [IS_NATIVE, loadSequentialImgs, loadBatchedImgs])
+  }, [IS_NATIVE, loadSequentialImgs, loadBatchedImgs, buildImgLoadOrder])
+
+  // Inject keys to the front of the image load queue (search priority).
+  // Safe to call at any time; skips already-loaded keys and keys already near the front.
+  const prioritizeImages = useCallback((keys) => {
+    if (!keys?.length) return
+    const byKey = {}
+    PLANT_CATALOG_TRAY.forEach(p => { byKey[p.key] = p })
+    const frontKeys = new Set(imgQueueRef.current.slice(0, 20).map(p => p.key))
+    const toPromote = keys
+      .filter(k => !loadedImagesRef.current[k] && !frontKeys.has(k) && byKey[k])
+      .map(k => byKey[k])
+    if (toPromote.length === 0) return
+    const promoteSet = new Set(toPromote.map(p => p.key))
+    imgQueueRef.current = [
+      ...toPromote,
+      ...imgQueueRef.current.filter(p => !promoteSet.has(p.key)),
+    ]
+  }, [])
 
   // Load images for pack entries when a pack loads
   const loadedPackKeysRef = useRef({})
@@ -2225,6 +2270,7 @@ export default function GardenEditor() {
             onSetRecentsHidden={setRecentsHidden}
             lazyPacks={lazyPacksProps}
             onLoadPack={loadPack}
+            onPrioritize={prioritizeImages}
           />
         )}
         <div className="canvas-wrap">
@@ -2267,6 +2313,7 @@ export default function GardenEditor() {
               onPlantClick={(entry) => { addRecent(entry); handlePlantClick(entry) }}
               lazyPacks={lazyPacksProps}
               onLoadPack={loadPack}
+              onPrioritize={prioritizeImages}
               // Selection
               selectedPlant={state.selectedPlant}
               selectedStruct={state.selectedStruct}

@@ -12,6 +12,8 @@ export default function PlantTray({
   recents, onAddRecent, onRemoveRecent, onClearRecents, recentsHidden, onSetRecentsHidden,
   // Lazy pack support
   lazyPacks, onLoadPack,
+  // Search priority: call this with keys to bump them to the front of the load queue
+  onPrioritize,
 }) {
   const [query, setQuery] = useState('')
   const scrollRef = useRef(null)
@@ -31,13 +33,27 @@ export default function PlantTray({
   }
 
   // Also load all packs when search query is typed (user may be searching for a lazy plant)
+  // And prioritize any matching-but-unloaded stickers to the front of the image queue.
   useEffect(() => {
-    if (!query.trim() || !lazyPacks?.registry) return
-    lazyPacks.registry.forEach(pack => {
-      if (!lazyPacks.loaded?.[pack.id] && !lazyPacks.loading?.[pack.id]) {
-        onLoadPack?.(pack.id)
-      }
-    })
+    if (!query.trim()) return
+    if (lazyPacks?.registry) {
+      lazyPacks.registry.forEach(pack => {
+        if (!lazyPacks.loaded?.[pack.id] && !lazyPacks.loading?.[pack.id]) {
+          onLoadPack?.(pack.id)
+        }
+      })
+    }
+    // Boost unloaded search results to the front of the image load queue
+    const q = query.trim().toLowerCase()
+    const matchKeys = PLANT_CATALOG
+      .filter(p => {
+        if (p.label?.toLowerCase().includes(q)) return true
+        if (p.family?.toLowerCase().includes(q)) return true
+        if (p.searchTerms?.some(t => t.toLowerCase().includes(q))) return true
+        return false
+      })
+      .map(p => p.key)
+    if (matchKeys.length > 0) onPrioritize?.(matchKeys)
   }, [query])
 
   // PLANT_CATALOG (= PLANT_CATALOG_TRAY) contains core + all pack entries statically merged.

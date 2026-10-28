@@ -36,6 +36,8 @@ export default function MobileSheet({
   loadedImages, onPlantClick,
   // Lazy pack support
   lazyPacks, onLoadPack,
+  // Search priority: bumps unloaded matching keys to front of image load queue
+  onPrioritize,
   // Recently used plants
   recents, onAddRecent, onRemoveRecent, onClearRecents, recentsHidden, onSetRecentsHidden,
   // Selection state
@@ -153,6 +155,13 @@ export default function MobileSheet({
       return false
     })
   }, [query])
+
+  // Boost unloaded search results to the front of the image load queue
+  useEffect(() => {
+    if (!query.trim() || !onPrioritize) return
+    const matchKeys = filtered.map(p => p.key)
+    if (matchKeys.length > 0) onPrioritize(matchKeys)
+  }, [query, filtered])  // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Edit-points panel (line shape in point-edit mode) ────
   if (editingShapeId) {
