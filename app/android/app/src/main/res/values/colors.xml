@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Matches the dominant dark green edge colour of the splash image -->
+    <!-- Used as windowSplashScreenBackground and icon background on Android 12+ -->
+    <color name="splash_bg">#1a3a0a</color>
+</resources>
