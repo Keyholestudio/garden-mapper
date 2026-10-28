@@ -1022,18 +1022,20 @@ export default function GardenEditor() {
       // Use a short timeout so the click event (which fires after mouseup) sees the flag
       if (isPanDraggingRef.current) setTimeout(() => { isPanDraggingRef.current = false }, 50)
     })
-    // Double-tap on empty canvas exits multiselect (mobile-friendly alternative to ← Done)
+    // Double-tap (mobile) / dblclick (desktop) on empty canvas exits multiselect
     let lastTapTime = 0
     stage.container().addEventListener('touchend', (e) => {
-      if (multiSelectionRef.current?.length === 0) return  // not in multiselect
-      if (lassoModeRef.current) return                     // lasso active — ignore taps
+      if (multiSelectionRef.current?.length === 0) return
+      if (lassoModeRef.current) return
       const now = Date.now()
-      if (now - lastTapTime < 350) {
-        // Double-tap detected — exit multiselect via ref so closure doesn’t go stale
-        clearSelectionRef.current?.()
-      }
+      if (now - lastTapTime < 350) clearSelectionRef.current?.()
       lastTapTime = now
     }, { passive: true })
+    stage.on('dblclick', (e) => {
+      if (multiSelectionRef.current?.length === 0) return
+      if (lassoModeRef.current) return
+      if (e.target === stage) clearSelectionRef.current?.()  // only on empty canvas, not on a plant
+    })
     stageReadyRef.current = true
     setStageReady(true)
   }
