@@ -1,6 +1,108 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L115 — Audio system architecture (2026-11-04)
+
+**Hook:** `src/hooks/useAudio.js` — Web Audio API only, zero deps. Works on web + Capacitor Android.
+**Files:** `app/public/sounds/sfx/` (SFX) + `app/public/sounds/music/free/` + `app/public/sounds/music/premium/`
+**Format:** MP3, 128kbps. Compressed from originals via ffmpeg: `ffmpeg -i <in> -b:a 128k -y <out>`
+
+**Playlist:** Defined in `PLAYLIST` const at top of useAudio.js. Edit labels/order there only.
+**Premium gate:** `PLAYLIST_PREMIUM` array — entries only resolve if `isSubscribed === true`. Empty placeholder for now.
+
+**Key design decisions:**
+- `playGenRef` — increments on every play request. Async buffer loads check gen before starting; stale loads self-cancel. This prevents multiple tracks playing simultaneously when next/prev is tapped quickly.
+- `stopMusic()` nulls `musicNodeRef` immediately (before fade completes) so the generation check works correctly.
+- `src.onended` calls `playTrackAtIndex` directly (not via setTrackIndex) to avoid the React useEffect double-advance bug.
+- No `useEffect([trackIndex])` watcher — removing it fixed the every-other-song skip bug.
+- Autoplay gate: music only starts after first user gesture (click/touch/keydown). Web Audio API is blocked by browsers until then.
+
+**Shuffle:** Exhausting queue in `shuffleQueueRef`. Fills with all track indexes except current, Fisher-Yates shuffles, drains one per advance. Refills when empty. No repeats until all songs play.
+
+**Wired into:**
+- `GardenEditor.jsx` — `audio = useAudio({ isSubscribed })`, passed as prop to LogoBar + MoreModal
+- `LogoBar.jsx` — sound controls in profile dropdown (both desktop + mobile instances), below account section
+- `GardenEditor.jsx` handleCanvasClick + handleCanvasDrop — calls `audio.playSfx('plant-place')` or `'decor-place'`
+
+**SFX registry:** Top of useAudio.js in `SFX_FILES` object. Add new sounds there + drop MP3 in `public/sounds/sfx/`.
+**SFX files:** Currently registered but not yet sourced (silent fail = no crash, just no sound).
+
+**⚠️ CDN delivery note:** Sound files in `app/public/sounds/` are CDN-delivered like stickers. See L114 — do not rename/delete without coordinating an AAB upload.
+
+---
+
+## L113 — Build + delivery architecture: read this before making any claims (2026-10-28)
+
+**APK contains:** App shell, compiled JS/CSS, Capacitor runtime, splash assets. ~28 MB.
+**APK does NOT contain:** Plant sticker PNGs. These were moved to CDN (Vercel) delivery.
+
+**Sticker delivery chain:**
+- Stickers live in `app/public/stickers/` locally and deploy to Vercel with the web app
+- Web: browser downloads stickers from Vercel CDN on first visit, cached 1 year (immutable)
+- Android: Capacitor WebView fetches stickers from Vercel CDN on first launch, WebView cache persists across app sessions
+- Neither web nor Android re-downloads stickers unless cache is cleared / app reinstalled
+
+**What this means in practice:**
+- APK size is small (~28 MB) regardless of how many stickers exist
+- First launch on a fresh install = stickers download from Vercel (slow until WebP compression done)
+- Subsequent launches = WebView cache hit, near-instant
+- Uninstall wipes the WebView cache → next install is a fresh CDN download again
+
+**Do not confuse:** Baked-in assets (splash.png, app icon, textures) vs CDN-delivered assets (stickers). Only stickers are CDN-delivered. Everything in `android/app/src/main/res/` is baked in.
+
+**Before making any claim about what's in the APK or how assets are delivered — check this note first.**
+
+---
+
+## L112 — Image loading system: full architecture map + WebP migration guide (2026-10-28)
+
+### How image loading works (as of commit c7bf739)
+
+**Two catalog types:**
+- `PLANT_CATALOG` (`usePlantCatalog.js`) — legacy core ~198 entries. All have explicit `src` fields. Kept for backward compat and canvas lookup (`baseSrc`).
+- `PLANT_CATALOG_TRAY` — what the tray actually renders. = `PLANT_CATALOG` (filtered) + `ALL_PACK_ENTRIES` (all 41 packs, statically imported). ~684 entries total.
+
+**Two src conventions — this is the critical one:**
+- `PLANT_CATALOG` entries: always have explicit `src: '/stickers/filename.png'`
+- Pack entries (`pack-*.js`): **223 of 527 omit `src` entirely.** They rely on the convention: image is at `/stickers/<key>.png`. Any loader that uses `p.src` directly will silently skip these 223 entries (no error, just permanent grey placeholder).
+- **Always use:** `p.src || \`/stickers/${p.key}.png\`` when constructing image URLs from any catalog.
+- For native/CDN: `stickerSrc(p.src || \`/stickers/${p.key}.png\`)`
+
+**The loader (`GardenEditor.jsx`):**
+- `imgQueueRef` — shared mutable array. Populated once at mount with `buildImgLoadOrder()` output.
+- `buildImgLoadOrder()` — reads saved garden from localStorage, promotes those plant keys to the front, appends the rest. Garden loads fast, tray follows.
+- Web: `loadBatchedImgs(imgQueueRef, getSrc, onBatch)` — drains queue in batches of 10, 50ms gap between batches. `onBatch` receives only the new keys per batch (not cumulative).
+- Native: `loadSequentialImgs(imgQueueRef, getSrc, onEach)` — drains one at a time (Capacitor thread pool constraint).
+- Retry pass: after main queue drains, sweeps `PLANT_CATALOG_TRAY` for anything still missing and requeues.
+- `prioritizeImages(keys)` — prepends keys to `imgQueueRef` so search results load immediately. Called by PlantTray and MobileSheet on search input.
+- The `useEffect` dep array is intentionally `[]` — re-running would reset `imgQueueRef` and restart from scratch mid-load.
+
+**What NOT to do:**
+- Do not pass a plain array where a `{ current: [] }` ref is expected — the while loop checks `.current.length`, not `.length`. Silent no-op.
+- Do not use `p.src` without the `|| key fallback` — 223 pack entries will silently fail.
+- Do not add deps to the main load `useEffect` — stable callbacks + module constant, adding deps risks re-triggering.
+
+### WebP migration map (for when we do the compression sprint)
+
+**Every place that constructs or references a sticker path — all must be updated:**
+1. `src/hooks/usePlantCatalog.js` — `PLANT_CATALOG` entries: change `.png` → `.webp` in all `src:` fields
+2. `src/data/packs/pack-*.js` — 41 files. Entries WITH explicit src: change `.png` → `.webp`. Entries WITHOUT src: no change needed (they use key-based fallback — update the fallback string instead)
+3. `src/components/GardenEditor.jsx` — `getSrc` fallback: change `` `/stickers/${p.key}.png` `` → `` `/stickers/${p.key}.webp` ``
+4. `src/utils/cdnUtils.js` — check `stickerSrc()` for any hardcoded `.png` extension
+5. `src/components/toolMenuData.jsx` — decor/tool icon `src` paths
+6. `src/hooks/useSaveLoad.js` — `baseSrc` lookup at line ~1672: `PLANT_CATALOG.find(p => p.key === d.key)?.src || d.src` — src reconstruction for placed plants
+7. `src/hooks/useGardenState.js` — `DECOR_VARIANTS`, `PLANT_VARIANTS` entries with explicit `src` fields
+8. Android APK — rebuilt automatically on next `deploy-android.bat` run (picks up new files from public/)
+9. Delete original PNGs from `public/stickers/` after confirming WebP delivery
+
+**Batch conversion command (node script):**
+See `projects/garden-planner/app/public/stickers-test/compress-test.cjs` — adapt for full folder.
+Settings: `sharp(inp).webp({ quality: 85 })` → 81–86% size reduction, visually identical.
+
+**Safe because:** Gardens store plant `key`, not `src`. Existing saves unaffected. Only the delivery format changes.
+
+---
+
 ## L111 — Stripe sandbox subscriptions auto-expire; lifetime webhook guard required (2026-10-27)
 **What happened:** Rob's test account (manually granted `subscription_flag = TRUE`) lost access on Oct 14. A Stripe sandbox `customer.subscription.deleted` event fired and our webhook set the flag to FALSE. Stripe sandbox treats even one-time purchases as expiring subscriptions after ~3 months.
 **Root cause:** `revokeSubscription()` in `stripe-webhook/index.ts` had no guard — it revoked any user regardless of their plan type.
@@ -433,4 +535,20 @@ _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/d
 **What happened:** Victorian lantern image had a washed-out pink background (~253,129,252) instead of standard magenta. Distance from #FF00FF was 130 — well outside process-rob-images.py's default tolerance of 80. Result: background survived the key pass and appeared in the output.
 **Fix:** Sample the 4 image corners to detect actual BG colour before keying. Key against detected colour with tolerance 80, not against hardcoded #FF00FF.
 **Rule:** Before running process-rob-images.py on any Rob image, sample the corners: `arr[0,0], arr[0,w-1], arr[h-1,0], arr[h-1,w-1]`. If the mean differs from (255,0,255) by more than 50, use corner-detected colour as the chroma key target. The script should be updated to do this automatically.
+
+---
+
+## L114 — Android APK asset safety: never rename or delete CDN-delivered files without a coordinated AAB upload (2026-11-03)
+
+**Context:** The Play Console APK is frozen at the last uploaded AAB. It fetches stickers and sounds from Vercel CDN at runtime. Renaming or deleting those files breaks installed Android apps silently.
+
+**Safe:** Adding new files, changing JS/JSX code, web-only deploys — Android unaffected until a new AAB is uploaded.
+
+**Dangerous — stop and warn Rob first:**
+- Renaming or deleting anything in `app/public/stickers/`, `app/public/sounds/`, or any CDN-delivered folder
+- Changing URL structure or Vercel routing for public assets
+
+**Rule:** Before any rename/delete in `app/public/` say: *"This affects files the installed APK fetches from Vercel. Users on the current Play Console version may lose access to [X]. Hold until next AAB release, or proceed knowing that risk?"* Rob decides.
+
+**WebP task:** Covered in PROJECT.md TODO + L112. Do not start without Rob's go-ahead — it renames every sticker and must ship with a new AAB simultaneously.
 

@@ -370,3 +370,66 @@
 .sync-pill--syncing { background: #f0f0f0; color: #888; }
 .sync-pill--synced  { background: #E8F5E9; color: #2E7D32; }
 .sync-pill--error   { background: #FFEBEE; color: #C62828; }
+
+/* ── Sound controls in profile dropdown ── */
+.profile-menu-sound {
+  padding: 8px 14px 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.profile-menu-sound-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.profile-menu-sound-label {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.profile-menu-sound-toggle {
+  border: none;
+  border-radius: 20px;
+  padding: 3px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: background 0.15s;
+}
+.profile-menu-sound-toggle.on  { background: #5a9e5a; color: #fff; }
+.profile-menu-sound-toggle.off { background: #e0e0e0; color: #888; }
+
+.profile-menu-sound-player {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.profile-menu-sound-track {
+  flex: 1;
+  font-size: 11px;
+  color: #5a9e5a;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-menu-sound-btn {
+  background: #f0f7f0;
+  border: none;
+  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.13s;
+  flex-shrink: 0;
+}
+.profile-menu-sound-btn:hover  { background: #ddeedd; }
+.profile-menu-sound-btn.active { background: #5a9e5a; }

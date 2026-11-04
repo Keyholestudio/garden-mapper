@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-10-22 (Multi-select feature complete ✅; delete undo fixed; season restore fixed)_
+_Last updated: 2026-10-31 (Internal Testing live on Play Store ✅; closed testing next)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -131,7 +131,8 @@ cd projects/garden-planner/app && npm run dev
 - **[PENDING] Strawberry tree + Eucalyptus** - raws sent to Rob for manual generation.
 - **[DONE] CDN delivery for Android** - stickers load from Vercel, APK is 28 MB. Commits: 728d03d, 3b3382f.
 - **[DONE] Signed AAB** - generated 2026-10-06 via Android Studio. Ready to upload to Play Console.
-- **[NEXT] Play Store upload** - upload AAB to Play Console → Internal/Closed Testing. Need: feature graphic (1024×500), screenshots (2-8, 9:16, min 1080px), app icon 512×512.
+- **[DONE] Play Store Internal Testing** — signed AAB (36.7MB) uploaded, Internal Testing track live ✅. Testers added. Opt-in link working after ~1hr propagation. 2026-10-29.
+- **[NEXT] Play Store Closed Testing** — set up closed test track, add 12 testers, run 14 continuous days. Required before production (accounts post Nov 13 2023). Can reuse internal testers. No minimum for internal testing itself.
 - **[DONE] Store listing text** - short + full description submitted 2026-10-08.
 - **[DONE] Greenhouses decor** - 6 variants live. `decor_greenhouse-*`. Wired in all 4 files.
 - **[DONE] Beehives decor** - 2 variants live. `decor_beehive-*`. Wired in all 4 files.
@@ -167,6 +168,22 @@ cd projects/garden-planner/app && npm run dev
 - **[DONE] Transparent plants becoming visible when clicked** — stale `currentSeason` closure in `applySeasonOpacity`. Fixed via `currentSeasonRef`. Commit `495efea`. 2026-10-22.
 - **[DONE] Pool Railing** — moved into Pools group; placement + highlight fixed via water-mode decor pattern (same as gate). Commits `43599f0`, `cc4e80d`. 2026-10-22.
 - **[DONE] Pergola stickers** — 3 variants (Corner, Cedar, White) added to Gazebos colour group, subtitle "Pergola". Commit `a37c458`. 2026-10-22.
+- **[DONE] Option A startup flow** - new users see SetupOverlay until garden created; Dream Garden hidden as Coming Soon. Commits `eee3441`, `a0e89aa`. 2026-10-28.
+- **[DONE] Lasso select tool** - activate from multiselect panel, drag to select plants. Desktop + mobile touch. Commits `e0d052b`, `cd27848`. 2026-10-28.
+- **[DONE] Multiselect stability fixes** - pan/pinch don't close panel; non-selected plants can't be dragged; double-click/tap exits; single-click plant panel restored. Commits `db08cfc`–`3003eb7`. 2026-10-28.
+- **[DONE] Splash screen** - web overlay (2s hold, 1.2s fade, `splash-web.jpg`) + Android native splash (`splash-mobile.jpg`, `CENTER_INSIDE`, `#B2D798` launch bg). Commits `85707cb`–`6499085`. 2026-10-28.
+- **[DONE] Load priority** - garden-first queue, full PLANT_CATALOG_TRAY coverage, search priority, 1-year cache headers. All commits live. ✅
+- **[NEXT] WebP sticker compression** - 237MB → ~38MB, 83% reduction. Q85 quality confirmed by Rob. Migration map in LESSONS.md L112. Script ready in `stickers-test/`. Resume: `resume WebP sticker compression`
+  - ⚠️ **HOLD — do not start without Rob's explicit go-ahead.** This task renames every sticker `.png` → `.webp`. The Vercel deploy AND a new AAB upload must ship together or Android users lose all stickers. See L114 for full safety rules.
+- **[DONE] Audio system** - `useAudio.js` hook live. Web Audio API, zero deps. Music playing, next/prev/shuffle working. Controls in profile dropdown. See L115.
+  - 7 tracks loaded in `public/sounds/music/free/` (128kbps MP3, ~16.8MB total)
+  - SFX registered in hook but MP3 files not yet sourced (silent fail)
+  - Premium music slot ready (`PLAYLIST_PREMIUM` array, gated by `isSubscribed`)
+  - **[NEXT] Source SFX clips** - need MP3s for: plant-place, plant-remove, plant-select, decor-place, ui-click, save, season-change. Free libraries: freesound.org, mixkit.co
+  - **[NEXT] Strip sound controls from MoreModal** - now lives in profile dropdown, MoreModal section is redundant
+  - **[DEFER] Music pack upsell UI** - premium track gate is wired, upsell UI comes later
+- **[NEXT] Garden rename** - pencil icon in My Gardens, updates name in localStorage + cloud sync. Medium effort, low risk.
+- **[DEFER] Resize canvas** - modal approach to change garden w/h. After launch.
 - **[HIGH] Forward/Back ripple on touching plants** - TOUCH_PAD changed to -1 (require genuine overlap) but ripple still exists. z-index swap approach in place. Root cause not yet isolated — needs fresh investigation. Resume: read handleLayerMove in GardenEditor.jsx.
 - **[HIGH] Rock border drag on mobile - border doesn't follow finger** - Jumps to new location on release instead of smooth drag. Root issue: coordinate system for rock border Group children vs fence Line is not reconciled. Last commit (`1926d59`) changed to local-coord model (like fence) but still not smooth. Next session: read fence dragmove code, match rock border exactly to it. Do NOT mix Model A (world coords, normalize on dragend) and Model B (local coords, group accumulates).
 - **[HIGH] L061 in LESSONS.md is stale** - reflects old Model A. Update once coordinate model is settled next session.
@@ -194,7 +211,7 @@ cd projects/garden-planner/app && npm run dev
 **All declarations complete.** Remaining tasks:
 - ✅ Privacy policy URL - gardenmapper.ca/store-policy live, submitted to Play Console
 - ✅ Government apps, Financial features, Health, Sign-in details, Ads, Content rating, Target audience, Data safety, Advertising ID, External marketing, App category (House & Home) + contact details
-- **Store listing** 🔴 NEXT - need: screenshots (min 2, max 8, phone 16:9 or 9:16), feature graphic (1024×500 PNG/JPG), icon (512×512 PNG), short desc (80 chars), full desc (4000 chars)
+- **Store listing** ✅ DONE - screenshots, feature graphic (1024×500), icon (512×512), short desc, full desc — all uploaded to Play Console.
 - **Release build** - signed AAB required (not debug APK)
 - **Closed test** - ≥12 testers, ≥14 days → then apply for production
 - **More modal** ✅ - `MoreModal.jsx` live. Privacy Policy + Delete Account + Visit site. Satisfies Google Play in-app requirements.

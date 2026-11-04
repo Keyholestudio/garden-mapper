@@ -38,7 +38,7 @@ const LINKS = [
   },
 ];
 
-export default function MoreModal({ onClose }) {
+export default function MoreModal({ onClose, audio }) {
   return createPortal(
     <div className="more-modal-overlay" onClick={onClose}>
       <div className="more-modal" onClick={e => e.stopPropagation()}>
@@ -47,6 +47,54 @@ export default function MoreModal({ onClose }) {
           <h2 className="more-modal-title">🌿 Garden Mapper</h2>
           <button className="more-modal-close" onClick={onClose} aria-label="Close">✕</button>
         </div>
+
+        {/* ── Sound Settings ── */}
+        {audio && (
+          <div className="more-modal-sound">
+            <div className="more-modal-sound-title">🔊 Sound</div>
+
+            <div className="more-modal-sound-row">
+              <span>Sound Effects</span>
+              <button
+                className={`more-modal-toggle ${audio.sfxEnabled ? 'on' : 'off'}`}
+                onClick={audio.toggleSfx}
+                aria-label={audio.sfxEnabled ? 'Mute sound effects' : 'Enable sound effects'}
+              >
+                {audio.sfxEnabled ? 'ON' : 'OFF'}
+              </button>
+            </div>
+
+            <div className="more-modal-sound-row">
+              <span>Music</span>
+              <button
+                className={`more-modal-toggle ${audio.musicEnabled ? 'on' : 'off'}`}
+                onClick={audio.toggleMusic}
+                aria-label={audio.musicEnabled ? 'Mute music' : 'Enable music'}
+              >
+                {audio.musicEnabled ? 'ON' : 'OFF'}
+              </button>
+            </div>
+
+            {audio.musicEnabled && (
+              <>
+                <div className="more-modal-now-playing">
+                  ♫ {audio.currentTrackLabel || 'Loading…'}
+                </div>
+                <div className="more-modal-player">
+                  <button className="more-modal-player-btn" onClick={audio.prevTrack} title="Previous">⏮️</button>
+                  <button className="more-modal-player-btn" onClick={audio.nextTrack} title="Next">⏭️</button>
+                  <button
+                    className={`more-modal-player-btn ${audio.shuffle ? 'active' : ''}`}
+                    onClick={audio.toggleShuffle}
+                    title={audio.shuffle ? 'Shuffle on' : 'Shuffle off'}
+                  >
+                    🔀
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        )}
 
         <div className="more-modal-list">
           {LINKS.map(({ icon, label, sub, url }) => (

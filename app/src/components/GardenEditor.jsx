@@ -28,6 +28,7 @@ import { addRectStruct, isFreeMode, applyColourOrTexture, applyPathTexture, upda
 import { drawRockBorders, buildRockBorderGroup, drawPicketFences, buildPicketFenceGroup, refreshPicketFenceGroup } from '../utils/rockBorderUtils'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import { useRecentPlants } from '../hooks/useRecentPlants'
+import { useAudio } from '../hooks/useAudio'
 import LogoBar        from './LogoBar'
 import BottomBar      from './BottomBar'
 import PlantTray      from './PlantTray'
@@ -155,6 +156,10 @@ export default function GardenEditor() {
   // Only show upsell when we are certain the user is NOT subscribed:
   // signed in + loading finished + not subscribed. Prevents false positive during async fetch.
   const showSubscribeUpsell = !!user && !subscriptionLoading && !isSubscribed
+
+  // ── Audio ──
+  const audio = useAudio({ isSubscribed })
+
   const [subscribeModalOpen, setSubscribeModalOpen] = useState(false)
   const [accountModalOpen, setAccountModalOpen] = useState(false)
   const [moreModalOpen, setMoreModalOpen] = useState(false)
@@ -941,6 +946,8 @@ export default function GardenEditor() {
     const entry = draggingPlantRef.current
     draggingPlantRef.current = null
     if (!entry) return
+    const sfxName = entry.family === 'decor' ? 'decor-place' : 'plant-place'
+    audio.playSfx(sfxName)
     // Block drops outside sandbox when viewing Dream Garden (bypass on localhost for editing)
     const isLocalDev = typeof window !== 'undefined' && window.location.hostname === 'localhost'
     if (isDreamGarden && !isLocalDev && !isInSandbox(worldPos.x, worldPos.y)) return
@@ -1008,6 +1015,8 @@ export default function GardenEditor() {
     })
     // Push undo: remove the placed plant
     if (newId) {
+      const sfxName = entry.family === 'decor' ? 'decor-place' : 'plant-place'
+      audio.playSfx(sfxName)
       const group = plantLayer.findOne('#' + newId)
       if (group) placeInZone(group, entry.family || '', plantLayer)
       state.pushUndo(() => {
@@ -2068,7 +2077,7 @@ export default function GardenEditor() {
 
       {/* More modal */}
       {moreModalOpen && (
-        <MoreModal onClose={() => setMoreModalOpen(false)} />
+        <MoreModal onClose={() => setMoreModalOpen(false)} audio={audio} />
       )}
 
       {/* Account modal */}
@@ -2201,6 +2210,7 @@ export default function GardenEditor() {
         syncStatus={syncStatus}
         onOpenAccount={() => setAccountModalOpen(true)}
         onOpenMore={() => setMoreModalOpen(true)}
+        audio={audio}
       />
 
       {/* Clear All confirm modal */}

@@ -34,6 +34,7 @@ export default function LogoBar({
   onOpenAccount,
   onOpenMore,
   syncStatus = 'idle',
+  audio,
 }) {
   // Hooks must always be called at the top level — never inside conditionals
   const [menuOpen, setMenuOpen] = useState(false)
@@ -153,6 +154,34 @@ export default function LogoBar({
                 </button>
               )}
               <div className="profile-menu-divider" />
+
+              {/* Sound */}
+              {audio && (
+                <div className="profile-menu-sound">
+                  <div className="profile-menu-sound-row">
+                    <span className="profile-menu-icon">{audio.sfxEnabled ? '🔊' : '🔇'}</span>
+                    <span className="profile-menu-sound-label">Sound Effects</span>
+                    <button className={`profile-menu-sound-toggle ${audio.sfxEnabled ? 'on' : 'off'}`} onClick={audio.toggleSfx}>
+                      {audio.sfxEnabled ? 'ON' : 'OFF'}
+                    </button>
+                  </div>
+                  <div className="profile-menu-sound-row">
+                    <span className="profile-menu-icon">{audio.musicEnabled ? '🎵' : '🔇'}</span>
+                    <span className="profile-menu-sound-label">Music</span>
+                    <button className={`profile-menu-sound-toggle ${audio.musicEnabled ? 'on' : 'off'}`} onClick={audio.toggleMusic}>
+                      {audio.musicEnabled ? 'ON' : 'OFF'}
+                    </button>
+                  </div>
+                  {audio.musicEnabled && (
+                    <div className="profile-menu-sound-player">
+                      <button className="profile-menu-sound-btn" onClick={audio.prevTrack} title="Previous">⏮️</button>
+                      <span className="profile-menu-sound-track">{audio.currentTrackLabel || '♫'}</span>
+                      <button className="profile-menu-sound-btn" onClick={audio.nextTrack} title="Next">⏭️</button>
+                      <button className={`profile-menu-sound-btn ${audio.shuffle ? 'active' : ''}`} onClick={audio.toggleShuffle} title="Shuffle">🔀</button>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* More */}
               <button className="profile-menu-item" onClick={() => { onOpenMore?.(); closeMenu(); }}>
@@ -284,6 +313,34 @@ export default function LogoBar({
             )}
 
             <div className="profile-menu-divider" />
+
+            {/* Sound */}
+            {audio && (
+              <div className="profile-menu-sound">
+                <div className="profile-menu-sound-row">
+                  <span className="profile-menu-icon">{audio.sfxEnabled ? '🔊' : '🔇'}</span>
+                  <span className="profile-menu-sound-label">Sound Effects</span>
+                  <button className={`profile-menu-sound-toggle ${audio.sfxEnabled ? 'on' : 'off'}`} onClick={audio.toggleSfx}>
+                    {audio.sfxEnabled ? 'ON' : 'OFF'}
+                  </button>
+                </div>
+                <div className="profile-menu-sound-row">
+                  <span className="profile-menu-icon">{audio.musicEnabled ? '🎵' : '🔇'}</span>
+                  <span className="profile-menu-sound-label">Music</span>
+                  <button className={`profile-menu-sound-toggle ${audio.musicEnabled ? 'on' : 'off'}`} onClick={audio.toggleMusic}>
+                    {audio.musicEnabled ? 'ON' : 'OFF'}
+                  </button>
+                </div>
+                {audio.musicEnabled && (
+                  <div className="profile-menu-sound-player">
+                    <button className="profile-menu-sound-btn" onClick={audio.prevTrack} title="Previous">⏮️</button>
+                    <span className="profile-menu-sound-track">{audio.currentTrackLabel || '♫'}</span>
+                    <button className="profile-menu-sound-btn" onClick={audio.nextTrack} title="Next">⏭️</button>
+                    <button className={`profile-menu-sound-btn ${audio.shuffle ? 'active' : ''}`} onClick={audio.toggleShuffle} title="Shuffle">🔀</button>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* More */}
             <button className="profile-menu-item" onClick={() => { onOpenMore?.(); closeMenu(); }}>
