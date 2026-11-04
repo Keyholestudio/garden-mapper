@@ -15,8 +15,8 @@ createRoot(document.getElementById('app')!).render(
 // Fade out splash screen after app mounts
 const splash = document.getElementById('splash')
 if (splash) {
-  // Minimum display time: 1.2s so it doesn't just flash
-  const MIN_MS = 2000
+  // Minimum display time: hold for 3s, then 1.2s fade
+  const MIN_MS = 3000
   const start = performance.now()
   const fadeOut = () => {
     const elapsed = performance.now() - start
