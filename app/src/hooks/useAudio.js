@@ -282,7 +282,8 @@ export function useAudio({ isSubscribed = false } = {}) {
   // Autoplay gate — browsers block AudioContext until a user gesture.
   // We listen for the first interaction, then start music.
   // ------------------------------------------------------------------
-  const startedRef = useRef(false)
+  const startedRef    = useRef(false)
+  const wasPlayingRef  = useRef(false)  // tracks music state across page hide/show
 
   const tryStart = useCallback(() => {
     if (startedRef.current) return
@@ -310,6 +311,25 @@ export function useAudio({ isSubscribed = false } = {}) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [musicEnabled])
+
+  // ------------------------------------------------------------------
+  // Page Visibility — pause on hide, resume on return
+  // ------------------------------------------------------------------
+  useEffect(() => {
+    const handleVisibility = () => {
+      if (!startedRef.current) return
+      if (document.visibilityState === 'hidden') {
+        wasPlayingRef.current = !!musicNodeRef.current
+        stopMusic(0.3)
+      } else if (document.visibilityState === 'visible') {
+        if (wasPlayingRef.current && musicEnabled) {
+          playTrackAtIndex(trackIndexRef.current)
+        }
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+    return () => document.removeEventListener('visibilitychange', handleVisibility)
+  }, [musicEnabled, stopMusic, playTrackAtIndex])
 
   // ------------------------------------------------------------------
   // Cleanup on unmount
