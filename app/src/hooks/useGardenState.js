@@ -12,7 +12,7 @@ export const CELL_PX = 8
 export const SIZE_MAP = { XS: 24, S: 40, M: 64, L: 96, XL: 128, XXL: 160 } // XXL: trees, gazebos, tables
 
 export const BED_COLOURS     = ['#8B6340','#6D4C1F','#C8A96A','#9E9E9E','#BDBDBD','#78909C',
-  '#TX:soil-brown','#TX:soil-dark-brown','#TX:soil-red-mulch','#TX:soil-cedar-mulch','#TX:soil-hay']
+  '#TX:soil-brown']
 export const BUILDING_COLOURS= ['#90A4AE','#BCAAA4','#78909C','#A1887F',
   '#TX:roof-cedar-shingles','#TX:roof-asphalt','#TX:roof-terracotta']
 export const FENCE_COLOURS   = ['#795548','#6D4C41','#4E342E','#BCAAA4','#90A4AE']
