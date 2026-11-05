@@ -23,7 +23,10 @@ export function applyPathTexture(line, colour, pathWidth, layer, TEXTURE_MAP, on
   // ─ Tear down any existing texture group ─
   const existingGroup = layer?.findOne(`#ptxg_${lineId}`)
   if (existingGroup) {
-    // Pull line back out before destroying group
+    // Carry the group's world position onto the line before destroying
+    // (line lives at 0,0 inside the group; the group holds the real world offset)
+    line.x(existingGroup.x())
+    line.y(existingGroup.y())
     line.remove()
     existingGroup.destroy()
     line.sceneFunc(null)
