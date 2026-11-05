@@ -43,7 +43,7 @@ export const TEXTURE_MAP = {
   '#TX:path-brick-red':          { src: '/textures/path-brick-red.jpg',       label: 'Red Brick Path' },
   '#TX:path-woodchip-warm':      { src: '/textures/path-woodchip-warm.jpg',   label: 'Warm Wood Chips' },
   '#TX:path-woodchip-cedar':     { src: '/textures/path-woodchip-cedar.jpg',  label: 'Cedar Wood Chips' },
-  '#TX:path-woodchip-dark':      { src: '/textures/path-woodchip-dark.jpg',   label: 'Dark Wood Chips' },
+  '#TX:path-woodchip-dark':      { src: '/textures/path-woodchip-dark.png',   label: 'Dark Wood Chips' },
   '#TX:path-straw':              { src: '/textures/path-straw.jpg',            label: 'Straw Path' },
   '#TX:deck-medium-brown':   { src: '/textures/deck-medium-brown.jpg',   label: 'Medium Brown Planks' },
   '#TX:deck-dark-brown':     { src: '/textures/deck-dark-brown.jpg',     label: 'Dark Brown Planks' },
