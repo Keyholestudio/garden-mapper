@@ -17,7 +17,8 @@ export const BUILDING_COLOURS= ['#90A4AE','#BCAAA4','#78909C','#A1887F',
   '#TX:roof-cedar-shingles','#TX:roof-asphalt','#TX:roof-terracotta']
 export const FENCE_COLOURS   = ['#795548','#6D4C41','#4E342E','#BCAAA4','#90A4AE']
 export const HEDGE_COLOURS   = ['#TX:hedge','#388E3C','#2E7D32','#1B5E20','#558B2F']
-export const PATH_COLOURS    = ['#TX:path-brick','#TX:path-clay-brick','#TX:path-grey-brick','#TX:path-flagstone-beige']
+export const PATH_COLOURS    = ['#TX:path-brick','#TX:path-clay-brick','#TX:path-grey-brick','#TX:path-flagstone-beige',
+  '#TX:path-woodchip-warm','#TX:path-woodchip-cedar','#TX:path-woodchip-dark','#TX:path-straw']
 export const WATER_COLOURS   = ['#64B5F6','#42A5F5','#1E88E5','#90CAF9','#B3E5FC']
 export const DECKING_COLOURS = ['#C8A96A','#A0785A','#8B6340','#D4A96A','#6D4C41',
   '#TX:deck-medium-brown','#TX:deck-dark-brown','#TX:deck-cedar']
@@ -40,6 +41,10 @@ export const TEXTURE_MAP = {
   '#TX:path-grey-brick':         { src: '/textures/path-grey-brick.jpg',      label: 'Grey Brick Path' },
   '#TX:path-flagstone-beige':    { src: '/textures/path-flagstone-beige.png', label: 'Beige Flagstone' },
   '#TX:path-brick-red':          { src: '/textures/path-brick-red.jpg',       label: 'Red Brick Path' },
+  '#TX:path-woodchip-warm':      { src: '/textures/path-woodchip-warm.jpg',   label: 'Warm Wood Chips' },
+  '#TX:path-woodchip-cedar':     { src: '/textures/path-woodchip-cedar.jpg',  label: 'Cedar Wood Chips' },
+  '#TX:path-woodchip-dark':      { src: '/textures/path-woodchip-dark.jpg',   label: 'Dark Wood Chips' },
+  '#TX:path-straw':              { src: '/textures/path-straw.jpg',            label: 'Straw Path' },
   '#TX:deck-medium-brown':   { src: '/textures/deck-medium-brown.jpg',   label: 'Medium Brown Planks' },
   '#TX:deck-dark-brown':     { src: '/textures/deck-dark-brown.jpg',     label: 'Dark Brown Planks' },
   '#TX:deck-cedar':          { src: '/textures/deck-cedar.jpg',          label: 'Cedar Planks' },
