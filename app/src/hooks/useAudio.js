@@ -78,12 +78,14 @@ export function useAudio({ isSubscribed = false } = {}) {
   const [shuffle,      setShuffle]      = useState(() => getStoredBool('audio_shuffle', false))
   const [trackIndex,   setTrackIndex]   = useState(DEFAULT_TRACK_INDEX)
 
-  const ctxRef        = useRef(null)   // AudioContext
-  const sfxCacheRef   = useRef({})     // key → AudioBuffer
-  const musicNodeRef  = useRef(null)   // current music BufferSourceNode
-  const musicGainRef  = useRef(null)   // GainNode for music volume/fade
-  const currentTrack  = useRef(null)   // track key currently playing
-  const playGenRef    = useRef(0)      // increments on every play request; stale loads self-cancel
+  const ctxRef          = useRef(null)   // AudioContext
+  const sfxCacheRef     = useRef({})     // key → AudioBuffer
+  const musicNodeRef    = useRef(null)   // current music BufferSourceNode
+  const musicGainRef    = useRef(null)   // GainNode for music volume/fade
+  const currentTrack    = useRef(null)   // track key currently playing
+  const playGenRef      = useRef(0)      // increments on every play request; stale loads self-cancel
+  const musicStartCtxT  = useRef(0)     // ctx.currentTime when current track started
+  const musicStartOffset= useRef(0)     // buffer offset (secs) when track was last started
   const shuffleRef      = useRef(shuffle)
   const trackIndexRef   = useRef(trackIndex)
   const shuffleQueueRef = useRef([])   // exhausting shuffle queue
@@ -187,8 +189,9 @@ export function useAudio({ isSubscribed = false } = {}) {
 
   // ------------------------------------------------------------------
   // Core player — loads + starts a track by index, no state side-effects
+  // startOffset (optional): resume playback at this many seconds into the buffer
   // ------------------------------------------------------------------
-  const playTrackAtIndex = useCallback(async (index) => {
+  const playTrackAtIndex = useCallback(async (index, startOffset = 0) => {
     const playlist = getPlaylist()
     if (!playlist.length) return
     const safeIndex = ((index % playlist.length) + playlist.length) % playlist.length
@@ -209,6 +212,9 @@ export function useAudio({ isSubscribed = false } = {}) {
     if (!buf) return
     if (gen !== playGenRef.current) return  // superseded
 
+    // Clamp offset to valid range (track may have ended while tab was hidden)
+    const safeOffset = Math.min(startOffset, buf.duration - 0.1)
+
     const gain = ctx.createGain()
     gain.gain.value = 0
     gain.connect(ctx.destination)
@@ -227,7 +233,9 @@ export function useAudio({ isSubscribed = false } = {}) {
       playTrackAtIndex(next)
     }
 
-    src.start()
+    src.start(0, safeOffset)
+    musicStartCtxT.current   = ctx.currentTime
+    musicStartOffset.current = safeOffset
     gain.gain.setTargetAtTime(MUSIC_VOLUME, ctx.currentTime, FADE_DURATION / 3)
 
     musicNodeRef.current = src
@@ -313,17 +321,24 @@ export function useAudio({ isSubscribed = false } = {}) {
   }, [musicEnabled])
 
   // ------------------------------------------------------------------
-  // Page Visibility — pause on hide, resume on return
+  // Page Visibility — pause on hide, resume from same position on return
   // ------------------------------------------------------------------
+  const resumeOffsetRef = useRef(0)  // playback position (secs) captured on hide
+
   useEffect(() => {
     const handleVisibility = () => {
       if (!startedRef.current) return
       if (document.visibilityState === 'hidden') {
         wasPlayingRef.current = !!musicNodeRef.current
+        if (musicNodeRef.current && ctxRef.current) {
+          // Calculate how far into the track we are
+          const elapsed = ctxRef.current.currentTime - musicStartCtxT.current
+          resumeOffsetRef.current = musicStartOffset.current + elapsed
+        }
         stopMusic(0.3)
       } else if (document.visibilityState === 'visible') {
         if (wasPlayingRef.current && musicEnabled) {
-          playTrackAtIndex(trackIndexRef.current)
+          playTrackAtIndex(trackIndexRef.current, resumeOffsetRef.current)
         }
       }
     }
