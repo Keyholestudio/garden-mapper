@@ -503,22 +503,31 @@ export default function GardenEditor() {
       // Skip tiny drags (user just clicked, didn't drag)
       if (lw < 5 && lh < 5) return
       // Find all plant groups whose bounding box intersects the lasso rect
-      const hit = []
-      plantLayer.find('Group').forEach(group => {
-        const id = group.id()
-        if (!state.plantDataRef.current[id]) return  // not a plant group
-        const box = group.getClientRect({ skipTransform: false })
-        const sc2 = stage.scaleX()
-        // Convert box back to world coords
+      const sc2 = stage.scaleX()
+      const lassoIntersects = (shape) => {
+        const box = shape.getClientRect({ skipTransform: false })
         const bx = (box.x - stage.x()) / sc2
         const by = (box.y - stage.y()) / sc2
         const bw = box.width  / sc2
         const bh = box.height / sc2
-        // Intersection check
-        if (bx + bw > lx && bx < lx + lw && by + bh > ly && by < ly + lh) {
-          hit.push({ id, kind: 'plant', shape: group })
-        }
+        return bx + bw > lx && bx < lx + lw && by + bh > ly && by < ly + lh
+      }
+      const hit = []
+      // Plants
+      plantLayer.find('Group').forEach(group => {
+        const id = group.id()
+        if (!state.plantDataRef.current[id]) return  // not a plant group
+        if (lassoIntersects(group)) hit.push({ id, kind: 'plant', shape: group })
       })
+      // Structs (fences, beds, pools, paths, buildings, decor, etc.)
+      const { structLayer } = layersRef.current
+      if (structLayer) {
+        structLayer.getChildren().forEach(shape => {
+          const id = shape.id()
+          if (!id || !state.structDataRef.current[id]) return  // not a registered struct
+          if (lassoIntersects(shape)) hit.push({ id, kind: 'struct', shape })
+        })
+      }
       if (hit.length === 0) return
       // Add to (or replace) multiSelection
       state.setMultiSelection(prev => {
@@ -642,6 +651,19 @@ export default function GardenEditor() {
     })
   }
 
+  // ── Long-press / double-click on struct → adds to multiSelection ───────────
+  const handleLongPressStruct = (id, shape) => {
+    if (isFreeToolActive() || isDrawToolActive()) return
+    state.setSelectedPlant(null)
+    state.setSelectedStruct(null)
+    state.setEditingShapeId(null)
+    state.setMultiSelection(prev => {
+      const already = prev.findIndex(x => x.id === id)
+      if (already >= 0) return prev.filter(x => x.id !== id)
+      return [...prev, { kind: 'struct', id, shape }]
+    })
+  }
+
   // ── Multi-select actions ─────────────────────────────────────────────────
   // Delete all items in multiSelection
   const handleMultiDelete = () => {
@@ -658,8 +680,10 @@ export default function GardenEditor() {
       }))
     state.multiSelection.forEach(({ kind, id, shape }) => {
       if (kind === 'plant') { shape?.destroy(); delete state.plantDataRef.current[id] }
+      if (kind === 'struct') { shape?.destroy(); delete state.structDataRef.current[id] }
     })
     plantLayer?.batchDraw()
+    layersRef.current.structLayer?.batchDraw()
     state.setMultiSelection([])
     state.pushUndo(() => {
       if (!plantLayer) return
@@ -716,6 +740,7 @@ export default function GardenEditor() {
       shape.y(shape.y() + dy)
     })
     layersRef.current.plantLayer?.batchDraw()
+    layersRef.current.structLayer?.batchDraw()
     // Redraw multi-select highlights
     state.setMultiSelection(prev => [...prev])
     triggerAutoSave()
@@ -748,8 +773,9 @@ export default function GardenEditor() {
     state,
     lassoModeRef,
     multiSelectionRef,
+    onLongPressStruct: handleLongPressStruct,
     onPushUndo: state.pushUndo,
-    onEnterEdit: (id) => { enterEdit(id) },
+    onEnterEdit: (id) => { if (lassoModeRef.current) return; enterEdit(id) },
     onAddPointDone: (id) => {
       // Rebuild edit handles after point insertion, turn off addingPt
       enterEdit(id)
@@ -762,8 +788,8 @@ export default function GardenEditor() {
         return
       }
       const ne = evt?.evt || evt
-      if (ne && (ne.ctrlKey || ne.metaKey || ne.shiftKey)) {
-        // Multi-select: add/remove from multiSelection
+      // In lasso mode: any click/tap on a struct adds it to multi-selection
+      if (lassoModeRef.current || (ne && (ne.ctrlKey || ne.metaKey || ne.shiftKey))) {
         state.setSelectedPlant(null)
         state.setSelectedStruct(null)
         state.setEditingShapeId(null)

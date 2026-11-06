@@ -12,6 +12,7 @@ import { addStonesToGroup } from '../utils/rockBorderUtils'
 
 export function useDrawTools({
   stage, layers, propBoundsRef, state, onStructSelect, onModeChange, onPushUndo, onEnterEdit, onAddPointDone,
+  onLongPressStruct,   // (id, shape) => void  — fires on dblclick/dbltap on struct when in lasso mode
   lassoModeRef,        // ref: true when lasso select is active — suppress pan:start
   multiSelectionRef,   // ref: current multiSelection array — suppress pan:start to preserve selection
 }) {
@@ -474,16 +475,25 @@ export function useDrawTools({
       }
     }
 
-    // ── Dblclick: enter edit mode on any struct shape ──
+    // ── Dblclick: enter edit mode on struct, or add to multi-select when lasso is active ──
     const onStageDblClick = (e) => {
       const s = sRef.current
       const free = isFreeMode(s.currentMode, s.bedSubTool, s.fenceSubTool, s.fenceType, s.buildingSubTool, s.waterSubTool, s.pathSubTool)
       if (free && freePtsRef.current.length >= 2) { doClose(); return }
       if (e.target !== stage && !free && !s.editingShapeId) {
         const id = e.target.id?.() || e.target.parent?.id?.()
-        // Skip rect/circle types — they have no editable points
-        const noEdit = e.target instanceof Konva.Rect || e.target instanceof Konva.Circle
-        if (id && s.structDataRef.current[id] && onEnterEdit && !noEdit) onEnterEdit(id)
+        const shape = e.target.id?.() ? e.target : e.target.parent
+        if (id && s.structDataRef.current[id]) {
+          // In lasso mode: dblclick/dbltap adds struct to multi-selection instead of entering edit
+          if (lassoModeRef?.current && onLongPressStruct) {
+            onLongPressStruct(id, shape)
+            e.cancelBubble = true
+            return
+          }
+          // Skip rect/circle types — they have no editable points
+          const noEdit = e.target instanceof Konva.Rect || e.target instanceof Konva.Circle
+          if (onEnterEdit && !noEdit) onEnterEdit(id)
+        }
       }
     }
 
@@ -604,6 +614,46 @@ export function useDrawTools({
     stage.on('touchend',   onTouchEndDraw)
     window.addEventListener('keydown', onKeyDown)
 
+    // ── Mobile long-press on structs: 500ms hold → add to multi-select (lasso mode) ──
+    let _lpTimer = null
+    let _lpStartX = 0, _lpStartY = 0
+    const _LP_DELAY = 500
+    const _LP_THRESHOLD = 10
+    const container = stage.container()
+    const onStructTouchStart = (e) => {
+      if (!lassoModeRef?.current) return
+      if (e.touches.length !== 1) return
+      const t = e.touches[0]
+      _lpStartX = t.clientX; _lpStartY = t.clientY
+      clearTimeout(_lpTimer)
+      _lpTimer = setTimeout(() => {
+        // Hit-test Konva stage at touch point
+        const pt = stage.getPointerPosition() || (() => {
+          const rect = container.getBoundingClientRect()
+          return { x: t.clientX - rect.left, y: t.clientY - rect.top }
+        })()
+        const shape = stage.getIntersection(pt)
+        if (!shape) return
+        const id = shape.id?.() || shape.parent?.id?.()
+        const hitShape = shape.id?.() ? shape : shape.parent
+        const s = sRef.current
+        if (id && s.structDataRef.current[id] && onLongPressStruct) {
+          onLongPressStruct(id, hitShape)
+        }
+      }, _LP_DELAY)
+    }
+    const onStructTouchMove = (e) => {
+      if (!_lpTimer || !e.touches.length) return
+      const t = e.touches[0]
+      const dx = t.clientX - _lpStartX, dy = t.clientY - _lpStartY
+      if (Math.sqrt(dx*dx + dy*dy) > _LP_THRESHOLD) { clearTimeout(_lpTimer); _lpTimer = null }
+    }
+    const onStructTouchEnd = () => { clearTimeout(_lpTimer); _lpTimer = null }
+    container.addEventListener('touchstart',  onStructTouchStart, { passive: true })
+    container.addEventListener('touchmove',   onStructTouchMove,  { passive: true })
+    container.addEventListener('touchend',    onStructTouchEnd)
+    container.addEventListener('touchcancel', onStructTouchEnd)
+
     return () => {
       stage.off('mousemove', onMouseMove)
       stage.off('mousedown', onMouseDown)
@@ -615,6 +665,10 @@ export function useDrawTools({
       stage.off('touchmove',  onTouchMoveDraw)
       stage.off('touchend',   onTouchEndDraw)
       window.removeEventListener('keydown', onKeyDown)
+      container.removeEventListener('touchstart',  onStructTouchStart)
+      container.removeEventListener('touchmove',   onStructTouchMove)
+      container.removeEventListener('touchend',    onStructTouchEnd)
+      container.removeEventListener('touchcancel', onStructTouchEnd)
     }
   }, [stage, layers]) // re-register only if stage or layers change
 

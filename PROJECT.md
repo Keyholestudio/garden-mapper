@@ -187,6 +187,10 @@ cd projects/garden-planner/app && npm run dev
 - **[DEFERRED] Woodchip/Straw textures** — current placeholders clash with PvZ cartoon style. Need regeneration with dark outlines, flat colours, magenta BG. Prompts in DECOR-PROMPT-GUIDE.md Section 6.
 - **[DONE] Path snap bug** — colour change no longer snaps moved path back to origin. Fixed in drawUtils.js (`99ec269`).
 - **[DONE] Bed colour picker** — removed Dark Soil, Red Mulch, Cedar Mulch, Hay. Brown Soil + 6 flat colours remain.
+- **[DONE] Roof strip texture system** — new repeating pattern mode for buildings. Tiles L-R or T-B (Rotate button). Edges locked to bounding box. Live resize refreshes tile. 3 textures: Terracotta Roof, Grey Shingles, Cedar Shingles. See L117.
+- **[DONE] Building border removed** — all building rects now borderless.
+- **[DONE] Building group merge overhaul** — textures preserved on merge, drag stays locked, save/load works. See session log 2026-11-06.
+- **[FUTURE ⭐] Grouped building resize** — resizing a building group while keeping shared edges locked is not solved. Requires custom transform interception. For now: disconnect → resize → rejoin.
   - **[DEFER] Music pack upsell UI** - premium track gate is wired, upsell UI comes later
 - **[NEXT] Garden rename** - pencil icon in My Gardens, updates name in localStorage + cloud sync. Medium effort, low risk.
 - **[DEFER] Resize canvas** - modal approach to change garden w/h. After launch.
