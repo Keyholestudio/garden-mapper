@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Sticker test/scratch folders — not used by the app, excluded from deploys
+public/stickers-test/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
