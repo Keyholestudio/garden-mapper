@@ -14,7 +14,8 @@ export const SIZE_MAP = { XS: 24, S: 40, M: 64, L: 96, XL: 128, XXL: 160 } // XX
 export const BED_COLOURS     = ['#8B6340','#6D4C1F','#C8A96A','#9E9E9E','#BDBDBD','#78909C',
   '#TX:soil-brown']
 export const BUILDING_COLOURS= ['#90A4AE','#BCAAA4','#78909C','#A1887F',
-  '#TX:roof-cedar-shingles','#TX:roof-asphalt','#TX:roof-terracotta']
+  '#TX:roof-cedar-shingles','#TX:roof-asphalt','#TX:roof-terracotta',
+  '#TX:roof-terracotta-tiles','#TX:roof-grey-shingles','#TX:roof-cedar-shingles-strip']
 export const FENCE_COLOURS   = ['#795548','#6D4C41','#4E342E','#BCAAA4','#90A4AE']
 export const HEDGE_COLOURS   = ['#TX:hedge','#388E3C','#2E7D32','#1B5E20','#558B2F']
 export const PATH_COLOURS    = ['#TX:path-brick','#TX:path-clay-brick','#TX:path-grey-brick','#TX:path-flagstone-beige',
@@ -30,9 +31,12 @@ export const TEXTURE_MAP = {
   '#TX:soil-red-mulch':      { src: '/textures/soil-red-mulch.jpg',      label: 'Red Mulch' },
   '#TX:soil-cedar-mulch':    { src: '/textures/soil-cedar-mulch.jpg',    label: 'Cedar Mulch' },
   '#TX:soil-hay':            { src: '/textures/soil-hay.jpg',            label: 'Hay' },
-  '#TX:roof-cedar-shingles': { src: '/textures/roof-cedar-shingles.jpg', label: 'Cedar Shingles' },
-  '#TX:roof-asphalt':        { src: '/textures/roof-asphalt.jpg',        label: 'Asphalt Shingles' },
-  '#TX:roof-terracotta':     { src: '/textures/roof-terracotta.jpg',     label: 'Terracotta Tiles' },
+  '#TX:roof-cedar-shingles':   { src: '/textures/roof-cedar-shingles.jpg',  label: 'Cedar Shingles' },
+  '#TX:roof-asphalt':          { src: '/textures/roof-asphalt.jpg',          label: 'Asphalt Shingles' },
+  '#TX:roof-terracotta':       { src: '/textures/roof-terracotta.jpg',       label: 'Terracotta Tiles' },
+  '#TX:roof-terracotta-tiles': { src: '/textures/roof-terracotta-tiles.png', label: 'Terracotta Roof',  roofStrip: true },
+  '#TX:roof-grey-shingles':         { src: '/textures/roof-grey-shingles.png',         label: 'Grey Shingles',    roofStrip: true },
+  '#TX:roof-cedar-shingles-strip':  { src: '/textures/roof-cedar-shingles-strip.png',  label: 'Cedar Shingles',   roofStrip: true },
   '#TX:path-stepping-round': { src: '/textures/path-stepping-round.jpg', label: 'Round Stepping Stones' },
   '#TX:path-stepping-square':{ src: '/textures/path-stepping-square.jpg',label: 'Square Pavers' },
   '#TX:path-flagstone':      { src: '/textures/path-flagstone.jpg',      label: 'Flagstone' },

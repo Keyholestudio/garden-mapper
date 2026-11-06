@@ -1,6 +1,89 @@
 # Garden Planner — Project Lessons
 _L001–L009, L016–L019, L020, L026–L028, L030–L053 archived at: `memory/deep/garden-planner/lessons-archive.md`_
 
+## L117 — Roof-strip texture system: how to add a new repeating roof pattern (2026-11-05)
+
+**What it is:** A special texture mode for building rects where the image tiles in one direction only (left-right or top-bottom) and the locked edges always fill the bounding box exactly. Used for roofs with tiles, shingles, etc.
+
+**How it works (code):**
+- `roofStrip: true` flag in `TEXTURE_MAP` entry (useGardenState.js) activates the mode
+- `applyRoofStripTexture()` in drawUtils.js draws the image to an offscreen canvas tile at exact shape dimensions, then sets it as `fillPatternImage` with scale=1 and no rotation tricks
+- Unrotated: tile = `(imgW * shapeH/imgH) × shapeH` → `repeat-x` → top/bottom locked
+- Rotated 90°: image drawn rotated CW onto `shapeW × (imgW * shapeW/imgH)` canvas → `repeat-y` → left/right locked
+- `refreshRoofStripTexture()` rebuilds the tile at current shape dimensions — called on `transformend` (drag resize), `Apply Dimensions`, and the Rotate button
+- `shape._roofTileImg`, `shape._roofColour`, `shape._roofRotated` are stored on the Konva shape for refresh
+
+**To add a new roof texture:**
+1. Generate image in Gemini: landscape orientation (wider than tall), magenta (#FF00FF) background
+2. Process with Python:
+   ```python
+   from PIL import Image
+   import numpy as np
+   img = Image.open('raw.jpg').convert('RGBA')
+   arr = np.array(img)
+   r,g,b,a = arr[:,:,0],arr[:,:,1],arr[:,:,2],arr[:,:,3]
+   mask = (r.astype(int)>160)&(b.astype(int)>160)&(g.astype(int)<100)&\
+          (r.astype(int)-g.astype(int)>60)&(b.astype(int)-g.astype(int)>60)
+   arr[mask]=[0,0,0,0]
+   out = Image.fromarray(arr)
+   # Scale to 512px tall, preserve aspect ratio
+   w,h = out.size
+   out = out.resize((round(w*512/h), 512), Image.LANCZOS)
+   out.save('roof-name.png', optimize=True)
+   ```
+3. Drop PNG in `app/public/textures/`
+4. Add to `TEXTURE_MAP` in useGardenState.js: `'#TX:roof-name': { src: '/textures/roof-name.png', label: 'Label', roofStrip: true }`
+5. Add token to `BUILDING_COLOURS` array
+
+**Rotate button** shows in RightPanel below Apply Dimensions only when selected building has a roofStrip texture. Toggles direction, persists through save/load via `d.roofRotated` in structData.
+
+**Key bug history:**
+- Do NOT use `fillPatternRotation` for this — Konva's pattern rotation coordinate system causes edge misalignment. Use offscreen canvas rotation instead.
+- `transformend` handlers in BOTH `addRectStruct` (drawUtils) and the load-restore path (useSaveLoad) must call `refreshRoofStripTexture` or drag-resize won't re-lock edges.
+- Set `shape._roofColour` synchronously (before `img.onload`) so `refreshRoofStripTexture` fallback works even if Apply Dimensions is hit before the image finishes loading.
+
+## L116 — Texture scaling rules: output size controls visual brick/stone density (2026-11-05)
+
+**Context:** Adding clay brick + grey brick path textures from Gemini-generated 2048×2048 sources.
+
+**How texture tile size controls visual scale:**
+- The app tiles textures at 1:1 pixel density. A 128px tile repeats more frequently than a 256px tile at the same path width.
+- Smaller output size = more tiles across the path = smaller-looking bricks/stones.
+- **Reference sizes:**
+  - `path-brick.jpg` → 128×128 (tan brick, small bricks)
+  - `path-brick-red.jpg` → 256×256 (red brick, medium bricks — this was the visual scale reference Rob approved)
+  - `path-flagstone-beige.png` → 128×128 (small stones, dense mosaic)
+  - Clay/grey brick → **128×128** (smaller than red brick, appropriate for path bricks)
+  - Woodchips → **128×128 canvas, 2×2 tile of 64px** (fine scatter; full downscale to 64px for density, then tiled 2×2 for quality)
+  - Straw → **256×256 canvas, 2×2 tile of 128px** (same approach)
+
+**Tiling trick for dense fine-grain textures:** If a full downscale gives the right density but looks pixelated/low-quality, downscale to half the target size then tile 2×2. Result: same visual density as the small tile, file size and quality of the larger canvas. Seamless tiling is preserved because the tile is repeated exactly.
+
+**Seamless tiling rule — NEVER crop a sub-region from the source:**
+- Gemini generates seamless images as a full square. The seamless property is in the full image — edges match across the full width/height.
+- Cropping any sub-region (e.g. centre 512×512 from a 2048 source) breaks the seamless edges because the cropped edges no longer correspond to each other.
+- **Always downscale the full source image.** Never crop first.
+- If you need smaller bricks: reduce the output size (e.g. 128px instead of 256px), do NOT crop.
+
+**Magenta chroma-key removal:**
+- Gemini path textures use `#FF00FF` magenta as the gap/mortar colour.
+- Detection threshold that works: `R > 140 AND B > 120 AND R > G+40 AND B > G+20`
+- Replace with warm neutral mortar: `[205, 198, 188]`
+- Run on full source BEFORE downscaling for cleanest result.
+
+**What broke today:**
+- Tried 512px centre crop → 256px output → bricks misaligned and seam visible. Reverted to full downscale.
+- Mirror-tiling (flip + stitch) creates obvious symmetry artifacts. Don't use it.
+
+**Correct pipeline for new path textures:**
+1. Open raw (e.g. 2048×2048)
+2. Replace magenta on full image
+3. Downscale full image to 128px (for small bricks) or 256px (for larger pavers)
+4. Save as JPG Q85–90, RGB
+5. Drop in `app/public/textures/`, add `#TX:` token to `TEXTURE_MAP` + `PATH_COLOURS` in `useGardenState.js`
+
+---
+
 ## L115 — Audio system architecture (2026-11-04)
 
 **Hook:** `src/hooks/useAudio.js` — Web Audio API only, zero deps. Works on web + Capacitor Android.

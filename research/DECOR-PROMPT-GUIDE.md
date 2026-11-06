@@ -1,5 +1,5 @@
 # Garden Mapper — Decor Sticker Prompt Guide
-_Last updated: 2026-10-19_
+_Last updated: 2026-11-05_
 
 ---
 
@@ -531,6 +531,101 @@ All decor items use `family: 'Decor'` in `usePlantCatalog.js`. Water Feature ite
 - [ ] `usePlantCatalog.js` entry uses `family: 'Decor'` (or `'Water Feature'`)
 - [ ] Dev server tested — item appears in Decor menu and places correctly on canvas
 - [ ] Committed to git
+
+---
+
+## 6. Seamless Tiling Textures — Paths, Beds, Hedges, Decking
+
+_Added 2026-11-05. Prompts are Rob's wording — do not modify without approval._
+
+### Format rules (all textures)
+- **Canvas:** 256×256 px, **JPG** (RGB, no transparency needed — magenta is chroma-keyed out in processing)
+- **Background / grout colour:** solid Magenta `#FF00FF` — used between stones/gaps and as background
+- **Art style:** watercolor painting, pastel palette (not too vibrant), no shadows, no border, no frame
+- **Tiling:** seamless — edges must flow perfectly on all 4 sides with no visible seam
+- **Processing workflow after generation:**
+  1. Save image to Downloads
+  2. Tell Computer — it will resize to 256×256, run magenta chroma-key, save to `app/public/textures/`
+  3. Add `#TX:<key>` entry to `TEXTURE_MAP` in `useGardenState.js`
+  4. Add token to relevant colour array (`PATH_COLOURS`, `BED_COLOURS`, `HEDGE_COLOURS`, etc.)
+
+---
+
+### Base Prompt Template (Paths)
+
+```
+Seamless tiling texture, aerial top-down view. Art style: watercolor painting — tasteful simplified [PATH TYPE] walking path pattern. No shadows. No border. No frame. Designed to tile seamlessly in all directions with no visible seam.
+
+Subject: [LABEL] Path Texture
+Canvas: 256px square.
+Colours: All colours to have a pastel colour to them, not too vibrant: [COLOUR DESCRIPTION], solid Magenta #FF00FF between the stones, solid Magenta background #FF00FF
+Pattern: [PATTERN DESCRIPTION], aerial top-down view. Pattern must tile seamlessly — edges flow perfectly on all 4 sides
+```
+
+---
+
+### Path Texture Prompts
+
+**Sandstone Path** (`#TX:path-sandstone` → `path-sandstone.jpg`)
+```
+Seamless tiling texture, aerial top-down view. Art style: watercolor painting — tasteful simplified natural sandstone walking path pattern. No shadows. No border. No frame. Designed to tile seamlessly in all directions with no visible seam.
+
+Subject: Sandstone Path Texture
+Canvas: 256px square.
+Colours: All colours to have a pastel colour to them, not too vibrant: warm sandstone, pale sand, deep sandstone, cream highlight, solid Magenta #FF00FF between the stones, solid Magenta background #FF00FF
+Pattern: Irregular natural sandstone pavers, aerial top-down view. Varied stone shapes and sizes with visible Magenta gaps between each stone (representing grout/ground). Stones have natural watercolor texture with subtle colour variation. Pattern must tile seamlessly — edges flow perfectly on all 4 sides
+```
+
+**Brick Path** (`#TX:path-brick-new` → `path-brick-new.jpg`)
+```
+Seamless tiling texture, aerial top-down view. Art style: watercolor painting — tasteful simplified brick walking path pattern. No shadows. No border. No frame. Designed to tile seamlessly in all directions with no visible seam.
+
+Subject: Brick Path Texture
+Canvas: 256px square.
+Colours: All colours to have a pastel colour to them, not too vibrant: warm red-brown brick, dark brick, pale cream mortar, terracotta highlight, solid Magenta #FF00FF between the stones, solid Magenta background #FF00FF
+Pattern: Traditional running bond brick pattern, aerial top-down view. Bricks laid horizontally, each row offset by half a brick. Mortar lines visible between all bricks. Pattern must tile seamlessly — edges flow perfectly on all 4 sides
+```
+
+**Cobblestone Path** (`#TX:path-cobblestone` → `path-cobblestone.jpg`)
+```
+Seamless tiling texture, aerial top-down view. Art style: watercolor painting — tasteful simplified cobblestone walking path pattern. No shadows. No border. No frame. Designed to tile seamlessly in all directions with no visible seam.
+
+Subject: Cobblestone Path Texture
+Canvas: 256px square.
+Colours: All colours to have a pastel colour to them, not too vibrant: cool grey cobblestone, warm grey variation, pale highlight, dark outline, solid Magenta #FF00FF between the stones, solid Magenta background #FF00FF
+Pattern: Irregular rounded cobblestones, aerial top-down view. Varied stone sizes with Magenta gaps between each stone. Pattern must tile seamlessly — edges flow perfectly on all 4 sides
+```
+
+**Gravel Path** (`#TX:path-gravel` → `path-gravel.jpg`)
+```
+Seamless tiling texture, aerial top-down view. Art style: watercolor painting — tasteful simplified gravel walking path pattern. No shadows. No border. No frame. Designed to tile seamlessly in all directions with no visible seam.
+
+Subject: Gravel Path Texture
+Canvas: 256px square.
+Colours: All colours to have a pastel colour to them, not too vibrant: warm tan gravel, pale cream pebbles, cool grey pebbles, solid Magenta #FF00FF background
+Pattern: Small loose gravel and pebbles scattered densely, aerial top-down view. Random natural distribution of small rounded stones, no gaps — gravel covers the full surface. Pattern must tile seamlessly — edges flow perfectly on all 4 sides
+```
+
+**Wood Chip Path** (`#TX:path-woodchip` → `path-woodchip.jpg`)
+```
+Seamless tiling texture, aerial top-down view. Art style: watercolor painting — tasteful simplified wood chip mulch path pattern. No shadows. No border. No frame. Designed to tile seamlessly in all directions with no visible seam.
+
+Subject: Wood Chip Path Texture
+Canvas: 256px square.
+Colours: All colours to have a pastel colour to them, not too vibrant: warm cedar brown, light tan wood chips, pale cream highlight, dark brown shadow, solid Magenta #FF00FF background
+Pattern: Irregular wood chips and bark pieces scattered densely, aerial top-down view. Chips overlap naturally, full surface coverage. Pattern must tile seamlessly — edges flow perfectly on all 4 sides
+```
+
+**Cedar Wood Chip Path — Rob's approved prompt** (`#TX:path-woodchip-cedar` → `path-woodchip-cedar.jpg`)
+_Note: No magenta background — background is part of the texture. No chroma-keying needed. Output at 64×64px (full downscale from source). Reuse for warm/dark variants with colour adjustments._
+```
+Seamless tiling texture vertically and horizontally, aerial top-down view. Art style: soft watercolor painting — tasteful muted cedar garden wood chips. No shadows, no dark outlines, no border, no frame. Designed to tile seamlessly in all directions with a completely invisible seam.
+
+Subject: cedar wood chips on a smooth, warm light-brown earthy background.
+Density & Composition: Soft, subtle, semi-blended edges on the wood chips so the texture transitions are gentle and muted rather than harsh.
+Colours: Soft pastel cedar tones — pale rosewood, warm tan, muted peach, and cream highlights.
+Pattern: Edges and partial chips flow perfectly into the opposite sides on all 4 borders so the pattern tiles infinitely without visible breaks.
+```
 
 ---
 

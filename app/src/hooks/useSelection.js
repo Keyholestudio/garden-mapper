@@ -26,7 +26,10 @@ export function useSelection({
     const structLocked = sel && state.structDataRef?.current[sel.id]?.locked
     const selType = sel && state.structDataRef?.current[sel.id]?.type
     const isRockBorder = selType === 'rock-border' || selType === 'picket-fence' || selType === 'path'
-    if (sel && !structLocked && !isRockBorder && (sel.shape instanceof Konva.Rect || sel.shape instanceof Konva.Group)) {
+    const isBuilding = selType === 'building'
+    const isBuildingGroup = isBuilding && sel?.shape instanceof Konva.Group
+    if (sel && !structLocked && !isRockBorder && !isBuildingGroup && (sel.shape instanceof Konva.Rect || sel.shape instanceof Konva.Group)) {
+      // All rect types (including single buildings): free resize, all 8 anchors
       tr.keepRatio(false)
       tr.enabledAnchors(['top-left','top-center','top-right','middle-left','middle-right','bottom-left','bottom-center','bottom-right'])
       tr.nodes([sel.shape])

@@ -24,7 +24,7 @@ import MoreModal      from './MoreModal'
 import RestorePrompt from './RestorePrompt'
 import { seedDreamGarden, fetchDreamGardenUpdate } from '../hooks/useDreamGarden'
 import { softDeleteCloudGarden } from '../supabase'
-import { addRectStruct, isFreeMode, applyColourOrTexture, applyPathTexture, updatePathTextureWidth, tryMergeRects } from '../utils/drawUtils'
+import { addRectStruct, isFreeMode, applyColourOrTexture, applyRoofStripTexture, refreshRoofStripTexture, applyPathTexture, updatePathTextureWidth, tryMergeRects } from '../utils/drawUtils'
 import { drawRockBorders, buildRockBorderGroup, drawPicketFences, buildPicketFenceGroup, refreshPicketFenceGroup } from '../utils/rockBorderUtils'
 import { useBreakpoint } from '../hooks/useBreakpoint'
 import { useRecentPlants } from '../hooks/useRecentPlants'
@@ -1243,12 +1243,13 @@ export default function GardenEditor() {
       }
       hedgeImg.src = '/textures/hedge.jpg'
     } else if (isTexture) {
-      applyColourOrTexture(shape, colour, layersRef.current.structLayer, TEXTURE_MAP)
+      applyColourOrTexture(shape, colour, layersRef.current.structLayer, TEXTURE_MAP, false, d.roofRotated || false)
     } else {
       const isBed = d.type === 'bed' || d.type === 'bed-square'
       const isHedge = d.type === 'hedge' || d.type === 'hedge-sq'
+      const isBuilding = d.type === 'building'
       const alpha = isBed ? 'FF' : 'CC'
-      if (shape instanceof Konva.Rect)        { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(colour + alpha); if (isHedge) { shape.stroke('transparent'); shape.strokeWidth(0) } }
+      if (shape instanceof Konva.Rect)        { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(colour + alpha); if (isHedge || isBuilding) { shape.stroke('transparent'); shape.strokeWidth(0) } }
       else if (shape instanceof Konva.Circle) { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(colour + alpha); shape.stroke(colour) }
       else { shape.fillPriority('color'); shape.fillPatternImage(null); shape.fill(noFill ? 'transparent' : colour + alpha); if (noFill) shape.stroke(colour); if (isHedge) { shape.stroke('transparent'); shape.strokeWidth(0) } }
     }
@@ -1371,6 +1372,8 @@ export default function GardenEditor() {
     const px = 32 * (state.gardenUnit === 'm' ? 3.281 : 1)
     sel.shape.width(w * px); sel.shape.height(h * px)
     sel.shape.scaleX(1); sel.shape.scaleY(1)
+    // Rebuild roof-strip tile so edges re-lock to new bounding box
+    refreshRoofStripTexture(sel.shape, layersRef.current.structLayer, TEXTURE_MAP)
     layersRef.current.structLayer?.batchDraw()
     triggerAutoSave()
   }
@@ -1380,6 +1383,24 @@ export default function GardenEditor() {
     if (!sel || !(sel.shape instanceof Konva.Circle)) return
     sel.shape.radius((d / 2) * 32 * (state.gardenUnit === 'm' ? 3.281 : 1))
     layersRef.current.structLayer?.batchDraw()
+    triggerAutoSave()
+  }
+
+  const handleRoofRotate = () => {
+    const sel = state.selectedStruct
+    if (!sel || !(sel.shape instanceof Konva.Rect)) return
+    const d = state.structDataRef.current[sel.id]
+    if (!d) return
+    d.roofRotated = !d.roofRotated
+    // If the image is already cached on the shape, rebuild the tile directly (faster)
+    if (sel.shape._roofTileImg) {
+      sel.shape._roofRotated = d.roofRotated
+      refreshRoofStripTexture(sel.shape, layersRef.current.structLayer)
+    } else {
+      applyRoofStripTexture(sel.shape, d.colour, layersRef.current.structLayer, TEXTURE_MAP, d.roofRotated)
+    }
+    // Force panel re-render so button label updates
+    state.setSelectedStruct({ ...sel, roofRotated: d.roofRotated })
     triggerAutoSave()
   }
 
@@ -1793,21 +1814,27 @@ export default function GardenEditor() {
   const handleDisconnect = () => {
     const sel = state.selectedStruct
     if (!sel || !(sel.shape instanceof Konva.Group)) return
-    // Collect member rects before destroying
-    const members = sel.shape.getChildren().filter(c => c instanceof Konva.Rect).map(r => ({
+    const gd = state.structDataRef.current[sel.id]
+    const groupType = gd?.type
+    // Collect member rects with world coords; prefer per-member structData for colour/roofRotated
+    const memberData = gd?.members || []
+    const members = sel.shape.getChildren().filter(c => c instanceof Konva.Rect).map((r, i) => ({
       x: r.x() + sel.shape.x(), y: r.y() + sel.shape.y(),
       w: r.width(), h: r.height(),
-      colour: r.fill().replace('CC', ''),
-      type: state.structDataRef.current[sel.id]?.type,
+      // Use stored member colour if available, fall back to fill (works for flat colours)
+      colour: memberData[i]?.colour || r.fill().replace(/FF$|CC$/, ''),
+      roofRotated: memberData[i]?.roofRotated || r._roofRotated || false,
+      type: groupType,
     }))
     sel.shape.destroy()
     delete state.structDataRef.current[sel.id]
     clearSelection()
-    // Re-create each as a standalone rect with full dragend/merge wiring
     const { structLayer } = layersRef.current
     members.forEach(m => {
-      addRectStruct({
+      const newId = addRectStruct({
         type: m.type, x: m.x, y: m.y, w: m.w, h: m.h, colour: m.colour,
+        roofRotated: m.roofRotated,
+        TEXTURE_MAP,
         structIdCtr: state.structIdCtr, structDataRef: state.structDataRef,
         groupIdCtr: state.groupIdCtr,
         snapCell: null, showGrid: false,
@@ -1818,6 +1845,12 @@ export default function GardenEditor() {
         },
         onModeChange: null,
       })
+      // For roof-strip textures, re-apply with correct roofRotated after addRectStruct
+      // (addRectStruct applies texture without rotation; we need to override)
+      if (m.colour?.startsWith('#TX:') && TEXTURE_MAP[m.colour]?.roofStrip) {
+        const shape = structLayer?.findOne('#' + newId)
+        if (shape) applyRoofStripTexture(shape, m.colour, structLayer, TEXTURE_MAP, m.roofRotated)
+      }
     })
     structLayer?.batchDraw()
     triggerAutoSave()
@@ -2388,6 +2421,7 @@ export default function GardenEditor() {
               onPathWidthChange={handlePathWidthChange}
               onDimRectApply={handleDimRectApply}
               onDimCircleApply={handleDimCircleApply}
+              onRoofRotate={handleRoofRotate}
               onLayerMove={handleLayerMove}
               onTransparentStruct={handleTransparentStruct}
               onCopyStruct={handleCopyStruct}
@@ -2580,6 +2614,7 @@ export default function GardenEditor() {
           }}
           onDimRectApply={handleDimRectApply}
           onDimCircleApply={handleDimCircleApply}
+          onRoofRotate={handleRoofRotate}
           onLayerMove={handleLayerMove}
           onTransparentStruct={handleTransparentStruct}
           onCopyStruct={handleCopyStruct}

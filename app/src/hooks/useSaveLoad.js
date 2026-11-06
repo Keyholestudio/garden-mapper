@@ -6,7 +6,7 @@ import Konva from 'konva'
 import { stickerSrc } from '../utils/cdnUtils'
 import { SIZE_MAP, TEXTURE_MAP, DECOR_VARIANTS } from './useGardenState'
 import { makePlantGroup } from '../utils/plantUtils'
-import { applyColourOrTexture, applyPathTexture } from '../utils/drawUtils'
+import { applyColourOrTexture, applyRoofStripTexture, refreshRoofStripTexture, buildRoofTile, bakeGroupScale, liveScaleGroupTextures, applyPathTexture, tryMergeRects } from '../utils/drawUtils'
 import { buildRockBorderGroup, buildPicketFenceGroup } from '../utils/rockBorderUtils'
 import { getDeviceId, getDeviceLabel } from '../supabase'
 
@@ -265,6 +265,28 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
     })
   })
 
+  // Save merged rect groups (buildings, beds, decks, etc.)
+  structLayer?.find('Group').forEach(g => {
+    const id = g.id()
+    if (!id || !state.structDataRef.current[id]) return
+    const d = state.structDataRef.current[id]
+    if (!d.isGroup || d.type === 'rock-border' || d.type === 'picket-fence') return
+    const memberRects = g.getChildren().filter(c => c instanceof Konva.Rect)
+    // Per-member data: colour + roofRotated stored in d.members (index-matched to rects)
+    const membersMeta = d.members || []
+    structs.push({
+      id, type: d.type, colour: d.colour, label: d.label,
+      isGroup: true, transparent: d.transparent || false, locked: d.locked || false,
+      gx: g.x(), gy: g.y(),
+      zIndex: g.getZIndex(),
+      rects: memberRects.map((r, i) => ({
+        rx: r.x(), ry: r.y(), rw: r.width(), rh: r.height(),
+        colour:      membersMeta[i]?.colour      || d.colour,
+        roofRotated: membersMeta[i]?.roofRotated || r._roofRotated || false,
+      })),
+    })
+  })
+
   // Save textured path groups (ptxg_ prefix) — the hit line inside carries the id
   structLayer?.find('Group').forEach(g => {
     if (!g.id().startsWith('ptxg_')) return
@@ -295,6 +317,7 @@ export function saveGarden({ stage, layers, state, currentGardenIndex }) {
       pathWidth: d.pathWidth, tension: d.tension,
       transparent: d.transparent || false,
       locked: d.locked || false,
+      roofRotated: d.roofRotated || false,
       zIndex: s.getZIndex(),
     }
     if (s instanceof Konva.Rect) {
@@ -441,6 +464,7 @@ export function loadGarden({
       pathWidth: entry.pathWidth, tension: entry.tension,
       transparent: entry.transparent || false,
       locked: entry.locked || false,
+      roofRotated: entry.roofRotated || false,
       notes: entry.notes || '',
       family: entry.family || '',
       rockVariant: entry.rockVariant || 'grey-river',
@@ -493,6 +517,42 @@ export function loadGarden({
       return
     }
 
+    // ── Merged rect group restore (building, bed-square, deck, etc.) ──────────
+    if (entry.isGroup && entry.rects) {
+      state.structDataRef.current[entry.id] = {
+        type: entry.type, colour: entry.colour, label: entry.label,
+        isGroup: true, transparent: entry.transparent || false, locked: entry.locked || false,
+        members: entry.rects.map(r => ({ colour: r.colour, roofRotated: r.roofRotated || false, w: r.rw, h: r.rh })),
+      }
+      const grp = new Konva.Group({ id: entry.id, x: (entry.gx || 0) + dX, y: (entry.gy || 0) + dY, draggable: true })
+      entry.rects.forEach(r => {
+        const isBed = entry.type === 'bed' || entry.type === 'bed-square'
+        const isBuilding = entry.type === 'building'
+        const isTx = r.colour?.startsWith('#TX:')
+        const rect = new Konva.Rect({
+          x: r.rx, y: r.ry, width: r.rw, height: r.rh,
+          fill: isTx ? 'transparent' : r.colour + (isBed ? 'FF' : 'CC'),
+          stroke: (isBed || isBuilding) ? 'transparent' : '#3A2A10',
+          strokeWidth: (isBed || isBuilding) ? 0 : 2,
+          cornerRadius: isBuilding ? 3 : 0, strokeScaleEnabled: false,
+        })
+        if (isTx && TEXTURE_MAP[r.colour]?.roofStrip) {
+          applyRoofStripTexture(rect, r.colour, structLayer, TEXTURE_MAP, r.roofRotated || false)
+        } else if (isTx) {
+          applyColourOrTexture(rect, r.colour, structLayer, TEXTURE_MAP)
+        }
+        grp.add(rect)
+      })
+      grp.on('dragmove', () => {
+        grp.x(Math.round(grp.x() / 1) * 1); grp.y(Math.round(grp.y() / 1) * 1)
+      })
+      grp.on('transform',    () => liveScaleGroupTextures(grp))
+      grp.on('transformend', () => bakeGroupScale(grp, structLayer))
+      grp.on('click tap', e => { if (!state.editingShapeIdRef?.current) onSelectStruct(entry.id, grp, e) })
+      structLayer?.add(grp)
+      return
+    }
+
     if (entry.svgPath !== undefined) {
       const isUG = entry.type === 'underground-electrical' || entry.type === 'underground-plumbing'
       shape = new Konva.Path({
@@ -541,14 +601,39 @@ export function loadGarden({
         id: entry.id,
         x: entry.rx + dX, y: entry.ry + dY,
         width: entry.rw, height: entry.rh,
-        fill: isTxRect ? 'transparent' : entry.colour + ((entry.type === 'bed' || entry.type === 'bed-square') ? 'FF' : 'CC'), stroke: (entry.type === 'bed' || entry.type === 'bed-square' || entry.type === 'hedge-sq') ? 'transparent' : '#3A2A10', strokeWidth: (entry.type === 'hedge-sq') ? 0 : 2,
+        fill: isTxRect ? 'transparent' : entry.colour + ((entry.type === 'bed' || entry.type === 'bed-square') ? 'FF' : 'CC'),
+        stroke: (entry.type === 'bed' || entry.type === 'bed-square' || entry.type === 'hedge-sq' || entry.type === 'building') ? 'transparent' : '#3A2A10',
+        strokeWidth: (entry.type === 'hedge-sq' || entry.type === 'building') ? 0 : 2,
         cornerRadius: cornerR, draggable: true, strokeScaleEnabled: false,
+      })
+      shape.on('transform', () => {
+        const img = shape._roofTileImg
+        if (img && shape.fillPriority() === 'pattern') {
+          const scaledW = shape.width()  * shape.scaleX()
+          const scaledH = shape.height() * shape.scaleY()
+          const tile = buildRoofTile(img, scaledW, scaledH, shape._roofRotated || false)
+          shape.fillPatternImage(tile)
+          shape.fillPatternScale({ x: 1, y: 1 })
+          shape.fillPatternRepeat(shape._roofRotated ? 'repeat-y' : 'repeat-x')
+        }
       })
       shape.on('transformend', () => {
         shape.width(shape.width() * shape.scaleX())
         shape.height(shape.height() * shape.scaleY())
         shape.scaleX(1); shape.scaleY(1)
+        refreshRoofStripTexture(shape, structLayer, TEXTURE_MAP)
         structLayer?.batchDraw()
+      })
+      shape.on('dragend', () => {
+        tryMergeRects(entry.id, shape, {
+          structDataRef: state.structDataRef,
+          structIdCtr: state.structIdCtr,
+          groupIdCtr: state.groupIdCtr,
+          structLayer,
+          snapCell: showGridRef?.current ? 32 : 0,
+          showGrid: showGridRef?.current || false,
+          onSelect: (id, sh, e) => { if (!state.editingShapeIdRef?.current) onSelectStruct(id, sh, e) },
+        })
       })
       shape.on('click tap', e => { if (!state.editingShapeIdRef?.current) onSelectStruct(entry.id, shape, e) })
 
@@ -577,7 +662,7 @@ export function loadGarden({
           // Hedge texture is already applied above via applyHedgeTexture — skip generic handler
           // (generic handler applies 10% opacity which washes out the hedge pattern)
         } else {
-          applyColourOrTexture(shape, entry.colour, structLayer, TEXTURE_MAP)
+          applyColourOrTexture(shape, entry.colour, structLayer, TEXTURE_MAP, false, entry.roofRotated || false)
         }
       }
     }

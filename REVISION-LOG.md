@@ -13,6 +13,30 @@ _History for v1–v7 and Phases 1–6 archived at: `memory/deep/garden-planner/r
 
 ---
 
+### 2026-11-04 Session
+
+| Change | Commit | Status |
+|--------|--------|--------|
+| Audio system: `useAudio.js` hook, music player + SFX framework, next/prev/shuffle in profile dropdown | `c6c74e5` | ✅ |
+| Extend splash hold time from 2s to 3s (4.2s total with fade) for music overlap | `ee7f1ea` | ✅ |
+| Page Visibility API: pause music on tab hide, resume on return | `de5cd19` | ✅ |
+
+### 2026-10-28 Session
+
+| Change | Commit | Status |
+|--------|--------|--------|
+| Option A startup: new users see SetupOverlay until first garden created | `eee3441` | ✅ |
+| Fix: new garden auto-loads at correct index (not Dream Garden) | `a0e89aa` | ✅ |
+| Dream Garden shows "Coming Soon" in My Gardens (load disabled) | `eee3441` | ✅ |
+| Lasso select tool — drag to add plants to multiselect (desktop + mobile touch) | `e0d052b` | ✅ |
+| Fix: lasso suppresses pan; multiselect panel stays open during pan | `db08cfc` | ✅ |
+| Fix: lasso touch support (touchstart/move/end); double-tap exits multiselect on mobile | `cd27848` | ✅ |
+| Fix: clearSelectionRef temporal dead zone crash on Android | `f9f93cc` | ✅ |
+| Fix: non-selected plants can't be dragged during multiselect | `2438c5e` | ✅ |
+| Fix: pinch zoom no longer closes multiselect panel (postPinchRef) | `2438c5e` | ✅ |
+| Feat: double-click empty canvas exits multiselect on web | `b6be8c3` | ✅ |
+| Fix: single click on canvas correctly closes plant panel (isPanDraggingRef threshold) | `3003eb7` | ✅ |
+
 ### 2026-10-22 Session
 
 | Change | Commit | Status |

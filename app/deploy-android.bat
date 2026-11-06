@@ -34,6 +34,13 @@ if errorlevel 1 (
     exit /b 1
 )
 
+:: Remove stickers from Android assets (they load from Vercel CDN at runtime)
+echo [3b/4] Pruning stickers from Android assets...
+set ASSETS_DIR=%~dp0android\app\src\main\assets\public
+if exist "%ASSETS_DIR%\stickers" rmdir /s /q "%ASSETS_DIR%\stickers"
+if exist "%ASSETS_DIR%\stickers-test" rmdir /s /q "%ASSETS_DIR%\stickers-test"
+echo Stickers pruned.
+
 :: Build APK
 echo [4/4] Building APK...
 cd android

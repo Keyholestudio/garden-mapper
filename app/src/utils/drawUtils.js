@@ -166,8 +166,104 @@ export function updatePathTextureWidth(shapeOrGroup, pathWidth, layer, TEXTURE_M
   applyPathTexture(hitLine, group._ptxColour, pathWidth, layer, TEXTURE_MAP, group._ptxOnSelect, group._ptxOnEnterEdit)
 }
 
-export function applyColourOrTexture(shape, colour, layer, TEXTURE_MAP, opaque = false) {
+// Apply a roof-strip texture: tiles horizontally (or vertically when rotated),
+// scales the texture height to fill the shape's bounding-box height exactly.
+// Build an offscreen canvas tile for a roof-strip texture.
+// Unrotated: tile width  = imgW * (shapeH / imgH), tile height = shapeH   → repeat-x
+// Rotated:   tile width  = shapeW,  tile height = imgH * (shapeW / imgW)   → repeat-y
+// Using an offscreen canvas avoids Konva fillPatternRotation coordinate-system quirks.
+export function buildRoofTile(img, shapeW, shapeH, roofRotated) {
+  const c = document.createElement('canvas')
+  const ctx = c.getContext('2d')
+  if (roofRotated) {
+    // Vertical tiling: left/right edges locked to shapeW
+    // The original landscape image is rotated 90° CW so tiles run top-to-bottom
+    // naturalWidth (long) becomes the tile height, naturalHeight (short) becomes shapeW
+    const scale = shapeW / img.naturalHeight  // scale so img height = shapeW
+    const tileH = img.naturalWidth * scale    // scaled img width becomes tile height
+    c.width  = shapeW
+    c.height = Math.round(tileH)
+    // Rotate 90° CW: translate to right edge, rotate, then draw
+    ctx.save()
+    ctx.translate(shapeW, 0)
+    ctx.rotate(Math.PI / 2)
+    // After CW rotation: canvas x→down, y→left relative to original
+    // Draw the image so naturalWidth maps to tileH and naturalHeight maps to shapeW
+    ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, Math.round(tileH), shapeW)
+    ctx.restore()
+  } else {
+    // Horizontal tiling: top/bottom edges locked to shapeH
+    const scale = shapeH / img.naturalHeight
+    const tileW = Math.round(img.naturalWidth * scale)
+    c.width  = tileW
+    c.height = shapeH
+    ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight, 0, 0, tileW, shapeH)
+  }
+  return c
+}
+
+export function applyRoofStripTexture(shape, colour, layer, TEXTURE_MAP, roofRotated = false) {
+  const txInfo = TEXTURE_MAP?.[colour]
+  if (!txInfo) return
+  // Set synchronously so refreshRoofStripTexture fallback works even before onload fires
+  shape._roofColour  = colour
+  shape._roofRotated = roofRotated
+  const img = new window.Image()
+  img.onload = () => {
+    const shapeW = shape.width  ? shape.width()  : 200
+    const shapeH = shape.height ? shape.height() : 100
+    const tile = buildRoofTile(img, shapeW, shapeH, roofRotated)
+    shape.fill(null)
+    shape.fillPriority('pattern')
+    shape.fillPatternImage(tile)
+    shape.fillPatternScale({ x: 1, y: 1 })
+    shape.fillPatternRotation(0)
+    shape.fillPatternOffset({ x: 0, y: 0 })
+    shape.fillPatternX(0)
+    shape.fillPatternY(0)
+    shape.fillPatternRepeat(roofRotated ? 'repeat-y' : 'repeat-x')
+    shape.fillPatternOpacity(1)
+    // Store tile reference on shape so resize can rebuild it
+    shape._roofTileImg  = img
+    shape._roofRotated  = roofRotated
+    shape._roofColour   = colour
+    layer?.batchDraw()
+  }
+  img.src = txInfo.src
+}
+
+// Call this after any resize of a building rect with a roofStrip texture.
+// Works whether the image is already cached (_roofTileImg) or not (falls back to reload).
+export function refreshRoofStripTexture(shape, layer, TEXTURE_MAP_OPT) {
+  const img = shape._roofTileImg
+  const roofRotated = shape._roofRotated || false
+  if (!img) {
+    // Image not cached yet — fall back to full re-apply if we have enough info
+    if (TEXTURE_MAP_OPT && shape._roofColour) {
+      applyRoofStripTexture(shape, shape._roofColour, layer, TEXTURE_MAP_OPT, roofRotated)
+    }
+    return
+  }
+  const shapeW = shape.width  ? shape.width()  : 200
+  const shapeH = shape.height ? shape.height() : 100
+  const tile = buildRoofTile(img, shapeW, shapeH, roofRotated)
+  shape.fillPatternImage(tile)
+  shape.fillPatternScale({ x: 1, y: 1 })
+  shape.fillPatternRotation(0)
+  shape.fillPatternOffset({ x: 0, y: 0 })
+  shape.fillPatternX(0)
+  shape.fillPatternY(0)
+  shape.fillPatternRepeat(roofRotated ? 'repeat-y' : 'repeat-x')
+  layer?.batchDraw()
+}
+
+export function applyColourOrTexture(shape, colour, layer, TEXTURE_MAP, opaque = false, roofRotated = false) {
   if (colour && colour.startsWith('#TX:') && TEXTURE_MAP && TEXTURE_MAP[colour]) {
+    const txInfo = TEXTURE_MAP[colour]
+    if (txInfo.roofStrip) {
+      applyRoofStripTexture(shape, colour, layer, TEXTURE_MAP, roofRotated)
+      return
+    }
     const img = new window.Image()
     img.onload = () => {
       shape.fill(null)
@@ -177,7 +273,7 @@ export function applyColourOrTexture(shape, colour, layer, TEXTURE_MAP, opaque =
       shape.fillPatternOpacity(0.1)
       layer?.batchDraw()
     }
-    img.src = TEXTURE_MAP[colour].src
+    img.src = txInfo.src
   } else {
     shape.fillPriority('color')
     shape.fillPatternImage(null)
@@ -482,6 +578,57 @@ export function closeFreeShape({
 const MAX_GROUP = 4
 const MERGE_TYPES = ['bed-square', 'building', 'deck', 'pool-sq', 'hedge-sq']
 
+// During live group transform (while user drags a handle), rebuild each member
+// rect's roof tile at its visually-scaled dimensions so edges stay locked.
+export function liveScaleGroupTextures(group) {
+  const sx = group.scaleX(), sy = group.scaleY()
+  if (Math.abs(sx - 1) < 0.001 && Math.abs(sy - 1) < 0.001) return
+  group.getChildren().forEach(child => {
+    if (!(child instanceof Konva.Rect)) return
+    const img = child._roofTileImg
+    if (!img || child.fillPriority() !== 'pattern') return
+    const roofRotated = child._roofRotated || false
+    // Compute the visual pixel dimensions of this rect under the group's current scale
+    const scaledW = child.width()  * sx
+    const scaledH = child.height() * sy
+    const tile = buildRoofTile(img, scaledW, scaledH, roofRotated)
+    child.fillPatternImage(tile)
+    child.fillPatternScale({ x: 1, y: 1 })
+    child.fillPatternRepeat(roofRotated ? 'repeat-y' : 'repeat-x')
+  })
+}
+
+// Bake a Konva.Group's accumulated scaleX/scaleY into each member rect's
+// position and size, then reset the group scale to 1.
+// Positions are scaled relative to the group's own bounding box origin so that
+// shared edges between members are preserved after scaling.
+export function bakeGroupScale(group, structLayer) {
+  const sx = group.scaleX(), sy = group.scaleY()
+  if (Math.abs(sx - 1) < 0.001 && Math.abs(sy - 1) < 0.001) return  // no-op
+
+  const rects = group.getChildren().filter(c => c instanceof Konva.Rect)
+  if (!rects.length) return
+
+  // Scale both position AND size using local group coords.
+  // Local coords are small offsets (e.g. x:0, y:150) so scaling them
+  // preserves shared edges: if A has height 150 and B is at y:150,
+  // after sy=1.5: A.height=225, B.y=225 — edge stays connected.
+  rects.forEach(child => {
+    child.x(child.x() * sx)
+    child.y(child.y() * sy)
+    child.width(child.width()  * sx)
+    child.height(child.height() * sy)
+    // Reset pattern scale before rebuilding
+    if (child.fillPriority() === 'pattern') {
+      child.fillPatternScaleX(1)
+      child.fillPatternScaleY(1)
+    }
+    refreshRoofStripTexture(child, structLayer)
+  })
+  group.scaleX(1); group.scaleY(1)
+  structLayer?.batchDraw()
+}
+
 function getGroupMembers(group, structDataRef) {
   return group.getChildren().filter(c => c instanceof Konva.Rect).map(r => ({
     x: r.x() + group.x(), y: r.y() + group.y(),
@@ -495,7 +642,7 @@ function getGroupMembers(group, structDataRef) {
 export function tryMergeRects(id, rect, { structDataRef, structIdCtr, groupIdCtr, structLayer, snapCell, showGrid, onSelect }) {
   const d = structDataRef.current[id]
   if (!d || !MERGE_TYPES.includes(d.type)) return
-  const SNAP = showGrid && snapCell ? snapCell : 12
+  const SNAP = showGrid && snapCell ? snapCell : 32  // ~1/15th of a typical 480px building — generous enough for edge-touching
   const ax = rect.x(), ay = rect.y(), aw = rect.width(), ah = rect.height()
 
   // ── Pass 1: add to existing group ──
@@ -515,13 +662,20 @@ export function tryMergeRects(id, rect, { structDataRef, structIdCtr, groupIdCtr
       if (xOv && yOv && edge) { adjacent = true; break }
     }
     if (!adjacent) continue
-    rect.destroy(); delete structDataRef.current[id]
-    const newR = new Konva.Rect({
-      x: ax - grp.x(), y: ay - grp.y(), width: aw, height: ah,
-      fill: d.colour + (d.type === 'bed' || d.type === 'bed-square' ? 'FF' : 'CC'), stroke: d.type === 'bed' || d.type === 'bed-square' ? 'transparent' : '#3A2A10', strokeWidth: 2,
-      cornerRadius: d.type === 'building' ? 3 : 0, strokeScaleEnabled: false,
-    })
-    grp.add(newR)
+    // Reuse the existing rect (texture already applied) — just reposition into group coords
+    rect.draggable(false)  // group handles dragging; member rects must not drag independently
+    rect.x(ax - grp.x()); rect.y(ay - grp.y())
+    rect.moveTo(grp)
+    delete structDataRef.current[id]
+    // Track per-member data on the group structData
+    const gd = structDataRef.current[oid]
+    if (!gd.members) gd.members = []
+    gd.members.push({ colour: d.colour, roofRotated: d.roofRotated || false,
+                       w: aw, h: ah })
+    // Ensure transformend is wired on this group (may not exist if it was created in a prior session)
+    grp.off('transformend.bake'); grp.off('transform.live')
+    grp.on('transform.live',    () => liveScaleGroupTextures(grp))
+    grp.on('transformend.bake', () => bakeGroupScale(grp, structLayer))
     structLayer.batchDraw()
     return
   }
@@ -538,25 +692,34 @@ export function tryMergeRects(id, rect, { structDataRef, structIdCtr, groupIdCtr
                  Math.abs(ay - (by + bh)) < SNAP || Math.abs(ay + ah - by) < SNAP
     if (!xOv || !yOv || !edge) continue
 
-    rect.destroy(); delete structDataRef.current[id]
-    other.destroy(); delete structDataRef.current[oid]
+    delete structDataRef.current[id]
+    delete structDataRef.current[oid]
 
     const gid = 'group_' + groupIdCtr.current++
-    structDataRef.current[gid] = { type: d.type, colour: d.colour, label: d.label, isGroup: true }
-    const group = new Konva.Group({ id: gid, x: 0, y: 0, draggable: true })
-    const rA = new Konva.Rect({ x: ax, y: ay, width: aw, height: ah,
-      fill: d.colour + (d.type === 'bed' || d.type === 'bed-square' ? 'FF' : 'CC'), stroke: d.type === 'bed' || d.type === 'bed-square' ? 'transparent' : '#3A2A10', strokeWidth: 2,
-      cornerRadius: d.type === 'building' ? 3 : 0, strokeScaleEnabled: false })
-    const rB = new Konva.Rect({ x: bx, y: by, width: bw, height: bh,
-      fill: od.colour + (od.type === 'bed' || od.type === 'bed-square' ? 'FF' : 'CC'), stroke: od.type === 'bed' || od.type === 'bed-square' ? 'transparent' : '#3A2A10', strokeWidth: 2,
-      cornerRadius: od.type === 'building' ? 3 : 0, strokeScaleEnabled: false })
-    group.add(rA, rB)
+    // Store per-member data so disconnect can restore colours + textures
+    structDataRef.current[gid] = {
+      type: d.type, colour: d.colour, label: d.label, isGroup: true,
+      members: [
+        { colour: d.colour,  roofRotated: d.roofRotated  || false, w: aw, h: ah },
+        { colour: od.colour, roofRotated: od.roofRotated || false, w: bw, h: bh },
+      ]
+    }
+    // Place group at bounding box origin so member rects have small local coords.
+    // This ensures bakeGroupScale (x * scaleX) works correctly — large world coords
+    // would compound with the group's own position shift during corner-scale.
+    const gx = Math.min(ax, bx), gy = Math.min(ay, by)
+    const group = new Konva.Group({ id: gid, x: gx, y: gy, draggable: true })
+    // Reuse existing rects — store as local offsets from group origin
+    rect.draggable(false);  rect.x(ax - gx);  rect.y(ay - gy);  rect.moveTo(group)
+    other.draggable(false); other.x(bx - gx); other.y(by - gy); other.moveTo(group)
     group.on('dragmove', () => {
       if (showGrid && snapCell) {
         group.x(Math.round(group.x() / snapCell) * snapCell)
         group.y(Math.round(group.y() / snapCell) * snapCell)
       }
     })
+    group.on('transform',    () => liveScaleGroupTextures(group))
+    group.on('transformend', () => bakeGroupScale(group, structLayer))
     group.on('click tap', e => { if (onSelect) onSelect(gid, group, e) })
     structLayer.add(group)
     structLayer.batchDraw()
@@ -568,6 +731,7 @@ export function addRectStruct({
   type, x, y, w, h, colour,
   structIdCtr, structDataRef, groupIdCtr, snapCell, showGrid,
   structLayer, onSelect, onModeChange, onEnterEdit,
+  TEXTURE_MAP, roofRotated,
 }) {
   if (!colour) {
     if (type === 'building') colour = BUILDING_COLOURS[0]
@@ -578,19 +742,34 @@ export function addRectStruct({
   }
   const labelMap = { building: 'Building', deck: 'Deck', 'pool-sq': 'Pool', 'hedge-sq': 'Hedge' }
   const id = 'struct_' + structIdCtr.current++
-  structDataRef.current[id] = { type, colour, label: labelMap[type] || 'Garden Bed' }
+  structDataRef.current[id] = { type, colour, label: labelMap[type] || 'Garden Bed', roofRotated: roofRotated || false }
 
   const cornerR = type === 'building' ? 3 : 0
   const bedType = type === 'bed' || type === 'bed-square'
   const hedgeType = type === 'hedge-sq'
+  const buildingType = type === 'building'
   const rect = new Konva.Rect({
     id, x, y, width: w, height: h,
-    fill: colour + (bedType ? 'FF' : 'CC'), stroke: (bedType || hedgeType) ? 'transparent' : '#3A2A10', strokeWidth: hedgeType ? 0 : 2,
+    fill: colour + (bedType ? 'FF' : 'CC'), stroke: (bedType || hedgeType || buildingType) ? 'transparent' : '#3A2A10', strokeWidth: (hedgeType || buildingType) ? 0 : 2,
     cornerRadius: cornerR, draggable: true, strokeScaleEnabled: false,
+  })
+  rect.on('transform', () => {
+    // Live resize: rebuild roof tile at visually scaled dimensions so edges stay locked during drag
+    const img = rect._roofTileImg
+    if (img && rect.fillPriority() === 'pattern') {
+      const scaledW = rect.width()  * rect.scaleX()
+      const scaledH = rect.height() * rect.scaleY()
+      const tile = buildRoofTile(img, scaledW, scaledH, rect._roofRotated || false)
+      rect.fillPatternImage(tile)
+      rect.fillPatternScale({ x: 1, y: 1 })
+      rect.fillPatternRepeat(rect._roofRotated ? 'repeat-y' : 'repeat-x')
+    }
   })
   rect.on('transformend', () => {
     rect.width(rect.width() * rect.scaleX()); rect.height(rect.height() * rect.scaleY())
-    rect.scaleX(1); rect.scaleY(1); structLayer.batchDraw()
+    rect.scaleX(1); rect.scaleY(1)
+    refreshRoofStripTexture(rect, structLayer, TEXTURE_MAP)
+    structLayer.batchDraw()
   })
   rect.on('click tap', e => { if (onSelect) onSelect(id, rect, e) })
   // No dblclick for rects — they have no editable points

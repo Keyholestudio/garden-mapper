@@ -44,7 +44,7 @@ export default function RightPanel({
   onCopyStruct,
   onColourChange, onRockVariantChange, onRockSpacingChange, onPathWidthChange,
   onEnterEdit, onExitEdit,
-  onDimRectApply, onDimCircleApply,
+  onDimRectApply, onDimCircleApply, onRoofRotate,
   onLayerMove,
   onTransparentStruct, onDisconnect,
   onSeasonsChange,
@@ -590,6 +590,9 @@ export default function RightPanel({
                 const h = parseFloat(document.getElementById('dim-rect-h')?.value)
                 if (w > 0 && h > 0) onDimRectApply?.(w, h)
               }}>Apply Dimensions</button>
+              {d.type === 'building' && TEXTURE_MAP[d.colour]?.roofStrip && (
+                <button className="btn-panel" onClick={() => onRoofRotate?.()}>⟳ Rotate</button>
+              )}
             </>
           )}
 

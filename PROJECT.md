@@ -1,6 +1,6 @@
 # Garden Mapper - Project Status
 
-_Last updated: 2026-10-31 (Internal Testing live on Play Store ✅; closed testing next)_
+_Last updated: 2026-11-05 (Path textures + bed picker cleanup; path snap bug fixed)_
 _Change history archived at: `memory/deep/garden-planner/project-history.md`_
 
 ---
@@ -175,12 +175,18 @@ cd projects/garden-planner/app && npm run dev
 - **[DONE] Load priority** - garden-first queue, full PLANT_CATALOG_TRAY coverage, search priority, 1-year cache headers. All commits live. ✅
 - **[NEXT] WebP sticker compression** - 237MB → ~38MB, 83% reduction. Q85 quality confirmed by Rob. Migration map in LESSONS.md L112. Script ready in `stickers-test/`. Resume: `resume WebP sticker compression`
   - ⚠️ **HOLD — do not start without Rob's explicit go-ahead.** This task renames every sticker `.png` → `.webp`. The Vercel deploy AND a new AAB upload must ship together or Android users lose all stickers. See L114 for full safety rules.
-- **[DONE] Audio system** - `useAudio.js` hook live. Web Audio API, zero deps. Music playing, next/prev/shuffle working. Controls in profile dropdown. See L115.
-  - 7 tracks loaded in `public/sounds/music/free/` (128kbps MP3, ~16.8MB total)
+- **[DONE] Audio system** - `useAudio.js` hook live. Web Audio API, zero deps. Music playing, next/prev/shuffle working. Controls in profile dropdown. See L115. Commits `c6c74e5`. Live on web ✅
+  - 7 tracks loaded in `public/sounds/music/free/` (128kbps MP3, ~16.8MB total). CDN-delivered (Vercel), WebView cache on Android.
   - SFX registered in hook but MP3 files not yet sourced (silent fail)
   - Premium music slot ready (`PLAYLIST_PREMIUM` array, gated by `isSubscribed`)
+  - **[DONE] Splash extended to 3s hold + 1.2s fade** — music overlaps exit. Commit `ee7f1ea`. Live ✅
+  - **[DONE] Page Visibility pause/resume** — music pauses when tab hidden, resumes on return. `wasPlayingRef` respects manual pause. Commit `de5cd19`. Live ✅
   - **[NEXT] Source SFX clips** - need MP3s for: plant-place, plant-remove, plant-select, decor-place, ui-click, save, season-change. Free libraries: freesound.org, mixkit.co
   - **[NEXT] Strip sound controls from MoreModal** - now lives in profile dropdown, MoreModal section is redundant
+- **[DONE] Path colour picker** — Clay Brick, Grey Brick, Warm/Cedar/Dark Woodchip, Straw added. Red brick, flagstone, stepping stones, 3 flat colours removed.
+- **[DEFERRED] Woodchip/Straw textures** — current placeholders clash with PvZ cartoon style. Need regeneration with dark outlines, flat colours, magenta BG. Prompts in DECOR-PROMPT-GUIDE.md Section 6.
+- **[DONE] Path snap bug** — colour change no longer snaps moved path back to origin. Fixed in drawUtils.js (`99ec269`).
+- **[DONE] Bed colour picker** — removed Dark Soil, Red Mulch, Cedar Mulch, Hay. Brown Soil + 6 flat colours remain.
   - **[DEFER] Music pack upsell UI** - premium track gate is wired, upsell UI comes later
 - **[NEXT] Garden rename** - pencil icon in My Gardens, updates name in localStorage + cloud sync. Medium effort, low risk.
 - **[DEFER] Resize canvas** - modal approach to change garden w/h. After launch.
