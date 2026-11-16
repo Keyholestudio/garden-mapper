@@ -8,13 +8,8 @@
 // 3. Add to PLANT_CATALOG_TRAY filter in usePlantCatalog.js if needed
 
 export const PACK_REGISTRY = [
-  {
-    id: 'core',
-    label: 'Core',
-    eager: true,               // loaded at boot, always available
-    loader: () => import('./pack-core.js'),
-    families: [],              // all families not claimed by other packs
-  },
+  // 'core' pack removed — PLANT_CATALOG is already in PLANT_CATALOG_TRAY directly.
+  // Keeping it here caused every core catalog entry to appear twice in the tray.
   {
     id: 'cacti-succulents',
     label: 'Cacti & Succulents',
