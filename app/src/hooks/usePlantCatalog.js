@@ -101,7 +101,7 @@ export const PLANT_CATALOG = [
   { key:'ground-cover_hostas',             label:'Hostas',              family:'Ground Cover',         src:'/stickers/ground-cover_hostas_M_CA-US-FR-GB-AU.png',              size:'M' },
   { key:'ground-cover_ivy',                label:'English Ivy',         family:'Ground Cover',         src:'/stickers/ground-cover_ivy_S_CA-US-FR-GB-AU.png',                 size:'S' },
   { key:'ground-cover_pachysandra',        label:'Pachysandra',         family:'Ground Cover',         src:'/stickers/ground-cover_pachysandra_XS_CA-US-FR-GB-AU.png',        size:'XS' },
-  { key:'ground-cover_sedum',              label:'Sedum',               family:'Ground Cover',         src:'/stickers/ground-cover_sedum_XS_CA-US-FR-GB-AU.png',              size:'XS' },
+
   { key:'ground-cover_vinca',              label:'Vinca',               family:'Ground Cover',         src:'/stickers/ground-cover_vinca_XS_CA-US-FR-GB-AU.png',              size:'XS' },
 
   // ── Herbs ─────────────────────────────────────────────────────────────────────
