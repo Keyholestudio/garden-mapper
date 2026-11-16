@@ -100,9 +100,9 @@ export const PLANT_CATALOG = [
   { key:'ground-cover_creeping-jenny',     label:'Creeping Jenny',      family:'Ground Cover',         src:'/stickers/ground-cover_creeping-jenny_XS_CA-US-FR-GB-AU.png',     size:'XS' },
   { key:'ground-cover_hostas',             label:'Hostas',              family:'Ground Cover',         src:'/stickers/ground-cover_hostas_M_CA-US-FR-GB-AU.png',              size:'M' },
 
-  { key:'ground-cover_pachysandra',        label:'Pachysandra',         family:'Ground Cover',         src:'/stickers/ground-cover_pachysandra_XS_CA-US-FR-GB-AU.png',        size:'XS' },
 
-  { key:'ground-cover_vinca',              label:'Vinca',               family:'Ground Cover',         src:'/stickers/ground-cover_vinca_XS_CA-US-FR-GB-AU.png',              size:'XS' },
+
+
 
   // ── Herbs ─────────────────────────────────────────────────────────────────────
   { key:'herb-small_basil',                label:'Basil',               family:'Herb',                 src:'/stickers/herb-small_basil_S_CA-US-FR-GB-AU.png',                 size:'S' },
