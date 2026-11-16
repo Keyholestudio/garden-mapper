@@ -93,7 +93,7 @@ export const PLANT_CATALOG = [
   { key:'grass-clump_cattail',             label:'Cattail',             family:'Aquatic / Grass',      src:'/stickers/grass-clump_cattail_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'grass-clump_feather-grass',       label:'Feather Grass',       family:'Ornamental Grass',     src:'/stickers/grass-clump_feather-grass_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'grass-clump_ornamental-grass',    label:'Ornamental Grass',    family:'Ornamental Grass',     src:'/stickers/grass-clump_ornamental-grass_M_CA-US-FR-GB-AU.png', size:'M' },
-  { key:'grass-clump_pampas-grass',        label:'Pampas Grass',        family:'Ornamental Grass',     src:'/stickers/grass-clump_pampas-grass_XL_US-FR-GB-AU.png',           size:'M'  },
+
 
   // ── Ground Cover ──────────────────────────────────────────────────────────────
 
