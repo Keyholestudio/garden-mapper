@@ -60,7 +60,7 @@ export const entries = [
     latinName: 'Ipomoea batatas',
     searchTerms: ['sweet potato', 'ipomoea', 'kumara'],
     traits: ['annual', 'root', 'tropical', 'spreading'],
-    src: '/stickers/vegetable-root_sweet-potato_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-leafy_sweet-potato_M_CA-US-FR-GB-AU.png',
   },
   {
     key: 'vegetable-root_oca',
