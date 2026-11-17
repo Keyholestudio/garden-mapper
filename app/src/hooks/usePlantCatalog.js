@@ -34,7 +34,6 @@ export const PLANT_CATALOG = [
   { key:'flower-spike_astilbe',             label:'Astilbe',             family:'Perennial',            src:'/stickers/flower-spike_astilbe_M_CA-US-FR-GB-AU.png',               size:'M'  },
   { key:'ground-cover_heuchera',            label:'Heuchera',            family:'Ground Cover',         src:'/stickers/ground-cover_heuchera_S_CA-US-FR-GB-AU.png',              size:'S'  },
   { key:'flower-cluster_verbena',           label:'Verbena',             family:'Annual Flower',        src:'/stickers/flower-cluster_verbena_S_CA-US-FR-GB-AU.png',             size:'S'  },
-  { key:'flower-cluster_agapanthus',        label:'Agapanthus',          family:'Bulb / Perennial',     src:'/stickers/flower-cluster_agapanthus_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'flower-spike_liatris',             label:'Liatris',             family:'Perennial',            src:'/stickers/flower-spike_liatris_M_CA-US-FR-GB-AU.png',               size:'M'  },
   { key:'flower-spike_hollyhock',           label:'Hollyhock',           family:'Biennial',             src:'/stickers/flower-spike_hollyhock_XL_CA-US-FR-GB-AU.png',            size:'M'  },
   // New vegetables
@@ -44,11 +43,9 @@ export const PLANT_CATALOG = [
   { key:'vegetable-leafy_pumpkin',          label:'Pumpkin',             family:'Vegetable',            src:'/stickers/vegetable-leafy_pumpkin_M_CA-US-FR-GB-AU.png', size:'M' },
   { key:'vegetable-leafy_squash',           label:'Squash',              family:'Vegetable',            src:'/stickers/vegetable-leafy_squash_M_CA-US-FR-GB-AU.png',             size:'M'  },
   { key:'vegetable-leafy_swiss-chard',      label:'Swiss Chard',         family:'Vegetable',            src:'/stickers/vegetable-leafy_swiss-chard_M_CA-US-FR-GB-AU.png',        size:'M'  },
-  { key:'vegetable-leafy_sweet-potato',     label:'Sweet Potato',        family:'Vegetable',            src:'/stickers/vegetable-leafy_sweet-potato_M_CA-US-FR-GB-AU.png',       size:'S'  },
   { key:'vegetable-root_onion',             label:'Onion',               family:'Root Vegetable',       src:'/stickers/vegetable-root_onion_S_CA-US-FR-GB-AU.png',               size:'S'  },
 
   // ── Aquatic ──────────────────────────────────────────────────────────────────
-  { key:'aquatic_water-lily',              label:'Water Lily',          family:'Aquatic',              src:'/stickers/aquatic_water-lily_M_CA-US-FR-GB-AU.png',               size:'M' },
 
   // ── Bulbs ─────────────────────────────────────────────────────────────────────
   { key:'bulb-spring_daffodil',            label:'Daffodil',            family:'Bulb',                 src:'/stickers/bulb-spring_daffodil_S_CA-US-FR-GB-AU.png',             size:'S' },
@@ -56,7 +53,6 @@ export const PLANT_CATALOG = [
   { key:'bulb-spring_tulip',               label:'Tulip',               family:'Bulb',                 src:'/stickers/bulb-spring_tulip_S_red_CA-US-FR-GB-AU.png',            size:'S' },
 
   // ── Flower Clusters ───────────────────────────────────────────────────────────
-  { key:'flower-cluster_allium',           label:'Allium',              family:'Ornamental Bulb',      src:'/stickers/flower-cluster_allium_M_CA-US-FR-GB-AU.png',            size:'M' },
   { key:'flower-cluster_hydrangea',        label:'Hydrangea',           family:'Shrub',                src:'/stickers/flower-cluster_hydrangea_M_arborescens_CA-US-FR-GB-AU.png', size:'M' },
 
   // ── Daisy-type Flowers ────────────────────────────────────────────────────────
