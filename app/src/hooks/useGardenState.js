@@ -73,7 +73,7 @@ export const PLANT_VARIANTS = {
   ],
   'flower-spike_iris': [
     { label: 'Perennial', name: 'Iris',          colour: '#7B35C8', src: null },
-    { label: 'Bearded',   name: 'Bearded Iris',  colour: '#7B35C8', src: '/stickers/flower-spike_iris_M_bearded_CA-US-FR-GB-AU.png' },
+    { label: 'Bearded',   name: 'Bearded Iris',  colour: '#7B35C8', src: '/stickers/flower-spike_iris_M_CA-US-FR-GB-AU.png' },
     { label: 'Species',   name: 'Species Iris',  colour: '#FFD700', src: '/stickers/flower-spike_iris_M_species_CA-US-FR-GB-AU.png' },
     { label: 'Peach',     name: 'Peach Iris',    colour: '#F5C090', src: '/stickers/flower-spike_iris_M_peach_CA-US-FR-GB-AU.png' },
   ],

@@ -35,16 +35,6 @@ export const entries = [
   },
 
   {
-    key: 'plant-fern_ostrich-fern_L_CA-US-FR-GB-AU',
-    label: 'Ostrich Fern',
-    size: 'M',
-    latinName: 'Matteuccia struthiopteris',
-    searchTerms: ['ostrich fern', 'matteuccia', 'shuttlecock fern'],
-    traits: ['shade', 'deciduous-fern', 'vase-shaped'],
-    src: '/stickers/plant-fern_ostrich-fern_L_CA-US-FR-GB-AU.png',
-  },
-
-  {
     key: 'plant-fern_japanese-painted-fern_M_CA-US-FR-GB-AU',
     label: 'Japanese Painted Fern',
     size: 'M',
@@ -95,16 +85,6 @@ export const entries = [
   },
 
   {
-    key: 'plant-fern_royal-fern_XL_CA-US-FR-GB-AU',
-    label: 'Royal Fern',
-    size: 'M',
-    latinName: 'Osmunda regalis',
-    searchTerms: ['royal fern', 'osmunda', 'flowering fern'],
-    traits: ['shade', 'wetland', 'tall', 'deciduous-fern'],
-    src: '/stickers/plant-fern_royal-fern_XL_CA-US-FR-GB-AU.png',
-  },
-
-  {
     key: 'plant-fern_interrupted-fern_L_CA-US-FR-GB-AU',
     label: 'Interrupted Fern',
     size: 'M',
@@ -112,16 +92,6 @@ export const entries = [
     searchTerms: ['interrupted fern', 'osmunda claytoniana'],
     traits: ['shade', 'deciduous-fern', 'unusual'],
     src: '/stickers/plant-fern_interrupted-fern_L_CA-US-FR-GB-AU.png',
-  },
-
-  {
-    key: 'plant-fern_cinnamon-fern_L_CA-US-FR-GB-AU',
-    label: 'Cinnamon Fern',
-    size: 'M',
-    latinName: 'Osmundastrum cinnamomeum',
-    searchTerms: ['cinnamon fern', 'osmundastrum', 'fertile fronds'],
-    traits: ['shade', 'wetland', 'deciduous-fern', 'cinnamon'],
-    src: '/stickers/plant-fern_cinnamon-fern_L_CA-US-FR-GB-AU.png',
   },
 
   {
