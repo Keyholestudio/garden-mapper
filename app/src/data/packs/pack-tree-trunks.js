@@ -9,6 +9,6 @@ export const entries = [
   // 🪵 Tree Trunks ─────────────────────────────────────────────────────────────
   // Added 2026-10-20
 
-  { key: 'tree-trunk_oak',    label: 'Tree Trunk', family: 'Tree Trunk', size: 'XL', src: '/stickers/tree-trunk_oak_XL_CA-US-FR-GB-AU.png',    latinName: '', searchTerms: ['trunk', 'tree trunk', 'stump', 'bark', 'oak trunk'], traits: ['decorative', 'structural'] },
+  { key: 'tree-trunk_oak',    label: 'Tree Trunk', family: 'Tree Trunk', size: 'XL', src: '/stickers/tree-trunk_oak_XL_CA-US-FR-GB-AU.webp',    latinName: '', searchTerms: ['trunk', 'tree trunk', 'stump', 'bark', 'oak trunk'], traits: ['decorative', 'structural'] },
 
 ]

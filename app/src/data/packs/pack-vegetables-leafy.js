@@ -15,7 +15,7 @@ export const entries = [
     latinName: 'Eruca vesicaria',
     searchTerms: ['arugula', 'rocket', 'eruca', 'roquette'],
     traits: ['annual', 'leafy', 'fast', 'peppery'],
-    src: '/stickers/vegetable-leafy_arugula_S_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-leafy_arugula_S_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'vegetable-leafy_radicchio',
@@ -24,7 +24,7 @@ export const entries = [
     latinName: 'Cichorium intybus',
     searchTerms: ['radicchio', 'red chicory', 'cichorium'],
     traits: ['annual', 'leafy', 'bitter', 'italian'],
-    src: '/stickers/vegetable-leafy_radicchio_S_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-leafy_radicchio_S_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'vegetable-leafy_endive',
@@ -33,7 +33,7 @@ export const entries = [
     latinName: 'Cichorium endivia',
     searchTerms: ['endive', 'curly endive', 'escarole'],
     traits: ['annual', 'leafy', 'bitter', 'french'],
-    src: '/stickers/vegetable-leafy_endive_S_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-leafy_endive_S_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'vegetable-leafy_red-amaranth',
@@ -42,7 +42,7 @@ export const entries = [
     latinName: 'Amaranthus tricolor',
     searchTerms: ['red amaranth', "joseph's coat", 'chinese spinach', 'amaranthus'],
     traits: ['annual', 'leafy', 'red', 'ornamental-edible'],
-    src: '/stickers/vegetable-leafy_red-amaranth_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-leafy_red-amaranth_M_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'vegetable-leafy_lambs-lettuce',
@@ -51,7 +51,7 @@ export const entries = [
     latinName: 'Valerianella locusta',
     searchTerms: ['mache', "lamb's lettuce", 'corn salad', 'valerianella'],
     traits: ['annual', 'leafy', 'cold-tolerant'],
-    src: '/stickers/vegetable-leafy_lambs-lettuce_XS_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-leafy_lambs-lettuce_XS_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'vegetable-leafy_nz-spinach',
@@ -60,7 +60,7 @@ export const entries = [
     latinName: 'Tetragonia tetragonioides',
     searchTerms: ['new zealand spinach', 'tetragonia', 'warrigal greens'],
     traits: ['annual', 'leafy', 'heat-tolerant'],
-    src: '/stickers/vegetable-leafy_nz-spinach_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-leafy_nz-spinach_M_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'vegetable-leafy_malabar-spinach',
@@ -69,7 +69,7 @@ export const entries = [
     latinName: 'Basella alba',
     searchTerms: ['malabar spinach', 'basella', 'ceylon spinach'],
     traits: ['annual', 'leafy', 'climbing', 'heat-tolerant'],
-    src: '/stickers/vegetable-leafy_malabar-spinach_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-leafy_malabar-spinach_M_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'vegetable-leafy_good-king-henry',
@@ -78,7 +78,7 @@ export const entries = [
     latinName: 'Chenopodium bonus-henricus',
     searchTerms: ['good king henry', "poor man's asparagus", 'chenopodium'],
     traits: ['perennial', 'leafy', 'heritage'],
-    src: '/stickers/vegetable-leafy_good-king-henry_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-leafy_good-king-henry_M_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'vegetable-leafy_silverbeet',
@@ -87,14 +87,14 @@ export const entries = [
     latinName: 'Beta vulgaris',
     searchTerms: ['silverbeet', 'silver beet', 'perpetual spinach'],
     traits: ['perennial', 'leafy', 'robust'],
-    src: '/stickers/vegetable-leafy_silverbeet_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-leafy_silverbeet_M_CA-US-FR-GB-AU.webp',
   },
 
   // 🥦 Batch 2 (2026-09-18) ─────────────────────────────────────────────────
-  { key: 'vegetable-leafy_lettuce_M_bronze',    label: 'Lettuce (Bronze)',     size: 'M', latinName: 'Lactuca sativa', searchTerms: ['lettuce', 'bronze lettuce', 'leaf lettuce'],    traits: ['annual', 'leafy', 'salad', 'bronze'],      src: '/stickers/vegetable-leafy_lettuce_M_bronze.png' },
-  { key: 'vegetable-leafy_lettuce_M_burgundy',  label: 'Lettuce (Burgundy)',   size: 'M', latinName: 'Lactuca sativa', searchTerms: ['lettuce', 'burgundy lettuce', 'red lettuce'],   traits: ['annual', 'leafy', 'salad', 'burgundy'],    src: '/stickers/vegetable-leafy_lettuce_M_burgundy.png' },
-  { key: 'vegetable-leafy_lettuce_M_dark-green',label: 'Lettuce (Dark Green)', size: 'M', latinName: 'Lactuca sativa', searchTerms: ['lettuce', 'dark green lettuce', 'romaine'],     traits: ['annual', 'leafy', 'salad', 'dark-green'],  src: '/stickers/vegetable-leafy_lettuce_M_dark-green.png' },
-  { key: 'vegetable-leafy_lettuce_M_light-green',label: 'Lettuce (Light Green)',size: 'M', latinName: 'Lactuca sativa', searchTerms: ['lettuce', 'butterhead', 'light green lettuce'], traits: ['annual', 'leafy', 'salad', 'light-green'], src: '/stickers/vegetable-leafy_lettuce_M_light-green.png' },
-  { key: 'vegetable-leafy_lettuce_M_red-green',  label: 'Lettuce (Red & Green)',size: 'M', latinName: 'Lactuca sativa', searchTerms: ['lettuce', 'mixed lettuce', 'red green'],       traits: ['annual', 'leafy', 'salad', 'mixed'],       src: '/stickers/vegetable-leafy_lettuce_M_red-green.png' },
+  { key: 'vegetable-leafy_lettuce_M_bronze',    label: 'Lettuce (Bronze)',     size: 'M', latinName: 'Lactuca sativa', searchTerms: ['lettuce', 'bronze lettuce', 'leaf lettuce'],    traits: ['annual', 'leafy', 'salad', 'bronze'],      src: '/stickers/vegetable-leafy_lettuce_M_bronze.webp' },
+  { key: 'vegetable-leafy_lettuce_M_burgundy',  label: 'Lettuce (Burgundy)',   size: 'M', latinName: 'Lactuca sativa', searchTerms: ['lettuce', 'burgundy lettuce', 'red lettuce'],   traits: ['annual', 'leafy', 'salad', 'burgundy'],    src: '/stickers/vegetable-leafy_lettuce_M_burgundy.webp' },
+  { key: 'vegetable-leafy_lettuce_M_dark-green',label: 'Lettuce (Dark Green)', size: 'M', latinName: 'Lactuca sativa', searchTerms: ['lettuce', 'dark green lettuce', 'romaine'],     traits: ['annual', 'leafy', 'salad', 'dark-green'],  src: '/stickers/vegetable-leafy_lettuce_M_dark-green.webp' },
+  { key: 'vegetable-leafy_lettuce_M_light-green',label: 'Lettuce (Light Green)',size: 'M', latinName: 'Lactuca sativa', searchTerms: ['lettuce', 'butterhead', 'light green lettuce'], traits: ['annual', 'leafy', 'salad', 'light-green'], src: '/stickers/vegetable-leafy_lettuce_M_light-green.webp' },
+  { key: 'vegetable-leafy_lettuce_M_red-green',  label: 'Lettuce (Red & Green)',size: 'M', latinName: 'Lactuca sativa', searchTerms: ['lettuce', 'mixed lettuce', 'red green'],       traits: ['annual', 'leafy', 'salad', 'mixed'],       src: '/stickers/vegetable-leafy_lettuce_M_red-green.webp' },
 
 ];

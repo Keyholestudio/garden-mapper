@@ -15,7 +15,7 @@ export const entries = [
     latinName: 'Apium graveolens var. rapaceum',
     searchTerms: ['celeriac', 'celery root', 'turnip-rooted celery'],
     traits: ['biennial', 'root', 'celery-flavour'],
-    src: '/stickers/vegetable-root_celeriac_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-root_celeriac_M_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'vegetable-root_jerusalem-artichoke',
@@ -24,7 +24,7 @@ export const entries = [
     latinName: 'Helianthus tuberosus',
     searchTerms: ['jerusalem artichoke', 'sunchoke', 'topinambur'],
     traits: ['perennial', 'root', 'edible-tuber', 'tall'],
-    src: '/stickers/vegetable-root_jerusalem-artichoke_XL_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-root_jerusalem-artichoke_XL_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'vegetable-root_salsify',
@@ -33,7 +33,7 @@ export const entries = [
     latinName: 'Tragopogon porrifolius',
     searchTerms: ['salsify', 'oyster plant', 'vegetable oyster'],
     traits: ['biennial', 'root', 'heritage', 'oyster-flavour'],
-    src: '/stickers/vegetable-root_salsify_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-root_salsify_M_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'vegetable-root_scorzonera',
@@ -42,7 +42,7 @@ export const entries = [
     latinName: 'Scorzonera hispanica',
     searchTerms: ['scorzonera', 'black salsify'],
     traits: ['perennial', 'root', 'heritage'],
-    src: '/stickers/vegetable-root_scorzonera_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-root_scorzonera_M_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'vegetable-root_hamburg-parsley',
@@ -51,7 +51,7 @@ export const entries = [
     latinName: 'Petroselinum crispum var. tuberosum',
     searchTerms: ['hamburg parsley', 'turnip-rooted parsley'],
     traits: ['biennial', 'root', 'parsley'],
-    src: '/stickers/vegetable-root_hamburg-parsley_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-root_hamburg-parsley_M_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'vegetable-root_sweet-potato',
@@ -60,7 +60,7 @@ export const entries = [
     latinName: 'Ipomoea batatas',
     searchTerms: ['sweet potato', 'ipomoea', 'kumara'],
     traits: ['annual', 'root', 'tropical', 'spreading'],
-    src: '/stickers/vegetable-leafy_sweet-potato_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-leafy_sweet-potato_M_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'vegetable-root_oca',
@@ -69,7 +69,7 @@ export const entries = [
     latinName: 'Oxalis tuberosa',
     searchTerms: ['oca', 'new zealand yam', 'oxalis tuberosa'],
     traits: ['perennial', 'root', 'heritage', 'andean'],
-    src: '/stickers/vegetable-root_oca_S_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-root_oca_S_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'vegetable-root_skirret',
@@ -78,7 +78,7 @@ export const entries = [
     latinName: 'Sium sisarum',
     searchTerms: ['skirret', 'sium sisarum'],
     traits: ['perennial', 'root', 'heritage'],
-    src: '/stickers/vegetable-root_skirret_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-root_skirret_M_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'vegetable-root_yacon',
@@ -87,7 +87,7 @@ export const entries = [
     latinName: 'Smallanthus sonchifolius',
     searchTerms: ['yacon', 'smallanthus', 'ground apple'],
     traits: ['perennial', 'root', 'edible-tuber', 'andean'],
-    src: '/stickers/vegetable-root_yacon_XL_CA-US-FR-GB-AU.png',
+    src: '/stickers/vegetable-root_yacon_XL_CA-US-FR-GB-AU.webp',
   },
 
 ];

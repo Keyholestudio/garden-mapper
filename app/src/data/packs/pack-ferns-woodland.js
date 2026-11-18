@@ -21,7 +21,7 @@ export const entries = [
     latinName: 'Athyrium filix-femina',
     searchTerms: ['lady fern', 'athyrium', 'woodland fern'],
     traits: ['shade', 'deciduous-fern', 'delicate'],
-    src: '/stickers/plant-fern_lady-fern_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/plant-fern_lady-fern_M_CA-US-FR-GB-AU.webp',
   },
 
   {
@@ -31,7 +31,7 @@ export const entries = [
     latinName: 'Dryopteris filix-mas',
     searchTerms: ['male fern', 'dryopteris', 'buckler fern'],
     traits: ['shade', 'semi-evergreen', 'robust'],
-    src: '/stickers/plant-fern_male-fern_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/plant-fern_male-fern_M_CA-US-FR-GB-AU.webp',
   },
 
   {
@@ -41,7 +41,7 @@ export const entries = [
     latinName: 'Athyrium niponicum',
     searchTerms: ['japanese painted fern', 'athyrium niponicum', 'silver fern'],
     traits: ['shade', 'deciduous-fern', 'ornamental', 'silver'],
-    src: '/stickers/plant-fern_japanese-painted-fern_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/plant-fern_japanese-painted-fern_M_CA-US-FR-GB-AU.webp',
   },
 
   {
@@ -51,7 +51,7 @@ export const entries = [
     latinName: 'Asplenium scolopendrium',
     searchTerms: ["hart's tongue fern", 'asplenium scolopendrium'],
     traits: ['shade', 'evergreen', 'strap-leafed'],
-    src: '/stickers/plant-fern_harts-tongue-fern_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/plant-fern_harts-tongue-fern_M_CA-US-FR-GB-AU.webp',
   },
 
   {
@@ -61,7 +61,7 @@ export const entries = [
     latinName: 'Adiantum pedatum',
     searchTerms: ['maidenhair fern', 'adiantum', 'venus hair'],
     traits: ['shade', 'deciduous-fern', 'delicate'],
-    src: '/stickers/plant-fern_maidenhair-fern_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/plant-fern_maidenhair-fern_M_CA-US-FR-GB-AU.webp',
   },
 
   {
@@ -71,7 +71,7 @@ export const entries = [
     latinName: 'Polystichum setiferum',
     searchTerms: ['soft shield fern', 'polystichum setiferum'],
     traits: ['shade', 'semi-evergreen', 'soft'],
-    src: '/stickers/plant-fern_soft-shield-fern_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/plant-fern_soft-shield-fern_M_CA-US-FR-GB-AU.webp',
   },
 
   {
@@ -81,7 +81,7 @@ export const entries = [
     latinName: 'Dryopteris dilatata',
     searchTerms: ['broad buckler fern', 'dryopteris dilatata'],
     traits: ['shade', 'semi-evergreen', 'spreading'],
-    src: '/stickers/plant-fern_broad-buckler-fern_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/plant-fern_broad-buckler-fern_M_CA-US-FR-GB-AU.webp',
   },
 
   {
@@ -91,7 +91,7 @@ export const entries = [
     latinName: 'Osmunda claytoniana',
     searchTerms: ['interrupted fern', 'osmunda claytoniana'],
     traits: ['shade', 'deciduous-fern', 'unusual'],
-    src: '/stickers/plant-fern_interrupted-fern_L_CA-US-FR-GB-AU.png',
+    src: '/stickers/plant-fern_interrupted-fern_L_CA-US-FR-GB-AU.webp',
   },
 
   {
@@ -101,7 +101,7 @@ export const entries = [
     latinName: 'Onoclea sensibilis',
     searchTerms: ['sensitive fern', 'onoclea', 'bead fern'],
     traits: ['shade', 'wetland', 'deciduous-fern'],
-    src: '/stickers/plant-fern_sensitive-fern_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/plant-fern_sensitive-fern_M_CA-US-FR-GB-AU.webp',
   },
 
   {
@@ -111,7 +111,7 @@ export const entries = [
     latinName: 'Dennstaedtia punctilobula',
     searchTerms: ['hay-scented fern', 'dennstaedtia', 'hay fern'],
     traits: ['shade', 'deciduous-fern', 'dry-shade', 'spreading'],
-    src: '/stickers/plant-fern_hay-scented-fern_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/plant-fern_hay-scented-fern_M_CA-US-FR-GB-AU.webp',
   },
 
   {
@@ -121,7 +121,7 @@ export const entries = [
     latinName: 'Nephrolepis exaltata',
     searchTerms: ['boston fern', 'nephrolepis', 'sword fern', 'hanging basket fern'],
     traits: ['humid', 'container', 'cascading'],
-    src: '/stickers/plant-fern_boston-fern_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/plant-fern_boston-fern_M_CA-US-FR-GB-AU.webp',
   },
   { key: 'plant-fern_tree-fern_XL_CA-US-FR-GB-AU', label: 'Tree Fern', size: 'XL', latinName: 'Dicksonia antarctica', searchTerms: ['tree fern', 'dicksonia', 'soft tree fern'], traits: ['fern', 'architectural', 'shade', 'tree'] },
   { key: 'plant-fern_sword-fern_M_CA-US-FR-GB-AU', label: 'Sword Fern', size: 'M', latinName: 'Polystichum munitum', searchTerms: ['sword fern', 'polystichum', 'western sword fern'], traits: ['fern', 'evergreen', 'shade'] },
@@ -129,8 +129,8 @@ export const entries = [
   { key: 'plant-fern_wood-fern_M_CA-US-FR-GB-AU', label: 'Wood Fern', size: 'M', latinName: 'Dryopteris filix-mas', searchTerms: ['wood fern', 'dryopteris', 'male fern'], traits: ['fern', 'deciduous', 'shade', 'woodland'] },
 
   // 🌿 Batch 2 (2026-09-18) ─────────────────────────────────────────────────
-  { key: 'plant-fern_cinnamon-fern_M_CA-US-FR-GB-AU', label: 'Cinnamon Fern', size: 'M', latinName: 'Osmundastrum cinnamomeum', searchTerms: ['cinnamon fern', 'osmundastrum', 'fertile fronds'], traits: ['fern', 'wetland', 'deciduous-fern', 'shade'], src: '/stickers/plant-fern_cinnamon-fern_M_CA-US-FR-GB-AU.png' },
-  { key: 'plant-fern_ostrich-fern_M_CA-US-FR-GB-AU', label: 'Ostrich Fern', size: 'M', latinName: 'Matteuccia struthiopteris', searchTerms: ['ostrich fern', 'matteuccia', 'shuttlecock fern'], traits: ['fern', 'deciduous-fern', 'vase-shaped', 'shade'], src: '/stickers/plant-fern_ostrich-fern_M_CA-US-FR-GB-AU.png' },
-  { key: 'plant-fern_royal-fern_M_CA-US-FR-GB-AU', label: 'Royal Fern', size: 'M', latinName: 'Osmunda regalis', searchTerms: ['royal fern', 'osmunda', 'flowering fern'], traits: ['fern', 'wetland', 'tall', 'deciduous-fern', 'shade'], src: '/stickers/plant-fern_royal-fern_M_CA-US-FR-GB-AU.png' },
+  { key: 'plant-fern_cinnamon-fern_M_CA-US-FR-GB-AU', label: 'Cinnamon Fern', size: 'M', latinName: 'Osmundastrum cinnamomeum', searchTerms: ['cinnamon fern', 'osmundastrum', 'fertile fronds'], traits: ['fern', 'wetland', 'deciduous-fern', 'shade'], src: '/stickers/plant-fern_cinnamon-fern_M_CA-US-FR-GB-AU.webp' },
+  { key: 'plant-fern_ostrich-fern_M_CA-US-FR-GB-AU', label: 'Ostrich Fern', size: 'M', latinName: 'Matteuccia struthiopteris', searchTerms: ['ostrich fern', 'matteuccia', 'shuttlecock fern'], traits: ['fern', 'deciduous-fern', 'vase-shaped', 'shade'], src: '/stickers/plant-fern_ostrich-fern_M_CA-US-FR-GB-AU.webp' },
+  { key: 'plant-fern_royal-fern_M_CA-US-FR-GB-AU', label: 'Royal Fern', size: 'M', latinName: 'Osmunda regalis', searchTerms: ['royal fern', 'osmunda', 'flowering fern'], traits: ['fern', 'wetland', 'tall', 'deciduous-fern', 'shade'], src: '/stickers/plant-fern_royal-fern_M_CA-US-FR-GB-AU.webp' },
 
 ];

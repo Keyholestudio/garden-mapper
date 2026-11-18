@@ -18,6 +18,6 @@ export const entries = [
   { key: 'tree-conifer_dawn-redwood_XXL_CA-US-FR-GB-AU', label: 'Dawn Redwood', size: 'XXL', latinName: 'Metasequoia glyptostroboides', searchTerms: ['dawn redwood', 'metasequoia', 'living fossil'], traits: ['conifer', 'deciduous', 'ancient', 'wetland', 'tree'] },
 
   // 🌲 Batch 2 (2026-09-18) ─────────────────────────────────────────────────
-  { key: 'tree-conifer_italian-cypress_XL_CA-US-FR-GB-AU', label: 'Italian Cypress', size: 'XL', latinName: 'Cupressus sempervirens', searchTerms: ['italian cypress', 'cupressus sempervirens', 'mediterranean cypress'], traits: ['conifer', 'evergreen', 'columnar', 'architectural', 'tree'], src: '/stickers/tree-conifer_italian-cypress_XL_CA-US-FR-GB-AU.png' },
+  { key: 'tree-conifer_italian-cypress_XL_CA-US-FR-GB-AU', label: 'Italian Cypress', size: 'XL', latinName: 'Cupressus sempervirens', searchTerms: ['italian cypress', 'cupressus sempervirens', 'mediterranean cypress'], traits: ['conifer', 'evergreen', 'columnar', 'architectural', 'tree'], src: '/stickers/tree-conifer_italian-cypress_XL_CA-US-FR-GB-AU.webp' },
 
 ];

@@ -15,7 +15,7 @@ export const entries = [
     latinName: 'Anethum graveolens',
     searchTerms: ['dill', 'anethum', 'dill weed'],
     traits: ['annual', 'herb', 'culinary', 'feathery'],
-    src: '/stickers/herb-culinary_dill_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/herb-culinary_dill_M_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'herb-culinary_cilantro',
@@ -24,7 +24,7 @@ export const entries = [
     latinName: 'Coriandrum sativum',
     searchTerms: ['cilantro', 'coriander', 'coriandrum'],
     traits: ['annual', 'herb', 'culinary', 'seed'],
-    src: '/stickers/herb-culinary_cilantro_S_CA-US-FR-GB-AU.png',
+    src: '/stickers/herb-culinary_cilantro_S_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'herb-culinary_oregano',
@@ -33,7 +33,7 @@ export const entries = [
     latinName: 'Origanum vulgare',
     searchTerms: ['oregano', 'origanum', 'wild marjoram'],
     traits: ['perennial', 'herb', 'culinary', 'mediterranean'],
-    src: '/stickers/herb-culinary_oregano_S_CA-US-FR-GB-AU.png',
+    src: '/stickers/herb-culinary_oregano_S_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'herb-culinary_lemon-balm',
@@ -42,7 +42,7 @@ export const entries = [
     latinName: 'Melissa officinalis',
     searchTerms: ['lemon balm', 'melissa', 'sweet balm'],
     traits: ['perennial', 'herb', 'fragrant', 'lemon'],
-    src: '/stickers/herb-culinary_lemon-balm_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/herb-culinary_lemon-balm_M_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'herb-culinary_tarragon',
@@ -51,7 +51,7 @@ export const entries = [
     latinName: 'Artemisia dracunculus',
     searchTerms: ['tarragon', 'french tarragon'],
     traits: ['perennial', 'herb', 'culinary', 'french'],
-    src: '/stickers/herb-culinary_tarragon_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/herb-culinary_tarragon_M_CA-US-FR-GB-AU.webp',
   },
 
   {
@@ -61,7 +61,7 @@ export const entries = [
     latinName: 'Anthriscus cerefolium',
     searchTerms: ['chervil', 'anthriscus', 'garden chervil'],
     traits: ['annual', 'herb', 'culinary', 'shade'],
-    src: '/stickers/herb-culinary_chervil_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/herb-culinary_chervil_M_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'herb-culinary_fennel',
@@ -70,7 +70,7 @@ export const entries = [
     latinName: 'Foeniculum vulgare',
     searchTerms: ['fennel', 'foeniculum', 'florence fennel'],
     traits: ['perennial', 'herb', 'culinary', 'anise', 'feathery'],
-    src: '/stickers/herb-culinary_fennel_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/herb-culinary_fennel_M_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'herb-culinary_caraway',
@@ -79,7 +79,7 @@ export const entries = [
     latinName: 'Carum carvi',
     searchTerms: ['caraway', 'carum'],
     traits: ['biennial', 'herb', 'seed', 'european'],
-    src: '/stickers/herb-culinary_caraway_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/herb-culinary_caraway_M_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'herb-culinary_lovage',
@@ -88,7 +88,7 @@ export const entries = [
     latinName: 'Levisticum officinale',
     searchTerms: ['lovage', 'levisticum', 'love parsley'],
     traits: ['perennial', 'herb', 'celery-flavour', 'tall'],
-    src: '/stickers/herb-culinary_lovage_XL_CA-US-FR-GB-AU.png',
+    src: '/stickers/herb-culinary_lovage_XL_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'herb-culinary_anise',
@@ -97,7 +97,7 @@ export const entries = [
     latinName: 'Pimpinella anisum',
     searchTerms: ['anise', 'pimpinella', 'aniseed'],
     traits: ['annual', 'herb', 'seed', 'fragrant'],
-    src: '/stickers/herb-culinary_anise_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/herb-culinary_anise_M_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'herb-culinary_horseradish',
@@ -106,7 +106,7 @@ export const entries = [
     latinName: 'Armoracia rusticana',
     searchTerms: ['horseradish', 'armoracia'],
     traits: ['perennial', 'herb', 'pungent', 'edible'],
-    src: '/stickers/herb-culinary_horseradish_M_CA-US-FR-GB-AU.png',
+    src: '/stickers/herb-culinary_horseradish_M_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'herb-culinary_garlic-chives',
@@ -115,7 +115,7 @@ export const entries = [
     latinName: 'Allium tuberosum',
     searchTerms: ['garlic chives', 'allium tuberosum', 'chinese chives'],
     traits: ['perennial', 'herb', 'culinary', 'edible-flower'],
-    src: '/stickers/herb-culinary_garlic-chives_S_CA-US-FR-GB-AU.png',
+    src: '/stickers/herb-culinary_garlic-chives_S_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'herb-culinary_vietnamese-coriander',
@@ -124,7 +124,7 @@ export const entries = [
     latinName: 'Persicaria odorata',
     searchTerms: ['vietnamese coriander', 'persicaria odorata', 'vietnamese mint'],
     traits: ['perennial', 'herb', 'culinary', 'tropical'],
-    src: '/stickers/herb-culinary_vietnamese-coriander_S_CA-US-FR-GB-AU.png',
+    src: '/stickers/herb-culinary_vietnamese-coriander_S_CA-US-FR-GB-AU.webp',
   },
   {
     key: 'herb-culinary_cumin',
@@ -133,19 +133,19 @@ export const entries = [
     latinName: 'Cuminum cyminum',
     searchTerms: ['cumin', 'cuminum', 'comino'],
     traits: ['annual', 'herb', 'seed', 'spice'],
-    src: '/stickers/herb-culinary_cumin_S_CA-US-FR-GB-AU.png',
+    src: '/stickers/herb-culinary_cumin_S_CA-US-FR-GB-AU.webp',
   },
 
   // 🌿 Batch 2 (2026-09-18) ─────────────────────────────────────────────────
-  { key: 'herb-culinary_fennel_XL_CA-US-FR-GB-AU', label: 'Fennel (Large)', size: 'XL', latinName: 'Foeniculum vulgare', searchTerms: ['fennel', 'foeniculum', 'bronze fennel', 'giant fennel'], traits: ['perennial', 'herb', 'culinary', 'architectural', 'tall'], src: '/stickers/herb-culinary_fennel_XL_CA-US-FR-GB-AU.png' },
+  { key: 'herb-culinary_fennel_XL_CA-US-FR-GB-AU', label: 'Fennel (Large)', size: 'XL', latinName: 'Foeniculum vulgare', searchTerms: ['fennel', 'foeniculum', 'bronze fennel', 'giant fennel'], traits: ['perennial', 'herb', 'culinary', 'architectural', 'tall'], src: '/stickers/herb-culinary_fennel_XL_CA-US-FR-GB-AU.webp' },
 
   // 🌿 Herb variants (2026-09-18) ──────────────────────────────────────────────
-  { key: 'herb-small_basil_greek',    label: 'Basil (Greek)',    size: 'S', latinName: 'Ocimum minimum',       searchTerms: ['greek basil', 'bush basil', 'dwarf basil'],        traits: ['annual', 'herb', 'compact', 'culinary'],    src: '/stickers/herb-small_basil_S_greek_CA-US-FR-GB-AU.png' },
-  { key: 'herb-small_basil_opal',     label: 'Basil (Opal)',     size: 'S', latinName: 'Ocimum basilicum',     searchTerms: ['opal basil', 'purple basil', 'dark opal basil'],   traits: ['annual', 'herb', 'purple', 'culinary'],     src: '/stickers/herb-small_basil_S_opal_CA-US-FR-GB-AU.png' },
-  { key: 'herb-small_basil_purple',   label: 'Basil (Purple)',   size: 'S', latinName: 'Ocimum basilicum',     searchTerms: ['purple basil', 'dark basil', 'basil'],             traits: ['annual', 'herb', 'purple', 'culinary'],     src: '/stickers/herb-small_basil_S_purple_CA-US-FR-GB-AU.png' },
-  { key: 'herb-small_basil_thai',     label: 'Basil (Thai)',     size: 'S', latinName: 'Ocimum basilicum var.',searchTerms: ['thai basil', 'asian basil', 'holy basil'],          traits: ['annual', 'herb', 'asian', 'culinary'],      src: '/stickers/herb-small_basil_S_thai_CA-US-FR-GB-AU.png' },
-  { key: 'herb-small_chives_large',   label: 'Chives (Large)',   size: 'M', latinName: 'Allium schoenoprasum', searchTerms: ['chives', 'large chives', 'allium schoenoprasum'],   traits: ['perennial', 'herb', 'allium', 'culinary'],  src: '/stickers/herb-small_chives_M_CA-US-FR-GB-AU.png' },
-  { key: 'herb-small_parsley_large',  label: 'Parsley (Large)',  size: 'M', latinName: 'Petroselinum crispum',  searchTerms: ['parsley', 'large parsley', 'flat-leaf parsley'],   traits: ['biennial', 'herb', 'culinary', 'large'],    src: '/stickers/herb-small_parsley_M_CA-US-FR-GB-AU.png' },
-  { key: 'herb-small_licorice-plant_S_CA-US-FR-GB-AU', label: 'Licorice Plant', size: 'S', latinName: 'Helichrysum petiolare', searchTerms: ['licorice plant', 'helichrysum', 'liquorice plant', 'silver foliage'], traits: ['annual', 'foliage', 'silver', 'trailing'], src: '/stickers/herb-small_licorice-plant_S_CA-US-FR-GB-AU.png' },
+  { key: 'herb-small_basil_greek',    label: 'Basil (Greek)',    size: 'S', latinName: 'Ocimum minimum',       searchTerms: ['greek basil', 'bush basil', 'dwarf basil'],        traits: ['annual', 'herb', 'compact', 'culinary'],    src: '/stickers/herb-small_basil_S_greek_CA-US-FR-GB-AU.webp' },
+  { key: 'herb-small_basil_opal',     label: 'Basil (Opal)',     size: 'S', latinName: 'Ocimum basilicum',     searchTerms: ['opal basil', 'purple basil', 'dark opal basil'],   traits: ['annual', 'herb', 'purple', 'culinary'],     src: '/stickers/herb-small_basil_S_opal_CA-US-FR-GB-AU.webp' },
+  { key: 'herb-small_basil_purple',   label: 'Basil (Purple)',   size: 'S', latinName: 'Ocimum basilicum',     searchTerms: ['purple basil', 'dark basil', 'basil'],             traits: ['annual', 'herb', 'purple', 'culinary'],     src: '/stickers/herb-small_basil_S_purple_CA-US-FR-GB-AU.webp' },
+  { key: 'herb-small_basil_thai',     label: 'Basil (Thai)',     size: 'S', latinName: 'Ocimum basilicum var.',searchTerms: ['thai basil', 'asian basil', 'holy basil'],          traits: ['annual', 'herb', 'asian', 'culinary'],      src: '/stickers/herb-small_basil_S_thai_CA-US-FR-GB-AU.webp' },
+  { key: 'herb-small_chives_large',   label: 'Chives (Large)',   size: 'M', latinName: 'Allium schoenoprasum', searchTerms: ['chives', 'large chives', 'allium schoenoprasum'],   traits: ['perennial', 'herb', 'allium', 'culinary'],  src: '/stickers/herb-small_chives_M_CA-US-FR-GB-AU.webp' },
+  { key: 'herb-small_parsley_large',  label: 'Parsley (Large)',  size: 'M', latinName: 'Petroselinum crispum',  searchTerms: ['parsley', 'large parsley', 'flat-leaf parsley'],   traits: ['biennial', 'herb', 'culinary', 'large'],    src: '/stickers/herb-small_parsley_M_CA-US-FR-GB-AU.webp' },
+  { key: 'herb-small_licorice-plant_S_CA-US-FR-GB-AU', label: 'Licorice Plant', size: 'S', latinName: 'Helichrysum petiolare', searchTerms: ['licorice plant', 'helichrysum', 'liquorice plant', 'silver foliage'], traits: ['annual', 'foliage', 'silver', 'trailing'], src: '/stickers/herb-small_licorice-plant_S_CA-US-FR-GB-AU.webp' },
 
 ];
