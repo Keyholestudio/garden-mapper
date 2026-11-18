@@ -377,7 +377,7 @@ export default function MobileSheet({
                           title={entry.label}
                         >
                           {loaded
-                            ? <img src={stickerSrc(entry.src || `/stickers/${entry.key}.png`)} alt={entry.label} draggable={false} />
+                            ? <img src={stickerSrc(entry.src || `/stickers/${entry.key}.webp`)} alt={entry.label} draggable={false} />
                             : <div className="mobile-plant-placeholder" />}
                         </div>
                         <button
@@ -410,7 +410,7 @@ export default function MobileSheet({
             {filtered.map(entry => {
               const img = loadedImages?.[entry.key]
               const preloaded = img && typeof img !== 'string'
-              const imgSrc = stickerSrc(entry.src || `/stickers/${entry.key}.png`)
+              const imgSrc = stickerSrc(entry.src || `/stickers/${entry.key}.webp`)
               return (
                 <div
                   key={entry.key}
@@ -710,12 +710,12 @@ export default function MobileSheet({
     // Rock border - simple dedicated panel
     if (d.type === 'rock-border') {
       const ROCK_VARIANTS = [
-        { id: 'grey-river',       label: 'Grey River Stone',  src: '/stickers/decor_rock-white_L_CA-US-FR-GB-AU.png' },
-        { id: 'river-stone',      label: 'River Stone',       src: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png' },
-        { id: 'brown-rock',       label: 'Brown Rock',        src: '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png' },
-        { id: 'grey-rock',        label: 'Grey Rock',         src: '/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png' },
-        { id: 'stepping-stone',   label: 'Stepping Stone',    src: '/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.png' },
-        { id: 'stepping-stone-2', label: 'Stepping Stone II', src: '/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.png' },
+        { id: 'grey-river',       label: 'Grey River Stone',  src: '/stickers/decor_rock-white_L_CA-US-FR-GB-AU.webp' },
+        { id: 'river-stone',      label: 'River Stone',       src: '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.webp' },
+        { id: 'brown-rock',       label: 'Brown Rock',        src: '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.webp' },
+        { id: 'grey-rock',        label: 'Grey Rock',         src: '/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.webp' },
+        { id: 'stepping-stone',   label: 'Stepping Stone',    src: '/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.webp' },
+        { id: 'stepping-stone-2', label: 'Stepping Stone II', src: '/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.webp' },
         { id: 'mixed-natural',    label: 'Mixed Natural',    mixed: 'natural' },
         { id: 'mixed-sandstone',  label: 'Mixed Sandstone',  mixed: 'sandstone' },
       ]
@@ -735,17 +735,17 @@ export default function MobileSheet({
               >
                 {v.mixed === 'natural' ? (
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', width: '100%', height: '100%', borderRadius: 6, overflow: 'hidden' }}>
-                    <img src='/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png'  alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    <img src='/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png' alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    <img src='/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png' alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    <img src='/stickers/decor_rock-white_L_CA-US-FR-GB-AU.png'  alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src='/stickers/decor_rock-small_M_CA-US-FR-GB-AU.webp'  alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src='/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.webp' alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src='/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.webp' alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src='/stickers/decor_rock-white_L_CA-US-FR-GB-AU.webp'  alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                 ) : v.mixed === 'sandstone' ? (
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', width: '100%', height: '100%', borderRadius: 6, overflow: 'hidden' }}>
-                    <img src='/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.png' alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    <img src='/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.png'  alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    <img src='/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.png'  alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    <img src='/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.png' alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src='/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.webp' alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src='/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.webp'  alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src='/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.webp'  alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src='/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.webp' alt='' style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   </div>
                 ) : (
                   <img src={v.src} alt={v.label} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', borderRadius: 6 }} />
