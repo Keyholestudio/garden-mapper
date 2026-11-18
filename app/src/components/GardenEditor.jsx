@@ -245,8 +245,8 @@ export default function GardenEditor() {
     const ordered = buildImgLoadOrder()
     imgQueueRef.current = [...ordered]
     // getSrc: pack entries omit src and rely on key-based filename convention
-    const getSrc = p => p.src || `/stickers/${p.key}.png`
-    const getSrcNative = p => stickerSrc(p.src || `/stickers/${p.key}.png`)
+    const getSrc = p => p.src || `/stickers/${p.key}.webp`
+    const getSrcNative = p => stickerSrc(p.src || `/stickers/${p.key}.webp`)
 
     if (IS_NATIVE) {
       // Native: sequential loading from CDN to avoid WebViewLocalServer thread pool contention
