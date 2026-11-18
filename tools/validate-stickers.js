@@ -38,7 +38,7 @@ function parseEntries(filePath) {
 
 // ── Get all PNG files in stickers dir ────────────────────────────────────────
 function getStickerFiles() {
-  return new Set(fs.readdirSync(STICKERS_DIR).filter(f => f.endsWith('.png')))
+  return new Set(fs.readdirSync(STICKERS_DIR).filter(f => f.endsWith('.webp') || f.endsWith('.png')))
 }
 
 // ── Main validation ───────────────────────────────────────────────────────────
@@ -70,11 +70,11 @@ function validate() {
       errors.push(`MISSING FILE  key="${entry.key}"  src="${entry.src}"  (from ${entry.file})`)
     }
 
-    // Check 2: for decor/water items, key should match filename (without .png)
+    // Check 2: for decor/water items, key should match filename (without extension)
     // Plant keys are intentionally short (no size/region suffix) — skip those
     const isDecorKey = entry.key.startsWith('decor_') || entry.key.startsWith('water-feature_')
     if (isDecorKey) {
-      const expectedKey = filename.replace('.png', '')
+      const expectedKey = filename.replace(/\.(webp|png)$/, '')
       if (entry.key !== expectedKey) {
         warnings.push(`KEY MISMATCH  key="${entry.key}"  src filename="${expectedKey}"  (from ${entry.file})`)
       }

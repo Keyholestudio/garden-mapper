@@ -46,23 +46,36 @@ foreach ($d in $catalogDups) {
     $errors += "CATALOG DUPLICATE: '$($d.Name)' appears $($d.Count) times in usePlantCatalog.js"
 }
 
-# ── 3. Missing PNGs ───────────────────────────────────────────────────────────
+# ── 3. Missing sticker files (explicit src: entries) ─────────────────────────
 $allEntries = $catalogEntries + $allPackEntries
 foreach ($entry in $allEntries) {
     if (-not $entry.Src) { continue }
     $filename = $entry.Src -replace '^/stickers/', ''
     $path = "$STICKERS\$filename"
     if (-not (Test-Path $path)) {
-        $errors += "MISSING PNG: '$($entry.Key)' → $filename"
+        $errors += "MISSING STICKER: '$($entry.Key)' → $filename"
     }
 }
 
-# ── 4. Orphaned PNGs (in folder but not in any catalog/pack) ──────────────────
+# ── 3b. Key-as-filename entries (pack entries with no src:) ───────────────────
+# Pack entries that omit src: rely on key-based filename: /stickers/<key>.webp
+foreach ($entry in $allPackEntries) {
+    if ($entry.Src) { continue }  # already checked above
+    $filename = "$($entry.Key).webp"
+    $path = "$STICKERS\$filename"
+    if (-not (Test-Path $path)) {
+        $warnings += "MISSING KEY-AS-FILENAME: '$($entry.Key)' → $filename (key-as-filename pack entry)"
+    }
+}
+
+# ── 4. Orphaned stickers (in folder but not in any catalog/pack) ──────────────
 $allSrcs = $allEntries | ForEach-Object { ($_.Src -replace '^/stickers/', '') }
-$pngFiles = Get-ChildItem "$STICKERS\*.png" | ForEach-Object { $_.Name }
-foreach ($png in $pngFiles) {
-    if ($allSrcs -notcontains $png) {
-        $warnings += "ORPHAN PNG (not in any catalog): $png"
+$stickerFiles = Get-ChildItem "$STICKERS\*.webp", "$STICKERS\*.png" -ErrorAction SilentlyContinue | ForEach-Object { $_.Name }
+foreach ($file in $stickerFiles) {
+    # Also check key-as-filename coverage
+    $keyMatch = $allPackEntries | Where-Object { -not $_.Src -and "$($_.Key).webp" -eq $file }
+    if ($allSrcs -notcontains $file -and -not $keyMatch) {
+        $warnings += "ORPHAN STICKER (not in any catalog): $file"
     }
 }
 
@@ -71,7 +84,7 @@ $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm"
 Write-Host "=== Garden Mapper Tray Validator — $timestamp ===" -ForegroundColor Cyan
 Write-Host "Catalog entries:  $($catalogEntries.Count)"
 Write-Host "Pack entries:     $($allPackEntries.Count)"
-Write-Host "Sticker PNGs:     $($pngFiles.Count)"
+Write-Host "Sticker files:    $($stickerFiles.Count) (.webp + .png)"
 Write-Host ""
 
 if ($errors.Count -eq 0 -and $warnings.Count -eq 0) {
