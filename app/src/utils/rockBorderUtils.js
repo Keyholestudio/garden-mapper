@@ -95,59 +95,59 @@ export function getStoneSize(type) {
 // ── Image cache ───────────────────────────────────────────────────────────────
 const ROCK_SRCS = {
   // Legacy keys — kept for backward compat with saved gardens
-  grey:        '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',    // was the old default
-  brown:       '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png',
-  white:       '/stickers/decor_rock-white_L_CA-US-FR-GB-AU.png',
-  mixed:       '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',
+  grey:        '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.webp',    // was the old default
+  brown:       '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.webp',
+  white:       '/stickers/decor_rock-white_L_CA-US-FR-GB-AU.webp',
+  mixed:       '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.webp',
   // New named variants
-  'river-stone':      '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',
-  'brown-rock':       '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png',
-  'grey-rock':        '/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png',
-  'grey-river':       '/stickers/decor_rock-white_L_CA-US-FR-GB-AU.png',   // NEW DEFAULT
-  'stepping-stone':   '/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.png',
-  'stepping-stone-2': '/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.png',
+  'river-stone':      '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.webp',
+  'brown-rock':       '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.webp',
+  'grey-rock':        '/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.webp',
+  'grey-river':       '/stickers/decor_rock-white_L_CA-US-FR-GB-AU.webp',   // NEW DEFAULT
+  'stepping-stone':   '/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.webp',
+  'stepping-stone-2': '/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.webp',
   'mixed-natural':    null,  // special: cycles through all 4 natural rock images
   'mixed-sandstone':  null,  // special: cycles through 2 stepping stone images
 }
 
 // The 4 natural rock srcs used for the mixed variant (no stepping stones)
 const MIXED_NATURAL_SRCS = [
-  '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.png',
-  '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.png',
-  '/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.png',
-  '/stickers/decor_rock-white_L_CA-US-FR-GB-AU.png',
+  '/stickers/decor_rock-small_M_CA-US-FR-GB-AU.webp',
+  '/stickers/decor_rock-medium_L_CA-US-FR-GB-AU.webp',
+  '/stickers/decor_rock-large_XL_CA-US-FR-GB-AU.webp',
+  '/stickers/decor_rock-white_L_CA-US-FR-GB-AU.webp',
 ]
 
 // The 2 stepping stone srcs used for the mixed sandstone variant
 const MIXED_SANDSTONE_SRCS = [
-  '/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.png',
-  '/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.png',
+  '/stickers/decor_rock-brown_L_CA-US-FR-GB-AU.webp',
+  '/stickers/decor_rock-flat_L_CA-US-FR-GB-AU.webp',
 ]
 
 export const PICKET_SRCS = {
   white: {
-    h: '/stickers/decor_picket-fence-white-h_M_CA-US-FR-GB-AU.png',  // front-facing pickets (horizontal lines)
-    v: '/stickers/decor_picket-fence-white-v_M_CA-US-FR-GB-AU.png',  // aerial top-down (vertical lines)
+    h: '/stickers/decor_picket-fence-white-h_M_CA-US-FR-GB-AU.webp',  // front-facing pickets (horizontal lines)
+    v: '/stickers/decor_picket-fence-white-v_M_CA-US-FR-GB-AU.webp',  // aerial top-down (vertical lines)
   },
   sage: {
-    h: '/stickers/decor_picket-fence-sage-h_M_CA-US-FR-GB-AU.png',
-    v: '/stickers/decor_picket-fence-sage-v_M_CA-US-FR-GB-AU.png',
+    h: '/stickers/decor_picket-fence-sage-h_M_CA-US-FR-GB-AU.webp',
+    v: '/stickers/decor_picket-fence-sage-v_M_CA-US-FR-GB-AU.webp',
   },
   black: {
-    h: '/stickers/decor_picket-fence-black-h_M_CA-US-FR-GB-AU.png',
-    v: '/stickers/decor_picket-fence-black-v_M_CA-US-FR-GB-AU.png',
+    h: '/stickers/decor_picket-fence-black-h_M_CA-US-FR-GB-AU.webp',
+    v: '/stickers/decor_picket-fence-black-v_M_CA-US-FR-GB-AU.webp',
   },
   blue: {
-    h: '/stickers/decor_picket-fence-blue-h_M_CA-US-FR-GB-AU.png',
-    v: '/stickers/decor_picket-fence-blue-v_M_CA-US-FR-GB-AU.png',
+    h: '/stickers/decor_picket-fence-blue-h_M_CA-US-FR-GB-AU.webp',
+    v: '/stickers/decor_picket-fence-blue-v_M_CA-US-FR-GB-AU.webp',
   },
   cedar: {
-    h: '/stickers/decor_picket-fence-cedar-h_M_CA-US-FR-GB-AU.png',
-    v: '/stickers/decor_picket-fence-cedar-v_M_CA-US-FR-GB-AU.png',
+    h: '/stickers/decor_picket-fence-cedar-h_M_CA-US-FR-GB-AU.webp',
+    v: '/stickers/decor_picket-fence-cedar-v_M_CA-US-FR-GB-AU.webp',
   },
   red: {
-    h: '/stickers/decor_picket-fence-red-h_M_CA-US-FR-GB-AU.png',
-    v: '/stickers/decor_picket-fence-red-v_M_CA-US-FR-GB-AU.png',
+    h: '/stickers/decor_picket-fence-red-h_M_CA-US-FR-GB-AU.webp',
+    v: '/stickers/decor_picket-fence-red-v_M_CA-US-FR-GB-AU.webp',
   },
 }
 
