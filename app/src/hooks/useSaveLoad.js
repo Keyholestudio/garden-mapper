@@ -681,7 +681,7 @@ export function loadGarden({
       locked: entry.locked || false,
       size: entry.size, key: entry.key,
       variantSrc: entry.variantSrc || null,
-      src: entry.src || (entry.key ? '/stickers/' + entry.key + '.png' : null),
+      src: entry.src || (entry.key ? '/stickers/' + entry.key + '.webp' : null),
       decorGroup: entry.decorGroup || null,
     }
 
@@ -859,7 +859,7 @@ export function loadGarden({
   ;(g.plants || []).forEach(entry => {
     if (!entry.key) return
     // Use variantSrc if set (coloured gate/sticker), otherwise fall back to base src
-    const displaySrc = stickerSrc(entry.variantSrc || entry.src || '/stickers/' + entry.key + '.png')
+    const displaySrc = stickerSrc(entry.variantSrc || entry.src || '/stickers/' + entry.key + '.webp')
     const img = new window.Image()
     img.onload = () => {
       const group = plantLayer?.findOne('#' + entry.id)
