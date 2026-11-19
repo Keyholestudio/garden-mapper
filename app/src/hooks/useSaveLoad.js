@@ -127,6 +127,18 @@ function migrateGarden(g) {
 
     g._schemaVersion = SCHEMA_VERSION
 
+  // Colour remaps: removed/renamed texture tokens -> canonical replacements
+  const COLOUR_REMAP = {
+    '#TX:roof-cedar-shingles': '#TX:roof-cedar-shingles-strip',
+    '#TX:roof-asphalt':        '#TX:roof-grey-shingles',
+    '#TX:roof-terracotta':     '#TX:roof-terracotta-tiles',
+  }
+  if (Array.isArray(g.structs)) {
+    g.structs = g.structs.map(s =>
+      s.colour && COLOUR_REMAP[s.colour] ? { ...s, colour: COLOUR_REMAP[s.colour] } : s
+    )
+  }
+
   // Key remaps: old key -> canonical key (keeps saved gardens loading correctly)
   const KEY_REMAP = {
     'succulent_jade-plant_M_CA-US-FR-GB-AU': 'succulent_jade-plant_S_CA-US-FR-GB-AU',
