@@ -6,6 +6,7 @@ import Konva from 'konva'
 import {
   isFreeMode, snapToBoundary, closeFreeShape,
   addRectStruct, addCircleStruct, getBoundaryClosure, getShapeStyle,
+  applyRoofStripTexture,
 } from '../utils/drawUtils'
 import { PATH_COLOURS, WATER_COLOURS, HEDGE_COLOURS, DECKING_COLOURS } from './useGardenState'
 import { addStonesToGroup } from '../utils/rockBorderUtils'
@@ -15,6 +16,7 @@ export function useDrawTools({
   onLongPressStruct,   // (id, shape) => void  — fires on dblclick/dbltap on struct when in lasso mode
   lassoModeRef,        // ref: true when lasso select is active — suppress pan:start
   multiSelectionRef,   // ref: current multiSelection array — suppress pan:start to preserve selection
+  TEXTURE_MAP,         // passed from GardenEditor so new buildings get roof textures applied immediately
 }) {
   // Keep current state in refs so event handlers always see latest values
   const sRef = useRef(state)
@@ -286,13 +288,14 @@ export function useDrawTools({
         const pos = stage.getRelativePointerPosition()
         drawStartRef.current = pos
         let fillC = '#8B6340', cornerR = 0
-        if (s.currentMode === 'building' && s.buildingSubTool === 'building') { fillC = '#90A4AE'; cornerR = 3 }
+        if (s.currentMode === 'building' && s.buildingSubTool === 'building') { fillC = '#TX:roof-terracotta-tiles'; cornerR = 3 }
         else if (s.currentMode === 'building' && s.buildingSubTool === 'deck-square') fillC = DECKING_COLOURS[0]
         else if (s.currentMode === 'water'    && s.waterSubTool === 'pool-sq')        fillC = '#64B5F6'
         else if (s.currentMode === 'fences'   && s.fenceSubTool === 'square')         fillC = HEDGE_COLOURS[0]
+        const previewFill = fillC.startsWith('#TX:') ? '#B07050AA' : fillC + 'AA'
         previewRectRef.current = new Konva.Rect({
           x: pos.x, y: pos.y, width: 0, height: 0,
-          fill: fillC + 'AA', stroke: '#3A2A10', strokeWidth: 2,
+          fill: previewFill, stroke: '#3A2A10', strokeWidth: 2,
           cornerRadius: cornerR, listening: false, strokeScaleEnabled: false,
         })
         structLayer.add(previewRectRef.current)
@@ -351,6 +354,7 @@ export function useDrawTools({
         groupIdCtr: s.groupIdCtr,
         snapCell: snapCellRef.current, showGrid: s.showGrid,
         structLayer, onSelect: onStructSelect, onModeChange, onEnterEdit,
+        TEXTURE_MAP,
       })
       if (rectId && onPushUndo) {
         onPushUndo(() => {

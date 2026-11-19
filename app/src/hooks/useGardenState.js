@@ -13,8 +13,9 @@ export const SIZE_MAP = { XS: 24, S: 40, M: 64, L: 96, XL: 128, XXL: 160 } // XX
 
 export const BED_COLOURS     = ['#8B6340','#6D4C1F','#C8A96A','#9E9E9E','#BDBDBD','#78909C',
   '#TX:soil-brown']
-export const BUILDING_COLOURS= ['#90A4AE','#BCAAA4','#78909C','#A1887F',
-  '#TX:roof-terracotta-tiles','#TX:roof-grey-shingles','#TX:roof-cedar-shingles-strip']
+export const BUILDING_COLOURS= [
+  '#TX:roof-terracotta-tiles','#TX:roof-cedar-shingles-strip','#TX:roof-grey-shingles',
+  '#90A4AE','#BCAAA4','#78909C','#A1887F']
 export const FENCE_COLOURS   = ['#795548','#6D4C41','#4E342E','#BCAAA4','#90A4AE']
 export const HEDGE_COLOURS   = ['#TX:hedge','#388E3C','#2E7D32','#1B5E20','#558B2F']
 export const PATH_COLOURS    = ['#TX:path-brick','#TX:path-clay-brick','#TX:path-grey-brick','#TX:path-flagstone-beige',

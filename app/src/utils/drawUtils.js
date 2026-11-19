@@ -785,6 +785,9 @@ export function addRectStruct({
 
   structLayer.add(rect)
   if (type === 'hedge-sq') applyHedgeTexture(rect, structLayer)
+  if (type === 'building' && TEXTURE_MAP && colour?.startsWith('#TX:') && TEXTURE_MAP[colour]?.roofStrip) {
+    applyRoofStripTexture(rect, colour, structLayer, TEXTURE_MAP, false)
+  }
   structLayer.batchDraw()
   if (onSelect) onSelect(id, rect)
   if (onModeChange) onModeChange('select')

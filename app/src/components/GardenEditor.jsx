@@ -773,6 +773,7 @@ export default function GardenEditor() {
     state,
     lassoModeRef,
     multiSelectionRef,
+    TEXTURE_MAP,
     onLongPressStruct: handleLongPressStruct,
     onPushUndo: state.pushUndo,
     onEnterEdit: (id) => { if (lassoModeRef.current) return; enterEdit(id) },
