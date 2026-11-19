@@ -8,9 +8,6 @@ export const entries = [
 
   // 🌊 Water Features ──────────────────────────────────────────────────────────
 
-  // Batch 1 (2026-09-18)
-  { key: 'water-feature_fountain',              label: 'Fountain',               family: 'Water Feature', size: 'L',  src: '/stickers/water-feature_fountain_L_CA-US-FR-GB-AU.webp' },
-
   // 🚪 Gates ───────────────────────────────────────────────────────────────────
 
   { key: 'decor_gate-wood-blue',               label: 'Gate (Blue)',             family: 'Decor', size: 'XL', src: '/stickers/decor_gate-wood-blue_XL_CA-US-FR-GB-AU.webp' },
