@@ -681,7 +681,7 @@ export function loadGarden({
       locked: entry.locked || false,
       size: entry.size, key: entry.key,
       variantSrc: entry.variantSrc || null,
-      src: entry.src || (entry.key ? '/stickers/' + entry.key + '.webp' : null),
+      src: (entry.src || (entry.key ? '/stickers/' + entry.key + '.webp' : null))?.replace(/\.png$/, '.webp'),
       decorGroup: entry.decorGroup || null,
     }
 
@@ -726,7 +726,8 @@ export function loadGarden({
         plantLayer?.batchDraw()
       }
       vImg.onload = applyVariant
-      vImg.src = stickerSrc(entry.variantSrc)
+      // Migrate legacy .png variantSrc paths to .webp (saved gardens pre-migration)
+      vImg.src = stickerSrc(entry.variantSrc.replace(/\.png$/, '.webp'))
       // If browser already has this image cached, onload may not fire — apply immediately
       if (vImg.complete && vImg.naturalWidth) applyVariant()
     }
@@ -859,7 +860,9 @@ export function loadGarden({
   ;(g.plants || []).forEach(entry => {
     if (!entry.key) return
     // Use variantSrc if set (coloured gate/sticker), otherwise fall back to base src
-    const displaySrc = stickerSrc(entry.variantSrc || entry.src || '/stickers/' + entry.key + '.webp')
+    // Migrate legacy .png paths to .webp on the fly (saved gardens pre-migration)
+    const rawSrc = entry.variantSrc || entry.src || '/stickers/' + entry.key + '.webp'
+    const displaySrc = stickerSrc(rawSrc.replace(/\.png$/, '.webp'))
     const img = new window.Image()
     img.onload = () => {
       const group = plantLayer?.findOne('#' + entry.id)
