@@ -4,7 +4,7 @@
 export const ROCK_BORDER_PRESETS = {
   'rock-border':   { stoneSize: 28, overlap: -0.15 },
   'stepping-path': { stoneSize: 48, overlap: -0.40 },
-  'picket-fence':   { stoneSize: 38, overlap: 0.0 },  // horizontal: H tile width (unchanged)
+  'picket-fence':   { stoneSize: 38, overlap: 0.03 }, // horizontal: slight overlap to close sub-pixel seam at tile joins
   'picket-fence-v':  { stoneSize: 38, overlap: 0.0 },  // vertical: V tile long axis (38px) = spacing along line
 }
 
