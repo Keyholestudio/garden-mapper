@@ -2096,6 +2096,38 @@ export default function GardenEditor() {
     applySeasonOpacity(layersRef.current.plantLayer)
   }
 
+  // ── Redraw garden boundary rect + label for given dimensions ──
+  // Called after resize so canvas boundary matches new W×H immediately.
+  // Anchors from top-left: boundary stays at same (ox, oy), right/bottom edges move.
+  const reapplyBoundary = useCallback((w, h, unit) => {
+    const stage = stageRef.current
+    const { structLayer } = layersRef.current
+    if (!stage || !structLayer) return
+    const UNIT_PX = 32
+    const u = unit || state.gardenUnit
+    const pw = w * UNIT_PX * (u === 'm' ? 3.281 : 1)
+    const ph = h * UNIT_PX * (u === 'm' ? 3.281 : 1)
+    // Keep existing top-left origin if boundary already placed; otherwise center
+    const existing = state.propBoundsRef.current
+    const ox = existing ? existing.x : Math.max(16, (stage.width() - pw) / 2)
+    const oy = existing ? existing.y : Math.max(16, (stage.height() - ph) / 2)
+    state.propBoundsRef.current = { x: ox, y: oy, w: pw, h: ph }
+    structLayer.findOne('#__propBounds')?.destroy()
+    structLayer.findOne('#__propLabel')?.destroy()
+    structLayer.add(new Konva.Rect({
+      id: '__propBounds', x: ox, y: oy, width: pw, height: ph,
+      stroke: '#558B2F', strokeWidth: 2, dash: [10, 5],
+      fill: 'transparent', listening: false, strokeScaleEnabled: false,
+    }))
+    structLayer.add(new Konva.Text({
+      id: '__propLabel', x: ox + 6, y: oy + 5,
+      text: `${state.gardenName}  ${w}x${h} ${u}`,
+      fontSize: 11, fontStyle: 'bold', fill: '#558B2F', opacity: 0.65, listening: false,
+    }))
+    structLayer.batchDraw()
+    drawGrid(stageRef.current, layersRef.current.gridLayer, state.showGrid, u, state.currentSeason)
+  }, [state])
+
   // ── Rename a garden (from switcher) ──
   const handleRenameGarden = useCallback((idx, newName) => {
     const gardens = readGardens()
@@ -2117,13 +2149,14 @@ export default function GardenEditor() {
     gardens[idx].w = w
     gardens[idx].h = h
     try { localStorage.setItem('gardenData', JSON.stringify(gardens)) } catch(e) {}
-    // If resizing the active garden, update live canvas state too
+    // If resizing the active garden, update live state + redraw boundary
     if (idx === currentGardenIndexRef.current) {
       state.setGardenW(w)
       state.setGardenH(h)
+      reapplyBoundary(w, h, gardens[idx].unit)
     }
     if (user) syncToCloud(gardens)
-  }, [user, syncToCloud, state])
+  }, [user, syncToCloud, state, reapplyBoundary])
 
   // ── Phase 5: New garden (mirrors v8 newGarden exactly) ──
   const handleNewGarden = () => {
