@@ -30,6 +30,7 @@ export default function LogoBar({
   onOpenSwitcherMobile,
   user,
   onSignIn,
+  onOpenSignIn,
   onSignOut,
   onOpenAccount,
   onOpenMore,
