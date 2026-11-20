@@ -20,6 +20,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useSubscription } from '../hooks/useSubscription'
 import SubscribeModal from './SubscribeModal'
 import AccountModal   from './AccountModal'
+import SignInModal    from './SignInModal'
 import MoreModal      from './MoreModal'
 import RestorePrompt from './RestorePrompt'
 import { seedDreamGarden, fetchDreamGardenUpdate } from '../hooks/useDreamGarden'
@@ -128,7 +129,7 @@ export default function GardenEditor() {
     showConflictPrompt, conflictGardens, resolveConflictLoadCloud, resolveConflictKeepLocal,
     ghostGardens, loadGhostGarden, deleteGhostGarden,
     cloudUpdateAvailable, dismissCloudUpdate, applyCloudUpdate,
-    syncToCloud, syncStatus, signInWithGoogle, signOut,
+    syncToCloud, syncStatus, signInWithGoogle, sendMagicLink, signOut,
   } = useAuth({
     getLocalGardens: () => readGardens(),
     getIsSubscribed: () => isSubscribedRef.current,
@@ -162,6 +163,7 @@ export default function GardenEditor() {
 
   const [subscribeModalOpen, setSubscribeModalOpen] = useState(false)
   const [accountModalOpen, setAccountModalOpen] = useState(false)
+  const [signInModalOpen, setSignInModalOpen] = useState(false)
   const [moreModalOpen, setMoreModalOpen] = useState(false)
 
   // ── Image loading helpers ──
@@ -2140,6 +2142,14 @@ export default function GardenEditor() {
         <MoreModal onClose={() => setMoreModalOpen(false)} audio={audio} />
       )}
 
+      {/* Sign In modal */}
+      <SignInModal
+        isOpen={signInModalOpen}
+        onClose={() => setSignInModalOpen(false)}
+        onSignInGoogle={() => { signInWithGoogle(); setSignInModalOpen(false); }}
+        onSendMagicLink={sendMagicLink}
+      />
+
       {/* Account modal */}
       {accountModalOpen && (
         <AccountModal
@@ -2266,6 +2276,7 @@ export default function GardenEditor() {
         isMobile={isMobile}
         user={user}
         onSignIn={signInWithGoogle}
+        onOpenSignIn={() => setSignInModalOpen(true)}
         onSignOut={signOut}
         syncStatus={syncStatus}
         onOpenAccount={() => setAccountModalOpen(true)}

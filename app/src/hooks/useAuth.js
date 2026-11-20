@@ -566,6 +566,16 @@ export function useAuth({ getLocalGardens, setLocalGardens, getIsSubscribed = ()
     return () => { handle?.remove(); };
   }, []);
 
+  // ── Magic link (passwordless email sign-in) ────────────────────
+  const sendMagicLink = useCallback(async (email) => {
+    const redirectTo = isNative ? APP_REDIRECT_URL : WEB_REDIRECT_URL;
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: redirectTo },
+    });
+    if (error) throw error;
+  }, []);
+
   // ── Sign out ─────────────────────────────────────────────────────
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
@@ -596,6 +606,7 @@ export function useAuth({ getLocalGardens, setLocalGardens, getIsSubscribed = ()
     syncToCloud,
     syncStatus,
     signInWithGoogle,
+    sendMagicLink,
     signOut,
   };
 }

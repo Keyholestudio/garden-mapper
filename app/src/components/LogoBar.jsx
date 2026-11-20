@@ -147,9 +147,9 @@ export default function LogoBar({
                   </button>
                 </>
               ) : (
-                <button className="profile-menu-item profile-menu-item--signin" onClick={() => { onSignIn?.(); closeMenu(); }}>
+                <button className="profile-menu-item profile-menu-item--signin" onClick={() => { onOpenSignIn?.(); closeMenu(); }}>
                   <span className="profile-menu-icon">🔑</span>
-                  <span>Sign in with Google</span>
+                  <span>Sign In</span>
                   <span className="profile-menu-hint">Save to cloud</span>
                 </button>
               )}
@@ -305,9 +305,9 @@ export default function LogoBar({
                 </button>
               </>
             ) : (
-              <button className="profile-menu-item profile-menu-item--signin" onClick={() => { onSignIn?.(); closeMenu(); }}>
+              <button className="profile-menu-item profile-menu-item--signin" onClick={() => { onOpenSignIn?.(); closeMenu(); }}>
                 <span className="profile-menu-icon">🔑</span>
-                <span>Sign in with Google</span>
+                <span>Sign In</span>
                 <span className="profile-menu-hint">Save to cloud</span>
               </button>
             )}
