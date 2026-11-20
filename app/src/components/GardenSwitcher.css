@@ -222,6 +222,86 @@
   flex-shrink: 0;
 }
 
+/* Pencil rename button */
+.btn-rename {
+  background: none;
+  border: none;
+  color: #11502A;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 4px;
+  flex-shrink: 0;
+  line-height: 1;
+  border-radius: 4px;
+  transition: background 0.12s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+}
+.btn-rename:hover { background: #e8f5e9; }
+.btn-rename--placeholder {
+  width: 22px;
+  pointer-events: none;
+}
+
+/* Inline name input */
+.switcher-name-input {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: #2A3D1A;
+  border: 1.5px solid #11502A;
+  border-radius: 5px;
+  padding: 2px 6px;
+  outline: none;
+  min-width: 0;
+  background: #fff;
+}
+
+/* Dims editable hint */
+.switcher-dims--editable {
+  cursor: pointer;
+  border-bottom: 1px dashed #bbb;
+  transition: border-color 0.15s;
+}
+.switcher-dims--editable:hover {
+  border-bottom-color: #11502A;
+  color: #11502A;
+}
+
+/* Inline dims edit */
+.switcher-dims-edit {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.switcher-dim-input {
+  width: 42px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #333;
+  border: 1.5px solid #11502A;
+  border-radius: 4px;
+  padding: 2px 4px;
+  outline: none;
+  text-align: center;
+  /* hide number spinners */
+  -moz-appearance: textfield;
+}
+.switcher-dim-input::-webkit-outer-spin-button,
+.switcher-dim-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.switcher-dim-sep {
+  font-size: 11px;
+  color: #888;
+}
+.switcher-dim-unit {
+  font-size: 10px;
+  color: #aaa;
+  margin-left: 1px;
+}
+
 .btn-new {
   background: #E8F5E9;
   color: #2E7D32;

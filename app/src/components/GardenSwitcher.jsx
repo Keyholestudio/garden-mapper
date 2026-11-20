@@ -19,12 +19,21 @@ export default function GardenSwitcher({
   isSubscribed = false,          // subscription status (used for ghost CTA + new garden limit)
   showSubscribeUpsell = false,   // true only when definitely not subscribed (computed in GardenEditor)
   onSubscribe,                   // () => void — open the subscribe modal
+  onRenameGarden,                // (idx, newName) => void
+  onResizeGarden,                // (idx, w, h) => void
 }) {
   const [gardens, setGardens] = useState([])
   const [confirmDeleteIdx, setConfirmDeleteIdx] = useState(null)
-  const [confirmDeleteGhost, setConfirmDeleteGhost] = useState(null) // ghost item pending delete confirm
-  const [expandedBackups, setExpandedBackups] = useState({}) // { [gardenIndex]: bool }
-  const [backupSlots, setBackupSlots] = useState({})         // { [gardenIndex]: slot[] }
+  const [confirmDeleteGhost, setConfirmDeleteGhost] = useState(null)
+  const [expandedBackups, setExpandedBackups] = useState({})
+  const [backupSlots, setBackupSlots] = useState({})
+  // Inline rename state
+  const [editingNameIdx, setEditingNameIdx] = useState(null)
+  const [editingNameVal, setEditingNameVal] = useState('')
+  // Inline resize state
+  const [editingDimsIdx, setEditingDimsIdx] = useState(null)
+  const [editingW, setEditingW] = useState('')
+  const [editingH, setEditingH] = useState('')
 
   useEffect(() => {
     if (open) {
@@ -78,6 +87,42 @@ export default function GardenSwitcher({
     return { label: 'Subscribe to load', action: () => { onClose?.(); onSubscribe?.(); }, isUpsell: true };
   }
 
+  // ── Rename handlers ──
+  const startRename = (i, currentName) => {
+    setEditingNameIdx(i)
+    setEditingNameVal(currentName || '')
+    setEditingDimsIdx(null)
+  }
+  const commitRename = (i) => {
+    const trimmed = editingNameVal.trim()
+    if (trimmed && trimmed !== gardens[i]?.name) {
+      const updated = [...gardens]
+      updated[i] = { ...updated[i], name: trimmed }
+      setGardens(updated)
+      onRenameGarden?.(i, trimmed)
+    }
+    setEditingNameIdx(null)
+  }
+
+  // ── Resize handlers ──
+  const startResize = (i, g) => {
+    setEditingDimsIdx(i)
+    setEditingW(String(g.w || 60))
+    setEditingH(String(g.h || 40))
+    setEditingNameIdx(null)
+  }
+  const commitResize = (i) => {
+    const w = parseInt(editingW, 10)
+    const h = parseInt(editingH, 10)
+    if (w > 0 && h > 0 && (w !== gardens[i]?.w || h !== gardens[i]?.h)) {
+      const updated = [...gardens]
+      updated[i] = { ...updated[i], w, h }
+      setGardens(updated)
+      onResizeGarden?.(i, w, h)
+    }
+    setEditingDimsIdx(null)
+  }
+
   const formatGhostTime = (iso) => {
     if (!iso) return ''
     const d = new Date(iso)
@@ -99,11 +144,67 @@ export default function GardenSwitcher({
           {gardens.map((g, i) => !g ? null : (
             <div key={i} className="switcher-garden-group">
               <div className={`switcher-row ${i === currentIndex ? 'current' : ''} ${isDream(g) ? 'dream' : ''}`}>
-                <span className="switcher-name">
-                  {g.name || `Garden ${i + 1}`}
-                </span>
+                {/* Pencil icon — left-aligned, only for non-Dream gardens */}
+                {!isDream(g) ? (
+                  <button
+                    className="btn-rename"
+                    onClick={() => editingNameIdx === i ? commitRename(i) : startRename(i, g.name || `Garden ${i + 1}`)}
+                    title="Rename garden"
+                  >&#9998;</button>
+                ) : (
+                  <span className="btn-rename btn-rename--placeholder" />
+                )}
+
+                {/* Name — inline edit or display */}
+                {editingNameIdx === i ? (
+                  <input
+                    className="switcher-name-input"
+                    value={editingNameVal}
+                    autoFocus
+                    onChange={e => setEditingNameVal(e.target.value)}
+                    onBlur={() => commitRename(i)}
+                    onKeyDown={e => { if (e.key === 'Enter') commitRename(i); if (e.key === 'Escape') setEditingNameIdx(null) }}
+                    onClick={e => e.stopPropagation()}
+                  />
+                ) : (
+                  <span className="switcher-name">
+                    {g.name || `Garden ${i + 1}`}
+                  </span>
+                )}
+
                 {i === currentIndex && <span className="switcher-badge">current</span>}
-                <span className="switcher-dims">{g.w}×{g.h} {g.unit}</span>
+
+                {/* Dims — inline edit or display, not for Dream Garden */}
+                {!isDream(g) && editingDimsIdx === i ? (
+                  <span className="switcher-dims-edit">
+                    <input
+                      className="switcher-dim-input"
+                      type="number" min="1" max="999"
+                      value={editingW}
+                      onChange={e => setEditingW(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') commitResize(i); if (e.key === 'Escape') setEditingDimsIdx(null) }}
+                    />
+                    <span className="switcher-dim-sep">×</span>
+                    <input
+                      className="switcher-dim-input"
+                      type="number" min="1" max="999"
+                      value={editingH}
+                      onChange={e => setEditingH(e.target.value)}
+                      onBlur={() => commitResize(i)}
+                      onKeyDown={e => { if (e.key === 'Enter') commitResize(i); if (e.key === 'Escape') setEditingDimsIdx(null) }}
+                    />
+                    <span className="switcher-dim-unit">{g.unit}</span>
+                  </span>
+                ) : (
+                  <span
+                    className={`switcher-dims${!isDream(g) ? ' switcher-dims--editable' : ''}`}
+                    onClick={() => !isDream(g) && startResize(i, g)}
+                    title={!isDream(g) ? 'Click to resize' : ''}
+                  >
+                    {g.w}×{g.h} {g.unit}
+                  </span>
+                )}
+
                 {isDream(g)
                   ? <button className="btn-load btn-load--disabled" disabled title="Dream Garden coming soon">Coming Soon</button>
                   : <button className="btn-load" onClick={() => { onLoad(i); onClose() }}>Load</button>

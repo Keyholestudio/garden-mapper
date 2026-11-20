@@ -2096,6 +2096,35 @@ export default function GardenEditor() {
     applySeasonOpacity(layersRef.current.plantLayer)
   }
 
+  // ── Rename a garden (from switcher) ──
+  const handleRenameGarden = useCallback((idx, newName) => {
+    const gardens = readGardens()
+    if (!gardens[idx]) return
+    gardens[idx].name = newName
+    try { localStorage.setItem('gardenData', JSON.stringify(gardens)) } catch(e) {}
+    // If renaming the active garden, update live state too
+    if (idx === currentGardenIndexRef.current) {
+      state.setGardenName(newName)
+    }
+    // Push rename to cloud
+    if (user) syncToCloud(gardens)
+  }, [user, syncToCloud, state])
+
+  // ── Resize a garden (from switcher) ──
+  const handleResizeGarden = useCallback((idx, w, h) => {
+    const gardens = readGardens()
+    if (!gardens[idx]) return
+    gardens[idx].w = w
+    gardens[idx].h = h
+    try { localStorage.setItem('gardenData', JSON.stringify(gardens)) } catch(e) {}
+    // If resizing the active garden, update live canvas state too
+    if (idx === currentGardenIndexRef.current) {
+      state.setGardenW(w)
+      state.setGardenH(h)
+    }
+    if (user) syncToCloud(gardens)
+  }, [user, syncToCloud, state])
+
   // ── Phase 5: New garden (mirrors v8 newGarden exactly) ──
   const handleNewGarden = () => {
     if (!stageRef.current) return
@@ -2347,6 +2376,8 @@ export default function GardenEditor() {
         isSubscribed={isSubscribed}
         showSubscribeUpsell={showSubscribeUpsell}
         onSubscribe={() => setSubscribeModalOpen(true)}
+        onRenameGarden={handleRenameGarden}
+        onResizeGarden={handleResizeGarden}
       />
 
       <div className="editor-body">
