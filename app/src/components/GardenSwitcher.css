@@ -68,9 +68,9 @@
 
 .switcher-row {
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 9px 12px;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 8px;
   border: 1.5px solid #ddd;
   border-radius: 9px;
   background: #fafafa;
