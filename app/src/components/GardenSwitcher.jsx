@@ -150,7 +150,13 @@ export default function GardenSwitcher({
                     className="btn-rename"
                     onClick={() => editingNameIdx === i ? commitRename(i) : startRename(i, g.name || `Garden ${i + 1}`)}
                     title="Rename garden"
-                  >&#9998;</button>
+                    aria-label="Rename garden"
+                  >
+                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9.5 1.5L11.5 3.5L4.5 10.5L2 11L2.5 8.5L9.5 1.5Z" fill="#11502A" stroke="#11502A" strokeWidth="0.5" strokeLinejoin="round"/>
+                      <path d="M8 3L10 5" stroke="#fff" strokeWidth="0.8" strokeLinecap="round"/>
+                    </svg>
+                  </button>
                 ) : (
                   <span className="btn-rename btn-rename--placeholder" />
                 )}

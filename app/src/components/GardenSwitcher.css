@@ -226,22 +226,22 @@
 .btn-rename {
   background: none;
   border: none;
-  color: #11502A;
-  font-size: 14px;
   cursor: pointer;
-  padding: 2px 4px;
+  padding: 1px 2px;
   flex-shrink: 0;
   line-height: 1;
-  border-radius: 4px;
+  border-radius: 3px;
   transition: background 0.12s;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 22px;
+  width: 18px;
+  height: 18px;
 }
 .btn-rename:hover { background: #e8f5e9; }
 .btn-rename--placeholder {
-  width: 22px;
+  width: 18px;
+  height: 18px;
   pointer-events: none;
 }
 
