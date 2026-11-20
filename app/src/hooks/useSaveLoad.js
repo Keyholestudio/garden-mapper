@@ -901,7 +901,9 @@ export function loadGarden({
 // Mirrors v8 newGarden(). Saves current, pushes new entry, returns new index.
 export function createNewGarden({ currentGardenIndex, stage, layers, state, isSubscribed = false }) {
   const gardens = readGardens()
-  if (!isSubscribed && gardens.length >= MAX_GARDENS) return { limitReached: true }
+  // Exclude Dream Garden from limit check — same logic as GardenSwitcher
+  const userGardens = gardens.filter(g => !g._isDreamGarden && g.name !== '🌸 Dream Garden')
+  if (!isSubscribed && userGardens.length >= 1) return { limitReached: true }
 
   // Save current garden first (same as v8)
   saveGarden({ stage, layers, state, currentGardenIndex })

@@ -154,9 +154,9 @@ export default function GardenEditor() {
   const { isSubscribed, loading: subscriptionLoading, openCheckout, purchase, restorePurchases, checkoutLoading, error: stripeError } = useSubscription(user?.id)
   // Keep ref in sync so useAuth's restoreFromCloud always reads current subscription state
   useEffect(() => { isSubscribedRef.current = isSubscribed }, [isSubscribed])
-  // Only show upsell when we are certain the user is NOT subscribed:
-  // signed in + loading finished + not subscribed. Prevents false positive during async fetch.
-  const showSubscribeUpsell = !!user && !subscriptionLoading && !isSubscribed
+  // Show upsell when: signed out, OR signed in + not subscribed (loading finished).
+  // Prevents false positive during async fetch by waiting for subscriptionLoading to settle.
+  const showSubscribeUpsell = !user || (!subscriptionLoading && !isSubscribed)
 
   // ── Audio ──
   const audio = useAudio({ isSubscribed })
@@ -2106,7 +2106,11 @@ export default function GardenEditor() {
       state,
       isSubscribed,
     })
-    if (result.limitReached) return
+    if (result.limitReached) {
+      // Signed out → open sign-in modal; signed in free → open subscribe modal
+      if (!user) { setSignInModalOpen(true) } else { setSubscribeModalOpen(true) }
+      return
+    }
 
     // Clear the canvas (mirrors v8: initKonva creates a fresh canvas)
     const { structLayer, plantLayer, uiLayer } = layersRef.current
